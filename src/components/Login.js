@@ -183,9 +183,9 @@ export const Login= ()=>{
                   <div className="forget-pass">
                     <div className="input-box">
                       <input type="checkbox" />
-                      <span className="remembertxt_login"> Remember Me</span>
+                      <span className="remembertxt_login"> Nhớ mật khẩu</span>
                     </div>
-                    <a href="#">Quên Mật Khẩu?</a>
+                    <a href="#">Quên mật khẩu?</a>
                   </div>
 
                   <div className="input-box">

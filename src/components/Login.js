@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from "react";
 import {getdt} from "../database/db"
 
-function Login(props){
+export const Login= ()=>{
   const [email,setEmail]=useState('')
   const [password,setPassword]=useState('')
   const [listItem,setListItem]=useState([])
@@ -224,7 +224,7 @@ function Login(props){
               top:-10%;
               z-index:9999;
               -webkit-user-select:none;
-              -moz-user-select:none;
+              -moz-user-selexact:none;
               -ms-user-select:none;
               user-select:none;
               cursor:default;

@@ -6,6 +6,7 @@ import 'firebase/firestore';
 import 'firebase/functions';
 import 'firebase/storage';
 import { initializeApp } from 'firebase/app';
+import { notification } from 'antd';
 const firebaseConfig = {
     apiKey: "AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o",
     authDomain: "mock-proeject-b.firebaseapp.com",

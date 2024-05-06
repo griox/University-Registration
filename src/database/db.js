@@ -1,6 +1,7 @@
-import firebase from 'firebase/compat/app';
+// import firebase from 'firebase/compat/app';
+import { format } from 'react-string-format';
 import 'firebase/auth';
-import { ref, set, child, getDatabase, onValue, get, remove, update } from 'firebase/database';
+import { ref, child, getDatabase, get} from 'firebase/database';
 import 'firebase/firestore';
 import 'firebase/functions';
 import 'firebase/storage';
@@ -25,19 +26,13 @@ export function getdt(setListItem,listItem,email,password){
             if (snapshot.exists()) {
                 const x = snapshot.val();
                 setListItem(Object.values(x).map((user) => user));
-                // Object.values(x).map((user) => user.name===username?setResult(true):setResult(false));
-                console.log(listItem)
                 const y=listItem.filter(item=>item.id===email&&item.password===password)
                 if(y.length!==0){
-                    alert("Login sucess")
+                    alert(format("Logged in as {0}",y[0].role))
                 }else{
-                    alert("Error")
+                    alert("Login information is incorrect")
                 }
-                // if(result){
-                //     alert("Đã tìm thấy")
-                //   }else{
-                //     alert("Chưa tìm thấy")
-                //   }
+                
             } else {
                 console.log('No data available');
             }

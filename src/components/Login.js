@@ -6,10 +6,9 @@ import 'firebase/firestore';
 import 'firebase/functions';
 import 'firebase/storage';
 import { initializeApp } from 'firebase/app';
-import { getdata } from "../helper/commonFunction";
 import {getdt} from "../database/db"
 
-function Login(props){
+export const Login= ()=>{
   const [email,setEmail]=useState('')
   const [password,setPassword]=useState('')
   const [listItem,setListItem]=useState([])
@@ -27,21 +26,6 @@ function Login(props){
 
   const app = initializeApp(firebaseConfig);
   const db=getDatabase(app)
-  useEffect(() => {
-    get(child(ref(db), `users/`))
-        .then((snapshot) => {
-            if (snapshot.exists()) {
-                const x = snapshot.val();
-                setListItem(Object.values(x).map((user) => user));
-                console.log(listItem)
-            } else {
-                console.log('No data available');
-            }
-        })
-        .catch((error) => {
-            console.error(error);
-        });
-}, []);
   useEffect(() => {
     const passwordInput = document.querySelector(".pass_login");
     const eyeBtn = document.querySelector(".eye");
@@ -258,7 +242,7 @@ function Login(props){
               top:-10%;
               z-index:9999;
               -webkit-user-select:none;
-              -moz-user-select:none;
+              -moz-user-selexact:none;
               -ms-user-select:none;
               user-select:none;
               cursor:default;

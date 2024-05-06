@@ -8,7 +8,7 @@ import 'firebase/storage';
 import { initializeApp } from 'firebase/app';
 import {getdt} from "../database/db"
 
-function Login(props){
+export const Login= ()=>{
   const [email,setEmail]=useState('')
   const [password,setPassword]=useState('')
   const [listItem,setListItem]=useState([])

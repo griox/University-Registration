@@ -1,10 +1,50 @@
-import React, { useEffect } from "react";
+import React, { useState,useEffect } from "react";
+import firebase from 'firebase/compat/app';
+import 'firebase/auth';
+import { ref, set, child, getDatabase, onValue, get, remove, update } from 'firebase/database';
+import 'firebase/firestore';
+import 'firebase/functions';
+import 'firebase/storage';
+import { initializeApp } from 'firebase/app';
+import { getdata } from "../helper/commonFunction";
+import {getdt} from "../database/db"
 
-export const Login = () => {
+function Login(props){
+  const [email,setEmail]=useState('')
+  const [password,setPassword]=useState('')
+  const [listItem,setListItem]=useState([])
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o",
+    authDomain: "mock-proeject-b.firebaseapp.com",
+    databaseURL: "https://mock-proeject-b-default-rtdb.firebaseio.com",
+    projectId: "mock-proeject-b",
+    storageBucket: "mock-proeject-b.appspot.com",
+    messagingSenderId: "898832925665",
+    appId: "1:898832925665:web:bb28598e7c70a0d73188a0"
+  };
+ 
+
+  const app = initializeApp(firebaseConfig);
+  const db=getDatabase(app)
+  useEffect(() => {
+    get(child(ref(db), `users/`))
+        .then((snapshot) => {
+            if (snapshot.exists()) {
+                const x = snapshot.val();
+                setListItem(Object.values(x).map((user) => user));
+                console.log(listItem)
+            } else {
+                console.log('No data available');
+            }
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+}, []);
   useEffect(() => {
     const passwordInput = document.querySelector(".pass_login");
     const eyeBtn = document.querySelector(".eye");
-
     const handleFocus = () => {
       if (passwordInput.value.trim() !== "") {
         eyeBtn.style.display = "block";
@@ -22,7 +62,7 @@ export const Login = () => {
         }
       };
     };
-
+    
     const handleEyeClick = () => {
       if (passwordInput.type === "password") {
         passwordInput.setAttribute("type", "text");
@@ -43,6 +83,7 @@ export const Login = () => {
       eyeBtn.removeEventListener("click", handleEyeClick);
     };
   }, []);
+  
 
   return (
     <>
@@ -133,19 +174,23 @@ export const Login = () => {
                 <div className="form-inputs">
                   <div className="input-box">
                     <input
-                      type="email"
+                      type="text"
                       className="input-field"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       placeholder="Nhập email tại đây..."
-                      required
+                      // required
                     />
                     <i className="bx bx-envelope icon"></i>
                   </div>
                   <div className="input-box">
                     <input
-                      type="password"
+                      type="text"
                       className="input-field pass_login"
+                      onChange={(e) => setPassword(e.target.value)}
+                      value={password}
                       placeholder="Nhập mật khẩu tại đây..."
-                      required
+                      // required
                     />
                     <i className="bx bx-lock-alt icon"></i>
                     <i className="bx bx-lock-open-alt eye icon"></i>
@@ -160,10 +205,10 @@ export const Login = () => {
                   </div>
 
                   <div className="input-box">
-                    <button className="input-submit">
+                    <div className="input-submit" onClick={()=>getdt(setListItem, listItem,email,password)}>
                       <span>Đăng Nhập</span>
                       <i className="bx bx-right-arrow-alt"></i>
-                    </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -273,3 +318,5 @@ export const Login = () => {
     </>
   );
 };
+
+export default Login

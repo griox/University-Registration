@@ -18,7 +18,7 @@ const firebaseConfig = {
 
   const app = initializeApp(firebaseConfig);
   const db=getDatabase(app)
-export function getdt(setListItem,listItem,email,password){
+export function getdata(setListItem,listItem,email,password){
     
     get(child(ref(db), `Account/`))
         .then((snapshot) => {

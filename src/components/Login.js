@@ -6,11 +6,13 @@ import 'firebase/firestore';
 import 'firebase/functions';
 import 'firebase/storage';
 import { initializeApp } from 'firebase/app';
+import { getdata } from "../helper/commonFunction";
+import {getdt} from "../database/db"
 
 function Login(props){
   const [email,setEmail]=useState('')
   const [password,setPassword]=useState('')
-  const [list_item,setList_item]=useState([])
+  const [listItem,setListItem]=useState([])
 
   const firebaseConfig = {
     apiKey: "AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o",
@@ -30,8 +32,8 @@ function Login(props){
         .then((snapshot) => {
             if (snapshot.exists()) {
                 const x = snapshot.val();
-                setList_item(Object.values(x).map((user) => user));
-                console.log(list_item)
+                setListItem(Object.values(x).map((user) => user));
+                console.log(listItem)
             } else {
                 console.log('No data available');
             }
@@ -81,28 +83,7 @@ function Login(props){
       eyeBtn.removeEventListener("click", handleEyeClick);
     };
   }, []);
-  const getdata=()=>{
-    get(child(ref(db), `Account`))
-        .then((snapshot) => {
-            if (snapshot.exists()) {
-                const x = snapshot.val();
-                // setList_item(Object.values(x).map((user) => user));
-                setList_item(Object.values(x).map((user) => user));
-                console.log("đã xong")
-                const temp=list_item.filter((item)=>item.id===email&&item.password===password)
-                if(temp.length!==0){
-                  alert("Đã tìm thấy")
-                }else{
-                  alert("Chưa tìm thấy")
-                }
-            } else {
-                console.log('No data available');
-            }
-        })
-        .catch((error) => {
-            console.error(error);
-        });
-  }
+  
 
   return (
     <>
@@ -224,7 +205,7 @@ function Login(props){
                   </div>
 
                   <div className="input-box">
-                    <div className="input-submit" onClick={()=>getdata()}>
+                    <div className="input-submit" onClick={()=>getdt(setListItem, listItem,email,password)}>
                       <span>Đăng Nhập</span>
                       <i className="bx bx-right-arrow-alt"></i>
                     </div>

@@ -1,5 +1,6 @@
 import React, { useState,useEffect } from "react";
-import firebase from 'firebase/compat/app';
+import {Routes,Route,Navigate} from 'react-router-dom'
+import {DashBoard} from './DashBoard'
 import 'firebase/auth';
 import { ref, set, child, getDatabase, onValue, get, remove, update } from 'firebase/database';
 import 'firebase/firestore';
@@ -12,7 +13,7 @@ export const Login= ()=>{
   const [email,setEmail]=useState('')
   const [password,setPassword]=useState('')
   const [listItem,setListItem]=useState([])
-
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
   const firebaseConfig = {
     apiKey: "AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o",
     authDomain: "mock-proeject-b.firebaseapp.com",
@@ -67,7 +68,18 @@ export const Login= ()=>{
       eyeBtn.removeEventListener("click", handleEyeClick);
     };
   }, []);
-  
+  const handleLogin = () => {
+    // Call your getdt function to check login
+    const loggedIn = getdt(setListItem, listItem, email, password);
+    if (loggedIn) {
+        setIsLoggedIn(true); // Update state to indicate logged in
+    }
+};
+
+// Redirect if already logged in
+if (isLoggedIn) {
+    return <Navigate to="/DashBoard" />;
+}
 
   return (
     <>
@@ -299,7 +311,11 @@ export const Login= ()=>{
         {/* JS */}
         <script src="assets/login/js/login.js"></script>
       </body>
+      <Routes>
+        <Route path="/DashBoard" element={<DashBoard/>}/>
+      </Routes>
     </>
+    
   );
 };
 

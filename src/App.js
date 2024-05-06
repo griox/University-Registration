@@ -1,25 +1,19 @@
 import logo from './logo.svg';
 import './App.css';
+import Database from './database/db';
+import firebase from 'firebase/compat/app';
+import React, { useEffect, useState } from 'react';
+import 'firebase/auth';
+import { ref, set, child, getDatabase, onValue, get, remove, update } from 'firebase/database';
+import 'firebase/firestore';
+import 'firebase/functions';
+import 'firebase/storage';
+import { getStorage, deleteObject } from 'firebase/storage';
+import { initializeApp } from 'firebase/app';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  
+  
 }
 
 export default App;

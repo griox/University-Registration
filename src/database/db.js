@@ -5,6 +5,7 @@ import 'firebase/firestore';
 import 'firebase/functions';
 import 'firebase/storage';
 import { initializeApp } from 'firebase/app';
+import { notification } from 'antd';
 const firebaseConfig = {
     apiKey: "AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o",
     authDomain: "mock-proeject-b.firebaseapp.com",
@@ -31,13 +32,12 @@ export function getdt(setListItem,listItem,email,password){
                 if(y.length!==0){
                     alert("Login sucess")
                 }else{
-                    alert("Error")
+                    notification.error({
+                        message: 'Không tìm thấy tài khoản',
+                        description: 'Vui lòng kiểm tra lại email và mật khẩu.',
+                        placement: 'topLeft',
+                      });
                 }
-                // if(result){
-                //     alert("Đã tìm thấy")
-                //   }else{
-                //     alert("Chưa tìm thấy")
-                //   }
             } else {
                 console.log('No data available');
             }

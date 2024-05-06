@@ -154,13 +154,13 @@ export const Login = () => {
                   <div className="forget-pass">
                     <div className="input-box">
                       <input type="checkbox" />
-                      <span className="remembertxt_login"> Remember Me</span>
+                      <span className="remembertxt_login"> Nhớ mật khẩu</span>
                     </div>
-                    <a href="#">Quên Mật Khẩu?</a>
+                    <a href="#">Quên mật khẩu?</a>
                   </div>
 
                   <div className="input-box">
-                    <button type="submit" className="input-submit">
+                    <button className="input-submit">
                       <span>Đăng Nhập</span>
                       <i className="bx bx-right-arrow-alt"></i>
                     </button>

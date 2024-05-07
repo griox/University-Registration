@@ -1,7 +1,12 @@
 import React from 'react'
-
-export const DashBoard = () => {
+import { Link } from 'react-router-dom'
+ const DashBoard = () => {
   return (
+    <div>
     <div>DashBoard</div>
+    <div><Link to={"/"}>Logout</Link></div>
+    </div>
+    
   )
 }
+export {DashBoard}

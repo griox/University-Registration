@@ -315,7 +315,13 @@ body {
 .forget-pass a:hover {
   text-decoration: underline;
 }
-
+.show_error{
+  font-size: 14px;
+  color: red;
+}
+.dont_show_error{
+  display: none;
+}
 .input-submit {
   display: flex;
   align-items: center;

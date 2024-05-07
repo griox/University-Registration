@@ -5,9 +5,11 @@ export const Login= ()=>{
   const [email,setEmail]=useState('')
   const [password,setPassword]=useState('')
   const [listItem,setListItem]=useState([])
-
+  const [check_value,setCheck_value]=useState(false)
   
-
+function display(){
+  console.log(check_value)
+}
   useEffect(() => {
     const passwordInput = document.querySelector(".pass_login");
     const eyeBtn = document.querySelector(".eye");
@@ -171,10 +173,13 @@ export const Login= ()=>{
                   </div>
 
                   <div className="input-box">
-                    <div className="input-submit" onClick={()=>getdt(setListItem, listItem,email,password)}>
-                      <span>Đăng Nhập</span>
+                    <div className="input-submit" onClick={()=>getdt(setListItem, listItem,email,setEmail,password,setPassword,setCheck_value)}>
+                      <span onClick={()=>display()}>Đăng Nhập</span>
                       <i className="bx bx-right-arrow-alt"></i>
                     </div>
+                  </div>
+                  <div>
+                    <span className={check_value?"dont_show_error":"show_error"}>Username or password is incorrect</span>
                   </div>
                 </div>
               </div>

@@ -20,7 +20,7 @@ const firebaseConfig = {
 
   const app = initializeApp(firebaseConfig);
   const db=getDatabase(app)
-export function getdt(setListItem,listItem,email,password){
+export function getdt(setListItem,listItem,email,setEmail,password,setPassword,setCheck_value){
     
     get(child(ref(db), `Account/`))
         .then((snapshot) => {
@@ -29,6 +29,7 @@ export function getdt(setListItem,listItem,email,password){
                 setListItem(Object.values(x).map((user) => user));
                 const y=listItem.filter(item=>item.id===email&&item.password===password)
                 if(y.length!==0){
+                    setCheck_value(true)
                     alert(format("Logged in as {0}",y[0].role))
                 }else{
                     alert("Login information is incorrect")
@@ -37,6 +38,8 @@ export function getdt(setListItem,listItem,email,password){
             } else {
                 console.log('No data available');
             }
+            setEmail('')
+            setPassword('')
         })
         .catch((error) => {
             console.error(error);

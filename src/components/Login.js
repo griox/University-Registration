@@ -1,12 +1,12 @@
 import React, { useState,useEffect } from "react";
 import {getdt} from "../database/db"
-
+import {useNavigate} from 'react-router-dom'
 export const Login= ()=>{
   const [email,setEmail]=useState('')
   const [password,setPassword]=useState('')
   const [listItem,setListItem]=useState([])
-  
-
+  const [success,setSuccess] = useState(false);
+  const navigate = useNavigate();
   useEffect(() => {
     const passwordInput = document.querySelector(".pass_login");
     const eyeBtn = document.querySelector(".eye");
@@ -48,7 +48,20 @@ export const Login= ()=>{
       eyeBtn.removeEventListener("click", handleEyeClick);
     };
   }, []);
-  
+  const handleLogin = async () => {
+    try {
+        // Call your getdt function to check login
+        const loggedIn = await getdt(setListItem, listItem, email, setEmail, password, setPassword, setSuccess);
+        setSuccess(loggedIn);
+        console.log('trang thai dang nhap', loggedIn);
+        if (loggedIn) { 
+          navigate('/DashBoard');
+        }
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 
   return (
     <>
@@ -170,7 +183,7 @@ export const Login= ()=>{
                   </div>
 
                   <div className="input-box">
-                    <div className="input-submit" onClick={()=>getdt(setListItem, listItem,email,setEmail,password,setPassword)}>
+                    <div className="input-submit" onClick={(handleLogin)}>
                       <span>Log in</span>
                       <i className="bx bx-right-arrow-alt"></i>
                     </div>
@@ -280,7 +293,9 @@ export const Login= ()=>{
         {/* JS */}
         <script src="assets/login/js/login.js"></script>
       </body>
+      
     </>
+    
   );
 };
 

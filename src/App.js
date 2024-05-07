@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from "./components/Login";
 import {DashBoard} from "./components/DashBoard";
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
           <Route path="/dashboard" element={<DashBoard />} />
         </Routes>
       </div>
+      <ToastContainer className="toast-position"  />
     </Router>
   );
 }

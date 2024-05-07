@@ -1,11 +1,10 @@
 import React, { useState,useEffect } from "react";
 import {getdt} from "../database/db"
+import 'react-toastify/dist/ReactToastify.css';
 import {useNavigate} from 'react-router-dom'
 export const Login= ()=>{
   const [email,setEmail]=useState('')
   const [password,setPassword]=useState('')
-  const [listItem,setListItem]=useState([])
-  const [success,setSuccess] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     const passwordInput = document.querySelector(".pass_login");
@@ -23,7 +22,7 @@ export const Login= ()=>{
           eyeBtn.style.display = "none";
           passwordInput.setAttribute("type", "password");
           eyeBtn.classList.remove("fa-eye-slash");
-          eyeBtn.classList.add("bx-lock-open-alt");
+          eyeBtn.classList.add("fa-eye");
         }
       };
     };
@@ -31,11 +30,11 @@ export const Login= ()=>{
     const handleEyeClick = () => {
       if (passwordInput.type === "password") {
         passwordInput.setAttribute("type", "text");
-        eyeBtn.classList.remove("bx-lock-open-alt");
+        eyeBtn.classList.remove("fa-eye");
         eyeBtn.classList.add("fa-eye-slash");
       } else {
         passwordInput.setAttribute("type", "password");
-        eyeBtn.classList.add("bx-lock-open-alt");
+        eyeBtn.classList.add("fa-eye");
         eyeBtn.classList.remove("fa-eye-slash");
       }
     };
@@ -48,21 +47,6 @@ export const Login= ()=>{
       eyeBtn.removeEventListener("click", handleEyeClick);
     };
   }, []);
-  const handleLogin = async () => {
-    try {
-        // Call your getdt function to check login
-        const loggedIn = await getdt(setListItem, listItem, email, setEmail, password, setPassword, setSuccess);
-        setSuccess(loggedIn);
-        console.log('trang thai dang nhap', loggedIn);
-        if (loggedIn) { 
-          navigate('/DashBoard');
-        }
-    } catch (error) {
-        console.error(error);
-    }
-};
-
-
   return (
     <>
       <head>
@@ -135,9 +119,9 @@ export const Login= ()=>{
             </div>
 
             <p className="featured">
-              Please <span>log in</span> to continue <br /> or <br />{" "}
+              Please Login to continue <br /> or <br />{" "}
               <span>
-                <a href="index.html">Get back</a>
+                <button className="btn-getback" href="index.html">Get back</button>
               </span>
             </p>
           </div>
@@ -171,7 +155,7 @@ export const Login= ()=>{
                       required
                     />
                     <i className="bx bx-lock-alt icon"></i>
-                    <i className="bx bx-lock-open-alt eye icon"></i>
+                    <i className="fa fa-eye eye icon"></i>
                   </div>
 
                   <div className="forget-pass">
@@ -179,11 +163,11 @@ export const Login= ()=>{
                       <input type="checkbox" />
                       <span className="remembertxt_login"> Remember me</span>
                     </div>
-                    <a href="#">Forgot password?</a>
+                    <a href="index.html">Forgot password?</a>
                   </div>
 
-                  <div className="input-box">
-                    <div className="input-submit" onClick={(handleLogin)}>
+                  <div className="input-box" onClick={()=> getdt( email,  password,navigate)}>
+                    <div  className="input-submit">
                       <span>Log in</span>
                       <i className="bx bx-right-arrow-alt"></i>
                     </div>
@@ -193,6 +177,7 @@ export const Login= ()=>{
             </form>
           </div>
         </div>
+        
 
         <div className="snowflakes" aria-hidden="true">
           <div className="snowflake">❅</div>

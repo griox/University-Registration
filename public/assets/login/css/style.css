@@ -344,6 +344,19 @@ body {
   gap: 15px;
 }
 
+.toast-position{
+  top: 0rem ;
+  right:0rem;
+}
+.btn-getback{
+  background-color: #278cc2;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 20px;
+  color: #fff;
+  cursor: pointer;
+}
 @media (max-width: 892px) {
   .form-container {
     width: 400px;

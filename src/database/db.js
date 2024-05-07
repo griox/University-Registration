@@ -20,28 +20,38 @@ const firebaseConfig = {
 
   const app = initializeApp(firebaseConfig);
   const db=getDatabase(app)
-export function getdt(setListItem,listItem,email,setEmail,password,setPassword,setCheck_value){
-    
-    get(child(ref(db), `Account/`))
-        .then((snapshot) => {
-            if (snapshot.exists()) {
-                const x = snapshot.val();
-                setListItem(Object.values(x).map((user) => user));
-                const y=listItem.filter(item=>item.id===email&&item.password===password)
-                if(y.length!==0){
-                    setCheck_value(true)
-                    alert(format("Logged in as {0}",y[0].role))
-                }else{
-                    alert("Login information is incorrect")
-                }
-                
-            } else {
-                console.log('No data available');
-            }
-            setEmail('')
-            setPassword('')
-        })
-        .catch((error) => {
-            console.error(error);
-        });
+export function getdt(setListItem,listItem,email,setEmail,password,setPassword){
+    if(email!==''){
+        if(password!==''){
+
+            get(child(ref(db), `Account/`))
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const x = snapshot.val();
+                        setListItem(Object.values(x).map((user) => user));
+                        const y=listItem.filter(item=>item.id===email&&item.password===password)
+                        if(y.length!==0){
+                        }else{
+                            notification.error({
+                                message: 'Account not found',
+                                description: 'Please check your email and password again.',
+                                placement: 'topLeft',
+                            });
+                        }
+                        
+                    } else {
+                        console.log('No data available');
+                    }
+                    setEmail('')
+                    setPassword('')
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        }else{
+            alert("Please, enter passwrord")
+        }
+    }else{
+        alert("Please, enter email")
+    }
   }

@@ -5,11 +5,8 @@ export const Login= ()=>{
   const [email,setEmail]=useState('')
   const [password,setPassword]=useState('')
   const [listItem,setListItem]=useState([])
-  const [check_value,setCheck_value]=useState(false)
   
-function display(){
-  console.log(check_value)
-}
+
   useEffect(() => {
     const passwordInput = document.querySelector(".pass_login");
     const eyeBtn = document.querySelector(".eye");
@@ -125,9 +122,9 @@ function display(){
             </div>
 
             <p className="featured">
-              Vui lòng <span>đăng nhập</span> để tiếp tục <br /> hoặc <br />{" "}
+              Please <span>log in</span> to continue <br /> or <br />{" "}
               <span>
-                <a href="index.html">Quay lại</a>
+                <a href="index.html">Get back</a>
               </span>
             </p>
           </div>
@@ -137,28 +134,28 @@ function display(){
               {/* Trang đăng nhập */}
               <div className="login-form">
                 <div className="form-title">
-                  <span>Đăng Nhập</span>
+                  <span>LOGIN</span>
                 </div>
                 <div className="form-inputs">
                   <div className="input-box">
                     <input
-                      type="text"
+                      type="email"
                       className="input-field"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Nhập email tại đây..."
-                      // required
+                      placeholder="Enter email here..."
+                      required
                     />
                     <i className="bx bx-envelope icon"></i>
                   </div>
                   <div className="input-box">
                     <input
-                      type="text"
+                      type="password"
                       className="input-field pass_login"
                       onChange={(e) => setPassword(e.target.value)}
                       value={password}
-                      placeholder="Nhập mật khẩu tại đây..."
-                      // required
+                      placeholder="Enter password here..."
+                      required
                     />
                     <i className="bx bx-lock-alt icon"></i>
                     <i className="bx bx-lock-open-alt eye icon"></i>
@@ -167,19 +164,16 @@ function display(){
                   <div className="forget-pass">
                     <div className="input-box">
                       <input type="checkbox" />
-                      <span className="remembertxt_login"> Nhớ mật khẩu</span>
+                      <span className="remembertxt_login"> Remember me</span>
                     </div>
-                    <a href="#">Quên mật khẩu?</a>
+                    <a href="#">Forgot password?</a>
                   </div>
 
                   <div className="input-box">
-                    <div className="input-submit" onClick={()=>getdt(setListItem, listItem,email,setEmail,password,setPassword,setCheck_value)}>
-                      <span onClick={()=>display()}>Đăng Nhập</span>
+                    <div className="input-submit" onClick={()=>getdt(setListItem, listItem,email,setEmail,password,setPassword)}>
+                      <span>Log in</span>
                       <i className="bx bx-right-arrow-alt"></i>
                     </div>
-                  </div>
-                  <div>
-                    <span className={check_value?"dont_show_error":"show_error"}>Username or password is incorrect</span>
                   </div>
                 </div>
               </div>

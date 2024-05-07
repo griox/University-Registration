@@ -1,23 +1,11 @@
 import React, { useState,useEffect } from "react";
 import {getdt} from "../database/db"
-import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { format } from 'react-string-format';
+import {useNavigate} from 'react-router-dom'
 export const Login= ()=>{
   const [email,setEmail]=useState('')
   const [password,setPassword]=useState('')
-  const [annouce_error,setAnnouce_err]=useState('')
-  const [listItem,setListItem]=useState([])
- 
-  const notify = () =>{
-
-    // console.log(annouce_error)
-    getdt(setListItem,listItem,email,setEmail,password,setPassword,setAnnouce_err)
-    toast(annouce_error)
-  }
- 
-  
- 
+  const navigate = useNavigate();
   useEffect(() => {
     const passwordInput = document.querySelector(".pass_login");
     const eyeBtn = document.querySelector(".eye");
@@ -59,8 +47,6 @@ export const Login= ()=>{
       eyeBtn.removeEventListener("click", handleEyeClick);
     };
   }, []);
-  
-
   return (
     <>
       <head>
@@ -177,11 +163,10 @@ export const Login= ()=>{
                       <input type="checkbox" />
                       <span className="remembertxt_login"> Remember me</span>
                     </div>
-                    <a href="#">Forgot password?</a>
+                    <a href="index.html">Forgot password?</a>
                   </div>
 
-                  <div className="input-box" onClick={notify}>
-                   <ToastContainer className="toast-position"  />
+                  <div className="input-box" onClick={()=> getdt( email,  password,navigate)}>
                     <div  className="input-submit">
                       <span>Log in</span>
                       <i className="bx bx-right-arrow-alt"></i>
@@ -192,6 +177,7 @@ export const Login= ()=>{
             </form>
           </div>
         </div>
+        
 
         <div className="snowflakes" aria-hidden="true">
           <div className="snowflake">❅</div>
@@ -292,7 +278,9 @@ export const Login= ()=>{
         {/* JS */}
         <script src="assets/login/js/login.js"></script>
       </body>
+      
     </>
+    
   );
 };
 

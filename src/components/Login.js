@@ -1,31 +1,12 @@
 import React, { useState,useEffect } from "react";
-import firebase from 'firebase/compat/app';
-import 'firebase/auth';
-import { ref, set, child, getDatabase, onValue, get, remove, update } from 'firebase/database';
-import 'firebase/firestore';
-import 'firebase/functions';
-import 'firebase/storage';
-import { initializeApp } from 'firebase/app';
 import {getdt} from "../database/db"
 
 export const Login= ()=>{
   const [email,setEmail]=useState('')
   const [password,setPassword]=useState('')
   const [listItem,setListItem]=useState([])
+  
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o",
-    authDomain: "mock-proeject-b.firebaseapp.com",
-    databaseURL: "https://mock-proeject-b-default-rtdb.firebaseio.com",
-    projectId: "mock-proeject-b",
-    storageBucket: "mock-proeject-b.appspot.com",
-    messagingSenderId: "898832925665",
-    appId: "1:898832925665:web:bb28598e7c70a0d73188a0"
-  };
- 
-
-  const app = initializeApp(firebaseConfig);
-  const db=getDatabase(app)
   useEffect(() => {
     const passwordInput = document.querySelector(".pass_login");
     const eyeBtn = document.querySelector(".eye");
@@ -141,9 +122,9 @@ export const Login= ()=>{
             </div>
 
             <p className="featured">
-              Vui lòng <span>đăng nhập</span> để tiếp tục <br /> hoặc <br />{" "}
+              Please <span>log in</span> to continue <br /> or <br />{" "}
               <span>
-                <a href="index.html">Quay lại</a>
+                <a href="index.html">Get back</a>
               </span>
             </p>
           </div>
@@ -153,28 +134,28 @@ export const Login= ()=>{
               {/* Trang đăng nhập */}
               <div className="login-form">
                 <div className="form-title">
-                  <span>Đăng Nhập</span>
+                  <span>LOGIN</span>
                 </div>
                 <div className="form-inputs">
                   <div className="input-box">
                     <input
-                      type="text"
+                      type="email"
                       className="input-field"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Nhập email tại đây..."
-                      // required
+                      placeholder="Enter email here..."
+                      required
                     />
                     <i className="bx bx-envelope icon"></i>
                   </div>
                   <div className="input-box">
                     <input
-                      type="text"
+                      type="password"
                       className="input-field pass_login"
                       onChange={(e) => setPassword(e.target.value)}
                       value={password}
-                      placeholder="Nhập mật khẩu tại đây..."
-                      // required
+                      placeholder="Enter password here..."
+                      required
                     />
                     <i className="bx bx-lock-alt icon"></i>
                     <i className="bx bx-lock-open-alt eye icon"></i>
@@ -183,14 +164,14 @@ export const Login= ()=>{
                   <div className="forget-pass">
                     <div className="input-box">
                       <input type="checkbox" />
-                      <span className="remembertxt_login"> Nhớ mật khẩu</span>
+                      <span className="remembertxt_login"> Remember me</span>
                     </div>
-                    <a href="#">Quên mật khẩu?</a>
+                    <a href="#">Forgot password?</a>
                   </div>
 
                   <div className="input-box">
-                    <div className="input-submit" onClick={()=>getdt(setListItem, listItem,email,password)}>
-                      <span>Đăng Nhập</span>
+                    <div className="input-submit" onClick={()=>getdt(setListItem, listItem,email,setEmail,password,setPassword)}>
+                      <span>Log in</span>
                       <i className="bx bx-right-arrow-alt"></i>
                     </div>
                   </div>

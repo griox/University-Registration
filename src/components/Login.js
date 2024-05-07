@@ -1,201 +1,168 @@
-import React, { useState,useEffect } from "react";
-import {getdt} from "../database/db"
+import React, { useState, useEffect } from 'react';
+import { getdt } from '../database/db';
 import 'react-toastify/dist/ReactToastify.css';
-import {useNavigate} from 'react-router-dom'
-export const Login= ()=>{
-  const [email,setEmail]=useState('')
-  const [password,setPassword]=useState('')
-  const navigate = useNavigate();
-  useEffect(() => {
-    const passwordInput = document.querySelector(".pass_login");
-    const eyeBtn = document.querySelector(".eye");
-    const handleFocus = () => {
-      if (passwordInput.value.trim() !== "") {
-        eyeBtn.style.display = "block";
-      }
+import { useNavigate } from 'react-router-dom';
+export const Login = () => {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
+    useEffect(() => {
+        const passwordInput = document.querySelector('.pass_login');
+        const eyeBtn = document.querySelector('.eye');
+        const handleFocus = () => {
+            if (passwordInput.value.trim() !== '') {
+                eyeBtn.style.display = 'block';
+            }
 
-      passwordInput.onkeyup = () => {
-        let val = passwordInput.value;
-        if (val.trim() !== "") {
-          eyeBtn.style.display = "block";
-        } else {
-          eyeBtn.style.display = "none";
-          passwordInput.setAttribute("type", "password");
-          eyeBtn.classList.remove("fa-eye-slash");
-          eyeBtn.classList.add("fa-eye");
-        }
-      };
-    };
-    
-    const handleEyeClick = () => {
-      if (passwordInput.type === "password") {
-        passwordInput.setAttribute("type", "text");
-        eyeBtn.classList.remove("fa-eye");
-        eyeBtn.classList.add("fa-eye-slash");
-      } else {
-        passwordInput.setAttribute("type", "password");
-        eyeBtn.classList.add("fa-eye");
-        eyeBtn.classList.remove("fa-eye-slash");
-      }
-    };
+            passwordInput.onkeyup = () => {
+                let val = passwordInput.value;
+                if (val.trim() !== '') {
+                    eyeBtn.style.display = 'block';
+                } else {
+                    eyeBtn.style.display = 'none';
+                    passwordInput.setAttribute('type', 'password');
+                    eyeBtn.classList.remove('fa-eye-slash');
+                    eyeBtn.classList.add('fa-eye');
+                }
+            };
+        };
 
-    passwordInput.addEventListener("focus", handleFocus);
-    eyeBtn.addEventListener("click", handleEyeClick);
+        const handleEyeClick = () => {
+            if (passwordInput.type === 'password') {
+                passwordInput.setAttribute('type', 'text');
+                eyeBtn.classList.remove('fa-eye');
+                eyeBtn.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.setAttribute('type', 'password');
+                eyeBtn.classList.add('fa-eye');
+                eyeBtn.classList.remove('fa-eye-slash');
+            }
+        };
 
-    return () => {
-      passwordInput.removeEventListener("focus", handleFocus);
-      eyeBtn.removeEventListener("click", handleEyeClick);
-    };
-  }, []);
-  return (
-    <>
-      <head>
-        <meta charSet="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>HOME | Trang Đăng Nhập Và Đăng Ký Tài Khoản</title>
+        passwordInput.addEventListener('focus', handleFocus);
+        eyeBtn.addEventListener('click', handleEyeClick);
 
-        <script
-          src="https://kit.fontawesome.com/64d58efce2.js"
-          crossOrigin="anonymous"
-        ></script>
+        return () => {
+            passwordInput.removeEventListener('focus', handleFocus);
+            eyeBtn.removeEventListener('click', handleEyeClick);
+        };
+    }, []);
+    return (
+        <>
+            <head>
+                <meta charSet="UTF-8" />
+                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+                <title>HOME | Trang Đăng Nhập Và Đăng Ký Tài Khoản</title>
 
-        {/* BOXICONS */}
-        <link
-          href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
-          rel="stylesheet"
-        />
+                <script src="https://kit.fontawesome.com/64d58efce2.js" crossOrigin="anonymous"></script>
 
-        {/* Font Awesome */}
-        <link
-          rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"
-          integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg=="
-          crossOrigin="anonymous"
-          referrerPolicy="no-referrer"
-        />
+                {/* BOXICONS */}
+                <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
 
-        {/* STYLE */}
-        <link rel="stylesheet" href="assets/login/css/style.css" />
-      </head>
-      <body background="hero-1.jpg">
-        <div className="form-container">
-          <div className="col col-1">
-            <div className="image_layer">
-              <img
-                src="assets/login/img/white-outline.png"
-                className="form_img_main"
-                alt=""
-              />
-              <img
-                src="assets/login/img/dots.png"
-                className="form_img dots"
-                alt=""
-              />
-              <img
-                src="assets/login/img/coin.png"
-                className="form_img coin"
-                alt=""
-              />
-              <img
-                src="assets/login/img/spring.png"
-                className="form_img spring"
-                alt=""
-              />
-              <img
-                src="assets/login/img/rocket.png"
-                className="form_img rocket"
-                alt=""
-              />
-              <img
-                src="assets/login/img/cloud.png"
-                className="form_img cloud"
-                alt=""
-              />
-              <img
-                src="assets/login/img/stars.png"
-                className="form_img stars"
-                alt=""
-              />
-            </div>
+                {/* Font Awesome */}
+                <link
+                    rel="stylesheet"
+                    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"
+                    integrity="sha512-5A8nwdMOWrSz20fDsjczgUidUBR8liPYU+WymTZP1lmY9G6Oc7HlZv156XqnsgNUzTyMefFTcsFH/tnJE/+xBg=="
+                    crossOrigin="anonymous"
+                    referrerPolicy="no-referrer"
+                />
 
-            <p className="featured">
-              Please Login to continue <br /> or <br />{" "}
-              <span>
-                <button className="btn-getback" href="index.html">Get back</button>
-              </span>
-            </p>
-          </div>
+                {/* STYLE */}
+                <link rel="stylesheet" href="assets/login/css/style.css" />
+            </head>
+            <body background="hero-1.jpg">
+                <div className="form-container">
+                    <div className="col col-1">
+                        <div className="image_layer">
+                            <img src="assets/login/img/white-outline.png" className="form_img_main" alt="" />
+                            <img src="assets/login/img/dots.png" className="form_img dots" alt="" />
+                            <img src="assets/login/img/coin.png" className="form_img coin" alt="" />
+                            <img src="assets/login/img/spring.png" className="form_img spring" alt="" />
+                            <img src="assets/login/img/rocket.png" className="form_img rocket" alt="" />
+                            <img src="assets/login/img/cloud.png" className="form_img cloud" alt="" />
+                            <img src="assets/login/img/stars.png" className="form_img stars" alt="" />
+                        </div>
 
-          <div className="col col-2">
-            <form action="">
-              {/* Trang đăng nhập */}
-              <div className="login-form">
-                <div className="form-title">
-                  <span>LOGIN</span>
-                </div>
-                <div className="form-inputs">
-                  <div className="input-box">
-                    <input
-                      type="email"
-                      className="input-field"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Enter email here..."
-                      required
-                    />
-                    <i className="bx bx-envelope icon"></i>
-                  </div>
-                  <div className="input-box">
-                    <input
-                      type="password"
-                      className="input-field pass_login"
-                      onChange={(e) => setPassword(e.target.value)}
-                      value={password}
-                      placeholder="Enter password here..."
-                      required
-                    />
-                    <i className="bx bx-lock-alt icon"></i>
-                    <i className="fa fa-eye eye icon"></i>
-                  </div>
-
-                  <div className="forget-pass">
-                    <div className="input-box">
-                      <input type="checkbox" />
-                      <span className="remembertxt_login"> Remember me</span>
+                        <p className="featured">
+                            Please Login to continue <br /> or <br />{' '}
+                            <span>
+                                <button className="btn-getback" href="index.html">
+                                    Get back
+                                </button>
+                            </span>
+                        </p>
                     </div>
-                    <a href="index.html">Forgot password?</a>
-                  </div>
 
-                  <div className="input-box" onClick={()=> getdt( email,  password,navigate)}>
-                    <div  className="input-submit">
-                      <span>Log in</span>
-                      <i className="bx bx-right-arrow-alt"></i>
+                    <div className="col col-2">
+                        <form action="">
+                            {/* Trang đăng nhập */}
+                            <div className="login-form">
+                                <div className="form-title">
+                                    <span>LOGIN</span>
+                                </div>
+                                <div className="form-inputs">
+                                    <div className="input-box">
+                                        <input
+                                            type="email"
+                                            className="input-field"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            placeholder="Enter email here..."
+                                            required
+                                        />
+                                        <i className="bx bx-envelope icon"></i>
+                                    </div>
+                                    <div className="input-box">
+                                        <input
+                                            type="password"
+                                            className="input-field pass_login"
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            value={password}
+                                            placeholder="Enter password here..."
+                                            required
+                                        />
+                                        <i className="bx bx-lock-alt icon"></i>
+                                        <i className="fa fa-eye eye icon"></i>
+                                    </div>
+
+                                    <div className="forget-pass">
+                                        <div className="input-box">
+                                            <input type="checkbox" />
+                                            <span className="remembertxt_login"> Remember me</span>
+                                        </div>
+                                        <a href="index.html">Forgot password?</a>
+                                    </div>
+
+                                    <div className="input-box" onClick={() => getdt(email, password, navigate)}>
+                                        <div className="input-submit">
+                                            <span>Log in</span>
+                                            <i className="bx bx-right-arrow-alt"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                  </div>
                 </div>
-              </div>
-            </form>
-          </div>
-        </div>
-        
 
-        <div className="snowflakes" aria-hidden="true">
-          <div className="snowflake">❅</div>
-          <div className="snowflake">❆</div>
-          <div className="snowflake">❅</div>
-          <div className="snowflake">❆</div>
-          <div className="snowflake">❅</div>
-          <div className="snowflake">❆</div>
-          <div className="snowflake">❅</div>
-          <div className="snowflake">❆</div>
-          <div className="snowflake">❅</div>
-          <div className="snowflake">❆</div>
-          <div className="snowflake">❅</div>
-          <div className="snowflake">❆</div>
-        </div>
+                <div className="snowflakes" aria-hidden="true">
+                    <div className="snowflake">❅</div>
+                    <div className="snowflake">❆</div>
+                    <div className="snowflake">❅</div>
+                    <div className="snowflake">❆</div>
+                    <div className="snowflake">❅</div>
+                    <div className="snowflake">❆</div>
+                    <div className="snowflake">❅</div>
+                    <div className="snowflake">❆</div>
+                    <div className="snowflake">❅</div>
+                    <div className="snowflake">❆</div>
+                    <div className="snowflake">❅</div>
+                    <div className="snowflake">❆</div>
+                </div>
 
-        <style>
-          {`
+                <style>
+                    {`
             @-webkit-keyframes snowflakes-fall {
               0% {top:-10%}
               100% {top:100%}
@@ -273,15 +240,13 @@ export const Login= ()=>{
               left:65%;-webkit-animation-delay:4s,2.5s;animation-delay:4s,2.5s
             }
           `}
-        </style>
+                </style>
 
-        {/* JS */}
-        <script src="assets/login/js/login.js"></script>
-      </body>
-      
-    </>
-    
-  );
+                {/* JS */}
+                <script src="assets/login/js/login.js"></script>
+            </body>
+        </>
+    );
 };
 
-export default Login
+export default Login;

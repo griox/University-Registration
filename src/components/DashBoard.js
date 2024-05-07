@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import logo from '../img/FPTnew.png';
 import '../style/main.css';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
@@ -62,25 +62,25 @@ const DashBoard = () => {
                     </Menu.Item>
                     <Menu.SubMenu key="school" icon={<BankOutlined />} title="Quản lý trường">
                         <Menu.Item key="addSchool">
-                            <Link to="/addSchool">Thêm trường</Link>
+                            <NavLink to="/addSchool">Thêm trường</NavLink>
                         </Menu.Item>
                         <Menu.Item key="listSchool">
-                            <Link to="/listSchool">Danh sách trường</Link>
+                            <NavLink to="/listSchool">Danh sách trường</NavLink>
                         </Menu.Item>
                     </Menu.SubMenu>
                     <Menu.SubMenu key="student" icon={<UserOutlined />} title="Quản lý học sinh">
                         <Menu.Item key="addStudent">
-                            <Link to="/addStudent">Thêm học sinh</Link>
+                            <NavLink to="/addStudent">Thêm học sinh</NavLink>
                         </Menu.Item>
                         <Menu.Item key="listStudent">
-                            <Link to="/listStudent">Danh sách học sinh</Link>
+                            <NavLink to="/listStudent">Danh sách học sinh</NavLink>
                         </Menu.Item>
                     </Menu.SubMenu>
                     <Menu.Item key="studentDetail" icon={<UserOutlined />}>
-                        <Link to="/studentDetail">Chi tiết học sinh</Link>
+                        <NavLink to="/studentDetail">Chi tiết học sinh</NavLink>
                     </Menu.Item>
                     <Menu.Item key="register" icon={<PlusCircleOutlined />}>
-                        <Link to="/Register">Đăng ký tài khoản</Link>
+                        <NavLink to="/Register">Đăng ký tài khoản</NavLink>
                     </Menu.Item>
                 </Menu>
             </Sider>

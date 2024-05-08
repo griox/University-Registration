@@ -3,21 +3,23 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './components/Login';
 import { DashBoard } from './components/DashBoard';
 import { ToastContainer } from 'react-toastify';
-import { useCreateStudentRecordsOnMount } from './database/Student'; 
-import { useCreateAccountRecordsOnMount } from './database/Account';
+import { Resigter } from './components/Resigter';
+
 function App() {
     useCreateStudentRecordsOnMount();
     useCreateAccountRecordsOnMount();
    
     return (
         <Router>
-            <div>
+            {/* <div>
                 <Routes>
-                    <Route path="/" element={<Login />} />
-                    <Route path="/dashboard" element={<DashBoard />} />
+                    {/* <Route path="/" element={<Login />} /> */}
+                    <Route path="/" element={<Resigter />} />
+                    {/* <Route path="/dashboard" element={<DashBoard />} /> */}
                 </Routes>
             </div>
-            <ToastContainer className="toast-position" />
+            <ToastContainer className="toast-position" /> */}
+            <DashBoard></DashBoard>
         </Router>
     );
 }

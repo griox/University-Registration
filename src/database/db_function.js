@@ -3,7 +3,6 @@ import { ref, child, getDatabase, get } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
 import { validateEmailFormat } from '../helpers/commonFunctions';
-
 const firebaseConfig = {
     apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
     authDomain: 'mock-proeject-b.firebaseapp.com',
@@ -17,6 +16,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 export async function getdt(email, password, navigate) {
+    // console.log(email,password)
     if (email !== '') {
         if (validateEmailFormat(email) !== true) {
             toast('Incorrect format');
@@ -27,7 +27,8 @@ export async function getdt(email, password, navigate) {
                         if (snapshot.exists()) {
                             const x = snapshot.val();
                             const listItem = Object.values(x).map((user) => user);
-                            const y = listItem.filter((item) => item.id === email && item.password === password);
+                            const y = listItem.filter((item) => item.email === email && item.password === password);
+                            console.log(y)
                             if (y.length !== 0) {
                                 toast('Correct');
                                 navigate('/DashBoard');

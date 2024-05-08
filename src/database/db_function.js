@@ -17,6 +17,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 export async function getdt(email, password, navigate) {
+    // console.log(email,password)
     if (email !== '') {
         if (validateEmailFormat(email) !== true) {
             toast('Incorrect format');

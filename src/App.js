@@ -6,17 +6,20 @@ import { ToastContainer } from 'react-toastify';
 import { Resigter } from './components/Resigter';
 
 function App() {
+    useCreateStudentRecordsOnMount();
+    useCreateAccountRecordsOnMount();
+   
     return (
         <Router>
-            {/* <div>
+            <div>
                 <Routes>
-                    {/* <Route path="/" element={<Login />} /> */}
+                    <Route path="/" element={<Login />} />
                     <Route path="/" element={<Resigter />} />
-                    {/* <Route path="/dashboard" element={<DashBoard />} /> */}
+                    <Route path="/dashboard" element={<DashBoard />} />
                 </Routes>
             </div>
-            <ToastContainer className="toast-position" /> */}
-            <DashBoard></DashBoard>
+            <ToastContainer className="toast-position" />
+            
         </Router>
     );
 }

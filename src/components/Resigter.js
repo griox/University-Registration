@@ -22,18 +22,18 @@ export const Resigter = () => {
                 eyeBtn1.style.display = 'none';
                 passwordInput1.setAttribute('type', 'password');
                 eyeBtn1.classList.remove('fa-eye-slash');
-                eyeBtn1.classList.add('bx-lock-open-alt');
+                eyeBtn1.classList.add('fa-eye');
             }
         };
 
         const handleEyeBtn1 = () => {
             if (passwordInput1.type === 'password') {
                 passwordInput1.setAttribute('type', 'text');
-                eyeBtn1.classList.remove('bx-lock-open-alt');
+                eyeBtn1.classList.remove('fa-eye');
                 eyeBtn1.classList.add('fa-eye-slash');
             } else {
                 passwordInput1.setAttribute('type', 'password');
-                eyeBtn1.classList.add('bx-lock-open-alt');
+                eyeBtn1.classList.add('fa-eye');
                 eyeBtn1.classList.remove('fa-eye-slash');
             }
         };
@@ -45,18 +45,18 @@ export const Resigter = () => {
                 eyeBtn2.style.display = 'none';
                 passwordInput2.setAttribute('type', 'password');
                 eyeBtn2.classList.remove('fa-eye-slash');
-                eyeBtn2.classList.add('bx-lock-open-alt');
+                eyeBtn2.classList.add('fa-eye');
             }
         };
 
         const handleEyeBtn2 = () => {
             if (passwordInput2.type === 'password') {
                 passwordInput2.setAttribute('type', 'text');
-                eyeBtn2.classList.remove('bx-lock-open-alt');
+                eyeBtn2.classList.remove('fa-eye');
                 eyeBtn2.classList.add('fa-eye-slash');
             } else {
                 passwordInput2.setAttribute('type', 'password');
-                eyeBtn2.classList.add('bx-lock-open-alt');
+                eyeBtn2.classList.add('fa-eye');
                 eyeBtn2.classList.remove('fa-eye-slash');
             }
         };
@@ -165,7 +165,7 @@ export const Resigter = () => {
                                             onChange={(e) => setPassword(e.target.value)}
                                         />
                                         <i className="bx bx-lock-alt icon"></i>
-                                        <i className="bx bx-lock-open-alt eye1 icon"></i>
+                                        <i className="fa fa-eye eye1 icon"></i>
                                     </div>
 
                                     <div className="input-box">
@@ -178,7 +178,7 @@ export const Resigter = () => {
                                             onChange={(e) => setAgainPassword(e.target.value)}
                                         />
                                         <i className="bx bx-lock-alt icon"></i>
-                                        <i className="bx bx-lock-open-alt eye2 icon"></i>
+                                        <i className="fa fa-eye eye2 icon"></i>
                                     </div>
 
                                     <div className="input-box">

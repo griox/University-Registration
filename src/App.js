@@ -10,9 +10,9 @@ function App() {
         <Router>
             <div>
                 <Routes>
-                    <Route path="/" element={<Login />} />
-                    <Route path="/Register" element={<Resigter />} />
-                    <Route path="/dashboard" element={<DashBoard />} />
+                    {/* <Route path="/" element={<Login />} /> */}
+                    <Route path="/" element={<Resigter />} />
+                    {/* <Route path="/dashboard" element={<DashBoard />} /> */}
                 </Routes>
             </div>
             <ToastContainer className="toast-position" />

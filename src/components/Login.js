@@ -85,7 +85,7 @@ export const Login = () => {
                         </div>
 
                         <p className="featured">
-                            Please Login to continue <br /> or <br />{' '}
+                            Please LOGIN to continue <br /> or <br />{' '}
                             <span>
                                 <button className="btn-getback" href="index.html">
                                     Get back

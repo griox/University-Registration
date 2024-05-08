@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Login from './components/Login';
 import { DashBoard } from './components/DashBoard';
 import { ToastContainer } from 'react-toastify';
+import { Resigter } from './components/Resigter';
 
 function App() {
     return (
@@ -10,6 +11,7 @@ function App() {
             <div>
                 <Routes>
                     <Route path="/" element={<Login />} />
+                    <Route path="/Register" element={<Resigter />} />
                     <Route path="/dashboard" element={<DashBoard />} />
                 </Routes>
             </div>

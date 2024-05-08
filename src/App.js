@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { ColorModeContext, useMode } from './theme';
 // import { useState } from "react";
@@ -46,6 +47,31 @@ function App() {
                 </div>
             </ThemeProvider>
         </ColorModeContext.Provider>
+=======
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Login from './components/Login';
+import { DashBoard } from './components/DashBoard';
+import { ToastContainer } from 'react-toastify';
+import { Resigter } from './components/Resigter';
+
+function App() {
+    useCreateStudentRecordsOnMount();
+    useCreateAccountRecordsOnMount();
+   
+    return (
+        <Router>
+            <div>
+                <Routes>
+                    <Route path="/" element={<Login />} />
+                    <Route path="/" element={<Resigter />} />
+                    <Route path="/dashboard" element={<DashBoard />} />
+                </Routes>
+            </div>
+            <ToastContainer className="toast-position" />
+            
+        </Router>
+>>>>>>> 2c9be1dcbc666b49b1566b2f2ea42aab58eb5f74
     );
 }
 

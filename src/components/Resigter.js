@@ -1,6 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { regist } from '../database/db';
+import { useNavigate } from 'react-router-dom';
 
 export const Resigter = () => {
+    const [fullName, setFullName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [againPassword, setAgainPassword] = useState('');
+    const navigate = useNavigate();
+
     useEffect(() => {
         const passwordInput1 = document.querySelector('.pass_login_1');
         const eyeBtn1 = document.querySelector('.eye1');
@@ -14,18 +22,18 @@ export const Resigter = () => {
                 eyeBtn1.style.display = 'none';
                 passwordInput1.setAttribute('type', 'password');
                 eyeBtn1.classList.remove('fa-eye-slash');
-                eyeBtn1.classList.add('bx-lock-open-alt');
+                eyeBtn1.classList.add('fa-eye');
             }
         };
 
         const handleEyeBtn1 = () => {
             if (passwordInput1.type === 'password') {
                 passwordInput1.setAttribute('type', 'text');
-                eyeBtn1.classList.remove('bx-lock-open-alt');
+                eyeBtn1.classList.remove('fa-eye');
                 eyeBtn1.classList.add('fa-eye-slash');
             } else {
                 passwordInput1.setAttribute('type', 'password');
-                eyeBtn1.classList.add('bx-lock-open-alt');
+                eyeBtn1.classList.add('fa-eye');
                 eyeBtn1.classList.remove('fa-eye-slash');
             }
         };
@@ -37,18 +45,18 @@ export const Resigter = () => {
                 eyeBtn2.style.display = 'none';
                 passwordInput2.setAttribute('type', 'password');
                 eyeBtn2.classList.remove('fa-eye-slash');
-                eyeBtn2.classList.add('bx-lock-open-alt');
+                eyeBtn2.classList.add('fa-eye');
             }
         };
 
         const handleEyeBtn2 = () => {
             if (passwordInput2.type === 'password') {
                 passwordInput2.setAttribute('type', 'text');
-                eyeBtn2.classList.remove('bx-lock-open-alt');
+                eyeBtn2.classList.remove('fa-eye');
                 eyeBtn2.classList.add('fa-eye-slash');
             } else {
                 passwordInput2.setAttribute('type', 'password');
-                eyeBtn2.classList.add('bx-lock-open-alt');
+                eyeBtn2.classList.add('fa-eye');
                 eyeBtn2.classList.remove('fa-eye-slash');
             }
         };
@@ -108,9 +116,11 @@ export const Resigter = () => {
                         </div>
 
                         <p className="featured">
-                            Vui lòng <span>đăng ký</span> để tiếp tục <br /> hoặc <br />{' '}
+                            Please REGISTER to continue <br /> or <br />{' '}
                             <span>
-                                <a href="index.html">Quay lại</a>
+                                <button className="btn-getback" href="index.html">
+                                    Get back
+                                </button>
                             </span>
                         </p>
                     </div>
@@ -120,24 +130,28 @@ export const Resigter = () => {
                             {/* Trang đăng nhập */}
                             <div className="login-form">
                                 <div className="form-title">
-                                    <span>Đăng Ký</span>
+                                    <span>Register</span>
                                 </div>
                                 <div className="form-inputs">
                                     <div className="input-box">
                                         <input
                                             type="text"
                                             className="input-field"
-                                            placeholder="Nhập họ và tên tại đây..."
+                                            placeholder="Enter your first and last name..."
                                             required
+                                            value={fullName}
+                                            onChange={(e) => setFullName(e.target.value)}
                                         />
                                         <i class="bx bx-user icon"></i>
                                     </div>
                                     <div className="input-box">
                                         <input
-                                            type="email"
+                                            type="text"
                                             className="input-field"
-                                            placeholder="Nhập email tại đây..."
-                                            required
+                                            placeholder="Enter your email..."
+                                            // required
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
                                         />
                                         <i className="bx bx-envelope icon"></i>
                                     </div>
@@ -145,29 +159,45 @@ export const Resigter = () => {
                                         <input
                                             type="password"
                                             className="input-field pass_login_1"
-                                            placeholder="Nhập mật khẩu tại đây..."
+                                            placeholder="Enter your password..."
                                             required
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
                                         />
                                         <i className="bx bx-lock-alt icon"></i>
-                                        <i className="bx bx-lock-open-alt eye1 icon"></i>
+                                        <i className="fa fa-eye eye1 icon"></i>
                                     </div>
 
                                     <div className="input-box">
                                         <input
                                             type="password"
                                             className="input-field con_pass_login"
-                                            placeholder="Nhập mật khẩu tại đây..."
+                                            placeholder="Re-enter your password..."
                                             required
+                                            value={againPassword}
+                                            onChange={(e) => setAgainPassword(e.target.value)}
                                         />
                                         <i className="bx bx-lock-alt icon"></i>
-                                        <i className="bx bx-lock-open-alt eye2 icon"></i>
+                                        <i className="fa fa-eye eye2 icon"></i>
                                     </div>
 
                                     <div className="input-box">
-                                        <button type="submit" className="input-submit">
-                                            <span>Đăng Nhập</span>
+                                        <div
+                                            type="submit"
+                                            className="input-submit"
+                                            onClick={() =>
+                                                regist({
+                                                    name: fullName,
+                                                    email: email,
+                                                    password: password,
+                                                    againPassword: againPassword,
+                                                    navigate: navigate,
+                                                })
+                                            }
+                                        >
+                                            <span>Regist</span>
                                             <i className="bx bx-right-arrow-alt"></i>
-                                        </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

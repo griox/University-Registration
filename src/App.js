@@ -8,14 +8,15 @@ import { Resigter } from './components/Resigter';
 function App() {
     return (
         <Router>
-            <div>
+            {/* <div>
                 <Routes>
                     {/* <Route path="/" element={<Login />} /> */}
                     <Route path="/" element={<Resigter />} />
                     {/* <Route path="/dashboard" element={<DashBoard />} /> */}
                 </Routes>
             </div>
-            <ToastContainer className="toast-position" />
+            <ToastContainer className="toast-position" /> */}
+            <DashBoard></DashBoard>
         </Router>
     );
 }

@@ -16,6 +16,7 @@
 /*----- login -----*/
 
 body {
+    background-image: url(../../images/hero-1.jpg);
     background-position: center;
     background-size: cover;
     background-attachment: fixed;
@@ -126,12 +127,6 @@ body {
     font-weight: 600;
     color: #003865;
     text-transform: uppercase;
-}
-
-.featured span a {
-    font-weight: 600;
-    color: crimson;
-    text-decoration: none;
 }
 
 .col-2 {
@@ -347,15 +342,21 @@ body {
     top: 0rem;
     right: 0rem;
 }
+
 .btn-getback {
-    background-color: #278cc2;
+    background-color: var(--c-brand);
     border: none;
-    padding: 10px;
+    padding: 10px 20px;
     border-radius: 10px;
-    font-size: 20px;
+    font-size: 15px;
     color: #fff;
     cursor: pointer;
 }
+
+.btn-getback:hover {
+    color: #fff;
+}
+
 @media (max-width: 892px) {
     .form-container {
         width: 400px;

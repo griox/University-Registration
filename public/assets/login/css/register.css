@@ -89,11 +89,15 @@ body {
 .btn-getback {
     background-color: #278cc2;
     border: none;
-    padding: 10px;
+    padding: 10px 20px;
     border-radius: 10px;
-    font-size: 20px;
+    font-size: 15px;
     color: #fff;
     cursor: pointer;
+}
+
+.btn-getback:hover {
+    color: #fff;
 }
 @keyframes left-right {
     to {
@@ -133,7 +137,8 @@ body {
 
 .featured span a {
     font-weight: 600;
-    color: crimson;
+    color: #fff;
+    font-size: 15px;
     text-decoration: none;
 }
 

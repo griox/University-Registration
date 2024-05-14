@@ -9,10 +9,13 @@ const Dashboard = () => {
     //     const state = JSON.parse(localStorage.getItem('LoginState'));
     // console.log(state);
     // if (state) {
+    localStorage.setItem('Pages', JSON.stringify('DASHBOARD'));
+
     return (
         <Box m="20px">
             <Box display="flex" justifyContent="space-between" alignItems="center">
-                {/* <Header title="DASHBOARD" subtitle="Welcome to your dashboard" /> */}
+                {/* <Header title="DASHBOARD" subtitle  ="Welcome to your dashboard" /> */}
+                <Header title="DASHBOARD" />
             </Box>
             <div>
                 <Chart />

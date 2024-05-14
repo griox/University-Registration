@@ -1,60 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 .container {
     width: 100%;
     height: auto;
+    max-width: 100%;
 }
 
-.item {
+.mainer {
     display: flex;
-    align-items: center;
-    padding: 10px;
-    transition: background-color 0.3s ease;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.5);
 }
 
-.zoom-effect {
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.zoom-effect:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.icon-item {
-    font-size: 50px;
-    margin-left: 20px;
-    color: #333;
-    border: 2px solid #333;
-    /* background-color: #000; */
-}
-
-.content-item {
-    font-size: 25px;
-    margin-left: 10px;
-}
-
-.content-item h5,
-h3 {
-    color: #1b2559;
-}
-.number-data {
+.cards {
+    width: 100%;
+    padding: 25px 10px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    column-gap: 30px;
+    grid-gap: 50px;
 }
 
-.chart {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    column-gap: 30px;
-}
-.chart-item {
+.cards .carder {
+    padding: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     background-color: #fff;
-    border-radius: 20px;
-    margin-top: 30px;
+    border-radius: 10px;
+    box-shadow: 0 7px 25px 0 rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
 }
-.chart-item h1 {
-    color: #000;
-    margin: 20px;
+
+.cards .carder:hover {
+    padding: 25px;
+    transform: scale(1.05);
+    box-shadow: 0 15px 35px 0 rgba(0, 0, 0, 0.2);
+}
+
+.number {
+    font-size: 35px;
+    font-weight: 500;
+    color: #299b63;
+}
+
+.card-name {
+    color: #888;
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.icon-box {
+    font-size: 45px;
+    color: #299b63;
+}
+
+.charts {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-gap: 40px;
+    width: 100%;
+    padding: 20px;
+    padding-top: 0;
+}
+
+.charter {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    box-shadow: 0 7px 25px 0 rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.charter:hover {
+    transform: scale(1.05);
+    box-shadow: 0 15px 35px 0 rgba(0, 0, 0, 0.2);
+}
+
+.charter h2 {
+    text-align: center;
+    font-size: 20px;
 }

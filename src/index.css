@@ -6,8 +6,9 @@ body,
 .app,
 .content {
     height: 100vh;
-    width: 100%;
+    width: 100vw;
     font-family: 'Poppins' sans-serif;
+    overflow-x: hidden;
 }
 
 .app {

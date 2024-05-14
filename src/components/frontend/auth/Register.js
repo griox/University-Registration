@@ -33,6 +33,7 @@ const Register = () => {
             return false;
         }
     }
+
     const encodePath = (email) => {
         if (email) return email.replace(/\./g, ',');
         else return 0;

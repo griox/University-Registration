@@ -4,10 +4,11 @@ import 'firebase/auth';
 import { ref, child, getDatabase, get, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 export const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     function validateEmailFormat(val) {
         return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(val) || /w+([-+.]w+)*@w+([-.]w+)*.w+([-.]w+)*/.test(val);
     }
@@ -69,6 +70,28 @@ export const Login = () => {
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    function saveOnLocal() {
+        const emailEncode = email.replace(/\./g, ',');
+        get(child(ref(db), 'Infor')).then((snapshot) => {
+            if (snapshot.exists()) {
+                const x = snapshot.val();
+                for (let item in x) {
+                    if (item === emailEncode) {
+                        localStorage.setItem('Infor', JSON.stringify(x[item]));
+                        localStorage.setItem('Email', JSON.stringify(email));
+                        localStorage.setItem('LoginState', JSON.stringify(true));
+                    }
+                }
+                // console.log(x);
+                // x.forEach((element) => {
+                //     if (element.email === email) {
+                //         localStorage.setItem('myObject', JSON.stringify(element));
+                //         return true;
+                //     }
+                // });
+            }
+        });
+    }
 
     function getdt(email, password) {
         // console.log(email,password)
@@ -88,7 +111,10 @@ export const Login = () => {
                                     (item) => decodePath(item.email) === email && item.password === password,
                                 );
                                 if (y.length !== 0) {
+                                    saveOnLocal();
+                                    <Link to="/admin/dashboard" />;
                                     toast.success('Correct');
+                                    setIsLoggedIn(true);
                                     // navigate('/Register');
                                 } else {
                                     toast.error('Account not found. Please check your email and password again.');
@@ -147,7 +173,7 @@ export const Login = () => {
                         </div>
 
                         <p className="featured">
-                            Please <span> LOGIN </span> to continue <br /> or <br /> <br />
+                            Please LOGIN to continue <br /> or <br /> <br />
                             <span>
                                 <Link className="btn-getback" to="/">
                                     Get back
@@ -308,6 +334,7 @@ export const Login = () => {
                 {/* JS */}
                 <script src="assets/login/js/login.js"></script>
             </body>
+            {isLoggedIn && <Redirect to="/admin/dashboard" />}
         </>
     );
 };

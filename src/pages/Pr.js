@@ -9,9 +9,13 @@ import { toast } from 'react-toastify';
 import { Calendar } from 'antd';
 import { DatePicker } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
+import UniOfStudent from './UniOfStudent';
+import { DownOutlined } from '@ant-design/icons';
+
 const onChange = (date, dateString) => {
     console.log(date, dateString);
 };
+const MAX_COUNT = 5;
 function Pr() {
     const [gt, setGt] = useState(false);
     const [gender, setGender] = useState([
@@ -36,6 +40,16 @@ function Pr() {
     const dispatch = useDispatch();
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    const [arr, setArr] = useState([]);
+    const [value, setValue] = React.useState(['Ava Swift']);
+    const suffix = (
+        <>
+            <span>
+                {value.length} / {MAX_COUNT}
+            </span>
+            <DownOutlined />
+        </>
+    );
     useEffect(() => {
         // get(child(ref(db), `Detail/minhquang`))
         //     .then((snapshot) => {
@@ -50,9 +64,26 @@ function Pr() {
         //         console.error(error);
         //     });
         const personal = JSON.parse(localStorage.getItem('Infor'));
+        const averageScore = personal.EnglishScore + personal.LiteratureScore + personal.MathScore;
+        get(child(ref(db), `University/`)).then((snapshot) => {
+            if (snapshot.exists()) {
+                const x = snapshot.val();
+                // setDd(x.length);
+                Object.values(x)
+                    .map((user) => user)
+                    .forEach((item) => {
+                        if (item.averageS <= averageScore) {
+                            const element = { value: item.uniCode, label: item.uniCode };
+                            setArr((pre) => [...pre, element]);
+                        }
+                    });
+            } else {
+                console.log('No data available');
+            }
+        });
         dispatch({ type: 'user', payload: personal });
         // console.log(personal);
-    }, []);
+    }, [db, dispatch]);
     const save = () => {
         if (allowInput !== true) {
             localStorage.setItem('Infor', JSON.stringify(detail));
@@ -261,20 +292,21 @@ function Pr() {
     return (
         <div className="container">
             {/* {console.log(detail)} */}
-            <div className="full-name">
-                <h1>Student Name: </h1>
-                <Space.Compact size="large">
-                    {/* <div>{a.email}</div> */}
-                    <Input
-                        addonBefore={'Name:'}
-                        readOnly={allowInput}
-                        className="label-input"
-                        value={detail.name}
-                        onChange={(e) => handleChange(e, 'name')}
-                        disabled={allowInput}
-                    />
-                </Space.Compact>
-                {/* <Space.Compact size="large">
+            <div className="input">
+                <div className="full-name">
+                    <h1>Student Name: </h1>
+                    <Space.Compact size="large">
+                        {/* <div>{a.email}</div> */}
+                        <Input
+                            addonBefore={'Name:'}
+                            readOnly={allowInput}
+                            className="label-input"
+                            value={detail.name}
+                            onChange={(e) => handleChange(e, 'name')}
+                            disabled={allowInput}
+                        />
+                    </Space.Compact>
+                    {/* <Space.Compact size="large">
                     <Input
                         addonBefore={'Middlename:'}
                         placeholder="large size"
@@ -295,23 +327,23 @@ function Pr() {
                         disabled={allowInput}
                     />
                 </Space.Compact> */}
-            </div>
-            <div className="detail-item">
-                <h1>Gender: </h1>
-                <Space.Compact size="large">
-                    <Space.Compact>
-                        <Select
-                            placeholder="Choose your gender"
-                            options={gender}
-                            className="g-s"
-                            value={detail.gender}
-                            onChange={(e) => handleSelect(e, 'gender')}
-                            disabled={allowInput}
-                        />
+                </div>
+                <div className="detail-item">
+                    <h1>Gender: </h1>
+                    <Space.Compact size="large">
+                        <Space.Compact>
+                            <Select
+                                placeholder="Choose your gender"
+                                options={gender}
+                                className="g-s"
+                                value={detail.gender}
+                                onChange={(e) => handleSelect(e, 'gender')}
+                                disabled={allowInput}
+                            />
+                        </Space.Compact>
                     </Space.Compact>
-                </Space.Compact>
-            </div>
-            {/* <div className="detail-item">
+                </div>
+                {/* <div className="detail-item">
                 <h1>Date of birth: </h1>
                 <div className="date-detail">
                     <Space.Compact className="date">
@@ -324,7 +356,7 @@ function Pr() {
                             disabled={allowInput}
                         />
                     </Space.Compact> */}
-            {/* <Space.Compact className="date">
+                {/* <Space.Compact className="date">
                         <Select
                             className="g-s"
                             options={month}
@@ -345,60 +377,60 @@ function Pr() {
                         />
                     </Space.Compact>
                 </div> */}
-            {/* </div> */}
-            <div className="detail-item">
-                <h1>Place of birth: </h1>
+                {/* </div> */}
+                <div className="detail-item">
+                    <h1>Place of birth: </h1>
 
-                <Space.Compact size="large">
-                    <Select
-                        size={size}
-                        options={provinces}
-                        className="g-s"
-                        value={detail.placeOBirth}
-                        onChange={(e) => handleSelect(e, 'placeOBirth')}
-                        disabled={allowInput}
-                    />
-                </Space.Compact>
-            </div>
-            <div className="detail-item">
-                <h1>Address: </h1>
+                    <Space.Compact size="large">
+                        <Select
+                            size={size}
+                            options={provinces}
+                            className="g-s"
+                            value={detail.placeOBirth}
+                            onChange={(e) => handleSelect(e, 'placeOBirth')}
+                            disabled={allowInput}
+                        />
+                    </Space.Compact>
+                </div>
+                <div className="detail-item">
+                    <h1>Address: </h1>
 
-                <Space.Compact size="large">
-                    <Input
-                        className="g-s addr"
-                        value={detail.Address}
-                        onChange={(e) => handleChange(e, 'Address')}
-                        disabled={allowInput}
-                    />
-                </Space.Compact>
-            </div>
-            <div className="detail-item">
-                <h1>Ethnicity: </h1>
+                    <Space.Compact size="large">
+                        <Input
+                            className="g-s addr"
+                            value={detail.Address}
+                            onChange={(e) => handleChange(e, 'Address')}
+                            disabled={allowInput}
+                        />
+                    </Space.Compact>
+                </div>
+                <div className="detail-item">
+                    <h1>Ethnicity: </h1>
 
-                <Space.Compact size="large">
-                    <Select
-                        size={size}
-                        value={detail.enthicity}
-                        onChange={(e) => handleSelect(e, 'enthicity')}
-                        options={ethnicities}
-                        className="g-s"
-                        disabled={allowInput}
-                    />
-                </Space.Compact>
-            </div>
-            <div className="detail-item">
-                <h1>CCCD: </h1>
+                    <Space.Compact size="large">
+                        <Select
+                            size={size}
+                            value={detail.enthicity}
+                            onChange={(e) => handleSelect(e, 'enthicity')}
+                            options={ethnicities}
+                            className="g-s"
+                            disabled={allowInput}
+                        />
+                    </Space.Compact>
+                </div>
+                <div className="detail-item">
+                    <h1>CCCD: </h1>
 
-                <Space.Compact size="large">
-                    <Input
-                        className="g-s"
-                        value={detail.idenNum}
-                        onChange={(e) => handleChange(e, 'idenNum')}
-                        disabled={allowInput}
-                    />
-                </Space.Compact>
-            </div>
-            {/* <div className="detail-item">
+                    <Space.Compact size="large">
+                        <Input
+                            className="g-s"
+                            value={detail.idenNum}
+                            onChange={(e) => handleChange(e, 'idenNum')}
+                            disabled={allowInput}
+                        />
+                    </Space.Compact>
+                </div>
+                {/* <div className="detail-item">
                 <h1>School: </h1>
                 <Space.Compact size="large">
                     <Input
@@ -410,16 +442,37 @@ function Pr() {
                     />
                 </Space.Compact>
             </div> */}
-            <div className="detail-item">
-                <h1>Email: </h1>
-                <Space.Compact size="large">
-                    <Input
-                        className="g-s"
-                        value={detail.email}
-                        onChange={(e) => handleChange(e, 'email')}
-                        disabled={allowInput}
-                    />
-                </Space.Compact>
+                <div className="detail-item">
+                    <h1>Email: </h1>
+                    <Space.Compact size="large">
+                        <Input
+                            className="g-s"
+                            value={detail.email}
+                            onChange={(e) => handleChange(e, 'email')}
+                            disabled={allowInput}
+                        />
+                    </Space.Compact>
+                </div>
+                <div className="detail-item">
+                    <h1>University: </h1>
+                    <Space.Compact size="large">
+                        {console.log(arr)}
+                        <Select
+                            mode="multiple"
+                            maxCount={MAX_COUNT}
+                            disabled={allowInput}
+                            // value={value}
+                            style={{
+                                width: '300px',
+                                height: 'auto',
+                            }}
+                            onChange={setValue}
+                            suffixIcon={suffix}
+                            placeholder="Please select"
+                            options={arr}
+                        />
+                    </Space.Compact>
+                </div>
             </div>
 
             <Button type="primary" onClick={() => save()} className="btn-save">

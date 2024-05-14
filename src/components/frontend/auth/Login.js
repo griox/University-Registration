@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import 'firebase/auth';
-import { ref, child, getDatabase, get, set } from 'firebase/database';
+import { ref, child, getDatabase, get } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
 import { Link, Redirect } from 'react-router-dom';
@@ -113,7 +113,6 @@ export const Login = () => {
                                 if (y.length !== 0) {
                                     saveOnLocal();
                                     <Link to="/admin/dashboard" />;
-                                    toast.success('Correct');
                                     setIsLoggedIn(true);
                                     // navigate('/Register');
                                 } else {

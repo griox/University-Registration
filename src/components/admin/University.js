@@ -23,7 +23,7 @@ const AddUniversity = () => {
     };
     return (
         <Box m="20px">
-            <Header title="ADD UNIVERSITY" subtitle="List of University" />
+            {/* <Header title="ADD UNIVERSITY" subtitle="List of University" /> */}
             <div
                 style={{
                     display: 'flex',

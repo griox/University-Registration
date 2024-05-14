@@ -31,6 +31,7 @@ const Register = () => {
             return false;
         }
     }
+   
     const encodePath = (email) => {
         if (email) return email.replace(/\./g, ',');
         else return 0;
@@ -105,7 +106,7 @@ const Register = () => {
         };
     }, []);
     function regist(props) {
-        if (props.fullname !== '') {
+        if (props.name !== '') {
             if (props.email !== '') {
                 if (validateEmailFormat(props.email)) {
                     if (props.password !== '') {

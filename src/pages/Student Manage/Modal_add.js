@@ -1,19 +1,74 @@
 import React, { useState } from 'react';
-import { Button, Divider, Modal, Space, Select, InputNumber, DatePicker } from 'antd';
+import 'firebase/auth';
+import { getDatabase } from 'firebase/database';
+import { initializeApp } from 'firebase/app';
+import { toast } from 'react-toastify';
+import { Button, Modal, Space, Select, InputNumber, DatePicker } from 'antd';
 import { InfoCircleOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
 import { Input, Tooltip } from 'antd';
 import './Modal_add.css'
+const firebaseConfig = {
+  apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
+  authDomain: 'mock-proeject-b.firebaseapp.com',
+  databaseURL: 'https://mock-proeject-b-default-rtdb.firebaseio.com',
+  projectId: 'mock-proeject-b',
+  storageBucket: 'mock-proeject-b.appspot.com',
+  messagingSenderId: '898832925665',
+  appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 const Modal_Add = () => {
+  const [Fullname, setFullname] = useState('');
+  const [Gender, setGender] = useState('female');
+  const [Email,setEmail] = useState('');
+  const [Identify, setIdentify] = useState('');
+  const [Address, setAddress] = useState('');
+  const [enthicity, setEnthicity] = useState('Kinh'); 
+  const [dateOfBirth, setDateOfBirth] = useState(null); 
+  const [placeOfBirth, setPlaceOfBirth] = useState(''); 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [Mathscore, setMathscore] = useState(null);
+  const [Englishscore,setEnglishscore]=useState(null);
+  const [Literaturescore, setLiteraturescore] = useState(null);
+
   const showModal = () => {
     setIsModalOpen(true);
   };
-  const handleOk = () => {
-    setIsModalOpen(false);
+  const handleOk = async () => {
+    if(!validateFullname(Fullname)){
+      toast.error('Name must contain lowercase, uppercase letters and spaces between');
+      return;
+    }
+    if(!validateEmailFormat(Email)){
+      toast.error("Invalid email format")
+      return;
+    }
+    if(!validateIdenNumber(Identify)){
+      toast.error("Indentify number must have 12 numbers");
+    }
+    else{
+      setIsModalOpen(false);
+    }
+   
   };
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+  function validateEmailFormat(email) {
+    return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(email) || /w+([-+.]w+)*@w+([-.]w+)*.w+([-.]w+)*/.test(email);
+  }
+  function validateFullname(name) {
+    return /^[A-Za-z]+$/.test(name);
+  }
+  
+  function validateIdenNumber(idenNum){
+      if (idenNum.length ===12) {
+        return true;
+    } else {
+        return false;
+    }
+  }
   const genders = [
     {
       value: 'female',
@@ -143,21 +198,23 @@ const Modal_Add = () => {
       <Button type="primary" onClick={showModal}>
         Add a new student
       </Button>
-      <Modal title="Register for Student" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} style={{ width: '80%' }}>
+      <Modal title="Register for Student" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={600}>
         <Space direction="vertical" >
           <Space.Compact size='small'>
-            <Space >
+            <Space size={'large'}>
               <label className='font_label'> Name:</label>
               <Input
                 placeholder="Enter Student's name"
                 prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
+                value={Fullname}
+                onChange={(e)=>setFullname(e.target.value)}
               />
               <label className='font_label'>Gender:</label>
-              <Select defaultValue="Female " options={genders} />
+              <Select defaultValue="Female " options={genders} onChange={(value)=>setGender(value)} />
             </Space>
           </Space.Compact>
           <Space.Compact>
-            <Space>
+            <Space size={'large'}>
               <label className='font_label'>Email:</label>
               <Input
                 placeholder="Enter Student's email"
@@ -168,50 +225,53 @@ const Modal_Add = () => {
                   </Tooltip>
                 }
                 style={{ width: '100%' }}
+                value={Email}
+                onChange={(e)=>setEmail(e.target.value)}
               />
               <label className='font_label'>Enthicity:</label>
-              <Select defaultValue="Kinh " options={enthicities} />
+              <Select defaultValue="Kinh " options={enthicities}   onChange={(value)=>setEnthicity(value)} showSearch style={{width:150}} />
             </Space>
 
           </Space.Compact>
           <Space.Compact>
             <Space>
-              <label className='font_label'>Date of birth</label>
-              <DatePicker />
+              <label className='font_label'>Date of birth:</label>
+              <DatePicker format="DD/MM/YYYY"
+              onChange={(date,dateString)=>setDateOfBirth(dateString)} />
             </Space>
           </Space.Compact>
           <Space.Compact>
             <Space>
-              <label className='font_label'>Place of Birth</label>
-              <Select defaultValue="Khanh Hoa " options={cities} />
+              <label className='font_label'>Place of Birth:</label>
+              <Select defaultValue="Khanh Hoa " options={cities} showSearch style={{width:150}} onChange={(value)=>setPlaceOfBirth(value)} />
             </Space>
           </Space.Compact>
           <Space.Compact>
             <Space>
               <label className='font_label'>Identify number</label>
-              <Input variant='filled'></Input>
+              <Input variant='filled' onChange={(e)=>setIdentify(e.target.value)} value={Identify}/>
             </Space>
           </Space.Compact>
           <Space.Compact>
             <Space wrap>
               <div>
                 <label className='font_label'>Math: </label>
-                <InputNumber min={0} max={10} />
+                <InputNumber min={0} max={10} step={0.2} onChange={(value)=>console.log(value)} />
               </div>
               <div>
                 <label className='font_label'>English: </label>
-                <InputNumber min={0} max={10} />
+                <InputNumber min={0} max={10} step={0.2} onChange={(value)=>console.log(value)}/>
               </div>
               <div>
                 <label className='font_label'>Literature: </label>
-                <InputNumber min={0} max={10} />
+                <InputNumber min={0} max={10} step={0.2} onChange={(value)=>console.log(value)}/>
               </div>
             </Space>
           </Space.Compact>
           <Space.Compact>
             <Space>
             <label className='font_label'>Address:</label>
-            <TextArea showCount maxLength={100} placeholder="Student's Address" />
+            <TextArea showCount maxLength={100} placeholder="Student's Address" onChange={(e)=>setAddress(e.target.value)} value={Address}/>
             </Space>
           </Space.Compact>
         </Space>

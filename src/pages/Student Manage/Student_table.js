@@ -354,7 +354,7 @@ const Student_List = () => {
       
     },
     {
-      title: 'MathScore',
+      title: 'Math',
       dataIndex: 'mathScore',
       width: '10%',
       editable: true,
@@ -362,7 +362,7 @@ const Student_List = () => {
       sorter: (a, b) => a.mathScore - b.mathScore,
     },
     {
-      title: 'LiteratureScore',
+      title: 'Literature',
       dataIndex: 'literatureScore',
       width: '11%',
       editable: true,
@@ -370,7 +370,7 @@ const Student_List = () => {
       sorter: (a, b) => a.literatureScore - b.literatureScore,
     },
     {
-      title: 'EngLishScore',
+      title: 'EngLish',
       dataIndex: 'englishScore',
       width: '10%',
       editable: true,
@@ -378,7 +378,7 @@ const Student_List = () => {
       sorter: (a, b) => a.englishScore - b.englishScore,
     },
     {
-      title: 'AverageScore',
+      title: 'Average',
       dataIndex: 'averageScore',
       width: '10%',
       sorter: (a, b) => a.averageScore - b.averageScore,
@@ -389,9 +389,9 @@ const Student_List = () => {
       width: '10%',
     },
     {
-      title: 'Edit Student',
+      title: 'Manage',
       dataIndex: 'operation',
-      width: '9%',
+      width: '10%',
       fixed: 'right',
       render: (_, record) => {
         const editable = isEditing(record);
@@ -462,9 +462,9 @@ const Student_List = () => {
   });
 
   return (
-    <div style={{ justifyContent: 'center', alignItems: 'center', marginTop: '100px' }}>
+    <div style={{ justifyContent: 'center', alignItems: 'center' }}>
+      <Space direction='vertical'>
       <Modal_Add />
-      <Divider />
       <Form form={form} component={false}>
         <Table
           components={{
@@ -476,7 +476,7 @@ const Student_List = () => {
           dataSource={studentData}
           columns={mergedColumns}
           scroll={{
-            x: 1500,
+            x: 800,
             y: 400,
           }}
           rowClassName="editable-row"
@@ -491,6 +491,8 @@ const Student_List = () => {
           ref={tableRef}
         />
       </Form>
+      </Space>
+      
     </div>
 
   );

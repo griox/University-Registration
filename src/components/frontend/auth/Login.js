@@ -4,13 +4,16 @@ import 'firebase/auth';
 import { ref, child, getDatabase, get, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
-import { Link } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 export const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
     function validateEmailFormat(val) {
         return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(val) || /w+([-+.]w+)*@w+([-.]w+)*.w+([-.]w+)*/.test(val);
     }
+
     const decodePath = (email) => {
         if (email) return email.replace(/%2E/g, '.');
         else return 0;
@@ -57,6 +60,7 @@ export const Login = () => {
             eyeBtn.removeEventListener('click', handleEyeClick);
         };
     }, []);
+
     const firebaseConfig = {
         apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
         authDomain: 'mock-proeject-b.firebaseapp.com',
@@ -89,7 +93,9 @@ export const Login = () => {
                                 );
                                 if (y.length !== 0) {
                                     toast.success('Correct');
+                                    setIsLoggedIn(true);
                                     // navigate('/Register');
+                                    localStorage.setItem('isLoggedIn', 'true');
                                 } else {
                                     toast.error('Account not found. Please check your email and password again.');
                                 }
@@ -308,6 +314,7 @@ export const Login = () => {
                 {/* JS */}
                 <script src="assets/login/js/login.js"></script>
             </body>
+            {isLoggedIn && <Redirect to="/admin/dashboard" />}
         </>
     );
 };

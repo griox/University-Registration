@@ -8,11 +8,7 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import SearchIcon from '@mui/icons-material/Search';
 import { Button, Dropdown, message, Space, Tooltip } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
-
-const handleMenuClick = (e) => {
-    message.info('Click on menu item.');
-    console.log('click', e);
-};
+import { useHistory } from 'react-router-dom';
 
 const items = [
     {
@@ -54,7 +50,7 @@ const items = [
     },
     {
         label: 'Log Out',
-        key: '',
+        key: 'logout',
         icon: (
             <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24">
                 <path
@@ -67,31 +63,44 @@ const items = [
     },
 ];
 
-const menuProps = {
-    items,
-    onClick: handleMenuClick,
-};
-
 const Navbar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const colorMode = useContext(ColorModeContext);
+    const history = useHistory();
+
+    const handleLogout = () => {
+        localStorage.removeItem('isLoggedIn');
+        history.push('/');
+    };
+
+    const handleMenuClick = (e) => {
+        if (e.key === 'logout') {
+            message.success('You have logged out successfully!');
+            handleLogout();
+        } else {
+            message.info('Click on menu item.');
+            console.log('click', e);
+        }
+    };
+
+    const menuProps = {
+        items,
+        onClick: handleMenuClick,
+    };
     return (
         <Box
             display="flex"
-            justifyContent="space-between"
-            boxShadow="0px 0px 10px 0px rgba(0, 0, 0, 0.5)"
-            backdropFilter="blur(0.5px)"
-            bgcolor="#FFFFFF"
-            p={2}
-            position="sticky"
-            top={0}
+            position="fixed"
+            width="100%"
             zIndex={1000}
+            top="0"
+            left="0"
+            justifyContent="space-between"
+            p={2}
         >
             {/* SEARCH BAR */}
-            <Box display="flex" alignItems="center">
-                <img alt="profile-user" width="150px" height="auto" src={`../../assets/fptnew.png`} />
-            </Box>
+            <Box display="flex" alignItems="center"></Box>
 
             {/* ICONS */}
             <Box display="flex">

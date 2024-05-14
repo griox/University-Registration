@@ -7,6 +7,7 @@ import Register from './components/frontend/auth/Register';
 import { Provider } from 'react-redux';
 import store from './pages/store';
 import { ToastContainer } from 'react-toastify';
+import PrivateRoute from './PrivateRoute';
 
 function App() {
     return (
@@ -17,7 +18,8 @@ function App() {
                         <Route exact path="/" component={Home} />
                         <Route path="/login" component={Login} />
                         <Route path="/register" component={Register} />
-                        <Route path="/admin" name="Admin" render={(props) => <Masterlayout {...props} />} />
+                        {/* <Route path="/admin" name="Admin" render={(props) => <Masterlayout {...props} />} /> */}
+                        <PrivateRoute path="/admin" component={Masterlayout} />
                     </Switch>
                 </Router>
             </div>

@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Table, Button, Space, Input, Modal } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
-import FormAdd from '../pages/formAddSchool';
+import FormAdd from './formAddSchool';
 
 const data = [
     {

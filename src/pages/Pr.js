@@ -37,35 +37,37 @@ function Pr() {
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     useEffect(() => {
-        get(child(ref(db), `Detail/minhquang`))
-            .then((snapshot) => {
-                if (snapshot.exists()) {
-                    const x = snapshot.val();
-                    dispatch({ type: 'user', payload: x });
-                } else {
-                    console.log('No data available');
-                }
-            })
-            .catch((error) => {
-                console.error(error);
-            });
+        // get(child(ref(db), `Detail/minhquang`))
+        //     .then((snapshot) => {
+        //         if (snapshot.exists()) {
+        //             const x = snapshot.val();
+        //             dispatch({ type: 'user', payload: x });
+        //         } else {
+        //             console.log('No data available');
+        //         }
+        //     })
+        //     .catch((error) => {
+        //         console.error(error);
+        //     });
+        const personal = JSON.parse(localStorage.getItem('Infor'));
+        dispatch({ type: 'user', payload: personal });
+        // console.log(personal);
     }, []);
     const save = () => {
         if (allowInput !== true) {
-            update(ref(db, 'Detail/minhquang'), {
-                surname: detail.surname,
-                middlename: detail.middlename,
-                lastname: detail.lastname,
+            localStorage.setItem('Infor', JSON.stringify(detail));
+            const emailEncode = JSON.parse(localStorage.getItem('Email'));
+            update(ref(db, 'Infor/' + emailEncode.replace(/\./g, ',')), {
+                name: detail.name,
                 gender: detail.gender,
-                day: detail.day,
-                month: detail.month,
-                year: detail.year,
-                birthplace: detail.birthplace,
-                address: detail.address,
-                ethnicity: detail.ethnicity,
-                CCCD: detail.CCCD,
-                school: detail.school,
-                phonenumber: detail.phonenumber,
+                placeOBirth: detail.placeOBirth,
+                Address: detail.Address,
+                enthicity: detail.enthicity,
+                idenNum: detail.idenNum,
+                email: detail.email,
+                // EnglishScore: parseFloat(detail.EnglishScore),
+                // MathScore: parseFloat(detail.MathScoreScore),
+                // LiteratureScore: parseFloat(detail.LiteratureScore),
             })
                 .then(() => {
                     toast('Đã cập nhập thành công');
@@ -264,16 +266,15 @@ function Pr() {
                 <Space.Compact size="large">
                     {/* <div>{a.email}</div> */}
                     <Input
-                        addonBefore={'Surname:'}
-                        placeholder="large size"
+                        addonBefore={'Name:'}
                         readOnly={allowInput}
                         className="label-input"
-                        value={detail.surname}
-                        onChange={(e) => handleChange(e, 'surname')}
+                        value={detail.name}
+                        onChange={(e) => handleChange(e, 'name')}
                         disabled={allowInput}
                     />
                 </Space.Compact>
-                <Space.Compact size="large">
+                {/* <Space.Compact size="large">
                     <Input
                         addonBefore={'Middlename:'}
                         placeholder="large size"
@@ -293,7 +294,7 @@ function Pr() {
                         onChange={(e) => handleChange(e, 'lastname')}
                         disabled={allowInput}
                     />
-                </Space.Compact>
+                </Space.Compact> */}
             </div>
             <div className="detail-item">
                 <h1>Gender: </h1>
@@ -310,20 +311,20 @@ function Pr() {
                     </Space.Compact>
                 </Space.Compact>
             </div>
-            <div className="detail-item">
+            {/* <div className="detail-item">
                 <h1>Date of birth: </h1>
                 <div className="date-detail">
                     <Space.Compact className="date">
                         <Select
                             className="g-s"
                             options={day}
-                            value={detail.day}
+                            value={detail.}
                             onChange={(e) => handleSelect(e, 'day')}
                             placeholder="Day"
                             disabled={allowInput}
                         />
-                    </Space.Compact>
-                    <Space.Compact className="date">
+                    </Space.Compact> */}
+            {/* <Space.Compact className="date">
                         <Select
                             className="g-s"
                             options={month}
@@ -343,8 +344,8 @@ function Pr() {
                             disabled={allowInput}
                         />
                     </Space.Compact>
-                </div>
-            </div>
+                </div> */}
+            {/* </div> */}
             <div className="detail-item">
                 <h1>Place of birth: </h1>
 
@@ -353,8 +354,8 @@ function Pr() {
                         size={size}
                         options={provinces}
                         className="g-s"
-                        value={detail.birthplace}
-                        onChange={(e) => handleSelect(e, 'birthplace')}
+                        value={detail.placeOBirth}
+                        onChange={(e) => handleSelect(e, 'placeOBirth')}
                         disabled={allowInput}
                     />
                 </Space.Compact>
@@ -364,10 +365,9 @@ function Pr() {
 
                 <Space.Compact size="large">
                     <Input
-                        placeholder="large size"
                         className="g-s addr"
-                        value={detail.address}
-                        onChange={(e) => handleChange(e, 'address')}
+                        value={detail.Address}
+                        onChange={(e) => handleChange(e, 'Address')}
                         disabled={allowInput}
                     />
                 </Space.Compact>
@@ -378,8 +378,8 @@ function Pr() {
                 <Space.Compact size="large">
                     <Select
                         size={size}
-                        value={detail.ethnicity}
-                        onChange={(e) => handleSelect(e, 'ethnicity')}
+                        value={detail.enthicity}
+                        onChange={(e) => handleSelect(e, 'enthicity')}
                         options={ethnicities}
                         className="g-s"
                         disabled={allowInput}
@@ -391,15 +391,14 @@ function Pr() {
 
                 <Space.Compact size="large">
                     <Input
-                        placeholder="large size"
                         className="g-s"
-                        value={detail.CCCD}
-                        onChange={(e) => handleChange(e, 'CCCD')}
+                        value={detail.idenNum}
+                        onChange={(e) => handleChange(e, 'idenNum')}
                         disabled={allowInput}
                     />
                 </Space.Compact>
             </div>
-            <div className="detail-item">
+            {/* <div className="detail-item">
                 <h1>School: </h1>
                 <Space.Compact size="large">
                     <Input
@@ -410,15 +409,14 @@ function Pr() {
                         onChange={(e) => handleChange(e, 'CCCD')}
                     />
                 </Space.Compact>
-            </div>
+            </div> */}
             <div className="detail-item">
-                <h1>Phone number: </h1>
+                <h1>Email: </h1>
                 <Space.Compact size="large">
                     <Input
-                        placeholder="large size"
                         className="g-s"
-                        value={detail.phonenumber}
-                        onChange={(e) => handleChange(e, 'phonenumber')}
+                        value={detail.email}
+                        onChange={(e) => handleChange(e, 'email')}
                         disabled={allowInput}
                     />
                 </Space.Compact>

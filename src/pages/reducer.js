@@ -1,17 +1,14 @@
 const initState = {
-    surname: '',
-    middlename: '',
-    lastname: '',
+    name: '',
     gender: '',
-    day: '',
-    month: '',
-    year: '',
-    birthplace: '',
-    address: '',
-    ethnicity: '',
-    CCCD: '',
-    school: '',
-    phonenumber: '',
+    placeOBirth: '',
+    Address: '',
+    enthicity: '',
+    idenNum: '',
+    email: '',
+    EnglishScore: 0,
+    MathScore: 0,
+    LiteratureScore: 0,
 };
 
 const reducer = (state = initState, action) => {
@@ -27,26 +24,7 @@ const reducer = (state = initState, action) => {
                 ...state,
                 ...action.payload,
             };
-        // console.log(action.payload);
-        // const { position, newValue } = action.payload;
-        // const updatedState = { ...state };
-        // updatedState[Object.keys(state)[position]] = newValue;
-        // return updatedState;
-        // return {
-        //   surname: action.payload.surname,
-        //   middlename: action.payload.middlename,
-        //   lastname: action.payload.lastname,
-        //   gender: action.payload.gender,
-        //   day: action.payload.day,
-        //   month: action.payload.month,
-        //   year: action.payload.year,
-        //   birthplace: action.payload.birthplace,
-        //   address: action.payload.address,
-        //   ethnicity: action.payload.ethnicity,
-        //   CCCD: action.payload.CCCD,
-        //   school: action.payload.school,
-        //   phonenumber: action.payload.phonenumber,
-        // };
+
         default:
             return state;
     }

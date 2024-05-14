@@ -1,12 +1,8 @@
-import React, { Children, useContext } from 'react';
+import React, { useContext } from 'react';
 import { Box, IconButton, useTheme } from '@mui/material';
 import { ColorModeContext, tokens } from '../../theme';
-import InputBase from '@mui/material/InputBase';
-import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
-import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import SearchIcon from '@mui/icons-material/Search';
-import { Button, Dropdown, message, Space, Tooltip } from 'antd';
+import { Dropdown, Space } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 
@@ -104,9 +100,9 @@ const Navbar = () => {
 
             {/* ICONS */}
             <Box display="flex">
-                <IconButton onClick={colorMode.toggleColorMode}>
+                {/* <IconButton onClick={colorMode.toggleColorMode}>
                     {theme.palette.mode === 'dark' ? <DarkModeOutlinedIcon /> : <LightModeOutlinedIcon />}
-                </IconButton>
+                </IconButton> */}
                 <Space wrap>
                     <Dropdown menu={menuProps}>
                         <IconButton>

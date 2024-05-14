@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
 import Header from '../../components/Header';
-import AddSchool from '../../pages/AddSchool';
-import { Button, Divider, Flex, Radio, Space, Tooltip, Modal } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
-import FormAdd from '../../pages/formAddSchool';
+import AddSchool from '../../pages/University/AddSchool';
+import { Button, Modal } from 'antd';
+import FormAdd from '../../pages/University/formAddSchool';
 
 const AddUniversity = () => {
     const [position, setPosition] = useState('start');

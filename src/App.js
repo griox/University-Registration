@@ -7,7 +7,7 @@ import Register from './components/frontend/auth/Register';
 import { Provider } from 'react-redux';
 import store from './pages/store';
 import { ToastContainer } from 'react-toastify';
-
+import {useCreateInforRecordsOnMount} from './database/Student_details'
 function App() {
     return (
         <Provider store={store}>

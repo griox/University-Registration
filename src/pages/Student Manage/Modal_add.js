@@ -1,9 +1,32 @@
 import React, { useState } from 'react';
+import 'firebase/auth';
+import { getDatabase } from 'firebase/database';
+import { initializeApp } from 'firebase/app';
+import { toast } from 'react-toastify';
 import { Button, Divider, Modal, Space, Select, InputNumber, DatePicker } from 'antd';
 import { InfoCircleOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
 import { Input, Tooltip } from 'antd';
 import './Modal_add.css'
+const firebaseConfig = {
+  apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
+  authDomain: 'mock-proeject-b.firebaseapp.com',
+  databaseURL: 'https://mock-proeject-b-default-rtdb.firebaseio.com',
+  projectId: 'mock-proeject-b',
+  storageBucket: 'mock-proeject-b.appspot.com',
+  messagingSenderId: '898832925665',
+  appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 const Modal_Add = () => {
+  const [Fullname, setFullname] = useState('');
+  const [Gender, setGender] = useState('female');
+  const [Email,setEmail] = useState('');
+  const [Identify, setIdentify] = useState('');
+  const [Address, setAddress] = useState('');
+  const [enthicity, setEnthicity] = useState('Kinh'); 
+  const [dateOfBirth, setDateOfBirth] = useState(null); 
+  const [placeOfBirth, setPlaceOfBirth] = useState(''); 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const showModal = () => {
     setIsModalOpen(true);
@@ -14,6 +37,19 @@ const Modal_Add = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+  function validateEmailFormat(email) {
+    return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(email) || /w+([-+.]w+)*@w+([-.]w+)*.w+([-.]w+)*/.test(email);
+  }
+  function validateFullname(name){
+    return /[A-Z]/.test(name);
+  }
+  function validateIdenNumber(idenNum){
+      if (idenNum.length >= 8) {
+        return true;
+    } else {
+        return false;
+    }
+  }
   const genders = [
     {
       value: 'female',
@@ -151,9 +187,10 @@ const Modal_Add = () => {
               <Input
                 placeholder="Enter Student's name"
                 prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
+                onChange={(e)=>setFullname(e.target.value)}
               />
               <label className='font_label'>Gender:</label>
-              <Select defaultValue="Female " options={genders} />
+              <Select defaultValue="Female " options={genders} onChange={(value)=>setGender(value)} />
             </Space>
           </Space.Compact>
           <Space.Compact>
@@ -168,16 +205,17 @@ const Modal_Add = () => {
                   </Tooltip>
                 }
                 style={{ width: '100%' }}
+                onChange={(e)=>setEmail(e.target.value)}
               />
               <label className='font_label'>Enthicity:</label>
-              <Select defaultValue="Kinh " options={enthicities} />
+              <Select defaultValue="Kinh " options={enthicities}  onChange={(value)=>setEnthicity(value)}/>
             </Space>
 
           </Space.Compact>
           <Space.Compact>
             <Space>
               <label className='font_label'>Date of birth</label>
-              <DatePicker />
+              <DatePicker value={dateOfBirth} onChange={(date) => setDateOfBirth(date)}/>
             </Space>
           </Space.Compact>
           <Space.Compact>

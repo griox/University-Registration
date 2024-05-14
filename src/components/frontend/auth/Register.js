@@ -31,6 +31,7 @@ const Register = () => {
             return false;
         }
     }
+   
     const encodePath = (email) => {
         if (email) return email.replace(/\./g, '%2E');
         else return 0;

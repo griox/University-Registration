@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import 'firebase/auth';
-import { getDatabase } from 'firebase/database';
+import { getDatabase, ref, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
@@ -33,7 +33,7 @@ const Register = () => {
     }
    
     const encodePath = (email) => {
-        if (email) return email.replace(/\./g, '%2E');
+        if (email) return email.replace(/\./g, ',');
         else return 0;
     };
 
@@ -106,7 +106,7 @@ const Register = () => {
         };
     }, []);
     function regist(props) {
-        if (props.fullname !== '') {
+        if (props.name !== '') {
             if (props.email !== '') {
                 if (validateEmailFormat(props.email)) {
                     if (props.password !== '') {
@@ -115,6 +115,8 @@ const Register = () => {
                                 const encodeEmail = encodePath(props.email);
                                 console.log(encodeEmail);
                                 const ip = { email: encodePath(props.email), password: props.password, role: 'user' };
+                                set(ref(db, 'Account/' + encodeEmail), ip);
+
                                 toast.success('Sign up sucessfully');
                             }
                         } else {
@@ -251,6 +253,12 @@ const Register = () => {
                                             }
                                         >
                                             <span>Regist</span>
+                                            <i className="bx bx-right-arrow-alt"></i>
+                                        </div>
+                                    </div>
+                                    <div className="input-box">
+                                        <div type="submit" className="input-submit">
+                                            <span>Clear</span>
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </div>
                                     </div>

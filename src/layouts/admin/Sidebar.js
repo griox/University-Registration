@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ProSidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import { Box, IconButton, Typography, useTheme, Tooltip } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -42,8 +42,22 @@ const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
 const Sidebar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    const [isCollapsed, setIsCollapsed] = useState(false);
-    const [selected, setSelected] = useState('Dashboard');
+    const [isCollapsed, setIsCollapsed] = useState(() => {
+        const collapsedState = localStorage.getItem('sidebarCollapsed');
+        return collapsedState ? JSON.parse(collapsedState) : false;
+    });
+    const [selected, setSelected] = useState(() => {
+        const storedSelected = localStorage.getItem('selectedMenuItem');
+        return storedSelected ? storedSelected : 'Dashboard';
+    });
+
+    useEffect(() => {
+        localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
+    }, [isCollapsed]);
+
+    useEffect(() => {
+        localStorage.setItem('selectedMenuItem', selected);
+    }, [selected]);
 
     return (
         <Box

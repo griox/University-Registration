@@ -12,6 +12,7 @@ export const Login = () => {
     function validateEmailFormat(val) {
         return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(val) || /w+([-+.]w+)*@w+([-.]w+)*.w+([-.]w+)*/.test(val);
     }
+
     const decodePath = (email) => {
         if (email) return email.replace(/%2E/g, '.');
         else return 0;
@@ -58,6 +59,7 @@ export const Login = () => {
             eyeBtn.removeEventListener('click', handleEyeClick);
         };
     }, []);
+
     const firebaseConfig = {
         apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
         authDomain: 'mock-proeject-b.firebaseapp.com',
@@ -116,6 +118,7 @@ export const Login = () => {
                                     toast.success('Correct');
                                     setIsLoggedIn(true);
                                     // navigate('/Register');
+                                    localStorage.setItem('isLoggedIn', 'true');
                                 } else {
                                     toast.error('Account not found. Please check your email and password again.');
                                 }

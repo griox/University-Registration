@@ -53,60 +53,41 @@ const Chart = () => {
     };
     return (
         <div className="container">
-            <div className="number-data">
-                <div className="item zoom-effect">
-                    <div>
-                        <UserOutlined className="icon-item" />
+            <div className="mainer">
+                <div className="cards">
+                    <div className="carder">
+                        <div className="card-content">
+                            <div className="number">1234</div>
+                            <div className="card-name">Students</div>
+                        </div>
+                        <UserOutlined className="icon-box" />
                     </div>
-                    <div className="content-item">
-                        <h5>Total Students</h5>
-                        <h3>$350.4</h3>
-                        <h3 style={{ float: 'left' }}>Demo</h3>
-                        <h3 style={{ float: 'right' }}>Demo2</h3>
+                    <div className="carder">
+                        <div className="card-content">
+                            <div className="number">1234</div>
+                            <div className="card-name">Students</div>
+                        </div>
+                        <UserOutlined className="icon-box" />
                     </div>
-                </div>
-                <div className="item zoom-effect">
-                    <div>
-                        <UserOutlined className="icon-item" />
-                    </div>
-                    <div className="content-item">
-                        <h5>Earning</h5>
-                        <h3>$350.4</h3>
-                    </div>
-                </div>
-                <div className="item zoom-effect">
-                    <div>
-                        <UserOutlined className="icon-item" />
-                    </div>
-                    <div className="content-item">
-                        <h5>Earning</h5>
-                        <h3>$350.4</h3>
+                    <div className="carder">
+                        <div className="card-content">
+                            <div className="number">1234</div>
+                            <div className="card-name">Students</div>
+                        </div>
+                        <UserOutlined className="icon-box" />
                     </div>
                 </div>
             </div>
-            <div className="chart">
-                <div className="chart-item">
-                    <h1>Table</h1>
-                    {/* { <Pie {...cf} />} */}
-                    {/* <DemoPie /> */}
-                </div>
-                <div className="chart-item">
+            <div className="charts">
+                <div className="charter">
+                    <h2>Demo</h2>
                     <DualAxes {...config} />
                 </div>
-                <div className="chart-item">
-                    <DualAxes {...config} />
-                </div>
-                <div className="chart-item">
-                    <DualAxes {...config} />
-                </div>
-                <div className="chart-item">
-                    <DualAxes {...config} />
-                </div>
-                <div className="chart-item">
+                <div className="charter" id="donut">
+                    <h2>Demo 2</h2>
                     <DualAxes {...config} />
                 </div>
             </div>
-            {/* //   {todos.length}  */}
         </div>
     );
 };

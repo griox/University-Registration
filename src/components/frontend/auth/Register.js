@@ -189,7 +189,7 @@ const Register = () => {
         width: '100%',
         height: '55px',
         padding: '0 15px',
-        margin: '10px 0',
+        margin: '5px 0 0 0',
         color: '#fff',
         background: '#003865',
         border: 'none',

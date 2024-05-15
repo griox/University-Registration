@@ -101,7 +101,7 @@ function Pr() {
                 // LiteratureScore: parseFloat(detail.LiteratureScore),
             })
                 .then(() => {
-                    toast('Đã cập nhập thành công');
+                    toast.success('Updated sucessfully');
                 })
                 .catch((error) => {
                     alert('lỗi' + error);
@@ -298,9 +298,8 @@ function Pr() {
                     <Space.Compact size="large">
                         {/* <div>{a.email}</div> */}
                         <Input
-                            addonBefore={'Name:'}
                             readOnly={allowInput}
-                            className="label-input"
+                            className="g-s"
                             value={detail.name}
                             onChange={(e) => handleChange(e, 'name')}
                             disabled={allowInput}
@@ -449,7 +448,7 @@ function Pr() {
                             className="g-s"
                             value={detail.email}
                             onChange={(e) => handleChange(e, 'email')}
-                            disabled={allowInput}
+                            disabled={true}
                         />
                     </Space.Compact>
                 </div>
@@ -465,10 +464,11 @@ function Pr() {
                             style={{
                                 width: '300px',
                                 height: 'auto',
+                                cursor: 'pointer',
                             }}
                             onChange={setValue}
                             suffixIcon={suffix}
-                            placeholder="Please select"
+                            placeholder="Only 5 universities"
                             options={arr}
                         />
                     </Space.Compact>

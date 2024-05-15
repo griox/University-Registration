@@ -74,6 +74,7 @@ h2 {
     height: 43px;
     width: 200px;
 }
+
 .addr {
     width: 300px;
 }
@@ -98,4 +99,7 @@ h2 {
 .uni {
     width: 500px;
     height: 300px;
+}
+.custom-select .ant-select-selector {
+    font-size: 16px;
 }

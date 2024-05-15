@@ -13,7 +13,7 @@
     width: 100%;
     padding: 25px 10px;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 30%);
     grid-gap: 50px;
 }
 
@@ -26,6 +26,7 @@
     border-radius: 10px;
     box-shadow: 0 7px 25px 0 rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
+    overflow: hidden;
 }
 
 .cards .carder:hover {
@@ -33,17 +34,24 @@
     transform: scale(1.05);
     box-shadow: 0 15px 35px 0 rgba(0, 0, 0, 0.2);
 }
-
+.card-content {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .number {
     font-size: 35px;
     font-weight: 500;
     color: #299b63;
+    width: 90%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .card-name {
     color: #888;
     font-weight: 600;
     font-size: 20px;
+    width: 90%;
 }
 
 .icon-box {

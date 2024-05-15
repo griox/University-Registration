@@ -1,5 +1,5 @@
 import 'firebase/auth';
-import { ref,  getDatabase, set } from 'firebase/database';
+import { ref,  getDatabase, set,get,update } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { useEffect } from 'react';
 const firebaseConfig = {
@@ -63,7 +63,7 @@ export function createStudentRecords() {
           let englishScore = getRandomNumber(0, 10);
           let averageScore = mathScore + literatureScore + englishScore;
           let isRegister = true;
-          let uniCode = [" "];
+          let uniCode = [];
           const Role = "user";
 
           writeStudentRecord(id, name, email, mathScore, literatureScore, englishScore, averageScore, isRegister, uniCode, Role);
@@ -73,9 +73,47 @@ export function createStudentRecords() {
      
   }
 }
+const unicodes = [
+  "ntu", "hcmut", "hust", "vnu", "uet",
+  "cantho", "dut", "tdtu", "pteu", "thuapvm",
+  "hutech", "uit", "ueh", "fpt", "rmit",
+  "uef", "ltu", "hpu", "ussh", "ute",
+  "uetv", "vnuhn", "huce", "vnuhcm", "hutechcantho",
+  "uetcantho", "uefcantho", "ltucantho", "hpucantho", "usshcantho",
+  "utecantho", "dutcantho", "tdtucantho", "pteucantho", "thuapvmcantho",
+  "hutechdanang", "uetdanang", "uefdanang", "ltudanang", "hpudanang",
+  "usshdanang", "utedanang", "dutdanang", "tdtudanang", "pteudana"
+];
+async function updateUniCodes() {
+  const studentsRef = ref(db, 'SinhVien');
+  try {
+    const snapshot = await get(studentsRef);
+    if (snapshot.exists()) {
+      const studentsData = snapshot.val();
+      for (const studentId in studentsData) {
+        if (Object.hasOwnProperty.call(studentsData, studentId)) {
+          const student = studentsData[studentId];
+          const numberOfUniCodes = getRandomNumber(1, 5); // Số lượng uniCodes ngẫu nhiên từ 1 đến 5
+          const randomUniCodes = [];
+          // Tạo một mảng chứa các uniCode ngẫu nhiên
+          for (let i = 0; i < numberOfUniCodes; i++) {
+            randomUniCodes.push(unicodes[Math.floor(Math.random() * unicodes.length)]);
+          }
+          // Update giá trị uniCodes cho sinh viên
+          await update(ref(studentsRef.child(studentId)), { uniCodes: randomUniCodes });
+          console.log(`Updated uniCodes for student ${studentId}`);
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error updating uniCodes:', error);
+  }
+}
+
 export function useCreateStudentRecordsOnMount() {
   useEffect(() => {
-      createStudentRecords();
+    updateUniCodes()
   }, []); // Thực hiện chỉ một lần khi component được mount
 }
+
 

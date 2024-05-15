@@ -60,17 +60,38 @@ const Student_List = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const [studentData, setStudentData] = useState([]);
+  const [uniCodeData, setUniCodeData] = useState({}); // State to store uniCode data
   const tableRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const studentRef = child(ref(db), 'SinhVien/');
       try {
-        const snapshot = await get(studentRef);
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          const studentArray = Object.values(data).map(student => ({ ...student, key: student.id }));
+        const studentRef = child(ref(db), 'SinhVien');
+        const inforRef = child(ref(db), 'Infor');
+
+        const studentSnapshot = await get(studentRef);
+        const inforSnapshot = await get(inforRef);
+
+        if (studentSnapshot.exists() && inforSnapshot.exists()) {
+          const studentData = studentSnapshot.val();
+          const inforData = inforSnapshot.val();
+
+          // Convert Infor data to an object with ID as key
+          const inforObject = {};
+          Object.values(inforData).forEach(info => {
+            inforObject[info.id] = info.uniCode.join(', ');
+          });
+
+          // Map through SinhVien data to add uniCode from Infor
+          const studentArray = Object.values(studentData).map(student => ({
+            ...student,
+            key: student.id,
+            uniCode: inforObject[student.id] // Assign uniCode from Infor data
+          }));
+        
+
           setStudentData(studentArray);
+          setUniCodeData(inforObject); // Set uniCode data
         }
       } catch (error) {
         console.error(error);
@@ -385,8 +406,9 @@ const Student_List = () => {
     },
     {
       title: 'Unicode',
-      dataIndex: 'age',
-      width: '10%',
+      dataIndex: 'uniCode',
+      width: '13%',
+      render: (text, record) => <span>{uniCodeData[record.id]}</span>,
     },
     {
       title: 'Manage',

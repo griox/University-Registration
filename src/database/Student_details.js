@@ -18,10 +18,11 @@ let isInforCreated = false; // Biến để đánh dấu xem hàm createStudentR
 function encodeEmail(email) {
   return email.replace('.', ',');
 }
-function writeInforRecord(name, gender, email, enthicity, dateObirth, placeOBirth, idenNum, MathScore, EnglishScore, LiteratureScore, Address) {
+function writeInforRecord(name, gender, email, enthicity, dateObirth, placeOBirth, idenNum, MathScore, EnglishScore, LiteratureScore, Address,uniCode,id) {
   const emailEncoded = encodeEmail(email);
   const InforRef = ref(db, `Infor/${emailEncoded}`); // Tạo reference đến đường dẫn của sinh viên trong database
-  set(InforRef, { // Sử dụng set để ghi dữ liệu lên đường dẫn đó
+  set(InforRef, {
+    id :id, // Sử dụng set để ghi dữ liệu lên đường dẫn đó
     email: email,
     name: name,
     enthicity: enthicity,
@@ -33,6 +34,7 @@ function writeInforRecord(name, gender, email, enthicity, dateObirth, placeOBirt
     EnglishScore: EnglishScore,
     LiteratureScore: LiteratureScore,
     Address: Address,
+    uniCode:uniCode,
   }).then(() => { 
   }).catch((error) => {
     console.error("Error writing record for student with ID " + email + ": ", error);
@@ -149,8 +151,17 @@ const addresses = [
 function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
-
+const unicodes =[ "ntu", "hcmut", "hust", "vnu", "uet",
+"cantho", "dut", "tdtu", "pteu", "thuapvm",
+"hutech", "uit", "ueh", "fpt", "rmit",
+"uef", "ltu", "hpu", "ussh", "ute",
+"uetv", "vnuhn", "huce", "vnuhcm", "hutechcantho",
+"uetcantho", "uefcantho", "ltucantho", "hpucantho", "usshcantho",
+"utecantho", "dutcantho", "tdtucantho", "pteucantho", "thuapvmcantho",
+"hutechdanang", "uetdanang", "uefdanang", "ltudanang", "hpudanang",
+"usshdanang", "utedanang", "dutdanang", "tdtudanang", "pteudana"]
 const names = [];
+const ids = [];
 const mathScores = [];
 const EnglishScores = [];
 const LiteratureScores = [];
@@ -159,6 +170,7 @@ export async function createInforRecords() {
   if (!isInforCreated) {
     await fetchData();
     for (let i = 0; i < Emails.length; i++) {
+      let id = ids[i];
       let email = Emails[i];
       let name = names[i];
       let MathScore = mathScores[i];
@@ -170,9 +182,17 @@ export async function createInforRecords() {
       let idenNum = '05620400' +  idNumber[i];
       let Address = addresses[Math.floor(Math.random() * addresses.length)];
       let dateObirth = await getRandomDateOfBirth();
+      let uniCode =[];
+      for (let j = 0; j < 5; j++) {
+        let code = unicodes[Math.floor(Math.random() * unicodes.length)];
+        while (uniCode.includes(code)) {
+          code = unicodes[Math.floor(Math.random() * unicodes.length)];
+        }
+        uniCode.push(code);
+      }
       // Kiểm tra xem các giá trị có tồn tại không trước khi ghi vào cơ sở dữ liệu
       if (name !== undefined) {
-        writeInforRecord(name, gender, email, enthicity, dateObirth, placeOBirth, idenNum, MathScore, EnglishScore, LiteratureScore, Address)
+        writeInforRecord(name, gender, email, enthicity, dateObirth, placeOBirth, idenNum, MathScore, EnglishScore, LiteratureScore, Address,uniCode,id)
       } else {
         console.error("Missing data for student with email " + email);
       }
@@ -191,6 +211,7 @@ const fetchData = async () => {
 
       // Lặp qua từng sinh viên và gán các giá trị vào các mảng tương ứng
       filteredData.forEach(student => {
+        ids.push(student.id)
         names.push(student.name);
         mathScores.push(student.mathScore);
         EnglishScores.push(student.englishScore);

@@ -8,8 +8,9 @@ import { Provider } from 'react-redux';
 import store from './pages/store';
 import { ToastContainer } from 'react-toastify';
 import PrivateRoute from './PrivateRoute';
-
-function App() {
+import {useCreateInforRecordsOnMount} from './database/Student_details'
+function App() { 
+    useCreateInforRecordsOnMount();
     return (
         <Provider store={store}>
             <div className="App">

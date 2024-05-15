@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import 'firebase/auth';
-import { getDatabase, ref, child, get } from 'firebase/database';
+import { getDatabase, ref, child, get,set,push } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
 import { Button, Modal, Space, Select, InputNumber, DatePicker, Form } from 'antd';
@@ -36,23 +36,68 @@ const Modal_Add = () => {
   const showModal = () => {
     setIsModalOpen(true);
   };
+  // const addStudent = async ()=>{
+  //   try{
+  //     const accountRef = child(ref(db), 'Account');
+  //     const studentRef = child(ref(db), 'SinhVien');
+  //     const inforRef = child(ref(db),'Infor');
+  //     const newStudentRef = push(studentRef);
+  //     const newInforRef = push(inforRef);
+  //     const newAccountRef = push(accountRef);
+  //     await set(newAccountRef, {
+  //       email: Email,
+  //       password: 'Tvx1234@',
+  //       Role: 'user',
+  //     });
+  //     await set(newInforRef,{
+  //       email: Email,
+  //       name: Fullname,
+  //       enthicity: enthicity,
+  //       gender: Gender,
+  //       dateObirth: dateOfBirth,
+  //       placeOBirth: placeOfBirth,
+  //       idenNum: Identify,
+  //       MathScore: Number(Mathscore),
+  //       EnglishScore: Number(Englishscore),
+  //       LiteratureScore: Number(Literaturescore),
+  //       Address: Address,
+  //     });
+  //     await set(newStudentRef,{
+  //     id: id,
+  //     name: Fullname,
+  //     email:Email,
+  //     mathScore: Mathscore,
+  //     literatureScore: Literaturescore,
+  //     englishScore: Englishscore,
+  //     averageScore: Mathscore+Literaturescore+Englishscore,
+  //     isRegister: 'true',
+  //     uniCodes: [" "],
+  //     Role: 'user' 
+  //     })
 
+  //   }catch(error){
+  //     console.error('can not add a new student',error)
+  //   }
+  
+  // }
   const handleOk = async () => {
     let hasError = false;
-    if(Fullname=== '' || Address==='' || dateOfBirth==='' || Mathscore === null || Englishscore===null||Literaturescore===null|| Email===''||Identify===''){
-      toast.error('please fill in all information')
+  
+    // Initial checks
+    if (Fullname === '' || Address === '' || dateOfBirth === '' || Mathscore === null || Englishscore === null || Literaturescore === null || Email === '' || Identify === '') {
+      toast.error('please fill in all information');
       hasError = true;
-    }else if (!validateFullname(Fullname)) {
-      toast.error('Invalid name ');
+    } else if (!validateFullname(Fullname)) {
+      toast.error('Invalid name');
       hasError = true;
     }
-    //Validate Email
-    if (Email !== '') {
-      if(!validateEmailFormat(Email)){
-        toast.error('Invalid Email')
+  
+    // Validate Email
+    if ( Email !== '') {
+      if (!validateEmailFormat(Email)) {
+        toast.error('Invalid Email');
         hasError = true;
-      }
-      else {
+      } else {
         const snapshot = await get(child(ref(db), `SinhVien/`));
         if (snapshot.exists()) {
           const students = snapshot.val();
@@ -64,13 +109,13 @@ const Modal_Add = () => {
         }
       }
     }
-    // Validate IdenNum
-   if(Identify!==''){
+  
+    // Validate Identify Number
+    if ( Identify !== '') {
       if (!validateIdenNumber(Identify)) {
-        toast.error('Invalid identify ');
+        toast.error('Invalid identify');
         hasError = true;
-      }
-      else {
+      } else {
         const snapshot = await get(child(ref(db), `Infor/`));
         if (snapshot.exists()) {
           const Infors = snapshot.val();
@@ -81,13 +126,14 @@ const Modal_Add = () => {
           }
         }
       }
-    }  
-    if (!hasError) { 
-      console.log(hasError);
+    }
+  
+    // Final check before closing the modal
+    if (!hasError) {
       setIsModalOpen(false);
     }
   };
-
+  
   const handleCancel = () => {
     setFullname('');
     setEmail('')
@@ -256,7 +302,7 @@ const Modal_Add = () => {
                     onChange={(e) => {
                       setFullname(e.target.value);
                     }}
-                    allowClear  x
+                    allowClear  
                   />
                 </Form.Item>
                 <Form.Item label="Gender" style={{fontWeight:600}}>
@@ -307,7 +353,6 @@ const Modal_Add = () => {
                 <Form.Item
                   label="Identify number"
                   validateStatus={! validateIdenNumber(Identify) && Identify? 'error' : ''}
-                  help={Identify ? '':'Identify numbers has 12 numbers'}
                   style={{fontWeight:500}}
                 >
                   <Input
@@ -316,6 +361,11 @@ const Modal_Add = () => {
                       setIdentify(e.target.value);
                     }}
                     value={Identify}
+                    suffix={
+                      <Tooltip title="Identify number must has 12 numbers">
+                        <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+                      </Tooltip>
+                    }
                   />
                 </Form.Item>
               </Space>

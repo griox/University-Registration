@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Box, IconButton, useTheme } from '@mui/material';
 import { ColorModeContext, tokens } from '../../theme';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import { Dropdown, Space } from 'antd';
+import { Dropdown, Space, message } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 

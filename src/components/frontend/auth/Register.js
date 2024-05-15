@@ -3,7 +3,7 @@ import 'firebase/auth';
 import { getDatabase, ref, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 const Register = () => {
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
@@ -35,6 +35,8 @@ const Register = () => {
         if (email) return email.replace(/\./g, ',');
         else return 0;
     };
+
+    const history = useHistory();
 
     useEffect(() => {
         const passwordInput1 = document.querySelector('.pass_login_1');
@@ -175,9 +177,9 @@ const Register = () => {
                         <p className="featured">
                             Please REGISTER to continue <br /> or <br /> <br />
                             <span>
-                                <Link className="btn-getback" to="/admin/dashboard">
+                                <button className="btn-getback" onClick={() => history.goBack()}>
                                     Get back
-                                </Link>
+                                </button>
                             </span>
                         </p>
                     </div>

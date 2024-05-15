@@ -57,24 +57,52 @@ const Chart = () => {
                 <div className="cards">
                     <div className="carder">
                         <div className="card-content">
-                            <div className="number">1234</div>
-                            <div className="card-name">Students</div>
+                            <div className="card-title">Total Students</div>
                         </div>
-                        <UserOutlined className="icon-box" />
+                        <div className="card-content">
+                            <div className="card-name">Number of Students: &nbsp;1234</div>
+                            {/* <div className="number">&nbsp;1234</div> */}
+                        </div>
+                        <div className="card-content">
+                            <div className="card-name">Number of Students has average grater than 5: &nbsp;1234</div>
+                            {/* <div className="number">&nbsp;1234</div> */}
+                        </div>
+                        <div className="card-content">
+                            <div className="card-name">Number of Students has average less than 5: &nbsp;1234</div>
+                            {/* <div className="number">&nbsp;1234</div> */}
+                        </div>
                     </div>
                     <div className="carder">
                         <div className="card-content">
-                            <div className="number">1234</div>
-                            <div className="card-name">Students</div>
+                            <div className="card-title">Total Students</div>
                         </div>
-                        <UserOutlined className="icon-box" />
+                        <div className="card-content">
+                            <div className="card-name">Number of University: &nbsp;1234</div>
+                            {/* <div className="number">&nbsp;1234</div> */}
+                        </div>
+                        <div className="card-content">
+                            <div className="card-name">
+                                Number of University has more than 50% registration: &nbsp;1234
+                            </div>
+                            {/* <div className="number">&nbsp;1234</div> */}
+                        </div>
+                        <div className="card-content">
+                            <div className="card-name">
+                                Number of University has less than 50% registration: &nbsp;1234
+                            </div>
+                            {/* <div className="number">&nbsp;1234</div> */}
+                        </div>
                     </div>
                     <div className="carder">
                         <div className="card-content">
-                            <div className="number">1234</div>
-                            <div className="card-name">Students</div>
+                            <div className="card-name">Total of registration: &nbsp;1234</div>
+                            {/* <div className="number">&nbsp;1234</div> */}
                         </div>
-                        <UserOutlined className="icon-box" />
+                    </div>
+                    <div className="carder">
+                        <div className="card-content">
+                            <div className="card-title">Total Students</div>
+                        </div>
                     </div>
                 </div>
             </div>

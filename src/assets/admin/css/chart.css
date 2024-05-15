@@ -9,16 +9,39 @@
     display: flex;
 }
 
+/* .carder {
+    display: flex;
+    align-items: center;
+} */
+
+.carder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 7px 25px 0 rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    padding: 20px;
+    grid-gap: 10px;
+}
+
+.card-content {
+    display: flex;
+    width: 100%;
+    position: relative;
+}
+
 .cards {
     width: 100%;
     padding: 25px 10px;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-gap: 50px;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 20px;
 }
 
 .cards .carder {
-    padding: 35px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -29,13 +52,13 @@
 }
 
 .cards .carder:hover {
-    padding: 25px;
+    /* padding: 25px; */
     transform: scale(1.05);
     box-shadow: 0 15px 35px 0 rgba(0, 0, 0, 0.2);
 }
 
 .number {
-    font-size: 35px;
+    font-size: 13px;
     font-weight: 500;
     color: #299b63;
 }
@@ -43,7 +66,16 @@
 .card-name {
     color: #888;
     font-weight: 600;
-    font-size: 20px;
+    font-size: 13px;
+}
+
+.line {
+    position: absolute; /* Đặt vị trí tuyệt đối để nằm ở góc trái của phần tử cha */
+    left: 0; /* Đặt ở góc trái */
+    top: 0; /* Đặt ở góc trên cùng */
+    width: 100%; /* Chiều rộng tương đương với phần tử cha */
+    height: 1px; /* Độ dày của đường kẻ */
+    background-color: black; /* Màu sắc của đường kẻ */
 }
 
 .icon-box {
@@ -53,8 +85,8 @@
 
 .charts {
     display: grid;
-    grid-template-columns: 2fr 1fr;
-    grid-gap: 40px;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 35px;
     width: 100%;
     padding: 20px;
     padding-top: 0;

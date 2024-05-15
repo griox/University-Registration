@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box } from '@mui/material';
 import Header from '../../components/Header';
 import AddSchool from '../../pages/University/AddSchool';
@@ -21,9 +21,15 @@ const AddUniversity = () => {
     const handleCancel = () => {
         setVisible(false);
     };
+    useEffect(() => {
+        localStorage.setItem('Pages', JSON.stringify('UNIVERSITY'));
+    }, []);
+
     return (
         <Box m="20px">
-            <Header title="ADD UNIVERSITY" subtitle="List of University" />
+            {/* <Header title="ADD UNIVERSITY" subtitle="List of University" /> */}
+            <Header title="ADD UNIVERSITY" />
+
             <div
                 style={{
                     display: 'flex',

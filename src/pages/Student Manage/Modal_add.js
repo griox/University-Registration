@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import 'firebase/auth';
-import { getDatabase } from 'firebase/database';
+import { getDatabase, ref, child, get } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
-import { Button, Modal, Space, Select, InputNumber, DatePicker } from 'antd';
+import { Button, Modal, Space, Select, InputNumber, DatePicker, Form } from 'antd';
 import { InfoCircleOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
 import { Input, Tooltip } from 'antd';
-import './Modal_add.css'
+
+
 const firebaseConfig = {
   apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
   authDomain: 'mock-proeject-b.firebaseapp.com',
@@ -18,67 +19,106 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+
 const Modal_Add = () => {
   const [Fullname, setFullname] = useState('');
   const [Gender, setGender] = useState('female');
-  const [Email,setEmail] = useState('');
+  const [Email, setEmail] = useState('');
   const [Identify, setIdentify] = useState('');
   const [Address, setAddress] = useState('');
-  const [enthicity, setEnthicity] = useState('Kinh'); 
-  const [dateOfBirth, setDateOfBirth] = useState(null); 
-  const [placeOfBirth, setPlaceOfBirth] = useState(''); 
+  const [enthicity, setEnthicity] = useState('Kinh');
+  const [dateOfBirth, setDateOfBirth] = useState('');
+  const [placeOfBirth, setPlaceOfBirth] = useState('Khánh Hòa');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [Mathscore, setMathscore] = useState(null);
-  const [Englishscore,setEnglishscore]=useState(null);
+  const [Englishscore, setEnglishscore] = useState(null);
   const [Literaturescore, setLiteraturescore] = useState(null);
-
   const showModal = () => {
     setIsModalOpen(true);
   };
+
   const handleOk = async () => {
-    if(!validateFullname(Fullname)){
-      toast.error('Name must contain lowercase, uppercase letters and spaces between');
-      return;
+    let hasError = false;
+    if(Fullname=== '' || Address==='' || dateOfBirth==='' || Mathscore === null || Englishscore===null||Literaturescore===null|| Email===''||Identify===''){
+      toast.error('please fill in all information')
+      hasError = true;
+    }else if (!validateFullname(Fullname)) {
+      toast.error('Invalid name ');
+      hasError = true;
     }
-    if(!validateEmailFormat(Email)){
-      toast.error("Invalid email format")
-      return;
+    //Validate Email
+    if (Email !== '') {
+      if(!validateEmailFormat(Email)){
+        toast.error('Invalid Email')
+        hasError = true;
+      }
+      else {
+        const snapshot = await get(child(ref(db), `SinhVien/`));
+        if (snapshot.exists()) {
+          const students = snapshot.val();
+          const emailExists = Object.values(students).some((user) => user.email === Email);
+          if (emailExists) {
+            toast.error('This email has already exists');
+            hasError = true;
+          }
+        }
+      }
     }
-    if(!validateIdenNumber(Identify)){
-      toast.error("Indentify number must have 12 numbers");
-    }
-    else{
+    // Validate IdenNum
+   if(Identify!==''){
+      if (!validateIdenNumber(Identify)) {
+        toast.error('Invalid identify ');
+        hasError = true;
+      }
+      else {
+        const snapshot = await get(child(ref(db), `Infor/`));
+        if (snapshot.exists()) {
+          const Infors = snapshot.val();
+          const IdenExists = Object.values(Infors).some((user) => user.idenNum === Identify);
+          if (IdenExists) {
+            toast.error('This identify number has already exists');
+            hasError = true;
+          }
+        }
+      }
+    }  
+    if (!hasError) { 
+      console.log(hasError);
       setIsModalOpen(false);
     }
-   
   };
+
   const handleCancel = () => {
+    setFullname('');
+    setEmail('')
+    setDateOfBirth('');
+    setAddress('');
+    setPlaceOfBirth('');
+    setIdentify('');
+    setMathscore(null);
+    setEnglishscore(null);
+    setLiteraturescore(null);
     setIsModalOpen(false);
   };
+
   function validateEmailFormat(email) {
-    return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(email) || /w+([-+.]w+)*@w+([-.]w+)*.w+([-.]w+)*/.test(email);
+    return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(email);
   }
+
   function validateFullname(name) {
     return /^[A-Za-z]+$/.test(name);
   }
   
-  function validateIdenNumber(idenNum){
-      if (idenNum.length ===12) {
-        return true;
-    } else {
-        return false;
-    }
+
+  function validateIdenNumber(idenNum) {
+    return idenNum.length === 12;
   }
+
   const genders = [
-    {
-      value: 'female',
-      label: 'Female',
-    },
-    {
-      value: 'male',
-      label: 'Male',
-    },
+    { value: 'female', label: 'Female' },
+    { value: 'male', label: 'Male' },
   ];
+
   const enthicities = [
     { value: 'kinh', label: 'Kinh' },
     { value: 'tay', label: 'Tay' },
@@ -93,11 +133,11 @@ const Modal_Add = () => {
     { value: 'mong', label: 'Mong' },
     { value: 'pupeo', label: 'Pupeo' },
     { value: 'raglai', label: 'Raglai' },
-    { value: 'bana', label: 'Bana' }, // Removed space after Ba
+    { value: 'bana', label: 'Bana' },
     { value: 'xodang', label: 'Xodang' },
     { value: 'coho', label: 'Coho' },
     { value: 'santieng', label: 'Santieng' },
-    { value: 'ede', label: 'Ede' }, // Removed space after Ê
+    { value: 'ede', label: 'Ede' },
     { value: 'giarai', label: 'Gia Rai' },
     { value: 'bruvankieu', label: 'Bru Van Kieu' },
     { value: 'tao', label: 'Tao' },
@@ -114,16 +154,17 @@ const Modal_Add = () => {
     { value: 'ma', label: 'Ma' },
     { value: 'colao', label: 'Co Lao' },
     { value: 'khmerlo', label: 'Khmer Lo' },
-    { value: 'khmum', label: 'Khmu' }, // Changed from khmum to Khmu
+    { value: 'khmum', label: 'Khmu' },
     { value: 'laha', label: 'Laha' },
     { value: 'lolo', label: 'Lolo' },
     { value: 'chero', label: 'Chero' },
     { value: 'khmerdam', label: 'Khmer Dam' },
     { value: 'khmersrei', label: 'Khmer Srei' },
     { value: 'xtieng', label: 'Xtieng' },
-    { value: 'muong2', label: 'Muong' }, // Changed from muong to Muong2
+    { value: 'muong2', label: 'Muong' },
     { value: 'khmer', label: 'Khmer' },
   ];
+
   const cities = [
     { value: 'An Giang', label: 'An Giang' },
     { value: 'Bà Rịa - Vũng Tàu', label: 'Bà Rịa - Vũng Tàu' },
@@ -187,96 +228,123 @@ const Modal_Add = () => {
     { value: 'Đà Nẵng', label: 'Đà Nẵng' },
     { value: 'Hải Phòng', label: 'Hải Phòng' },
     { value: 'Hà Nội', label: 'Hà Nội' },
-    { value: 'Hồ Chí Minh', label: 'Hồ Chí Minh' }
+    { value: 'Hồ Chí Minh', label: 'Hồ Chí Minh' },
   ];
-  
-  
-  
+
   const { TextArea } = Input;
+
   return (
     <>
       <Button type="primary" onClick={showModal}>
         Add a new student
       </Button>
       <Modal title="Register for Student" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={600}>
-        <Space direction="vertical" >
-          <Space.Compact size='small'>
-            <Space size={'large'}>
-              <label className='font_label'> Name:</label>
-              <Input
-                placeholder="Enter Student's name"
-                prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
-                value={Fullname}
-                onChange={(e)=>setFullname(e.target.value)}
-              />
-              <label className='font_label'>Gender:</label>
-              <Select defaultValue="Female " options={genders} onChange={(value)=>setGender(value)} />
-            </Space>
-          </Space.Compact>
-          <Space.Compact>
-            <Space size={'large'}>
-              <label className='font_label'>Email:</label>
-              <Input
-                placeholder="Enter Student's email"
-                prefix={<MailOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
-                suffix={
-                  <Tooltip title="Private Email">
-                    <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
-                  </Tooltip>
-                }
-                style={{ width: '100%' }}
-                value={Email}
-                onChange={(e)=>setEmail(e.target.value)}
-              />
-              <label className='font_label'>Enthicity:</label>
-              <Select defaultValue="Kinh " options={enthicities}   onChange={(value)=>setEnthicity(value)} showSearch style={{width:150}} />
-            </Space>
-
-          </Space.Compact>
-          <Space.Compact>
-            <Space>
-              <label className='font_label'>Date of birth:</label>
-              <DatePicker format="DD/MM/YYYY"
-              onChange={(date,dateString)=>setDateOfBirth(dateString)} />
-            </Space>
-          </Space.Compact>
-          <Space.Compact>
-            <Space>
-              <label className='font_label'>Place of Birth:</label>
-              <Select defaultValue="Khanh Hoa " options={cities} showSearch style={{width:150}} onChange={(value)=>setPlaceOfBirth(value)} />
-            </Space>
-          </Space.Compact>
-          <Space.Compact>
-            <Space>
-              <label className='font_label'>Identify number</label>
-              <Input variant='filled' onChange={(e)=>setIdentify(e.target.value)} value={Identify}/>
-            </Space>
-          </Space.Compact>
-          <Space.Compact>
-            <Space wrap>
-              <div>
-                <label className='font_label'>Math: </label>
-                <InputNumber min={0} max={10} step={0.2} onChange={(value)=>console.log(value)} />
-              </div>
-              <div>
-                <label className='font_label'>English: </label>
-                <InputNumber min={0} max={10} step={0.2} onChange={(value)=>console.log(value)}/>
-              </div>
-              <div>
-                <label className='font_label'>Literature: </label>
-                <InputNumber min={0} max={10} step={0.2} onChange={(value)=>console.log(value)}/>
-              </div>
-            </Space>
-          </Space.Compact>
-          <Space.Compact>
-            <Space>
-            <label className='font_label'>Address:</label>
-            <TextArea showCount maxLength={100} placeholder="Student's Address" onChange={(e)=>setAddress(e.target.value)} value={Address}/>
-            </Space>
-          </Space.Compact>
+        <Space direction="vertical">
+          <Form>
+            <Space.Compact size="small">
+              <Space size={'large'}>
+                <Form.Item
+                  label="Name"
+                  validateStatus={!validateFullname(Fullname) && Fullname ? 'error' : ''}
+                  help={validateFullname(Fullname) && Fullname ? '' : 'Name must contain only letters and no spaces'}
+                  style={{fontWeight:600}}
+                >
+                  <Input
+                    placeholder="Enter Student's name"
+                    prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
+                    value={Fullname}
+                    onChange={(e) => {
+                      setFullname(e.target.value);
+                    }}
+                    allowClear  x
+                  />
+                </Form.Item>
+                <Form.Item label="Gender" style={{fontWeight:600}}>
+                  <Select defaultValue="female" options={genders} onChange={(value) => setGender(value)} />
+                </Form.Item>
+              </Space>
+            </Space.Compact>
+            <Space.Compact>
+              <Space size={'large'}>
+                <Form.Item
+                  label="Email"
+                  validateStatus={!validateEmailFormat(Email) && Email? 'error' : ''}
+                  help={validateEmailFormat(Email) && Email ? '':'Email must contain @gmail'}
+                  style={{fontWeight:500}}
+                >
+                  <Input
+                    placeholder="Enter Student's email"
+                    prefix={<MailOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
+                    suffix={
+                      <Tooltip title="Private Email">
+                        <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+                      </Tooltip>
+                    }
+                    style={{ width: '100%' }}
+                    value={Email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                    }}
+                  />
+                </Form.Item>
+                <Form.Item label="Enthicity"  style={{fontWeight:500}}>
+                  <Select defaultValue="Kinh" options={enthicities} onChange={(value) => setEnthicity(value)} showSearch style={{ width: 150 }} />
+                </Form.Item>
+              </Space>
+            </Space.Compact>
+            <Space.Compact>
+              <Space size={'large'}>
+                <Form.Item label="Date of Birth"  style={{fontWeight:500}}>
+                  <DatePicker format="DD/MM/YYYY" value={dateOfBirth} onChange={(dateString) => setDateOfBirth(dateString)} />
+                </Form.Item>
+                <Form.Item label="Place of Birth" style={{fontWeight:500}}>
+                  <Select defaultValue='Khánh Hòa'  options={cities} showSearch style={{ width: 150 }} onChange={(value) => setPlaceOfBirth(value)} />
+                </Form.Item>
+              </Space>
+              </Space.Compact>
+            <Space.Compact>
+              <Space>
+                <Form.Item
+                  label="Identify number"
+                  validateStatus={! validateIdenNumber(Identify) && Identify? 'error' : ''}
+                  help={Identify ? '':'Identify numbers has 12 numbers'}
+                  style={{fontWeight:500}}
+                >
+                  <Input
+                    variant="filled"
+                    onChange={(e) => {
+                      setIdentify(e.target.value);
+                    }}
+                    value={Identify}
+                  />
+                </Form.Item>
+              </Space>
+            </Space.Compact>
+            <Space.Compact>
+              <Space wrap>
+                <Form.Item label="Math" style={{fontWeight:500}}>
+                  <InputNumber min={0} max={10} step={0.2} value={Mathscore} onChange={(value) => setMathscore(value)} />
+                </Form.Item>
+                <Form.Item label="English" style={{fontWeight:500}}>
+                  <InputNumber min={0} max={10} step={0.2} value={Englishscore} onChange={(value) => setEnglishscore(value)} />
+                </Form.Item>
+                <Form.Item label="Literature" style={{fontWeight:500}}>
+                  <InputNumber min={0} max={10} step={0.2} value={Literaturescore} onChange={(value) => setLiteraturescore(value)} />
+                </Form.Item>
+              </Space>
+            </Space.Compact>
+            <Space.Compact>
+              <Space>
+                <Form.Item label="Address" style={{fontWeight:500}}>
+                  <TextArea showCount maxLength={100} placeholder="Student's Address" onChange={(e) => setAddress(e.target.value)} value={Address} />
+                </Form.Item>
+              </Space>
+            </Space.Compact>
+          </Form>
         </Space>
-      </Modal >
+      </Modal>
     </>
   );
 };
+
 export default Modal_Add;

@@ -477,7 +477,7 @@ const Student_List = () => {
           columns={mergedColumns}
           scroll={{
             x: 800,
-            y: 400,
+            y: 500,
           }}
           rowClassName="editable-row"
           showSorterTooltip={{

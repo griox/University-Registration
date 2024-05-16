@@ -9,6 +9,7 @@ const initState = {
     EnglishScore: 0,
     MathScore: 0,
     LiteratureScore: 0,
+    uniCode: [],
 };
 
 const reducer = (state = initState, action) => {

@@ -88,12 +88,16 @@ const Navbar = () => {
         <Box
             display="flex"
             position="sticky"
+            bgcolor="#fff"
             width="100%"
             zIndex={1000}
-            bgcolor="#ffffff"
             top="0"
             left="0"
             justifyContent="space-between"
+            boxShadow=" 0 7px 25px 0 rgba(0, 0, 0, 0.1);
+
+
+"
             p={2}
         >
             {/* SEARCH BAR */}

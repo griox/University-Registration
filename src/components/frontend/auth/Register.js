@@ -5,6 +5,7 @@ import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { Button } from 'antd';
+import { useHistory } from 'react-router-dom';
 
 const Register = () => {
     const [fullName, setFullName] = useState('');
@@ -20,6 +21,7 @@ const Register = () => {
         messagingSenderId: '898832925665',
         appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
     };
+    const history = useHistory();
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
@@ -238,9 +240,9 @@ const Register = () => {
                         <p className="featured">
                             Please REGISTER to continue <br /> or <br /> <br />
                             <span>
-                                <Link className="btn-getback" to="/admin/dashboard">
+                                <button className="btn-getback" onClick={() => history.goBack()}>
                                     Get back
-                                </Link>
+                                </button>
                             </span>
                         </p>
                     </div>

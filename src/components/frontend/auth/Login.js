@@ -113,6 +113,9 @@ export const Login = () => {
                                     (item) => decodePath(item.email) === email && item.password === password,
                                 );
                                 if (y.length !== 0) {
+                                    localStorage.setItem('Role', y[0].Role);
+                                    // console.log(y[0].Role);
+                                    console.log(y);
                                     saveOnLocal();
                                     <Link to="/admin/dashboard" />;
                                     setIsLoggedIn(true);

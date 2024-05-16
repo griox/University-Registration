@@ -13,15 +13,12 @@
     width: 100%;
     padding: 25px 10px;
     display: grid;
-    grid-template-columns: repeat(3, 30%);
+    grid-template-columns: repeat(3, 1fr);
     grid-gap: 50px;
 }
 
 .cards .carder {
-    padding: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    padding: 35px 35px 35px 35px;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 7px 25px 0 rgba(0, 0, 0, 0.1);
@@ -37,31 +34,46 @@
 .card-content {
     overflow: hidden;
     text-overflow: ellipsis;
+    display: flex;
+    justify-content: center;
+    column-gap: 10px;
+    margin-right: 10px;
+
+    /* display: grid; */
+    /* grid-template-columns: 70% 30%; */
+}
+.content-chart {
+    display: flex;
+    column-gap: 5px;
+    width: auto;
 }
 .number {
-    font-size: 35px;
+    font-size: 60px;
     font-weight: 500;
-    color: #299b63;
-    width: 90%;
+    color: orange;
+    width: auto;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-align: center;
+    font-size: 70px;
+    font-weight: 1000;
 }
 
 .card-name {
-    color: #888;
     font-weight: 600;
-    font-size: 20px;
-    width: 90%;
+    font-size: 30px;
+    width: auto;
+    margin-top: 10px;
 }
 
 .icon-box {
     font-size: 45px;
     color: #299b63;
 }
-
+.number-below {
+    font-size: 50px;
+}
 .charts {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
     grid-gap: 40px;
     width: 100%;
     padding: 20px;
@@ -76,6 +88,11 @@
     width: 100%;
     box-shadow: 0 7px 25px 0 rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
 }
 
 .charter:hover {

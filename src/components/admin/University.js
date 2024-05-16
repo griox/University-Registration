@@ -28,7 +28,7 @@ const AddUniversity = () => {
     return (
         <Box m="20px">
             {/* <Header title="ADD UNIVERSITY" subtitle="List of University" /> */}
-            <Header title="UNIVERSITY MANAGERMENT" />
+            {/* <Header title="UNIVERSITY MANAGERMENT" /> */}
 
             <div
                 style={{

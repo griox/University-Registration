@@ -10,7 +10,7 @@ const Profile = () => {
         <Box m="20px">
             <Box display="flex" justifyContent="space-between" alignItems="center">
                 {/* <Header title="Student ManageMent" subtitle="List of Student" /> */}
-                <Header title="STUDENT MANAGERMENT" />
+                {/* <Header title="STUDENT MANAGERMENT" /> */}
             </Box>
             <div>
                 <Student_List />

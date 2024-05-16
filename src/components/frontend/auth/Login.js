@@ -162,17 +162,18 @@ export const Login = () => {
                 {/* STYLE */}
                 <link rel="stylesheet" href="assets/login/css/style.css" />
             </head>
-            <body background="hero-1.jpg">
+            <body>
                 <div className="form-container">
                     <div className="col col-1">
                         <div className="image_layer">
-                            <img src="assets/login/img/white-outline.png" className="form_img_main" alt="" />
+                            <img src="assets/login/img/FPTnew.png" className="form_img_main" alt="" />
+                            {/* <img src="assets/login/img/white-outline.png" className="form_img_main" alt="" />
                             <img src="assets/login/img/dots.png" className="form_img dots" alt="" />
                             <img src="assets/login/img/coin.png" className="form_img coin" alt="" />
                             <img src="assets/login/img/spring.png" className="form_img spring" alt="" />
                             <img src="assets/login/img/rocket.png" className="form_img rocket" alt="" />
                             <img src="assets/login/img/cloud.png" className="form_img cloud" alt="" />
-                            <img src="assets/login/img/stars.png" className="form_img stars" alt="" />
+                            <img src="assets/login/img/stars.png" className="form_img stars" alt="" /> */}
                         </div>
 
                         <p className="featured">
@@ -199,7 +200,7 @@ export const Login = () => {
                                             className="input-field"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
-                                            placeholder="Enter email here..."
+                                            placeholder="Email"
                                             required
                                         />
                                         <i className="bx bx-envelope icon"></i>
@@ -210,7 +211,7 @@ export const Login = () => {
                                             className="input-field pass_login"
                                             onChange={(e) => setPassword(e.target.value)}
                                             value={password}
-                                            placeholder="Enter password here..."
+                                            placeholder="Password"
                                             required
                                         />
 
@@ -238,7 +239,7 @@ export const Login = () => {
                     </div>
                 </div>
 
-                <div className="snowflakes" aria-hidden="true">
+                {/* <div className="snowflakes" aria-hidden="true">
                     <div className="snowflake">❅</div>
                     <div className="snowflake">❆</div>
                     <div className="snowflake">❅</div>
@@ -332,7 +333,7 @@ export const Login = () => {
               left:65%;-webkit-animation-delay:4s,2.5s;animation-delay:4s,2.5s
             }
           `}
-                </style>
+                </style> */}
 
                 {/* JS */}
                 <script src="assets/login/js/login.js"></script>

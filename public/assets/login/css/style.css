@@ -16,7 +16,7 @@
 /*----- login -----*/
 
 body {
-    background-image: url(../../images/hero-1.jpg);
+    background-image: url(../../images/cover.jpeg);
     background-position: center;
     background-size: cover;
     background-attachment: fixed;
@@ -59,7 +59,8 @@ body {
 }
 
 .form_img_main {
-    width: 400px;
+    width: 500px;
+    margin-top: 20px;
     animation: scale-up 3s ease-in-out alternate infinite;
 }
 

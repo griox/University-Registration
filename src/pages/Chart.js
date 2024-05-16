@@ -60,8 +60,10 @@ const Chart = () => {
                             <div className="card-title">Total Students</div>
                         </div>
                         <div className="card-content">
-                            <div className="card-name">Number of Students: &nbsp;1234</div>
-                            {/* <div className="number">&nbsp;1234</div> */}
+                            <div className="card-name">Number of Students:</div>
+                            <div className="number" title="demo">
+                                &nbsp;1234
+                            </div>
                         </div>
                         <div className="card-content">
                             <div className="card-name">Number of Students has average grater than 5: &nbsp;1234</div>

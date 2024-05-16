@@ -73,12 +73,11 @@ export const Login = () => {
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     function saveOnLocal() {
-        const emailEncode = email.replace(/\./g, ',');
-        get(child(ref(db), 'Infor')).then((snapshot) => {
+        get(child(ref(db), 'Detail/')).then((snapshot) => {
             if (snapshot.exists()) {
                 const x = snapshot.val();
                 for (let item in x) {
-                    if (item === emailEncode) {
+                    if (x[item].email === email) {
                         localStorage.setItem('Infor', JSON.stringify(x[item]));
                         localStorage.setItem('Email', JSON.stringify(email));
                         localStorage.setItem('LoginState', JSON.stringify(true));

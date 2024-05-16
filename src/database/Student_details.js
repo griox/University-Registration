@@ -18,11 +18,10 @@ let isInforCreated = false; // Biến để đánh dấu xem hàm createStudentR
 function encodeEmail(email) {
   return email.replace('.', ',');
 }
-function writeInforRecord(name, gender, email, enthicity, dateObirth, placeOBirth, idenNum, MathScore, EnglishScore, LiteratureScore, Address,uniCode,id) {
-  const emailEncoded = encodeEmail(email);
-  const InforRef = ref(db, `Infor/${emailEncoded}`); // Tạo reference đến đường dẫn của sinh viên trong database
-  set(InforRef, {
-    id :id, // Sử dụng set để ghi dữ liệu lên đường dẫn đó
+function writeInforRecord(name, gender, email, enthicity, dateObirth, placeOBirth, idenNum, MathScore, EnglishScore, LiteratureScore, Address, uniCode, id,AverageScore,isRegister) {
+  const DetailRef = ref(db, `Detail/${id}`);
+  set(DetailRef, {
+    id: id,
     email: email,
     name: name,
     enthicity: enthicity,
@@ -33,11 +32,13 @@ function writeInforRecord(name, gender, email, enthicity, dateObirth, placeOBirt
     MathScore: MathScore,
     EnglishScore: EnglishScore,
     LiteratureScore: LiteratureScore,
+    AverageScore: AverageScore,
     Address: Address,
-    uniCode:uniCode,
-  }).then(() => { 
+    uniCode: uniCode,
+    isRegister:isRegister
+  }).then(() => {
   }).catch((error) => {
-    console.error("Error writing record for student with ID " + email + ": ", error);
+    console.error( error);
   });
 }
 const getRandomDateOfBirth = async () => {
@@ -48,7 +49,6 @@ const getRandomDateOfBirth = async () => {
 
   return format(dateOfBirth, 'dd/MM/yyyy'); // Định dạng ngày và trả về dưới dạng dd/mm/yy
 };
-const idNumber =[''];
 const cities = [
   'An Giang',
   'Bà Rịa - Vũng Tàu',
@@ -160,47 +160,73 @@ const unicodes =[ "ntu", "hcmut", "hust", "vnu", "uet",
 "utecantho", "dutcantho", "tdtucantho", "pteucantho", "thuapvmcantho",
 "hutechdanang", "uetdanang", "uefdanang", "ltudanang", "hpudanang",
 "usshdanang", "utedanang", "dutdanang", "tdtudanang", "pteudana"]
+let idCounter = 0;
+function generateUniqueID() {
+  let uniqueId = 'SV' + (++idCounter).toString().padStart(3, '0');
+  return uniqueId;
+}
+function round(number, precision) {
+  let factor = Math.pow(10, precision);
+  return Math.round((number || 0) * factor) / factor;
+}
+const isRegisters =[];
+const idNumber=[];
 const names = [];
-const ids = [];
 const mathScores = [];
 const EnglishScores = [];
 const LiteratureScores = [];
 const Emails = [];
+const studentMap = {}; // Sử dụng một đối tượng để lưu trữ thông tin sinh viên bằng email và tên
 export async function createInforRecords() {
   if (!isInforCreated) {
     await fetchData();
+    console.log(names);
     for (let i = 0; i < Emails.length; i++) {
-      let id = ids[i];
+      let id = generateUniqueID(); // Tạo id duy nhất
+      console.log(id);
       let email = Emails[i];
       let name = names[i];
-      let MathScore = mathScores[i];
-      let EnglishScore = EnglishScores[i];
-      let LiteratureScore = LiteratureScores[i]
-      let gender = (Math.random() < 0.5 ? 'Male' : 'Female');
+      console.log(name);
+      let MathScore = parseFloat(mathScores[i])||0;
+      let EnglishScore = parseFloat(EnglishScores[i])||0;
+      let LiteratureScore = parseFloat(LiteratureScores[i])||0 ;
+      let gender = Math.random() < 0.5 ? 'Male' : 'Female';
+      let isRegister = isRegisters[i];
       const enthicity = 'Kinh';
       let placeOBirth = cities[Math.floor(Math.random() * cities.length)];
-      let idenNum = '05620400' +  idNumber[i];
+      let idenNum = '05620400' + idNumber[i];
       let Address = addresses[Math.floor(Math.random() * addresses.length)];
       let dateObirth = await getRandomDateOfBirth();
-      let uniCode =[];
-      for (let j = 0; j < 5; j++) {
+      let uniCode = [];
+      let AverageScore = round(MathScore+EnglishScore+LiteratureScore,1);
+      for (let j = 0; j < Math.floor(Math.random() * 5); j++) {
         let code = unicodes[Math.floor(Math.random() * unicodes.length)];
         while (uniCode.includes(code)) {
           code = unicodes[Math.floor(Math.random() * unicodes.length)];
         }
         uniCode.push(code);
-      }
-      // Kiểm tra xem các giá trị có tồn tại không trước khi ghi vào cơ sở dữ liệu
-      if (name !== undefined) {
-        writeInforRecord(name, gender, email, enthicity, dateObirth, placeOBirth, idenNum, MathScore, EnglishScore, LiteratureScore, Address,uniCode,id)
-      } else {
-        console.error("Missing data for student with email " + email);
-      }
+      } 
+      writeInforRecord(
+        name,
+        gender,
+        email,
+        enthicity,
+        dateObirth,
+        placeOBirth,
+        idenNum,
+        MathScore,
+        EnglishScore,
+        LiteratureScore,
+        Address,
+        uniCode,
+        id,
+        AverageScore, // Truyền id vào hàm
+        isRegister, 
+      );
     }
     isInforCreated = true;
   }
 }
-
 const fetchData = async () => {
   const studentRef = child(ref(db), 'SinhVien/');
   try {
@@ -211,13 +237,13 @@ const fetchData = async () => {
 
       // Lặp qua từng sinh viên và gán các giá trị vào các mảng tương ứng
       filteredData.forEach(student => {
-        ids.push(student.id)
         names.push(student.name);
         mathScores.push(student.mathScore);
         EnglishScores.push(student.englishScore);
         LiteratureScores.push(student.literatureScore);
         Emails.push(student.email);
         idNumber.push(getRandomNumber(1000, 9999));
+        isRegisters.push(student.isRegister);
       });
     }
   } catch (error) {

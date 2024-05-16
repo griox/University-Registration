@@ -22,7 +22,7 @@ const db = getDatabase(app);
 
 const Modal_Add = () => {
   const [Fullname, setFullname] = useState('');
-  const [Gender, setGender] = useState('female');
+  const [Gender, setGender] = useState('Female');
   const [Email, setEmail] = useState('');
   const [Identify, setIdentify] = useState('');
   const [Address, setAddress] = useState('');
@@ -36,50 +36,61 @@ const Modal_Add = () => {
   const showModal = () => {
     setIsModalOpen(true);
   };
-  // const addStudent = async ()=>{
-  //   try{
-  //     const accountRef = child(ref(db), 'Account');
-  //     const studentRef = child(ref(db), 'SinhVien');
-  //     const inforRef = child(ref(db),'Infor');
-  //     const newStudentRef = push(studentRef);
-  //     const newInforRef = push(inforRef);
-  //     const newAccountRef = push(accountRef);
-  //     await set(newAccountRef, {
-  //       email: Email,
-  //       password: 'Tvx1234@',
-  //       Role: 'user',
-  //     });
-  //     await set(newInforRef,{
-  //       email: Email,
-  //       name: Fullname,
-  //       enthicity: enthicity,
-  //       gender: Gender,
-  //       dateObirth: dateOfBirth,
-  //       placeOBirth: placeOfBirth,
-  //       idenNum: Identify,
-  //       MathScore: Number(Mathscore),
-  //       EnglishScore: Number(Englishscore),
-  //       LiteratureScore: Number(Literaturescore),
-  //       Address: Address,
-  //     });
-  //     await set(newStudentRef,{
-  //     id: id,
-  //     name: Fullname,
-  //     email:Email,
-  //     mathScore: Mathscore,
-  //     literatureScore: Literaturescore,
-  //     englishScore: Englishscore,
-  //     averageScore: Mathscore+Literaturescore+Englishscore,
-  //     isRegister: 'true',
-  //     uniCodes: [" "],
-  //     Role: 'user' 
-  //     })
-
-  //   }catch(error){
-  //     console.error('can not add a new student',error)
-  //   }
+  function round(number, precision) {
+    let factor = Math.pow(10, precision);
+    return Math.round((number || 0) * factor) / factor;
+  }
+  const generateID = async()=>{
+    const snapshot = await get(child(ref(db),'Detail'));
+    if (snapshot.exists()) {
+      // lấy ra từng sinh viên
+      const students = snapshot.val();
+      // Lấy ra danh sách ID của tất cả sinh viên
+      const studentIDs = Object.keys(students);
+      // Lấy ID của sinh viên cuối cùng trong danh sách
+      const lastStudentID = studentIDs[studentIDs.length - 1];
+      // Lay ra so cuoi cua Id
+      const lastIDNumber = parseInt(lastStudentID.slice(2));
+      // Tạo ID mới bằng cách tăng ID của sinh viên cuối cùng lên 1
+      const newIDNumber = lastIDNumber + 1; 
+      const newID = `SV${newIDNumber}`;
+      return newID;
+    } else {
+      // Nếu danh sách sinh viên trống, trả về ID đầu tiên
+      return 'SV001';
+    }
+  }
+  const addStudent = async () => {
+    try {
+      const formattedDateOfBirth = dateOfBirth ? dateOfBirth.format('DD/MM/YYYY') : '';
+      const newID = await generateID(); // Await for the ID generation
+      const studentRef = ref(db, `Detail/${newID}`); // Reference to the new student
+      await set(studentRef, {
+        id: newID, // Use the generated ID
+        email: Email,
+        name: Fullname,
+        enthicity: enthicity,
+        gender: Gender,
+        dateObirth: formattedDateOfBirth,
+        placeOBirth: placeOfBirth,
+        idenNum: Identify,
+        MathScore: Mathscore,
+        EnglishScore: Englishscore,
+        LiteratureScore: Literaturescore,
+        AverageScore: round(Mathscore + Englishscore + Literaturescore,1),
+        Address: Address,
+        uniCode: [],
+        isRegister: 'true',
+      });
+      toast.success('Added a new student');
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error('Error adding student:', error);
+      toast.error('An error occurred while adding student');
+    }
+  };
   
-  // }
+
   const handleOk = async () => {
     let hasError = false;
   
@@ -130,7 +141,16 @@ const Modal_Add = () => {
   
     // Final check before closing the modal
     if (!hasError) {
-      setIsModalOpen(false);
+      addStudent();
+      setFullname('');
+      setEmail('')
+      setDateOfBirth('');
+      setAddress('');
+      setPlaceOfBirth('');
+      setIdentify('');
+      setMathscore(null);
+      setEnglishscore(null);
+      setLiteraturescore(null);
     }
   };
   
@@ -161,8 +181,8 @@ const Modal_Add = () => {
   }
 
   const genders = [
-    { value: 'female', label: 'Female' },
-    { value: 'male', label: 'Male' },
+    { value: 'Female', label: 'Female' },
+    { value: 'Male', label: 'Male' },
   ];
 
   const enthicities = [
@@ -341,7 +361,7 @@ const Modal_Add = () => {
             <Space.Compact>
               <Space size={'large'}>
                 <Form.Item label="Date of Birth"  style={{fontWeight:500}}>
-                  <DatePicker format="DD/MM/YYYY" value={dateOfBirth} onChange={(dateString) => setDateOfBirth(dateString)} />
+                  <DatePicker format="DD/MM/YYYY" value={dateOfBirth} onChange={(value) => setDateOfBirth(value)} />
                 </Form.Item>
                 <Form.Item label="Place of Birth" style={{fontWeight:500}}>
                   <Select defaultValue='Khánh Hòa'  options={cities} showSearch style={{ width: 150 }} onChange={(value) => setPlaceOfBirth(value)} />
@@ -356,7 +376,6 @@ const Modal_Add = () => {
                   style={{fontWeight:500}}
                 >
                   <Input
-                    variant="filled"
                     onChange={(e) => {
                       setIdentify(e.target.value);
                     }}

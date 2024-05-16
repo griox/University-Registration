@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Form, Input, InputNumber, Popconfirm, Table, Typography } from 'antd';
-import { SearchOutlined, EditOutlined, DeleteOutlined, PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
+import { SearchOutlined, EditOutlined, DeleteOutlined, PlusCircleOutlined, MinusCircleOutlined, ManOutlined } from '@ant-design/icons';
 import { Button, Space, Divider} from 'antd';
 import Highlighter from 'react-highlight-words';
+import {  WomanOutlined } from '@ant-design/icons';
 import { get, ref, child, getDatabase, remove, update, push, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import Modal_Add from './Modal_add'
@@ -60,47 +61,24 @@ const Student_List = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const [studentData, setStudentData] = useState([]);
-  const [uniCodeData, setUniCodeData] = useState({}); // State to store uniCode data
   const tableRef = useRef(null);
-
   useEffect(() => {
     const fetchData = async () => {
-      try {
-        const studentRef = child(ref(db), 'SinhVien');
-        const inforRef = child(ref(db), 'Infor');
-
-        const studentSnapshot = await get(studentRef);
-        const inforSnapshot = await get(inforRef);
-
-        if (studentSnapshot.exists() && inforSnapshot.exists()) {
-          const studentData = studentSnapshot.val();
-          const inforData = inforSnapshot.val();
-
-          // Convert Infor data to an object with ID as key
-          const inforObject = {};
-          Object.values(inforData).forEach(info => {
-            inforObject[info.id] = info.uniCode.join(', ');
-          });
-
-          // Map through SinhVien data to add uniCode from Infor
-          const studentArray = Object.values(studentData).map(student => ({
-            ...student,
-            key: student.id,
-            uniCode: inforObject[student.id] // Assign uniCode from Infor data
-          }));
-        
-
-          setStudentData(studentArray);
-          setUniCodeData(inforObject); // Set uniCode data
+        const studentRef = child(ref(db), 'Detail');
+        try {
+            const snapshot = await get(studentRef);
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                const studentArray = Object.values(data).map((student) => ({ ...student, key: student.id }));
+                setStudentData(studentArray);
+            }
+        } catch (error) {
+            console.error(error);
         }
-      } catch (error) {
-        console.error(error);
-      }
     };
 
     fetchData();
-  }, []);
-
+}, []);
   const searchInput = useRef(null);
 
   const isEditing = (record) => record.key === editingKey;
@@ -114,7 +92,7 @@ const Student_List = () => {
     const { email } = record;
     try {
       // Cập nhật giá trị isRegister của sinh viên
-      await update(ref(db, `SinhVien/${record.key}`), {
+      await update(ref(db, `Detail/${record.key}`), {
         isRegister: true,
       });
 
@@ -140,7 +118,7 @@ const Student_List = () => {
     try {
       // Create an object with the data to be updated in the database
       const updates = {};
-      updates[`SinhVien/${record.key}/isRegister`] = false;
+      updates[`Detail/${record.key}/isRegister`] = false;
       updates[`Account/${record.key}`] = null; // Use null to delete the node
 
       // Perform the update operation
@@ -246,7 +224,7 @@ const Student_List = () => {
   });
   const handleDelete = async (key) => {
     try {
-      await remove(child(ref(db), `SinhVien/${key}`));
+      await remove(child(ref(db), `Detail/${key}`));
       const newData = studentData.filter((item) => item.key !== key);
       setStudentData(newData);
     } catch (error) {
@@ -278,7 +256,7 @@ const Student_List = () => {
   
       try {
         // Await the update promise for Firebase
-        await update(ref(db, `SinhVien/${key}`), {
+        await update(ref(db, `Detail/${key}`), {
           [dataIndex]: value,
         });
         console.log('Data updated in Firebase successfully');
@@ -306,19 +284,19 @@ const Student_List = () => {
         // Chuyển đổi giá trị từ chuỗi sang số
         const updatedRow = {
           ...newData[index],
-          mathScore: parseFloat(newData[index].mathScore),
-          literatureScore: parseFloat(newData[index].literatureScore),
-          englishScore: parseFloat(newData[index].englishScore),
+          MathScore: parseFloat(newData[index].MathScore),
+          LiteratureScore: parseFloat(newData[index].LiteratureScore),
+          EnglishScore: parseFloat(newData[index].EnglishScore),
         };
   
         // Tính lại averageScore
-        const mathScore = updatedRow['mathScore'] || 0;
-        const literatureScore = updatedRow['literatureScore'] || 0;
-        const englishScore = updatedRow['englishScore'] || 0;
+        const mathScore = updatedRow['MathScore'] || 0;
+        const literatureScore = updatedRow['LiteratureScore'] || 0;
+        const englishScore = updatedRow['EnglishScore'] || 0;
         const averageScore = (mathScore + literatureScore + englishScore) ;
         
         // Làm tròn averageScore đến 1 chữ số thập phân
-        updatedRow['averageScore'] = Math.round(averageScore * 10) / 10;
+        updatedRow['AverageScore'] = Math.round(averageScore * 10) / 10;
   
         // Cập nhật dữ liệu trên state
         newData[index] = updatedRow;
@@ -326,7 +304,7 @@ const Student_List = () => {
         setEditingKey('');
   
         // Cập nhật dữ liệu trên Firebase
-        await update(ref(db, `SinhVien/${key}`), updatedRow);
+        await update(ref(db, `Detail/${key}`), updatedRow);
         console.log('Data updated in Firebase successfully');
       } else {
         newData.push(row);
@@ -335,12 +313,20 @@ const Student_List = () => {
         handleFieldChange(key, Object.keys(row)[0], row[Object.keys(row)[0]]);
   
         // Thêm dữ liệu mới vào Firebase
-        await set(ref(db, `SinhVien/${key}`), row); // Thêm dữ liệu mới
+        await set(ref(db, `Detail/${key}`), row); // Thêm dữ liệu mới
         console.log('Data added to Firebase successfully');
       }
     } catch (errInfo) {
       console.log('Validate Failed:', errInfo);
     }
+  };
+  const renderNameWithGender = (text, record) => {
+    return (
+      <span>
+        {record.gender === 'Male' ? <ManOutlined style={{ marginRight: 5 }} /> : <WomanOutlined style={{ marginRight: 5 }} />}
+        {text}
+      </span>
+    );
   };
   
   
@@ -353,20 +339,21 @@ const Student_List = () => {
       fixed: 'left',
       ...getColumnSearchProps('id'),
     },
+   
     {
       title: 'Name',
       dataIndex: 'name',
-      width: '13%',
+      width: '19%',
       editable: true,
       fixed: 'left',
       key: 'name',
       ...getColumnSearchProps('name'),
+      render: (text, record) => renderNameWithGender(text, record),
     },
     {
       title: 'Email',
       dataIndex: 'email',
-      width: '13%',
-      fixed: 'left',
+      width: '15%',
       editable: true,
       ...getColumnSearchProps('email'),
       render: (text, record) => (
@@ -376,39 +363,47 @@ const Student_List = () => {
     },
     {
       title: 'Math',
-      dataIndex: 'mathScore',
+      dataIndex: 'MathScore',
       width: '10%',
       editable: true,
 
-      sorter: (a, b) => a.mathScore - b.mathScore,
+      sorter: (a, b) => a.MathScore - b.MathScore,
     },
     {
       title: 'Literature',
-      dataIndex: 'literatureScore',
+      dataIndex: 'LiteratureScore',
       width: '11%',
       editable: true,
 
-      sorter: (a, b) => a.literatureScore - b.literatureScore,
+      sorter: (a, b) => a.LiteratureScore - b.LiteratureScore,
     },
     {
       title: 'EngLish',
-      dataIndex: 'englishScore',
+      dataIndex: 'EnglishScore',
       width: '10%',
       editable: true,
 
-      sorter: (a, b) => a.englishScore - b.englishScore,
+      sorter: (a, b) => a.EnglishScore - b.EnglishScore,
     },
     {
       title: 'Average',
-      dataIndex: 'averageScore',
+      dataIndex: 'AverageScore',
       width: '10%',
-      sorter: (a, b) => a.averageScore - b.averageScore,
+      sorter: (a, b) => a.AverageScore - b.AverageScore,
     },
     {
       title: 'Unicode',
       dataIndex: 'uniCode',
       width: '13%',
-      render: (text, record) => <span>{uniCodeData[record.id]}</span>,
+      render: (text) => {
+        if (typeof text === 'string') {
+          return text.split(', ').join(', ');
+        } else if (Array.isArray(text)) {
+          return text.join(', ');
+        } else {
+          return text;
+        }
+      },
     },
     {
       title: 'Manage',

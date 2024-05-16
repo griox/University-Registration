@@ -326,7 +326,7 @@ const Modal_Add = () => {
                   />
                 </Form.Item>
                 <Form.Item label="Gender" style={{fontWeight:600}}>
-                  <Select defaultValue="female" options={genders} onChange={(value) => setGender(value)} />
+                  <Select defaultValue="Female" options={genders} onChange={(value) => setGender(value)} />
                 </Form.Item>
               </Space>
             </Space.Compact>
@@ -335,7 +335,7 @@ const Modal_Add = () => {
                 <Form.Item
                   label="Email"
                   validateStatus={!validateEmailFormat(Email) && Email? 'error' : ''}
-                  help={validateEmailFormat(Email) && Email ? '':'Email must contain @gmail'}
+                  help={validateEmailFormat(Email) && Email ? '':'Email must contain @example'}
                   style={{fontWeight:500}}
                 >
                   <Input
@@ -351,6 +351,7 @@ const Modal_Add = () => {
                     onChange={(e) => {
                       setEmail(e.target.value);
                     }}
+                    showClear
                   />
                 </Form.Item>
                 <Form.Item label="Enthicity"  style={{fontWeight:500}}>
@@ -381,7 +382,7 @@ const Modal_Add = () => {
                     }}
                     value={Identify}
                     suffix={
-                      <Tooltip title="Identify number must has 12 numbers">
+                      <Tooltip title="Identify number must has 12 digits">
                         <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
                       </Tooltip>
                     }

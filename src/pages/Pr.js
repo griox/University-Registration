@@ -84,23 +84,8 @@ function Pr() {
         });
 
         dispatch({ type: 'user', payload: personal });
-        const emailEncode = JSON.parse(localStorage.getItem('Email'));
-        get(child(ref(db), 'Infor/' + emailEncode.replace(/\./g, ','))).then((snapshot) => {
-            if (snapshot.exists()) {
-                const x = snapshot.val();
-                // if (x.uniCode !== undefined) {
-                const o = x.uniCode;
 
-                localStorage.setItem('ListUni', JSON.stringify(o));
-                // }
-            }
-        });
-        const k = JSON.parse(localStorage.getItem('ListUni'));
-        if (Array.isArray(k)) {
-            setValue(() => [...k]);
-        } else {
-            setValue(() => []);
-        }
+        // const k = JSON.parse(localStorage.getItem('Infor'));
     }, [db, dispatch]);
     const save = () => {
         if (allowInput !== true) {
@@ -488,7 +473,7 @@ function Pr() {
                         mode="multiple"
                         maxCount={MAX_COUNT}
                         disabled={allowInput}
-                        value={value}
+                        value={detail.uniCode}
                         style={{
                             width: '300px',
                             height: 'auto',

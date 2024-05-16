@@ -49,6 +49,7 @@ const AddUniversity = () => {
                     okText="Add"
                     onCancel={handleCancel}
                     style={{ top: '50px', left: '50px' }}
+                    destroyOnClose={true}
                 >
                     <FormAdd></FormAdd>
                 </Modal>

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Form, Input, InputNumber, Popconfirm, Table, Typography } from 'antd';
+import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography } from 'antd';
 import { SearchOutlined, EditOutlined, DeleteOutlined, PlusCircleOutlined, MinusCircleOutlined, ManOutlined } from '@ant-design/icons';
 import { Button, Space, Divider} from 'antd';
 import Highlighter from 'react-highlight-words';
@@ -7,6 +7,8 @@ import {  WomanOutlined } from '@ant-design/icons';
 import { get, ref, child, getDatabase, remove, update, push, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import Modal_Add from './Modal_add';
+import Modal_Detail from './Modal_Detail' 
+import { render } from '@testing-library/react';
 const firebaseConfig = {
     apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
     authDomain: 'mock-proeject-b.firebaseapp.com',
@@ -329,6 +331,7 @@ const Student_List = () => {
       editable: true,
       fixed: 'left',
       ...getColumnSearchProps('id'),
+      render: (record) => <a style={{color:'red'}}>{record}</a>,
     },
    
     {
@@ -348,9 +351,10 @@ const Student_List = () => {
       editable: true,
       ...getColumnSearchProps('email'),
       render: (text, record) => (
-        <span style={{ color: record.isRegister ? 'green' : 'red' }}>{text}</span>
+        <Tooltip title={record.isRegister ? 'Registered ' : 'Not registered '}>
+          <span style={{ color: record.isRegister ? 'green' : 'red' }}>{text}</span>
+        </Tooltip>
       ),
-      
     },
     {
       title: 'Math',
@@ -399,7 +403,7 @@ const Student_List = () => {
     {
       title: 'Manage',
       dataIndex: 'operation',
-      width: '10%',
+      width: '13%',
       fixed: 'right',
       render: (_, record) => {
         const editable = isEditing(record);
@@ -484,7 +488,7 @@ const Student_List = () => {
                         dataSource={studentData}
                         columns={mergedColumns}
                         scroll={{
-                            x: 800,
+                            x: 900,
                             y: 500,
                         }}
                         style={{ height: '100%', marginRight: '-20px' }}

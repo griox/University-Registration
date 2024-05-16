@@ -327,7 +327,7 @@ const AddSchool = () => {
             title: 'University code',
             dataIndex: 'ucode',
             width: '10%',
-            ...getColumnSearchProps('age'),
+            ...getColumnSearchProps('ucode'),
         },
         {
             title: 'Address',
@@ -355,7 +355,7 @@ const AddSchool = () => {
             width: '20%',
         },
         {
-            title: 'Admission cutoff score',
+            title: 'Entrance score',
             dataIndex: 'cutoff',
             width: '15%',
             sorter: (a, b) => a.cutoff - b.cutoff,
@@ -435,16 +435,13 @@ const AddSchool = () => {
                 onChange={onChange}
                 pagination={{
                     defaultPageSize: '10',
-                    pageSizeOptions: ['10', '20', '50', '100'],
+                    pageSizeOptions: ['10', '20', '30', '50'],
                     total: 20,
                     showSizeChanger: true,
                     showQuickJumper: true,
                     showTotal: (total) => `Total ${total} items`,
                 }}
-                scroll={{
-                    y: 400,
-                    x: 800,
-                }}
+                scroll={{ x: 800, y: 400 }}
             />
             <Modal
                 title="Edit the University"

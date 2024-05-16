@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Cascader, DatePicker, Form, Input, InputNumber, Mentions, Select, TreeSelect } from 'antd';
 const { RangePicker } = DatePicker;
 const formItemLayout = {
@@ -26,18 +26,17 @@ const { TextArea } = Input;
 const onChange = (e) => {
     console.log(e);
 };
-
 const FormAdd = () => (
     <Form
         {...formItemLayout}
-        variant="filled"
+        // variant="filled"
         style={{
             maxWidth: 600,
             marginTop: '20px',
         }}
     >
         <Form.Item
-            label="Tên Trường"
+            label="University Name"
             name="Input"
             rules={[
                 {
@@ -46,11 +45,17 @@ const FormAdd = () => (
                 },
             ]}
         >
-            <Input allowClear onChange={onChange} />
+            <Input
+                style={{
+                    marginLeft: '10px',
+                }}
+                allowClear
+                onChange={onChange}
+            />
         </Form.Item>
 
         <Form.Item
-            label="Mã trường"
+            label="University Code"
             name="InputCode"
             rules={[
                 {
@@ -64,13 +69,14 @@ const FormAdd = () => (
                 onChange={onChange}
                 maxLength={3}
                 style={{
+                    marginLeft: '10px',
                     maxWidth: '30%',
                 }}
             />
         </Form.Item>
 
         <Form.Item
-            label="Địa chỉ"
+            label="Address"
             name="TextArea"
             rules={[
                 {
@@ -79,11 +85,17 @@ const FormAdd = () => (
                 },
             ]}
         >
-            <Input.TextArea allowClear onChange={onChange} />
+            <Input.TextArea
+                style={{
+                    marginLeft: '10px',
+                }}
+                allowClear
+                onChange={onChange}
+            />
         </Form.Item>
 
         <Form.Item
-            label="Chỉ tiêu"
+            label="Cutoff Score"
             name="InputNumber"
             rules={[
                 {
@@ -97,21 +109,52 @@ const FormAdd = () => (
                 max={10000}
                 maxLength={5}
                 style={{
+                    marginLeft: '10px',
                     maxWidth: '30%',
                 }}
             />
         </Form.Item>
 
-        {/* <Form.Item
-      wrapperCol={{
-        offset: 6,
-        span: 16,
-      }}
-    >
-      <Button type="primary" htmlType="submit">
-        Submit
-      </Button>
-    </Form.Item> */}
+        <Form.Item
+            label="Registered "
+            name="InputNumber"
+            rules={[
+                {
+                    required: true,
+                    message: 'Please input!',
+                },
+            ]}
+        >
+            <InputNumber
+                min={0}
+                max={10000}
+                maxLength={5}
+                style={{
+                    marginLeft: '10px',
+                    maxWidth: '30%',
+                }}
+            />
+        </Form.Item>
+        <Form.Item
+            label="Targets"
+            name="InputNumber"
+            rules={[
+                {
+                    required: true,
+                    message: 'Please input!',
+                },
+            ]}
+        >
+            <InputNumber
+                min={0}
+                max={10000}
+                maxLength={5}
+                style={{
+                    marginLeft: '10px',
+                    maxWidth: '30%',
+                }}
+            />
+        </Form.Item>
     </Form>
 );
 export default FormAdd;

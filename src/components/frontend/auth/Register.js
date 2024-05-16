@@ -21,7 +21,6 @@ const Register = () => {
         messagingSenderId: '898832925665',
         appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
     };
-    const history = useHistory();
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
@@ -40,6 +39,8 @@ const Register = () => {
         if (email) return email.replace(/\./g, ',');
         else return 0;
     };
+
+    const history = useHistory();
 
     useEffect(() => {
         const passwordInput1 = document.querySelector('.pass_login_1');
@@ -224,17 +225,18 @@ const Register = () => {
                 {/* STYLE */}
                 <link rel="stylesheet" href="assets/login/css/register.css" />
             </head>
-            <body background="hero-1.jpg">
+            <body background="cover.jpeg">
                 <div className="form-container">
                     <div className="col col-1">
                         <div className="image_layer">
-                            <img src="assets/login/img/white-outline.png" className="form_img_main" alt="" />
+                            <img src="assets/login/img/FPTnew.png" className="form_img_main" alt="" />
+                            {/* <img src="assets/login/img/white-outline.png" className="form_img_main" alt="" />
                             <img src="assets/login/img/dots.png" className="form_img dots" alt="" />
                             <img src="assets/login/img/coin.png" className="form_img coin" alt="" />
                             <img src="assets/login/img/spring.png" className="form_img spring" alt="" />
                             <img src="assets/login/img/rocket.png" className="form_img rocket" alt="" />
                             <img src="assets/login/img/cloud.png" className="form_img cloud" alt="" />
-                            <img src="assets/login/img/stars.png" className="form_img stars" alt="" />
+                            <img src="assets/login/img/stars.png" className="form_img stars" alt="" /> */}
                         </div>
 
                         <p className="featured">
@@ -259,7 +261,7 @@ const Register = () => {
                                         <input
                                             type="text"
                                             className="input-field"
-                                            placeholder="Enter your first and last name..."
+                                            placeholder="First and Last name"
                                             required
                                             value={fullName}
                                             onChange={(e) => setFullName(e.target.value)}
@@ -270,7 +272,7 @@ const Register = () => {
                                         <input
                                             type="text"
                                             className="input-field"
-                                            placeholder="Enter your email..."
+                                            placeholder="Email"
                                             // required
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
@@ -281,7 +283,7 @@ const Register = () => {
                                         <input
                                             type="password"
                                             className="input-field pass_login_1"
-                                            placeholder="Enter your password..."
+                                            placeholder="Password"
                                             required
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
@@ -294,7 +296,7 @@ const Register = () => {
                                         <input
                                             type="password"
                                             className="input-field con_pass_login"
-                                            placeholder="Re-enter your password..."
+                                            placeholder="Re-Password"
                                             required
                                             value={againPassword}
                                             onChange={(e) => setAgainPassword(e.target.value)}
@@ -355,7 +357,7 @@ const Register = () => {
                     </div>
                 </div>
 
-                <div className="snowflakes" aria-hidden="true">
+                {/* <div className="snowflakes" aria-hidden="true">
                     <div className="snowflake">❅</div>
                     <div className="snowflake">❆</div>
                     <div className="snowflake">❅</div>
@@ -449,7 +451,7 @@ const Register = () => {
               left:65%;-webkit-animation-delay:4s,2.5s;animation-delay:4s,2.5s
             }
           `}
-                </style>
+                </style> */}
 
                 {/* JS */}
                 <script></script>

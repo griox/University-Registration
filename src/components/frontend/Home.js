@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-// import '../../assets/frontend/css/main.css';
+import '../../assets/css/style.css';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import AOS from 'aos';
@@ -96,63 +96,68 @@ const Home = () => {
                     <span id="progress-value">&#x1F815;</span>
                 </div>
 
-                <nav className="navbar navbar-expand-lg bg-white sticky-top">
-                    <div className="container">
-                        <Link className="navbar-brand" to="/">
-                            <img src="./assets/images/fptnew.png" width="150" height="150" alt="" />
-                        </Link>
-                        <button
-                            className="navbar-toggler"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#navbarNav"
-                            aria-controls="navbarNav"
-                            aria-expanded="false"
-                            aria-label="Toggle navigation"
-                        >
-                            <span className="navbar-toggler-icon"></span>
-                        </button>
-                        <div className="collapse navbar-collapse" id="navbarNav">
-                            <ul className="navbar-nav ms-auto">
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#hero">
-                                        Trang Chủ
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#services">
-                                        Giới Thiệu
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#achieve">
-                                        Thành Tựu
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#counter">
-                                        Cột Mốc
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#contact">
-                                        Liên Hệ
-                                    </a>
-                                </li>
-                            </ul>
-                            <Link
-                                to="/login"
-                                style={{ fontSize: '17px', borderRadius: '10px' }}
-                                className="btn btn-brand ms-lg-3"
-                            >
-                                Đăng Nhập
-                            </Link>
-                        </div>
-                    </div>
-                </nav>
+                {/* HERO & NAVBAR */}
 
-                <section id="hero" className="min-vh-100 d-flex align-items-center text-center">
-                    <div className="container">
+                <section id="hero" className="min-vh-100 d-flex flex-column align-items-center">
+                    {/* NAVBAR */}
+                    <nav
+                        className="navbar navbar-expand-lg bg-light sticky-top"
+                        style={{
+                            width: '100%',
+                            height: '60px',
+                            position: 'fixed',
+                            zIndex: '1000',
+                            backgroundColor: 'transparent',
+                        }}
+                    >
+                        <div className="container" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <Link className="navbar-brand" to="/">
+                                <img src="./assets/images/fptnew.png" width="150" height="150" alt="FPT Logo" />
+                            </Link>
+                            <button
+                                className="navbar-toggler"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#navbarNav"
+                                aria-controls="navbarNav"
+                                aria-expanded="false"
+                                aria-label="Toggle navigation"
+                            >
+                                <span className="navbar-toggler-icon"></span>
+                            </button>
+                            <div className="collapse navbar-collapse" id="navbarNav">
+                                <ul className="navbar-nav ms-auto">
+                                    <li className="nav-item">
+                                        <a className="nav-link" href="#hero">
+                                            Trang Chủ
+                                        </a>
+                                    </li>
+                                    <li className="nav-item">
+                                        <a className="nav-link" href="#intro">
+                                            Giới thiệu
+                                        </a>
+                                    </li>
+                                    <li className="nav-item">
+                                        <a className="nav-link" href="#contact">
+                                            Liên Hệ
+                                        </a>
+                                    </li>
+                                </ul>
+                                <a
+                                    href="login"
+                                    style={{ fontSize: '17px', borderRadius: '10px' }}
+                                    className="btn btn-brand ms-lg-3"
+                                >
+                                    Đăng Nhập
+                                </a>
+                            </div>
+                        </div>
+                    </nav>
+
+                    <div
+                        className="container flex-grow-1 d-flex align-items-center justify-content-center"
+                        style={{ paddingTop: '150px' }}
+                    >
                         <div className="row">
                             <div className="col-12">
                                 <h1
@@ -162,24 +167,16 @@ const Home = () => {
                                 >
                                     Lan tỏa tác động <br /> truyền cảm hứng
                                 </h1>
-                                <h5 className="text-white mt-3 mb-4" data-aos="fade-right">
+                                <h5 className="intro text-white mt-3 mb-4" data-aos="fade-right">
                                     Chúng tôi ở đây để giúp bạn dễ dàng hơn trong việc lựa chọn trường phù hợp cho mình
                                 </h5>
-                                <div data-aos="fade-up" data-aos-delay="50">
-                                    <Link
-                                        to="/login"
-                                        style={{ fontSize: '17px', borderRadius: '10px' }}
-                                        className="btn btn-light ms-2"
-                                    >
-                                        Đăng Nhập
-                                    </Link>
-                                </div>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <section id="services" class="section-padding border-top">
+                {/* VIDEO INTRO */}
+                <section style={{ paddingTop: '180px' }} id="intro" class="section-padding border-top">
                     <div class="container">
                         <div class="row">
                             <div class="col-md-6" data-aos="fade-down" data-aos-delay="150">
@@ -365,7 +362,7 @@ const Home = () => {
                         <br />
                         <div class="row justify-content-center" data-aos="fade-down" data-aos-delay="250">
                             <div class="col-lg-8 change">
-                                <form action="#" class="row g-3 p-lg-5 p-4 bg-white theme-shadow">
+                                <form action="#" class="row g-3 p-lg-5 p-4 theme-shadow">
                                     <div class="form-group col-lg-6">
                                         <input
                                             style={{ borderRadius: '10px' }}
@@ -424,10 +421,9 @@ const Home = () => {
                             <div className="row gy-5">
                                 <div className="col-lg-3 col-sm-6">
                                     <a href="#">
-                                        <img src="./assets/images/fptnew.png" width="150" height="150" alt="" />
+                                        <img src="./assets/images/fptnew.png" width="250" height="150" alt="" />
                                     </a>
-                                    <div className="line"></div>
-                                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem, hic!</p>
+                                    <div className="line" style={{ width: '100px' }}></div>
                                     <div className="social-icons">
                                         <a href="#">
                                             <i className="ri-twitter-fill"></i>
@@ -505,7 +501,7 @@ const Home = () => {
                     </div>
                 </footer>
 
-                <div className="snowflakes" aria-hidden="true">
+                {/* <div className="snowflakes" aria-hidden="true">
                     <div className="snowflake">❅</div>
                     <div className="snowflake">❆</div>
                     <div className="snowflake">❅</div>
@@ -599,7 +595,7 @@ const Home = () => {
               left:65%;-webkit-animation-delay:4s,2.5s;animation-delay:4s,2.5s
             }
           `}
-                </style>
+                </style> */}
 
                 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
                 <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>

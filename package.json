@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@ant-design/charts": "^2.1.1",
+    "@ant-design/icons": "^5.3.7",
     "@ant-design/plots": "^2.2.2",
     "@mui/icons-material": "^5.15.16",
     "@mui/x-data-grid": "^7.3.2",

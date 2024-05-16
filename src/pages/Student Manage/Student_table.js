@@ -6,53 +6,44 @@ import Highlighter from 'react-highlight-words';
 import {  WomanOutlined } from '@ant-design/icons';
 import { get, ref, child, getDatabase, remove, update, push, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
-import Modal_Add from './Modal_add'
+import Modal_Add from './Modal_add';
 const firebaseConfig = {
-  apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
-  authDomain: 'mock-proeject-b.firebaseapp.com',
-  databaseURL: 'https://mock-proeject-b-default-rtdb.firebaseio.com',
-  projectId: 'mock-proeject-b',
-  storageBucket: 'mock-proeject-b.appspot.com',
-  messagingSenderId: '898832925665',
-  appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
+    apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
+    authDomain: 'mock-proeject-b.firebaseapp.com',
+    databaseURL: 'https://mock-proeject-b-default-rtdb.firebaseio.com',
+    projectId: 'mock-proeject-b',
+    storageBucket: 'mock-proeject-b.appspot.com',
+    messagingSenderId: '898832925665',
+    appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-const EditableCell = ({
-  editing,
-  dataIndex,
-  title,
-  inputType,
-  record,
-  index,
-  children,
-  ...restProps
-}) => {
-  const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
-  return (
-    <td {...restProps}>
-      {editing ? (
-        <Form.Item
-          name={dataIndex}
-          style={{
-            margin: 0,
-          }}
-          rules={[
-            {
-              required: true,
-              message: `Please Input ${title}!`,
-            },
-          ]}
-        >
-          {inputNode}
-        </Form.Item>
-      ) : (
-        children
-      )}
-    </td>
-  );
+const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
+    const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
+    return (
+        <td {...restProps}>
+            {editing ? (
+                <Form.Item
+                    name={dataIndex}
+                    style={{
+                        margin: 0,
+                    }}
+                    rules={[
+                        {
+                            required: true,
+                            message: `Please Input ${title}!`,
+                        },
+                    ]}
+                >
+                    {inputNode}
+                </Form.Item>
+            ) : (
+                children
+            )}
+        </td>
+    );
 };
 
 const Student_List = () => {
@@ -81,7 +72,7 @@ const Student_List = () => {
 }, []);
   const searchInput = useRef(null);
 
-  const isEditing = (record) => record.key === editingKey;
+    const isEditing = (record) => record.key === editingKey;
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -96,14 +87,14 @@ const Student_List = () => {
         isRegister: true,
       });
 
-      // Thêm dữ liệu vào bảng account
-      const accountRef = child(ref(db), 'Account');
-      const newAccountRef = push(accountRef);
-      await set(newAccountRef, {
-        email: email,
-        password: 'Tvx1234@',
-        Role: 'user',
-      });
+            // Thêm dữ liệu vào bảng account
+            const accountRef = child(ref(db), 'Account');
+            const newAccountRef = push(accountRef);
+            await set(newAccountRef, {
+                email: email,
+                password: 'Tvx1234@',
+                Role: 'user',
+            });
 
       // Cập nhật state
       const newData = studentData.map((item) =>
@@ -121,23 +112,23 @@ const Student_List = () => {
       updates[`Detail/${record.key}/isRegister`] = false;
       updates[`Account/${record.key}`] = null; // Use null to delete the node
 
-      // Perform the update operation
-      await update(ref(db), updates);
+            // Perform the update operation
+            await update(ref(db), updates);
 
-      // Update state
-      const newData = studentData.map((item) =>
-        item.key === record.key ? { ...item, isRegister: false } : item
-      );
-      setStudentData(newData);
-    } catch (error) {
-      console.error('Error deleting account', error);
-    }
-  };
+            // Update state
+            const newData = studentData.map((item) =>
+                item.key === record.key ? { ...item, isRegister: false } : item,
+            );
+            setStudentData(newData);
+        } catch (error) {
+            console.error('Error deleting account', error);
+        }
+    };
 
-  const handleReset = (clearFilters) => {
-    clearFilters();
-    setSearchText('');
-  };
+    const handleReset = (clearFilters) => {
+        clearFilters();
+        setSearchText('');
+    };
 
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
@@ -232,15 +223,15 @@ const Student_List = () => {
     }
   };
 
-  const edit = (record) => {
-    form.setFieldsValue({
-      name: '',
-      id: '',
-      email: '',
-      ...record,
-    });
-    setEditingKey(record.key);
-  };
+    const edit = (record) => {
+        form.setFieldsValue({
+            name: '',
+            id: '',
+            email: '',
+            ...record,
+        });
+        setEditingKey(record.key);
+    };
 
   const cancel = () => {
     setEditingKey('');
@@ -462,58 +453,56 @@ const Student_List = () => {
     },
   ];
 
-  const mergedColumns = columns.map((col) => {
-    if (!col.editable) {
-      return col;
-    }
-    return {
-      ...col,
-      onCell: (record) => ({
-        record,
-        inputType: col.dataIndex === 'age' ? 'number' : 'text',
-        dataIndex: col.dataIndex,
-        title: col.title,
-        editing: isEditing(record),
-      }),
-    };
-  });
+    const mergedColumns = columns.map((col) => {
+        if (!col.editable) {
+            return col;
+        }
+        return {
+            ...col,
+            onCell: (record) => ({
+                record,
+                inputType: col.dataIndex === 'age' ? 'number' : 'text',
+                dataIndex: col.dataIndex,
+                title: col.title,
+                editing: isEditing(record),
+            }),
+        };
+    });
 
-  return (
-    <div style={{ justifyContent: 'center', alignItems: 'center' }}>
-      <Space direction='vertical'>
-      <Modal_Add />
-      <Form form={form} component={false}>
-        <Table
-          components={{
-            body: {
-              cell: EditableCell,
-            },
-          }}
-          bordered
-          dataSource={studentData}
-          columns={mergedColumns}
-          scroll={{
-            x: 800,
-            y: 500,
-          }}
-          rowClassName="editable-row"
-          showSorterTooltip={{
-            target: 'sorter-icon',
-          }}
-          pagination={{
-            onChange: cancel,
-            showSizeChanger: true,
-            showQuickJumper: true,
-          }}
-          ref={tableRef}
-        />
-      </Form>
-      </Space>
-      
-    </div>
-
-  );
+    return (
+        <div style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <Space direction="vertical">
+                <Modal_Add />
+                <Form form={form} component={false}>
+                    <Table
+                        components={{
+                            body: {
+                                cell: EditableCell,
+                            },
+                        }}
+                        bordered
+                        dataSource={studentData}
+                        columns={mergedColumns}
+                        scroll={{
+                            x: 800,
+                            y: 500,
+                        }}
+                        style={{ height: '100%', marginRight: '-20px' }}
+                        rowClassName="editable-row"
+                        showSorterTooltip={{
+                            target: 'sorter-icon',
+                        }}
+                        pagination={{
+                            onChange: cancel,
+                            showSizeChanger: true,
+                            showQuickJumper: true,
+                        }}
+                        ref={tableRef}
+                    />
+                </Form>
+            </Space>
+        </div>
+    );
 };
 
 export default Student_List;
-

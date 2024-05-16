@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Box, IconButton, useTheme } from '@mui/material';
 import { ColorModeContext, tokens } from '../../theme';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
@@ -84,21 +84,23 @@ const Navbar = () => {
         items,
         onClick: handleMenuClick,
     };
-    const x = JSON.parse(localStorage.getItem('Pages'));
     return (
         <Box
             display="flex"
             position="sticky"
+            bgcolor="#fff"
             width="100%"
             zIndex={1000}
-            bgcolor="#ffffff"
             top="0"
             left="0"
             justifyContent="space-between"
+            boxShadow=" 0 7px 25px 0 rgba(0, 0, 0, 0.1);
+
+
+"
             p={2}
         >
             {/* SEARCH BAR */}
-            <h1>{x}</h1>
             <Box display="flex" alignItems="center"></Box>
 
             {/* ICONS */}

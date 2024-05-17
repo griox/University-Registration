@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import 'firebase/auth';
-import { getDatabase, ref, child, get } from 'firebase/database';
+import { getDatabase, ref, child, get,set,push } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
 import { Button, Modal, Space, Select, InputNumber, DatePicker, Form } from 'antd';
@@ -22,7 +22,7 @@ const db = getDatabase(app);
 
 const Modal_Add = () => {
   const [Fullname, setFullname] = useState('');
-  const [Gender, setGender] = useState('female');
+  const [Gender, setGender] = useState('Female');
   const [Email, setEmail] = useState('');
   const [Identify, setIdentify] = useState('');
   const [Address, setAddress] = useState('');
@@ -36,23 +36,79 @@ const Modal_Add = () => {
   const showModal = () => {
     setIsModalOpen(true);
   };
+  function round(number, precision) {
+    let factor = Math.pow(10, precision);
+    return Math.round((number || 0) * factor) / factor;
+  }
+  const generateID = async()=>{
+    const snapshot = await get(child(ref(db),'Detail'));
+    if (snapshot.exists()) {
+      // lấy ra từng sinh viên
+      const students = snapshot.val();
+      // Lấy ra danh sách ID của tất cả sinh viên
+      const studentIDs = Object.keys(students);
+      // Lấy ID của sinh viên cuối cùng trong danh sách
+      const lastStudentID = studentIDs[studentIDs.length - 1];
+      // Lay ra so cuoi cua Id
+      const lastIDNumber = parseInt(lastStudentID.slice(2));
+      // Tạo ID mới bằng cách tăng ID của sinh viên cuối cùng lên 1
+      const newIDNumber = lastIDNumber + 1; 
+      const newID = `SV${newIDNumber}`;
+      return newID;
+    } else {
+      // Nếu danh sách sinh viên trống, trả về ID đầu tiên
+      return 'SV001';
+    }
+  }
+  const addStudent = async () => {
+    try {
+      const formattedDateOfBirth = dateOfBirth ? dateOfBirth.format('DD/MM/YYYY') : '';
+      const newID = await generateID(); // Await for the ID generation
+      const studentRef = ref(db, `Detail/${newID}`); // Reference to the new student
+      await set(studentRef, {
+        id: newID, // Use the generated ID
+        email: Email,
+        name: Fullname,
+        enthicity: enthicity,
+        gender: Gender,
+        dateObirth: formattedDateOfBirth,
+        placeOBirth: placeOfBirth,
+        idenNum: Identify,
+        MathScore: Mathscore,
+        EnglishScore: Englishscore,
+        LiteratureScore: Literaturescore,
+        AverageScore: round(Mathscore + Englishscore + Literaturescore,1),
+        Address: Address,
+        uniCode: [],
+        isRegister: 'true',
+      });
+      toast.success('Added a new student');
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error('Error adding student:', error);
+      toast.error('An error occurred while adding student');
+    }
+  };
+  
 
   const handleOk = async () => {
     let hasError = false;
-    if(Fullname=== '' || Address==='' || dateOfBirth==='' || Mathscore === null || Englishscore===null||Literaturescore===null|| Email===''||Identify===''){
-      toast.error('please fill in all information')
+  
+    // Initial checks
+    if (Fullname === '' || Address === '' || dateOfBirth === '' || Mathscore === null || Englishscore === null || Literaturescore === null || Email === '' || Identify === '') {
+      toast.error('please fill in all information');
       hasError = true;
-    }else if (!validateFullname(Fullname)) {
-      toast.error('Invalid name ');
+    } else if (!validateFullname(Fullname)) {
+      toast.error('Invalid name');
       hasError = true;
     }
-    //Validate Email
-    if (Email !== '') {
-      if(!validateEmailFormat(Email)){
-        toast.error('Invalid Email')
+  
+    // Validate Email
+    if ( Email !== '') {
+      if (!validateEmailFormat(Email)) {
+        toast.error('Invalid Email');
         hasError = true;
-      }
-      else {
+      } else {
         const snapshot = await get(child(ref(db), `SinhVien/`));
         if (snapshot.exists()) {
           const students = snapshot.val();
@@ -64,13 +120,13 @@ const Modal_Add = () => {
         }
       }
     }
-    // Validate IdenNum
-   if(Identify!==''){
+  
+    // Validate Identify Number
+    if ( Identify !== '') {
       if (!validateIdenNumber(Identify)) {
-        toast.error('Invalid identify ');
+        toast.error('Invalid identify');
         hasError = true;
-      }
-      else {
+      } else {
         const snapshot = await get(child(ref(db), `Infor/`));
         if (snapshot.exists()) {
           const Infors = snapshot.val();
@@ -81,13 +137,23 @@ const Modal_Add = () => {
           }
         }
       }
-    }  
-    if (!hasError) { 
-      console.log(hasError);
-      setIsModalOpen(false);
+    }
+  
+    // Final check before closing the modal
+    if (!hasError) {
+      addStudent();
+      setFullname('');
+      setEmail('')
+      setDateOfBirth('');
+      setAddress('');
+      setPlaceOfBirth('');
+      setIdentify('');
+      setMathscore(null);
+      setEnglishscore(null);
+      setLiteraturescore(null);
     }
   };
-
+  
   const handleCancel = () => {
     setFullname('');
     setEmail('')
@@ -115,8 +181,8 @@ const Modal_Add = () => {
   }
 
   const genders = [
-    { value: 'female', label: 'Female' },
-    { value: 'male', label: 'Male' },
+    { value: 'Female', label: 'Female' },
+    { value: 'Male', label: 'Male' },
   ];
 
   const enthicities = [
@@ -256,11 +322,11 @@ const Modal_Add = () => {
                     onChange={(e) => {
                       setFullname(e.target.value);
                     }}
-                    allowClear  x
+                    allowClear  
                   />
                 </Form.Item>
                 <Form.Item label="Gender" style={{fontWeight:600}}>
-                  <Select defaultValue="female" options={genders} onChange={(value) => setGender(value)} />
+                  <Select defaultValue="Female" options={genders} onChange={(value) => setGender(value)} />
                 </Form.Item>
               </Space>
             </Space.Compact>
@@ -269,7 +335,7 @@ const Modal_Add = () => {
                 <Form.Item
                   label="Email"
                   validateStatus={!validateEmailFormat(Email) && Email? 'error' : ''}
-                  help={validateEmailFormat(Email) && Email ? '':'Email must contain @gmail'}
+                  help={validateEmailFormat(Email) && Email ? '':'Email must contain @example'}
                   style={{fontWeight:500}}
                 >
                   <Input
@@ -285,6 +351,7 @@ const Modal_Add = () => {
                     onChange={(e) => {
                       setEmail(e.target.value);
                     }}
+                    showClear
                   />
                 </Form.Item>
                 <Form.Item label="Enthicity"  style={{fontWeight:500}}>
@@ -295,7 +362,7 @@ const Modal_Add = () => {
             <Space.Compact>
               <Space size={'large'}>
                 <Form.Item label="Date of Birth"  style={{fontWeight:500}}>
-                  <DatePicker format="DD/MM/YYYY" value={dateOfBirth} onChange={(dateString) => setDateOfBirth(dateString)} />
+                  <DatePicker format="DD/MM/YYYY" value={dateOfBirth} onChange={(value) => setDateOfBirth(value)} />
                 </Form.Item>
                 <Form.Item label="Place of Birth" style={{fontWeight:500}}>
                   <Select defaultValue='Khánh Hòa'  options={cities} showSearch style={{ width: 150 }} onChange={(value) => setPlaceOfBirth(value)} />
@@ -307,15 +374,18 @@ const Modal_Add = () => {
                 <Form.Item
                   label="Identify number"
                   validateStatus={! validateIdenNumber(Identify) && Identify? 'error' : ''}
-                  help={Identify ? '':'Identify numbers has 12 numbers'}
                   style={{fontWeight:500}}
                 >
                   <Input
-                    variant="filled"
                     onChange={(e) => {
                       setIdentify(e.target.value);
                     }}
                     value={Identify}
+                    suffix={
+                      <Tooltip title="Identify number must has 12 digits">
+                        <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+                      </Tooltip>
+                    }
                   />
                 </Form.Item>
               </Space>

@@ -41,7 +41,7 @@ function Pr() {
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const [arr, setArr] = useState([]);
-    const [value, setValue] = React.useState(['Ava Swift']);
+    const [value, setValue] = React.useState([]);
     const suffix = (
         <>
             <span>
@@ -64,6 +64,7 @@ function Pr() {
         //         console.error(error);
         //     });
         const personal = JSON.parse(localStorage.getItem('Infor'));
+
         const averageScore = personal.EnglishScore + personal.LiteratureScore + personal.MathScore;
         get(child(ref(db), `University/`)).then((snapshot) => {
             if (snapshot.exists()) {
@@ -81,8 +82,10 @@ function Pr() {
                 console.log('No data available');
             }
         });
+
         dispatch({ type: 'user', payload: personal });
-        // console.log(personal);
+
+        // const k = JSON.parse(localStorage.getItem('Infor'));
     }, [db, dispatch]);
     const save = () => {
         if (allowInput !== true) {
@@ -96,16 +99,20 @@ function Pr() {
                 enthicity: detail.enthicity,
                 idenNum: detail.idenNum,
                 email: detail.email,
+
                 // EnglishScore: parseFloat(detail.EnglishScore),
                 // MathScore: parseFloat(detail.MathScoreScore),
                 // LiteratureScore: parseFloat(detail.LiteratureScore),
             })
                 .then(() => {
-                    toast('Đã cập nhập thành công');
+                    toast.success('Updated sucessfully');
                 })
                 .catch((error) => {
                     alert('lỗi' + error);
                 });
+            update(ref(db, 'SinhVien/SV004/'), {
+                uniCodes: value,
+            });
             setAllowInput(!allowInput);
         } else {
             setAllowInput(!allowInput);
@@ -289,6 +296,8 @@ function Pr() {
         // setEmail(newValue);
         dispatch({ type: 'update', payload: { propertyName, newValue } });
     };
+    const filterOption = (input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+
     return (
         <div className="container">
             {/* {console.log(detail)} */}
@@ -298,12 +307,12 @@ function Pr() {
                     <Space.Compact size="large">
                         {/* <div>{a.email}</div> */}
                         <Input
-                            addonBefore={'Name:'}
                             readOnly={allowInput}
-                            className="label-input"
+                            className="g-s"
                             value={detail.name}
                             onChange={(e) => handleChange(e, 'name')}
                             disabled={allowInput}
+                            options={gender}
                         />
                     </Space.Compact>
                     {/* <Space.Compact size="large">
@@ -333,6 +342,7 @@ function Pr() {
                     <Space.Compact size="large">
                         <Space.Compact>
                             <Select
+                                showSearch
                                 placeholder="Choose your gender"
                                 options={gender}
                                 className="g-s"
@@ -384,6 +394,7 @@ function Pr() {
                     <Space.Compact size="large">
                         <Select
                             size={size}
+                            showSearch
                             options={provinces}
                             className="g-s"
                             value={detail.placeOBirth}
@@ -411,6 +422,7 @@ function Pr() {
                         <Select
                             size={size}
                             value={detail.enthicity}
+                            showSearch
                             onChange={(e) => handleSelect(e, 'enthicity')}
                             options={ethnicities}
                             className="g-s"
@@ -449,30 +461,31 @@ function Pr() {
                             className="g-s"
                             value={detail.email}
                             onChange={(e) => handleChange(e, 'email')}
-                            disabled={allowInput}
+                            disabled={true}
                         />
                     </Space.Compact>
                 </div>
-                <div className="detail-item">
-                    <h1>University: </h1>
-                    <Space.Compact size="large">
-                        {console.log(arr)}
-                        <Select
-                            mode="multiple"
-                            maxCount={MAX_COUNT}
-                            disabled={allowInput}
-                            // value={value}
-                            style={{
-                                width: '300px',
-                                height: 'auto',
-                            }}
-                            onChange={setValue}
-                            suffixIcon={suffix}
-                            placeholder="Please select"
-                            options={arr}
-                        />
-                    </Space.Compact>
-                </div>
+            </div>
+            <div className="detail-item">
+                <h1>University: </h1>
+                <Space.Compact size="large">
+                    <Select
+                        mode="multiple"
+                        maxCount={MAX_COUNT}
+                        disabled={allowInput}
+                        value={detail.uniCode}
+                        style={{
+                            width: '300px',
+                            height: 'auto',
+                            cursor: 'pointer',
+                        }}
+                        onChange={setValue}
+                        suffixIcon={suffix}
+                        placeholder="Only 5 universities"
+                        options={arr}
+                        showSearch
+                    />
+                </Space.Compact>
             </div>
 
             <Button type="primary" onClick={() => save()} className="btn-save">

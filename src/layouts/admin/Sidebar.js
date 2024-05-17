@@ -43,6 +43,8 @@ const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
 const Sidebar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    const [role, setRole] = useState('');
+    const [username, setUsername] = useState(JSON.parse(localStorage.getItem('Infor')));
     const [isCollapsed, setIsCollapsed] = useState(() => {
         const collapsedState = localStorage.getItem('sidebarCollapsed');
         return collapsedState ? JSON.parse(collapsedState) : false;
@@ -51,7 +53,9 @@ const Sidebar = () => {
         const storedSelected = localStorage.getItem('selectedMenuItem');
         return storedSelected ? storedSelected : 'Dashboard';
     });
-
+    useEffect(() => {
+        setUsername(JSON.parse(localStorage.getItem('Infor')));
+    }, [username]);
     useEffect(() => {
         localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
     }, [isCollapsed]);
@@ -59,7 +63,9 @@ const Sidebar = () => {
     useEffect(() => {
         localStorage.setItem('selectedMenuItem', selected);
     }, [selected]);
-
+    useEffect(() => {
+        setRole(localStorage.getItem('Role'));
+    }, [role]);
     return (
         <Box
             sx={{
@@ -113,7 +119,6 @@ const Sidebar = () => {
                             </Box>
                         )}
                     </MenuItem>
-
                     {!isCollapsed && (
                         <Box mb="25px">
                             <Box display="flex" justifyContent="center" alignItems="center">
@@ -132,10 +137,10 @@ const Sidebar = () => {
                                     fontWeight="bold"
                                     sx={{ m: '10px 0 0 0' }}
                                 >
-                                    VemOni
+                                    {username.name}
                                 </Typography>
                                 <Typography variant="h5" color={colors.greenAccent[500]}>
-                                    Super Admin
+                                    {role}
                                 </Typography>
                             </Box>
                         </Box>

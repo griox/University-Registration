@@ -53,7 +53,8 @@ body {
 }
 
 .form_img_main {
-    width: 400px;
+    width: 500px;
+    margin-top: 100px;
     animation: scale-up 3s ease-in-out alternate infinite;
 }
 
@@ -87,7 +88,7 @@ body {
     animation: scale-down 3s ease-in-out alternate infinite;
 }
 .btn-getback {
-    background-color: #278cc2;
+    background-color: #003865;
     border: none;
     padding: 10px 20px;
     border-radius: 10px;

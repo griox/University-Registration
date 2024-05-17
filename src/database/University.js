@@ -40,7 +40,6 @@ const uniCodes = [
   "utecantho", "dutcantho", "tdtucantho", "pteucantho", "thuapvmcantho",
   "hutechdanang", "uetdanang", "uefdanang", "ltudanang", "hpudanang",
   "usshdanang", "utedanang", "dutdanang", "tdtudanang", "pteudana",
-  // Add more university codes here...
 ];
 
 const nameUs = [
@@ -136,7 +135,7 @@ export function createUniRecords() {
         let address = addresses[i];
         const registration = [];
         let target = Math.floor(Math.random()*5) *1000;
-        let averageS = Math.floor(Math.random() * (30 - 10)) + 10;
+        let averageS = Math.floor(Math.random() * (30 - 15)) + 10;
 
        writeUniRecord(uniCode,nameU,address,registration,target,averageS)
       }

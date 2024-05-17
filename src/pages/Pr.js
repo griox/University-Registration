@@ -1,20 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Input, Select, Space, Label, Cascader } from 'antd';
+import { Button, Input, Select, Space, Table, Modal } from 'antd';
 import '../assets/admin/css/profile.css';
-import { Typography } from 'antd';
 import 'firebase/auth';
 import { ref, child, getDatabase, get, set, update } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
-import { Calendar } from 'antd';
-import { DatePicker } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import UniOfStudent from './UniOfStudent';
 import { DownOutlined } from '@ant-design/icons';
 
-const onChange = (date, dateString) => {
-    console.log(date, dateString);
-};
+const { Option } = Select;
 const MAX_COUNT = 5;
 function Pr() {
     const [gt, setGt] = useState(false);
@@ -22,11 +16,7 @@ function Pr() {
         { value: 'Male', label: 'Male' },
         { value: 'Femail', label: 'Femail' },
     ]);
-    const [temp, setTemp] = useState('');
     const [allowInput, setAllowInput] = useState(true);
-    const [a, setA] = useState({});
-    const [email, setEmail] = useState('');
-    const getPopupContainer = (triggerNode) => triggerNode.parentNode;
     const firebaseConfig = {
         apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
         authDomain: 'mock-proeject-b.firebaseapp.com',
@@ -42,10 +32,13 @@ function Pr() {
     const db = getDatabase(app);
     const [arr, setArr] = useState([]);
     const [value, setValue] = React.useState([]);
+    const [op, setOp] = useState([...detail.uniCode]);
+
+    console.log(op);
     const suffix = (
         <>
             <span>
-                {value.length} / {MAX_COUNT}
+                {detail.uniCode.length} / {MAX_COUNT}
             </span>
             <DownOutlined />
         </>
@@ -291,13 +284,81 @@ function Pr() {
         dispatch({ type: 'update', payload: { propertyName, newValue } });
     };
     const handleSelect = (e, propertyName) => {
-        console.log(e);
         const newValue = e;
         // setEmail(newValue);
         dispatch({ type: 'update', payload: { propertyName, newValue } });
     };
     const filterOption = (input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+    const mang = [
+        { code: 'uni1', name: 'University A', score: 85, capacity: 100 },
+        { code: 'uni2', name: 'University B', score: 90, capacity: 80 },
+        // Add more universities here
+    ];
+    const [selectedUniversities, setSelectedUniversities] = useState([]);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedUniversity, setSelectedUniversity] = useState(null);
 
+    const universityData = [
+        // dữ liệu của bạn ở đây
+        { code: 'uni1', name: 'University A', score: 85, capacity: 100 },
+        { code: 'uni2', name: 'University B', score: 90, capacity: 80 },
+        { code: 'uni3', name: 'University C', score: 60, capacity: 50 },
+        { code: 'uni4', name: 'University D', score: 85, capacity: 100 },
+        { code: 'uni5', name: 'University E', score: 90, capacity: 80 },
+        { code: 'uni6', name: 'University F', score: 60, capacity: 50 },
+        { code: 'uni7', name: 'University G', score: 85, capacity: 100 },
+        { code: 'uni8', name: 'University H', score: 90, capacity: 80 },
+        { code: 'uni9', name: 'University I', score: 60, capacity: 50 },
+    ];
+
+    const columns = [
+        {
+            title: 'Code',
+            dataIndex: 'code',
+            key: 'code',
+        },
+        {
+            title: 'Name',
+            dataIndex: 'name',
+            key: 'name',
+        },
+        // các cột khác của bạn ở đây
+        {
+            title: 'Action',
+            key: 'action',
+            render: (text, record) => (
+                <Button type="primary" onClick={() => handleDetailClick(record)}>
+                    Detail
+                </Button>
+            ),
+        },
+        {
+            title: 'Action',
+            key: 'action',
+            // onChange={(e) => handleSelect(e, 'uniCode')}
+
+            render: (text, record) => <Button onClick={() => addUniversity(record.code)}>Add</Button>,
+        },
+    ];
+
+    const handleDetailClick = (record) => {
+        setSelectedUniversity(record);
+        setModalVisible(true);
+    };
+
+    const handleModalClose = () => {
+        setModalVisible(false);
+        setSelectedUniversity(null);
+    };
+    const addUniversity = (uniCode) => {
+        if (op.includes(uniCode) === false) {
+            setOp((pre) => [...pre, uniCode]);
+            // console.log(op);
+        }
+        // const property = 'uniCode';
+        // dispatch({ type: 'update', payload: { property, uniCode } });
+        // console.log(detail.uniCode);
+    };
     return (
         <div className="container">
             {/* {console.log(detail)} */}
@@ -442,18 +503,7 @@ function Pr() {
                         />
                     </Space.Compact>
                 </div>
-                {/* <div className="detail-item">
-                <h1>School: </h1>
-                <Space.Compact size="large">
-                    <Input
-                        placeholder="large size"
-                        value={detail.CCCD}
-                        className="g-s"
-                        disabled={allowInput}
-                        onChange={(e) => handleChange(e, 'CCCD')}
-                    />
-                </Space.Compact>
-            </div> */}
+
                 <div className="detail-item">
                     <h1>Email: </h1>
                     <Space.Compact size="large">
@@ -466,27 +516,45 @@ function Pr() {
                     </Space.Compact>
                 </div>
             </div>
+            {/* {console.log(detail.uniCode)} */}
             <div className="detail-item">
                 <h1>University: </h1>
-                <Space.Compact size="large">
+                <Space size="large">
                     <Select
                         mode="multiple"
                         maxCount={MAX_COUNT}
-                        disabled={allowInput}
-                        value={detail.uniCode}
-                        style={{
-                            width: '300px',
-                            height: 'auto',
-                            cursor: 'pointer',
-                        }}
-                        onChange={setValue}
-                        suffixIcon={suffix}
-                        placeholder="Only 5 universities"
+                        value={op}
                         options={arr}
+                        style={{ width: '950px', cursor: 'pointer' }}
+                        onChange={(e) => handleSelect(e, 'uniCode')}
+                        suffixIcon={suffix}
+                        placeholder="Selected universities"
                         showSearch
                     />
-                </Space.Compact>
+                </Space>
             </div>
+            <Table
+                dataSource={universityData}
+                columns={columns}
+                rowKey="code"
+                style={{ marginTop: '20px' }}
+                scroll={{ x: 1000, y: 300 }}
+            />
+            <Modal title="University Details" visible={modalVisible} onCancel={handleModalClose} footer={null}>
+                {selectedUniversity && (
+                    <div>
+                        <p>
+                            <strong>Name:</strong> {selectedUniversity.name}
+                        </p>
+                        <p>
+                            <strong>Score:</strong> {selectedUniversity.score}
+                        </p>
+                        <p>
+                            <strong>Capacity:</strong> {selectedUniversity.capacity}
+                        </p>
+                    </div>
+                )}
+            </Modal>
 
             <Button type="primary" onClick={() => save()} className="btn-save">
                 {allowInput ? 'Sửa' : 'Lưu'}

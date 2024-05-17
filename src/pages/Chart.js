@@ -237,21 +237,29 @@ const Chart = () => {
                     </div>
 
                     <div className="carder">
-                        <div className="card-name">All students </div>
-                        <div className="number" title={studentTotal}>
-                            {studentTotal}
+                        <div className="card-name">All university </div>
+                        <div className="number" title={'Total universities' + allUni}>
+                            {allUni}
                         </div>
                         <div className="card-content">
                             <div className="content-chart">
                                 <ArrowUpOutlined style={{ fontSize: '30px', color: 'green' }} />
-                                <div className="number-below" title={stMoreThanF} style={{ color: 'green' }}>
-                                    {stMoreThanF}
+                                <div
+                                    className="number-below"
+                                    title={'Number of Universities has less than 50% registration: ' + 12}
+                                    style={{ color: 'green' }}
+                                >
+                                    {12}
                                 </div>
                             </div>
                             <div className="content-chart">
                                 <ArrowDownOutlined style={{ fontSize: '30px', color: 'red' }} />
-                                <div className="number-below" title={stLessThanF} style={{ color: 'red' }}>
-                                    {stLessThanF}
+                                <div
+                                    className="number-below"
+                                    title={'Number of Universities has more than 50% registration: ' + 20}
+                                    style={{ color: 'red' }}
+                                >
+                                    {20}
                                 </div>
                             </div>
                         </div>
@@ -286,11 +294,11 @@ const Chart = () => {
             </div>
             <div className="charts">
                 <div className="charter">
-                    <h2>Demo</h2>
+                    <h2>Average scores of subjects</h2>
                     <Column {...config} />
                 </div>
                 <div className="charter" style={{ height: '700px' }}>
-                    <h2>Demo</h2>
+                    <h2>Number of schools each member registers</h2>
                     <Pie {...con} />
                 </div>
             </div>

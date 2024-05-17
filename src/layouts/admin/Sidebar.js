@@ -6,6 +6,7 @@ import 'react-pro-sidebar/dist/css/styles.css';
 import { tokens } from '../../theme';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 // import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
+import {SignatureOutlined, SolutionOutlined} from '@ant-design/icons' 
 import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
@@ -160,7 +161,7 @@ const Sidebar = () => {
                         <Item
                             title="Student Managerment"
                             to="/admin/student"
-                            icon={<ContactsOutlinedIcon />}
+                            icon={<SolutionOutlined />}
                             selected={selected}
                             setSelected={setSelected}
                             tooltip="Student Managerment"
@@ -176,7 +177,7 @@ const Sidebar = () => {
                         <Item
                             title="Register Account"
                             to="/register"
-                            icon={<ContactsOutlinedIcon />}
+                            icon={<SignatureOutlined />}
                             selected={selected}
                             setSelected={setSelected}
                             tooltip="Register Account"

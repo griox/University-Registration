@@ -9,6 +9,7 @@ import {
 } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import FormAdd from './formAddSchool';
+import FormDetail from './Modal_detail';
 
 const data = [
     {
@@ -127,7 +128,14 @@ const AddSchool = () => {
     const searchInput = useRef(null);
     const [pagination, setPagination] = useState({ current: 1, pageSize: 5 });
     const [isModalVisible, setVisible] = useState(false);
+    const [isModalDetailVisible, setDetailVisible] = useState(false);
     const [editingKey, setEditingKey] = useState('');
+    const [modalDetail, setModalDetail] = useState({});
+
+    const handleSchoolDetail = (record) => {
+        setModalDetail(record);
+        setDetailVisible(true);
+    };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -187,10 +195,12 @@ const AddSchool = () => {
 
     const handleOk = () => {
         setVisible(false);
+        setDetailVisible(false);
     };
 
     const handleCancel = () => {
         setVisible(false);
+        setDetailVisible(false);
     };
 
     const handleProvideAccount = async (record) => {
@@ -322,6 +332,9 @@ const AddSchool = () => {
             key: 'name',
             width: '30%',
             ...getColumnSearchProps('name'),
+            render: (text, record) => (
+                <Typography.Link onClick={() => handleSchoolDetail(record)}>{text}</Typography.Link>
+            ),
         },
         {
             title: 'University code',
@@ -355,7 +368,7 @@ const AddSchool = () => {
             width: '20%',
         },
         {
-            title: 'Entrance score',
+            title: 'Admission cutoff score',
             dataIndex: 'cutoff',
             width: '15%',
             sorter: (a, b) => a.cutoff - b.cutoff,
@@ -363,7 +376,7 @@ const AddSchool = () => {
         {
             title: 'Number of students registered',
             dataIndex: 'number',
-            width: '15%',
+            width: '20%',
             sorter: (a, b) => a.number - b.number,
         },
         {
@@ -435,14 +448,26 @@ const AddSchool = () => {
                 onChange={onChange}
                 pagination={{
                     defaultPageSize: '10',
-                    pageSizeOptions: ['10', '20', '30', '50'],
-                    total: 20,
+                    pageSizeOptions: ['10', '20', '40', '100'],
+                    total: data.length,
                     showSizeChanger: true,
                     showQuickJumper: true,
                     showTotal: (total) => `Total ${total} items`,
                 }}
-                scroll={{ x: 800, y: 400 }}
+                scroll={{ x: false, y: 450 }}
             />
+            <Modal
+                visible={isModalDetailVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                width={800} // Độ rộng của modal là 800 pixel
+                height={600}
+                cancelButtonProps={{ style: { display: 'none' } }}
+                okButtonProps={{ style: { width: '80px' } }}
+            >
+                <FormDetail></FormDetail>
+            </Modal>
+
             <Modal
                 title="Edit the University"
                 visible={isModalVisible}

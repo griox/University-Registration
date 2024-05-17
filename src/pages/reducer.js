@@ -20,6 +20,14 @@ const reducer = (state = initState, action) => {
                 ...state,
                 [propertyName]: newValue,
             };
+        case 'pushUniCode':
+            if (state.uniCode.length === 5) {
+                return state;
+            }
+            return {
+                ...state,
+                uniCode: [...state.uniCode, action.newValue],
+            };
         case 'user':
             return {
                 ...state,

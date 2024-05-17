@@ -1,12 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Form, Input, InputNumber, Popconfirm, Table, Typography } from 'antd';
-import { SearchOutlined, EditOutlined, DeleteOutlined, PlusCircleOutlined, MinusCircleOutlined, ManOutlined } from '@ant-design/icons';
-import { Button, Space, Divider} from 'antd';
+import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography } from 'antd';
+import {
+    SearchOutlined,
+    EditOutlined,
+    DeleteOutlined,
+    PlusCircleOutlined,
+    MinusCircleOutlined,
+    ManOutlined,
+} from '@ant-design/icons';
+import { Button, Space, Divider } from 'antd';
 import Highlighter from 'react-highlight-words';
-import {  WomanOutlined } from '@ant-design/icons';
+import { WomanOutlined } from '@ant-design/icons';
 import { get, ref, child, getDatabase, remove, update, push, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import Modal_Add from './Modal_add';
+import Modal_Detail from './Modal_Detail';
+import { render } from '@testing-library/react';
 const firebaseConfig = {
     apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
     authDomain: 'mock-proeject-b.firebaseapp.com',
@@ -46,46 +55,48 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
     );
 };
 
-const Student_List = () => {
-  const [form] = Form.useForm();
-  const [editingKey, setEditingKey] = useState('');
-  const [searchText, setSearchText] = useState('');
-  const [searchedColumn, setSearchedColumn] = useState('');
-  const [studentData, setStudentData] = useState([]);
-  const tableRef = useRef(null);
-  useEffect(() => {
-    const fetchData = async () => {
-        const studentRef = child(ref(db), 'Detail');
-        try {
-            const snapshot = await get(studentRef);
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                const studentArray = Object.values(data).map((student) => ({ ...student, key: student.id }));
-                setStudentData(studentArray);
+const Student_List = ({ data }) => {
+    const [form] = Form.useForm();
+    const [editingKey, setEditingKey] = useState('');
+    const [searchText, setSearchText] = useState('');
+    const [searchedColumn, setSearchedColumn] = useState('');
+    const [studentData, setStudentData] = useState([]);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [selectedStudent, setSelectedStudent] = useState(null);
+    const tableRef = useRef(null);
+    useEffect(() => {
+        const fetchData = async () => {
+            const studentRef = child(ref(db), 'Detail');
+            try {
+                const snapshot = await get(studentRef);
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const studentArray = Object.values(data).map((student) => ({ ...student, key: student.id }));
+                    setStudentData(studentArray);
+                }
+            } catch (error) {
+                console.error(error);
             }
-        } catch (error) {
-            console.error(error);
-        }
-    };
+        };
 
-    fetchData();
-}, []);
-  const searchInput = useRef(null);
+        fetchData();
+    }, []);
+    const searchInput = useRef(null);
 
     const isEditing = (record) => record.key === editingKey;
 
-  const handleSearch = (selectedKeys, confirm, dataIndex) => {
-    confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
-  };
-  const handleProvideAccount = async (record) => {
-    const { email } = record;
-    try {
-      // Cập nhật giá trị isRegister của sinh viên
-      await update(ref(db, `Detail/${record.key}`), {
-        isRegister: true,
-      });
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+    };
+    const handleProvideAccount = async (record) => {
+        const { email } = record;
+        try {
+            // Cập nhật giá trị isRegister của sinh viên
+            await update(ref(db, `Detail/${record.key}`), {
+                isRegister: true,
+            });
 
             // Thêm dữ liệu vào bảng account
             const accountRef = child(ref(db), 'Account');
@@ -96,21 +107,19 @@ const Student_List = () => {
                 Role: 'user',
             });
 
-      // Cập nhật state
-      const newData = studentData.map((item) =>
-        item.key === record.key ? { ...item, isRegister: true } : item
-      );
-      setStudentData(newData);
-    } catch (error) {
-      console.error('Error provide account student:', error);
-    }
-  };
-  const handleDeleteAccount = async (record) => {
-    try {
-      // Create an object with the data to be updated in the database
-      const updates = {};
-      updates[`Detail/${record.key}/isRegister`] = false;
-      updates[`Account/${record.key}`] = null; // Use null to delete the node
+            // Cập nhật state
+            const newData = studentData.map((item) => (item.key === record.key ? { ...item, isRegister: true } : item));
+            setStudentData(newData);
+        } catch (error) {
+            console.error('Error provide account student:', error);
+        }
+    };
+    const handleDeleteAccount = async (record) => {
+        try {
+            // Create an object with the data to be updated in the database
+            const updates = {};
+            updates[`Detail/${record.key}/isRegister`] = false;
+            updates[`Account/${record.key}`] = null; // Use null to delete the node
 
             // Perform the update operation
             await update(ref(db), updates);
@@ -130,98 +139,97 @@ const Student_List = () => {
         setSearchText('');
     };
 
-  const getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
-        <Input
-          ref={searchInput}
-          placeholder={`Search ${dataIndex}`}
-          value={selectedKeys[0]}
-          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-          style={{
-            marginBottom: 8,
-            display: 'block',
-          }}
-        />
-        <Space>
-          <Button
-            type="primary"
-            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
-            icon={<SearchOutlined />}
-            size="small"
-            style={{
-              width: 90,
-            }}
-          >
-            Search
-          </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{
-              width: 90,
-            }}
-          >
-            Reset
-          </Button>
-          <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              confirm({
-                closeDropdown: false,
-              });
-              setSearchText(selectedKeys[0]);
-              setSearchedColumn(dataIndex);
-            }}
-          >
-            Filter
-          </Button>
-          <Button type="link" size="small" onClick={() => close()}>
-            Close
-          </Button>
-        </Space>
-      </div>
-    ),
-    filterIcon: (filtered) => (
-      <SearchOutlined
-        style={{
-          color: filtered ? '#1677ff' : undefined,
-        }}
-      />
-    ),
-    onFilter: (value, record) =>
-      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
-    onFilterDropdownOpenChange: (visible) => {
-      if (visible) {
-        setTimeout(() => searchInput.current?.select(), 100);
-      }
-    },
-    render: (text) =>
-      searchedColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{
-            backgroundColor: '#ffc069',
-            padding: 0,
-          }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ''}
-        />
-      ) : (
-        text
-      ),
-  });
-  const handleDelete = async (key) => {
-    try {
-      await remove(child(ref(db), `Detail/${key}`));
-      const newData = studentData.filter((item) => item.key !== key);
-      setStudentData(newData);
-    } catch (error) {
-      console.error('Error deleting data:', error);
-    }
-  };
+    const getColumnSearchProps = (dataIndex) => ({
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+            <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+                <Input
+                    ref={searchInput}
+                    placeholder={`Search ${dataIndex}`}
+                    value={selectedKeys[0]}
+                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{
+                        marginBottom: 8,
+                        display: 'block',
+                    }}
+                />
+                <Space>
+                    <Button
+                        type="primary"
+                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                        icon={<SearchOutlined />}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        Search
+                    </Button>
+                    <Button
+                        onClick={() => clearFilters && handleReset(clearFilters)}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        Reset
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            confirm({
+                                closeDropdown: false,
+                            });
+                            setSearchText(selectedKeys[0]);
+                            setSearchedColumn(dataIndex);
+                        }}
+                    >
+                        Filter
+                    </Button>
+                    <Button type="link" size="small" onClick={() => close()}>
+                        Close
+                    </Button>
+                </Space>
+            </div>
+        ),
+        filterIcon: (filtered) => (
+            <SearchOutlined
+                style={{
+                    color: filtered ? '#1677ff' : undefined,
+                }}
+            />
+        ),
+        onFilter: (value, record) => record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+        onFilterDropdownOpenChange: (visible) => {
+            if (visible) {
+                setTimeout(() => searchInput.current?.select(), 100);
+            }
+        },
+        render: (text) =>
+            searchedColumn === dataIndex ? (
+                <Highlighter
+                    highlightStyle={{
+                        backgroundColor: '#ffc069',
+                        padding: 0,
+                    }}
+                    searchWords={[searchText]}
+                    autoEscape
+                    textToHighlight={text ? text.toString() : ''}
+                />
+            ) : (
+                text
+            ),
+    });
+    const handleDelete = async (key) => {
+        try {
+            await remove(child(ref(db), `Detail/${key}`));
+            const newData = studentData.filter((item) => item.key !== key);
+            setStudentData(newData);
+        } catch (error) {
+            console.error('Error deleting data:', error);
+        }
+    };
 
     const edit = (record) => {
         form.setFieldsValue({
@@ -233,225 +241,238 @@ const Student_List = () => {
         setEditingKey(record.key);
     };
 
-  const cancel = () => {
-    setEditingKey('');
-  };
-  const handleFieldChange = async (key, dataIndex, value) => {
-    console.log('ham da duoc goi');
-    const newData = [...studentData];
-    const index = newData.findIndex((item) => key === item.key);
-  
-    if (index > -1) {
-      newData[index][dataIndex] = value;
-      setStudentData(newData); // Update state
-  
-      try {
-        // Await the update promise for Firebase
-        await update(ref(db, `Detail/${key}`), {
-          [dataIndex]: value,
-        });
-        console.log('Data updated in Firebase successfully');
-      } catch (error) {
-        console.error('Error updating document:', error);
-        // Handle update error (optional: show notification to user)
-      }
-    }
-  };
-  const save = async (key) => {
-    try {
-      const row = await form.validateFields();
-      const newData = [...studentData];
-      const index = newData.findIndex((item) => key === item.key);
-  
-      if (index > -1) {
-        const item = newData[index];
-  
-        // Xử lý dữ liệu thay đổi
-        newData.splice(index, 1, {
-          ...item,
-          ...row,
-        });
-  
-        // Chuyển đổi giá trị từ chuỗi sang số
-        const updatedRow = {
-          ...newData[index],
-          MathScore: parseFloat(newData[index].MathScore),
-          LiteratureScore: parseFloat(newData[index].LiteratureScore),
-          EnglishScore: parseFloat(newData[index].EnglishScore),
-        };
-  
-        // Tính lại averageScore
-        const mathScore = updatedRow['MathScore'] || 0;
-        const literatureScore = updatedRow['LiteratureScore'] || 0;
-        const englishScore = updatedRow['EnglishScore'] || 0;
-        const averageScore = (mathScore + literatureScore + englishScore) ;
-        
-        // Làm tròn averageScore đến 1 chữ số thập phân
-        updatedRow['AverageScore'] = Math.round(averageScore * 10) / 10;
-  
-        // Cập nhật dữ liệu trên state
-        newData[index] = updatedRow;
-        setStudentData(newData);
+    const cancel = () => {
         setEditingKey('');
-  
-        // Cập nhật dữ liệu trên Firebase
-        await update(ref(db, `Detail/${key}`), updatedRow);
-        console.log('Data updated in Firebase successfully');
-      } else {
-        newData.push(row);
-        setStudentData(newData);
-        setEditingKey('');
-        handleFieldChange(key, Object.keys(row)[0], row[Object.keys(row)[0]]);
-  
-        // Thêm dữ liệu mới vào Firebase
-        await set(ref(db, `Detail/${key}`), row); // Thêm dữ liệu mới
-        console.log('Data added to Firebase successfully');
-      }
-    } catch (errInfo) {
-      console.log('Validate Failed:', errInfo);
-    }
-  };
-  const renderNameWithGender = (text, record) => {
-    return (
-      <span>
-        {record.gender === 'Male' ? <ManOutlined style={{ marginRight: 5 }} /> : <WomanOutlined style={{ marginRight: 5 }} />}
-        {text}
-      </span>
-    );
-  };
-  
-  
-  const columns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      width: '10%',
-      editable: true,
-      fixed: 'left',
-      ...getColumnSearchProps('id'),
-    },
-   
-    {
-      title: 'Name',
-      dataIndex: 'name',
-      width: '19%',
-      editable: true,
-      fixed: 'left',
-      key: 'name',
-      ...getColumnSearchProps('name'),
-      render: (text, record) => renderNameWithGender(text, record),
-    },
-    {
-      title: 'Email',
-      dataIndex: 'email',
-      width: '15%',
-      editable: true,
-      ...getColumnSearchProps('email'),
-      render: (text, record) => (
-        <span style={{ color: record.isRegister ? 'green' : 'red' }}>{text}</span>
-      ),
-      
-    },
-    {
-      title: 'Math',
-      dataIndex: 'MathScore',
-      width: '10%',
-      editable: true,
+    };
+    const handleFieldChange = async (key, dataIndex, value) => {
+        console.log('ham da duoc goi');
+        const newData = [...studentData];
+        const index = newData.findIndex((item) => key === item.key);
 
-      sorter: (a, b) => a.MathScore - b.MathScore,
-    },
-    {
-      title: 'Literature',
-      dataIndex: 'LiteratureScore',
-      width: '11%',
-      editable: true,
+        if (index > -1) {
+            newData[index][dataIndex] = value;
+            setStudentData(newData); // Update state
 
-      sorter: (a, b) => a.LiteratureScore - b.LiteratureScore,
-    },
-    {
-      title: 'EngLish',
-      dataIndex: 'EnglishScore',
-      width: '10%',
-      editable: true,
-
-      sorter: (a, b) => a.EnglishScore - b.EnglishScore,
-    },
-    {
-      title: 'Average',
-      dataIndex: 'AverageScore',
-      width: '10%',
-      sorter: (a, b) => a.AverageScore - b.AverageScore,
-    },
-    {
-      title: 'Unicode',
-      dataIndex: 'uniCode',
-      width: '13%',
-      render: (text) => {
-        if (typeof text === 'string') {
-          return text.split(', ').join(', ');
-        } else if (Array.isArray(text)) {
-          return text.join(', ');
-        } else {
-          return text;
+            try {
+                // Await the update promise for Firebase
+                await update(ref(db, `Detail/${key}`), {
+                    [dataIndex]: value,
+                });
+                console.log('Data updated in Firebase successfully');
+            } catch (error) {
+                console.error('Error updating document:', error);
+                // Handle update error (optional: show notification to user)
+            }
         }
-      },
-    },
-    {
-      title: 'Manage',
-      dataIndex: 'operation',
-      width: '10%',
-      fixed: 'right',
-      render: (_, record) => {
-        const editable = isEditing(record);
-        return editable ? (
-          <span>
-            <Typography.Link
-              onClick={() => save(record.key)}
-              style={{
-                marginRight: 8,
-              }}
-            >
-              Edit
-            </Typography.Link>
-            <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-              <Typography.Link>Cancel</Typography.Link>
-            </Popconfirm>
-          </span>
-        ) : (
-          <Space size={'middle'}>
-            <Typography.Link
-              disabled={editingKey !== ''}
-              onClick={() => edit(record)}
-              style={{
-                marginRight: 8,
-              }}
-            >
-              <EditOutlined />
-            </Typography.Link>
-            <Popconfirm
-              title="Sure to delete?"
-              onConfirm={() => handleDelete(record.key)}
-            >
-              <Typography.Link><DeleteOutlined /></Typography.Link>
-            </Popconfirm>
-            {!record.isRegister ? (
-              <Popconfirm
-                title="Provide Account?"
-                onConfirm={() => handleProvideAccount(record)}>
-                <Typography.Link><PlusCircleOutlined /></Typography.Link>
-              </Popconfirm>
-            ) : (
-              <Popconfirm
-                title="Delete Account?"
-                onConfirm={() => handleDeleteAccount(record)}>
-                <Typography.Link><MinusCircleOutlined /></Typography.Link>
-              </Popconfirm>
-            )}
-          </Space>
+    };
+    const save = async (key) => {
+        try {
+            const row = await form.validateFields();
+            const newData = [...studentData];
+            const index = newData.findIndex((item) => key === item.key);
+
+            if (index > -1) {
+                const item = newData[index];
+
+                // Xử lý dữ liệu thay đổi
+                newData.splice(index, 1, {
+                    ...item,
+                    ...row,
+                });
+
+                // Chuyển đổi giá trị từ chuỗi sang số
+                const updatedRow = {
+                    ...newData[index],
+                    MathScore: parseFloat(newData[index].MathScore),
+                    LiteratureScore: parseFloat(newData[index].LiteratureScore),
+                    EnglishScore: parseFloat(newData[index].EnglishScore),
+                };
+
+                // Tính lại averageScore
+                const mathScore = updatedRow['MathScore'] || 0;
+                const literatureScore = updatedRow['LiteratureScore'] || 0;
+                const englishScore = updatedRow['EnglishScore'] || 0;
+                const averageScore = mathScore + literatureScore + englishScore;
+
+                // Làm tròn averageScore đến 1 chữ số thập phân
+                updatedRow['AverageScore'] = Math.round(averageScore * 10) / 10;
+
+                // Cập nhật dữ liệu trên state
+                newData[index] = updatedRow;
+                setStudentData(newData);
+                setEditingKey('');
+
+                // Cập nhật dữ liệu trên Firebase
+                await update(ref(db, `Detail/${key}`), updatedRow);
+                console.log('Data updated in Firebase successfully');
+            } else {
+                newData.push(row);
+                setStudentData(newData);
+                setEditingKey('');
+                handleFieldChange(key, Object.keys(row)[0], row[Object.keys(row)[0]]);
+
+                // Thêm dữ liệu mới vào Firebase
+                await set(ref(db, `Detail/${key}`), row); // Thêm dữ liệu mới
+                console.log('Data added to Firebase successfully');
+            }
+        } catch (errInfo) {
+            console.log('Validate Failed:', errInfo);
+        }
+    };
+    const renderNameWithGender = (text, record) => {
+        return (
+            <span>
+                {record.gender === 'Male' ? (
+                    <ManOutlined style={{ marginRight: 5 }} />
+                ) : (
+                    <WomanOutlined style={{ marginRight: 5 }} />
+                )}
+                {text}
+            </span>
         );
-      },
-    },
-  ];
+    };
+
+    const handleIdClick = (record) => {
+        setSelectedStudent(record);
+        console.log(record);
+        setIsModalVisible(true);
+    };
+
+    const columns = [
+        {
+            title: 'ID',
+            dataIndex: 'id',
+            width: '10%',
+            fixed: 'left',
+            ...getColumnSearchProps('id'),
+            render: (_, record) => (
+                <span onClick={() => handleIdClick(record)} style={{ color: 'blue', cursor: 'pointer' }}>
+                    {record.id}
+                </span>
+            ),
+        },
+
+        {
+            title: 'Name',
+            dataIndex: 'name',
+            width: '19%',
+            editable: true,
+            fixed: 'left',
+            key: 'name',
+            ...getColumnSearchProps('name'),
+            render: (text, record) => renderNameWithGender(text, record),
+        },
+        {
+            title: 'Email',
+            dataIndex: 'email',
+            width: '15%',
+            editable: true,
+            ...getColumnSearchProps('email'),
+            render: (text, record) => (
+                <Tooltip title={record.isRegister ? 'Registered ' : 'Not registered '}>
+                    <span style={{ color: record.isRegister ? 'green' : 'red' }}>{text}</span>
+                </Tooltip>
+            ),
+        },
+        {
+            title: 'Math',
+            dataIndex: 'MathScore',
+            width: '10%',
+            editable: true,
+
+            sorter: (a, b) => a.MathScore - b.MathScore,
+        },
+        {
+            title: 'Literature',
+            dataIndex: 'LiteratureScore',
+            width: '11%',
+            editable: true,
+
+            sorter: (a, b) => a.LiteratureScore - b.LiteratureScore,
+        },
+        {
+            title: 'EngLish',
+            dataIndex: 'EnglishScore',
+            width: '10%',
+            editable: true,
+
+            sorter: (a, b) => a.EnglishScore - b.EnglishScore,
+        },
+        {
+            title: 'Average',
+            dataIndex: 'AverageScore',
+            width: '10%',
+            sorter: (a, b) => a.AverageScore - b.AverageScore,
+        },
+        {
+            title: 'Unicode',
+            dataIndex: 'uniCode',
+            width: '13%',
+            render: (text) => {
+                if (typeof text === 'string') {
+                    return text.split(', ').join(', ');
+                } else if (Array.isArray(text)) {
+                    return text.join(', ');
+                } else {
+                    return text;
+                }
+            },
+        },
+        {
+            title: 'Manage',
+            dataIndex: 'operation',
+            width: '13%',
+            fixed: 'right',
+            render: (_, record) => {
+                const editable = isEditing(record);
+                return editable ? (
+                    <span>
+                        <Typography.Link
+                            onClick={() => save(record.key)}
+                            style={{
+                                marginRight: 8,
+                            }}
+                        >
+                            Edit
+                        </Typography.Link>
+                        <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+                            <Typography.Link>Cancel</Typography.Link>
+                        </Popconfirm>
+                    </span>
+                ) : (
+                    <Space size={'middle'}>
+                        <Typography.Link
+                            disabled={editingKey !== ''}
+                            onClick={() => edit(record)}
+                            style={{
+                                marginRight: 8,
+                            }}
+                        >
+                            <EditOutlined />
+                        </Typography.Link>
+                        <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
+                            <Typography.Link>
+                                <DeleteOutlined />
+                            </Typography.Link>
+                        </Popconfirm>
+                        {!record.isRegister ? (
+                            <Popconfirm title="Provide Account?" onConfirm={() => handleProvideAccount(record)}>
+                                <Typography.Link>
+                                    <PlusCircleOutlined />
+                                </Typography.Link>
+                            </Popconfirm>
+                        ) : (
+                            <Popconfirm title="Delete Account?" onConfirm={() => handleDeleteAccount(record)}>
+                                <Typography.Link>
+                                    <MinusCircleOutlined />
+                                </Typography.Link>
+                            </Popconfirm>
+                        )}
+                    </Space>
+                );
+            },
+        },
+    ];
 
     const mergedColumns = columns.map((col) => {
         if (!col.editable) {
@@ -473,6 +494,11 @@ const Student_List = () => {
         <div style={{ justifyContent: 'center', alignItems: 'center' }}>
             <Space direction="vertical">
                 <Modal_Add />
+                <Modal_Detail
+                    visible={isModalVisible}
+                    onClose={() => setIsModalVisible(false)}
+                    student={selectedStudent}
+                />
                 <Form form={form} component={false}>
                     <Table
                         components={{
@@ -484,7 +510,7 @@ const Student_List = () => {
                         dataSource={studentData}
                         columns={mergedColumns}
                         scroll={{
-                            x: 800,
+                            x: 900,
                             y: 500,
                         }}
                         style={{ height: '100%', marginRight: '-20px' }}

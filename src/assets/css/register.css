@@ -1,7 +1,7 @@
 /* POPPINS FONT */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-@import url('https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css');
 @import url('https://kit.fontawesome.com/64d58efce2.js');
+@import url('https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css');
 
 /* ====== BASE ===== */
@@ -10,10 +10,6 @@
     padding: 0;
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
-}
-
-:root {
-    --c-brand: #4e57d4;
 }
 
 /*----- login -----*/
@@ -42,7 +38,6 @@
     border: 3px solid rgba(255, 255, 255, 0.3);
     border-radius: 30px;
     backdrop-filter: blur(20px);
-    /*  overflow: hidden;*/
 }
 
 .col-1 {
@@ -62,7 +57,8 @@
 }
 
 .form_img_main {
-    width: 400px;
+    width: 500px;
+    margin-top: 100px;
     animation: scale-up 3s ease-in-out alternate infinite;
 }
 
@@ -95,7 +91,19 @@
 .stars {
     animation: scale-down 3s ease-in-out alternate infinite;
 }
+.btn-getback {
+    background-color: #003865;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 15px;
+    color: #fff;
+    cursor: pointer;
+}
 
+.btn-getback:hover {
+    color: #fff;
+}
 @keyframes left-right {
     to {
         transform: translateX(10px);
@@ -134,7 +142,8 @@
 
 .featured span a {
     font-weight: 600;
-    color: crimson;
+    color: #fff;
+    font-size: 15px;
     text-decoration: none;
 }
 
@@ -177,6 +186,20 @@
 .login-form {
     position: absolute;
     left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 0 4vw;
+    transition: 0.3s;
+}
+
+/*Form Đăng Ký*/
+
+.register-form {
+    position: absolute;
+    left: -50%;
     transform: translateX(-50%);
     display: flex;
     flex-direction: column;
@@ -292,39 +315,20 @@
 
 .forget-pass {
     display: flex;
-    justify-content: flex-end;
-    gap: 5px;
-}
-
-.forget-pass .input-box {
-    width: 100%;
-    display: flex;
+    justify-content: right;
     gap: 5px;
 }
 
 .forget-pass a {
     color: #fff;
     text-decoration: none;
-    text-align: right;
-    font-size: 14px;
-    width: 100%;
-}
-
-.remembertxt_login {
-    color: #fff;
     font-size: 14px;
 }
 
 .forget-pass a:hover {
     text-decoration: underline;
 }
-.show_error {
-    font-size: 14px;
-    color: red;
-}
-.dont_show_error {
-    display: none;
-}
+
 .input-submit {
     display: flex;
     align-items: center;
@@ -335,7 +339,7 @@
     padding: 0 15px;
     margin: 10px 0;
     color: #fff;
-    background: var(--c-brand);
+    background: #003865;
     border: none;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -347,19 +351,6 @@
     gap: 15px;
 }
 
-.toast-position {
-    top: 0rem;
-    right: 0rem;
-}
-.btn-getback {
-    background-color: #278cc2;
-    border: none;
-    padding: 10px;
-    border-radius: 10px;
-    font-size: 20px;
-    color: #fff;
-    cursor: pointer;
-}
 @media (max-width: 892px) {
     .form-container {
         width: 400px;

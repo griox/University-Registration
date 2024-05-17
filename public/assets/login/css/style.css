@@ -10,7 +10,7 @@
 }
 
 :root {
-    --c-brand: #4e57d4;
+    --c-brand: #003865;
 }
 
 /*----- login -----*/
@@ -353,6 +353,7 @@ body {
     font-size: 15px;
     color: #fff;
     cursor: pointer;
+    text-decoration: none;
 }
 
 .btn-getback:hover {

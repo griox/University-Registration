@@ -6,114 +6,114 @@ import FormAdd from './formAddSchool';
 import FormDetail from './Modal_detail';
 
 const data = [
-  {
-    key: '1',
-    name: 'Nha Trang University',
-    ucode: 'NTU',
-    address: 'Khánh Hòa',
-    cutoff: '22',
-    number: '1500',
-    targets: 2100
-  },
-  {
-    key: '2',
-    name: 'Van Lang University',
-    ucode: 'VLU',
-    address: 'TP.HCM',
-    cutoff: '22',
-    number: '1500',
-    targets: 3000
-  },
-  {
-    key: '3',
-    name: 'Duy Tan University',
-    ucode: 'DTU',
-    address: 'Đà Nẵng',
-    cutoff: '22',
-    number: '1500',
-    targets: 2800
-  },
-  {
-    key: '4',
-    name: 'Ha Noi Medical University',
-    ucode: 'HMU',
-    address: 'Hà Nội',
-    cutoff: '22',
-    number: '1500',
-    targets: 2000
-  },
-  {
-    key: '5',
-    name: 'Hutech University',
-    ucode: 'DKC',
-    address: 'TP.HCM',
-    cutoff: '22',
-    number: '1500',
-    targets: 2400
-  },
-  {
-    key: '6',
-    name: 'Ha Noi National University',
-    ucode: 'VNU',
-    address: 'Hà Nội',
-    cutoff: '22',
-    number: '1500',
-    targets: 2500
-  },
-  {
-    key: '7',
-    name: 'Hanoi Polytechnic University ',
-    ucode: 'BKA',
-    address: 'Hà Nội',
-    cutoff: '22',
-    number: '1500',
-    targets: 3000
-  },
-  {
-    key: '8',
-    name: 'University of Transportation Technology',
-    ucode: 'GTA',
-    address: 'TP.HCM',
-    cutoff: '22',
-    number: '1500',
-    targets: 2800
-  },
-  {
-    key: '9',
-    name: 'University of Social Sciences and Humanities',
-    ucode: 'QHX',
-    address: 'TP.HCM',
-    cutoff: '22',
-    number: '1500',
-    targets: 2130
-  },
-  {
-    key: '10',
-    name: 'University of Natural Resources and Environment',
-    ucode: 'HUNRE',
-    address: 'Hà Nội',
-    cutoff: '22',
-    number: '1500',
-    targets: 2450
-  },
-  {
-    key: '11',
-    name: 'Ton Duc Thang University',
-    ucode: 'TDTU',
-    address: 'Khánh Hòa',
-    cutoff: '22',
-    number: '1500',
-    targets: 1900
-  },
-  {
-    key: '12',
-    name: 'Khanh Hoa University',
-    ucode: 'UKH',
-    address: 'Khánh Hòa',
-    cutoff: '22',
-    number: '1500',
-    targets: 1750
-  },
+  // {
+  //   key: '1',
+  //   name: 'Nha Trang University',
+  //   ucode: 'NTU',
+  //   address: 'Khánh Hòa',
+  //   cutoff: '22',
+  //   number: '1500',
+  //   targets: 2100
+  // },
+  // {
+  //   key: '2',
+  //   name: 'Van Lang University',
+  //   ucode: 'VLU',
+  //   address: 'TP.HCM',
+  //   cutoff: '22',
+  //   number: '1500',
+  //   targets: 3000
+  // },
+  // {
+  //   key: '3',
+  //   name: 'Duy Tan University',
+  //   ucode: 'DTU',
+  //   address: 'Đà Nẵng',
+  //   cutoff: '22',
+  //   number: '1500',
+  //   targets: 2800
+  // },
+  // {
+  //   key: '4',
+  //   name: 'Ha Noi Medical University',
+  //   ucode: 'HMU',
+  //   address: 'Hà Nội',
+  //   cutoff: '22',
+  //   number: '1500',
+  //   targets: 2000
+  // },
+  // {
+  //   key: '5',
+  //   name: 'Hutech University',
+  //   ucode: 'DKC',
+  //   address: 'TP.HCM',
+  //   cutoff: '22',
+  //   number: '1500',
+  //   targets: 2400
+  // },
+  // {
+  //   key: '6',
+  //   name: 'Ha Noi National University',
+  //   ucode: 'VNU',
+  //   address: 'Hà Nội',
+  //   cutoff: '22',
+  //   number: '1500',
+  //   targets: 2500
+  // },
+  // {
+  //   key: '7',
+  //   name: 'Hanoi Polytechnic University ',
+  //   ucode: 'BKA',
+  //   address: 'Hà Nội',
+  //   cutoff: '22',
+  //   number: '1500',
+  //   targets: 3000
+  // },
+  // {
+  //   key: '8',
+  //   name: 'University of Transportation Technology',
+  //   ucode: 'GTA',
+  //   address: 'TP.HCM',
+  //   cutoff: '22',
+  //   number: '1500',
+  //   targets: 2800
+  // },
+  // {
+  //   key: '9',
+  //   name: 'University of Social Sciences and Humanities',
+  //   ucode: 'QHX',
+  //   address: 'TP.HCM',
+  //   cutoff: '22',
+  //   number: '1500',
+  //   targets: 2130
+  // },
+  // {
+  //   key: '10',
+  //   name: 'University of Natural Resources and Environment',
+  //   ucode: 'HUNRE',
+  //   address: 'Hà Nội',
+  //   cutoff: '22',
+  //   number: '1500',
+  //   targets: 2450
+  // },
+  // {
+  //   key: '11',
+  //   name: 'Ton Duc Thang University',
+  //   ucode: 'TDTU',
+  //   address: 'Khánh Hòa',
+  //   cutoff: '22',
+  //   number: '1500',
+  //   targets: 1900
+  // },
+  // {
+  //   key: '12',
+  //   name: 'Khanh Hoa University',
+  //   ucode: 'UKH',
+  //   address: 'Khánh Hòa',
+  //   cutoff: '22',
+  //   number: '1500',
+  //   targets: 1750
+  // },
 ];
 
     const AddSchool = () => {
@@ -142,14 +142,15 @@ const data = [
         };
 
         const isEditing = (record) => record.key === editingKey;
+        
         const edit = (record) => {
-            // form.setFieldsValue({
-            //   name: '',
-            //   id: '',
-            //   email: '',
-            //   ...record,
-            // });
-            // setEditingKey(record.key);
+            data.setFieldsValue({
+              name: '',
+              id: '',
+              email: '',
+              ...record,
+            });
+            setEditingKey(record.key);
           };
         
           const cancel = () => {
@@ -445,7 +446,8 @@ const data = [
     }
 ];
         return (
-          <div>
+          <div style={{justifyContent: 'center', alignItems: 'center'}}>
+            <Space direction='vẻ'></Space>
                 <Table
                     columns={columns}
                     dataSource={data}

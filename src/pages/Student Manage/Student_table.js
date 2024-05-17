@@ -334,7 +334,6 @@ const Student_List = ({ data }) => {
 
     const handleIdClick = (record) => {
         setSelectedStudent(record);
-        console.log(record);
         setIsModalVisible(true);
     };
 

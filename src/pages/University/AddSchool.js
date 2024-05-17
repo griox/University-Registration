@@ -447,13 +447,14 @@ const AddSchool = () => {
                 dataSource={data}
                 onChange={onChange}
                 pagination={{
-                    defaultPageSize: '5',
-                    pageSizeOptions: ['5', '10', '15', '20'],
+                    defaultPageSize: '10',
+                    pageSizeOptions: ['10', '20', '40', '100'],
                     total: data.length,
                     showSizeChanger: true,
                     showQuickJumper: true,
                     showTotal: (total) => `Total ${total} items`,
                 }}
+                scroll={{ x: false, y: 450 }}
             />
             <Modal
                 visible={isModalDetailVisible}

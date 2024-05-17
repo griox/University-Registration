@@ -11,12 +11,11 @@ import { DownOutlined } from '@ant-design/icons';
 const { Option } = Select;
 const MAX_COUNT = 5;
 function Pr() {
-    const [gt, setGt] = useState(false);
     const [gender, setGender] = useState([
         { value: 'Male', label: 'Male' },
         { value: 'Femail', label: 'Femail' },
     ]);
-    const [allowInput, setAllowInput] = useState(true);
+    const [suitableSchoolList, setSuitableSchoolList] = useState([]);
     const firebaseConfig = {
         apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
         authDomain: 'mock-proeject-b.firebaseapp.com',
@@ -31,10 +30,7 @@ function Pr() {
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const [arr, setArr] = useState([]);
-    const [value, setValue] = React.useState([]);
-    const [op, setOp] = useState([...detail.uniCode]);
 
-    console.log(op);
     const suffix = (
         <>
             <span>
@@ -68,48 +64,50 @@ function Pr() {
                     .forEach((item) => {
                         if (item.averageS <= averageScore) {
                             const element = { value: item.uniCode, label: item.uniCode };
+
+                            const school = {
+                                code: item.uniCode,
+                                name: item.nameU,
+                                score: item.averageS,
+                                capacity: item.target,
+                            };
                             setArr((pre) => [...pre, element]);
+                            setSuitableSchoolList((pre) => [...pre, school]);
                         }
                     });
             } else {
                 console.log('No data available');
             }
         });
-
         dispatch({ type: 'user', payload: personal });
 
         // const k = JSON.parse(localStorage.getItem('Infor'));
     }, [db, dispatch]);
     const save = () => {
-        if (allowInput !== true) {
-            localStorage.setItem('Infor', JSON.stringify(detail));
-            const emailEncode = JSON.parse(localStorage.getItem('Email'));
-            update(ref(db, 'Infor/' + emailEncode.replace(/\./g, ',')), {
-                name: detail.name,
-                gender: detail.gender,
-                placeOBirth: detail.placeOBirth,
-                Address: detail.Address,
-                enthicity: detail.enthicity,
-                idenNum: detail.idenNum,
-                email: detail.email,
+        const per = JSON.parse(localStorage.getItem('Infor'));
 
-                // EnglishScore: parseFloat(detail.EnglishScore),
-                // MathScore: parseFloat(detail.MathScoreScore),
-                // LiteratureScore: parseFloat(detail.LiteratureScore),
+        update(ref(db, 'Detail/' + per.id), {
+            name: detail.name,
+            gender: detail.gender,
+            placeOBirth: detail.placeOBirth,
+            Address: detail.Address,
+            enthicity: detail.enthicity,
+            idenNum: detail.idenNum,
+            email: detail.email,
+            uniCode: detail.uniCode,
+
+            // EnglishScore: parseFloat(detail.EnglishScore),
+            // MathScore: parseFloat(detail.MathScoreScore),
+            // LiteratureScore: parseFloat(detail.LiteratureScore),
+        })
+            .then(() => {
+                toast.success('Updated sucessfully');
             })
-                .then(() => {
-                    toast.success('Updated sucessfully');
-                })
-                .catch((error) => {
-                    alert('lỗi' + error);
-                });
-            update(ref(db, 'SinhVien/SV004/'), {
-                uniCodes: value,
+            .catch((error) => {
+                alert('lỗi' + error);
             });
-            setAllowInput(!allowInput);
-        } else {
-            setAllowInput(!allowInput);
-        }
+
+        console.log(per.id);
     };
     const [size, setSize] = useState('middle');
     // const handleChange = (value) => {
@@ -288,28 +286,9 @@ function Pr() {
         // setEmail(newValue);
         dispatch({ type: 'update', payload: { propertyName, newValue } });
     };
-    const filterOption = (input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
-    const mang = [
-        { code: 'uni1', name: 'University A', score: 85, capacity: 100 },
-        { code: 'uni2', name: 'University B', score: 90, capacity: 80 },
-        // Add more universities here
-    ];
-    const [selectedUniversities, setSelectedUniversities] = useState([]);
-    const [modalVisible, setModalVisible] = useState(false);
-    const [selectedUniversity, setSelectedUniversity] = useState(null);
 
-    const universityData = [
-        // dữ liệu của bạn ở đây
-        { code: 'uni1', name: 'University A', score: 85, capacity: 100 },
-        { code: 'uni2', name: 'University B', score: 90, capacity: 80 },
-        { code: 'uni3', name: 'University C', score: 60, capacity: 50 },
-        { code: 'uni4', name: 'University D', score: 85, capacity: 100 },
-        { code: 'uni5', name: 'University E', score: 90, capacity: 80 },
-        { code: 'uni6', name: 'University F', score: 60, capacity: 50 },
-        { code: 'uni7', name: 'University G', score: 85, capacity: 100 },
-        { code: 'uni8', name: 'University H', score: 90, capacity: 80 },
-        { code: 'uni9', name: 'University I', score: 60, capacity: 50 },
-    ];
+    // const [modalVisible, setModalVisible] = useState(false);
+    // const [selectedUniversity, setSelectedUniversity] = useState(null);
 
     const columns = [
         {
@@ -322,81 +301,50 @@ function Pr() {
             dataIndex: 'name',
             key: 'name',
         },
+        {
+            title: 'Entrance Score',
+            dataIndex: 'score',
+            key: 'score',
+        },
+        {
+            title: 'Target',
+            dataIndex: 'capacity',
+            key: 'capacity',
+        },
         // các cột khác của bạn ở đây
+        {
+            title: 'Number of students registered',
+            dataIndex: 'capacity',
+            key: 'capacity',
+        },
         {
             title: 'Action',
             key: 'action',
             render: (text, record) => (
-                <Button type="primary" onClick={() => handleDetailClick(record)}>
-                    Detail
+                <Button onClick={() => addUniversity(record.code)} disabled={detail.uniCode.includes(record.code)}>
+                    Add
                 </Button>
             ),
         },
-        {
-            title: 'Action',
-            key: 'action',
-            // onChange={(e) => handleSelect(e, 'uniCode')}
-
-            render: (text, record) => <Button onClick={() => addUniversity(record.code)}>Add</Button>,
-        },
     ];
 
-    const handleDetailClick = (record) => {
-        setSelectedUniversity(record);
-        setModalVisible(true);
+    const addUniversity = (uniCode) => {
+        dispatch({ type: 'pushUniCode', newValue: uniCode });
     };
 
-    const handleModalClose = () => {
-        setModalVisible(false);
-        setSelectedUniversity(null);
-    };
-    const addUniversity = (uniCode) => {
-        if (op.includes(uniCode) === false) {
-            setOp((pre) => [...pre, uniCode]);
-            // console.log(op);
-        }
-        // const property = 'uniCode';
-        // dispatch({ type: 'update', payload: { property, uniCode } });
-        // console.log(detail.uniCode);
-    };
     return (
         <div className="container">
-            {/* {console.log(detail)} */}
             <div className="input">
                 <div className="full-name">
                     <h1>Student Name: </h1>
                     <Space.Compact size="large">
-                        {/* <div>{a.email}</div> */}
                         <Input
-                            readOnly={allowInput}
                             className="g-s"
                             value={detail.name}
                             onChange={(e) => handleChange(e, 'name')}
-                            disabled={allowInput}
                             options={gender}
                         />
                     </Space.Compact>
-                    {/* <Space.Compact size="large">
-                    <Input
-                        addonBefore={'Middlename:'}
-                        placeholder="large size"
-                        readOnly={allowInput}
-                        className="label-input"
-                        value={detail.middlename}
-                        onChange={(e) => handleChange(e, 'middlename')}
-                        disabled={allowInput}
-                    />
-                </Space.Compact>
-                <Space.Compact size="large">
-                    <Input
-                        addonBefore={'Lastname:'}
-                        placeholder="large size"
-                        className="label-input"
-                        value={detail.lastname}
-                        onChange={(e) => handleChange(e, 'lastname')}
-                        disabled={allowInput}
-                    />
-                </Space.Compact> */}
                 </div>
                 <div className="detail-item">
                     <h1>Gender: </h1>
@@ -409,46 +357,11 @@ function Pr() {
                                 className="g-s"
                                 value={detail.gender}
                                 onChange={(e) => handleSelect(e, 'gender')}
-                                disabled={allowInput}
                             />
                         </Space.Compact>
                     </Space.Compact>
                 </div>
-                {/* <div className="detail-item">
-                <h1>Date of birth: </h1>
-                <div className="date-detail">
-                    <Space.Compact className="date">
-                        <Select
-                            className="g-s"
-                            options={day}
-                            value={detail.}
-                            onChange={(e) => handleSelect(e, 'day')}
-                            placeholder="Day"
-                            disabled={allowInput}
-                        />
-                    </Space.Compact> */}
-                {/* <Space.Compact className="date">
-                        <Select
-                            className="g-s"
-                            options={month}
-                            value={detail.month}
-                            onChange={(e) => handleSelect(e, 'month')}
-                            placeholder="Month"
-                            disabled={allowInput}
-                        />
-                    </Space.Compact>
-                    <Space.Compact className="date">
-                        <Select
-                            className="g-s"
-                            options={day}
-                            placeholder="Year"
-                            value={detail.year}
-                            onChange={(e) => handleSelect(e, 'year')}
-                            disabled={allowInput}
-                        />
-                    </Space.Compact>
-                </div> */}
-                {/* </div> */}
+
                 <div className="detail-item">
                     <h1>Place of birth: </h1>
 
@@ -460,7 +373,6 @@ function Pr() {
                             className="g-s"
                             value={detail.placeOBirth}
                             onChange={(e) => handleSelect(e, 'placeOBirth')}
-                            disabled={allowInput}
                         />
                     </Space.Compact>
                 </div>
@@ -472,7 +384,6 @@ function Pr() {
                             className="g-s addr"
                             value={detail.Address}
                             onChange={(e) => handleChange(e, 'Address')}
-                            disabled={allowInput}
                         />
                     </Space.Compact>
                 </div>
@@ -487,7 +398,6 @@ function Pr() {
                             onChange={(e) => handleSelect(e, 'enthicity')}
                             options={ethnicities}
                             className="g-s"
-                            disabled={allowInput}
                         />
                     </Space.Compact>
                 </div>
@@ -495,12 +405,7 @@ function Pr() {
                     <h1>CCCD: </h1>
 
                     <Space.Compact size="large">
-                        <Input
-                            className="g-s"
-                            value={detail.idenNum}
-                            onChange={(e) => handleChange(e, 'idenNum')}
-                            disabled={allowInput}
-                        />
+                        <Input className="g-s" value={detail.idenNum} onChange={(e) => handleChange(e, 'idenNum')} />
                     </Space.Compact>
                 </div>
 
@@ -515,49 +420,34 @@ function Pr() {
                         />
                     </Space.Compact>
                 </div>
-            </div>
-            {/* {console.log(detail.uniCode)} */}
-            <div className="detail-item">
-                <h1>University: </h1>
-                <Space size="large">
-                    <Select
-                        mode="multiple"
-                        maxCount={MAX_COUNT}
-                        value={op}
-                        options={arr}
-                        style={{ width: '950px', cursor: 'pointer' }}
-                        onChange={(e) => handleSelect(e, 'uniCode')}
-                        suffixIcon={suffix}
-                        placeholder="Selected universities"
-                        showSearch
-                    />
-                </Space>
+                <div className="detail-item">
+                    <h1>University: </h1>
+                    <Space size="large">
+                        <Select
+                            mode="multiple"
+                            maxCount={MAX_COUNT}
+                            value={detail.uniCode}
+                            options={arr}
+                            style={{ width: '400px', cursor: 'pointer' }}
+                            onChange={(e) => handleSelect(e, 'uniCode')}
+                            suffixIcon={suffix}
+                            placeholder="Selected universities"
+                            showSearch
+                            className="g-s"
+                        />
+                    </Space>
+                </div>
             </div>
             <Table
-                dataSource={universityData}
+                dataSource={suitableSchoolList}
                 columns={columns}
                 rowKey="code"
                 style={{ marginTop: '20px' }}
-                scroll={{ x: 1000, y: 300 }}
+                scroll={{ x: 200, y: 350 }}
             />
-            <Modal title="University Details" visible={modalVisible} onCancel={handleModalClose} footer={null}>
-                {selectedUniversity && (
-                    <div>
-                        <p>
-                            <strong>Name:</strong> {selectedUniversity.name}
-                        </p>
-                        <p>
-                            <strong>Score:</strong> {selectedUniversity.score}
-                        </p>
-                        <p>
-                            <strong>Capacity:</strong> {selectedUniversity.capacity}
-                        </p>
-                    </div>
-                )}
-            </Modal>
 
             <Button type="primary" onClick={() => save()} className="btn-save">
-                {allowInput ? 'Sửa' : 'Lưu'}
+                {'Save'}
             </Button>
         </div>
     );

@@ -21,7 +21,7 @@ const Chart = () => {
     const [registFour, setRegistFour] = useState(0);
     const [registFive, setRegistFive] = useState(0);
     const [registZero, setRegistZero] = useState(0);
-
+    const [average, setAverage] = useState(0);
     const aRef = useRef(studentTotal);
     const firebaseConfig = {
         apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
@@ -95,7 +95,7 @@ const Chart = () => {
         const timer = setTimeout(regist, 10);
 
         return () => clearTimeout(timer);
-    }, []);
+    }, [db]);
 
     useEffect(() => {
         const updateStudent = () => {
@@ -110,6 +110,7 @@ const Chart = () => {
                     var las = 0;
                     let m = 0;
                     let f = 0;
+                    let sum = 0;
                     listItem.forEach((item) => {
                         if (item.gender === 'Female') {
                             f += 1;
@@ -119,8 +120,9 @@ const Chart = () => {
                         mas += item.MathScore;
                         eas += item.EnglishScore;
                         las += item.LiteratureScore;
-
-                        if ((item.EnglishScore + item.MathScore + item.LiteratureScore) / 3 > 5) {
+                        let p = (item.EnglishScore + item.MathScore + item.LiteratureScore) / 3;
+                        sum += p;
+                        if (p > 5) {
                             y += 1;
                         } else {
                             k += 1;
@@ -129,29 +131,31 @@ const Chart = () => {
                     mas /= listItem.length;
                     eas /= listItem.length;
                     las /= listItem.length;
+                    sum /= listItem.length;
                     setEnglishAS(eas);
                     setLiteratureAS(las);
                     setMathAS(mas);
                     setStudentTotal(listItem.length);
                     setStLessThanF(k);
                     setStMoreThanF(y);
-                    setMale(m);
-                    setFemale(f);
-
-                    localStorage.setItem('NumberOfStudentGradeThan5', JSON.stringify(y));
+                    setMale((pre) => m);
+                    setFemale((pre) => f);
+                    setAverage((pre) => sum);
+                    // localStorage.setItem('Numbe/rOfStudentGradeThan5', JSON.stringify(y));
                 }
             });
         };
         const timer = setTimeout(updateStudent, 10);
 
         return () => clearTimeout(timer);
-    }, []);
+    }, [db]);
 
     const config = {
         data: [
             { subject: 'Math', score: mathAS },
             { subject: 'Enghlish', score: englishAS },
             { subject: 'Literature', score: literatureAS },
+            { subject: 'Total Students', score: average },
         ],
         width: 1000,
         height: 400,
@@ -202,7 +206,30 @@ const Chart = () => {
             textAlign: 'center', // Căn giữa nhãn
         },
     };
-
+    console.log(average);
+    const gen = {
+        data: [
+            { gender: 'Male', value: male },
+            { gender: 'Female', value: female },
+        ],
+        angleField: 'value',
+        colorField: 'gender',
+        width: 350,
+        height: 250,
+        label: {
+            text: (d) => `${d.gender}\n${d.value}`,
+            style: {
+                fontWeight: 'bold',
+            },
+        },
+        legend: {
+            color: {
+                title: false,
+                position: 'right',
+                rowPadding: 5,
+            },
+        },
+    };
     return (
         <div className="container">
             <div className="mainer">
@@ -266,29 +293,7 @@ const Chart = () => {
                     </div>
                     <div className="carder">
                         <div className="card-name">Gender </div>
-
-                        <div className="card-content">
-                            <div className="content-chart">
-                                <ManOutlined style={{ fontSize: '30px', color: 'green' }} />
-                                <div
-                                    className="number-below"
-                                    title={'Number of male: ' + male}
-                                    style={{ color: 'green' }}
-                                >
-                                    {male}
-                                </div>
-                            </div>
-                            <div className="content-chart">
-                                <WomanOutlined style={{ fontSize: '30px', color: 'red' }} />
-                                <div
-                                    className="number-below"
-                                    title={'Number of female: ' + female}
-                                    style={{ color: 'red' }}
-                                >
-                                    {female}
-                                </div>
-                            </div>
-                        </div>
+                        <Pie {...gen} />
                     </div>
                 </div>
             </div>

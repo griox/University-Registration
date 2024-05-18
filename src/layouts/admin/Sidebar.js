@@ -10,6 +10,7 @@ import {SignatureOutlined, SolutionOutlined} from '@ant-design/icons'
 import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
+import { SignatureOutlined, SolutionOutlined } from '@ant-design/icons';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { merge } from '@mui/system';
 // import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
@@ -44,6 +45,7 @@ const Sidebar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [role, setRole] = useState('');
+    // const us=JSON.parse(localStorage.getItem('Infor'))
     const [username, setUsername] = useState(JSON.parse(localStorage.getItem('Infor')));
     const [isCollapsed, setIsCollapsed] = useState(() => {
         const collapsedState = localStorage.getItem('sidebarCollapsed');

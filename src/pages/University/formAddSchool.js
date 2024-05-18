@@ -6,7 +6,6 @@ import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
 
 const { RangePicker } = DatePicker;
-
 const formItemLayout = {
   //format size according to device 
     labelCol: {
@@ -285,4 +284,6 @@ const FormAdd = () => {
         
     );
 };
+
+
 export default FormAdd;

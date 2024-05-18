@@ -9,9 +9,9 @@ import {
 } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import FormAdd from './formAddSchool';
-import { get, ref, child, getDatabase, remove, update, push, set } from 'firebase/database';
+import { get, ref, child, getDatabase, remove, update, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
-import { render } from '@testing-library/react';
+// import { render } from '@testing-library/react';
 import FormDetail from './Modal_detail';
 
 const firebaseConfig = {
@@ -172,6 +172,7 @@ const AddSchool = ({data}) => {
     const [universityData, setUniversityData] = useState([]);
     const [selectedUniversity, setSelectUniversity] = useState(null);
     const [isModalUniVisible, setUniVisible] = useState(false);
+    const [modalDetail, setModalDetail] = useState(false);
     const tableRef = useRef(null);
     const searchInput = useRef(null);
     useEffect(() => {
@@ -193,7 +194,10 @@ const AddSchool = ({data}) => {
   }, []);
 
 
-    const isEditing = (record) => record.key === editingKey;
+    const handleSchoolDetail = (record) => {
+        setModalDetail(record);
+        setUniVisible(true);
+    };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -205,8 +209,43 @@ const AddSchool = ({data}) => {
         setSearchText('');
     };
 
+    const isEditing = (record) => record.key === editingKey;
+    // const edit = (record) => {
+    //     // form.setFieldsValue({
+    //     //   name: '',
+    //     //   id: '',
+    //     //   email: '',
+    //     //   ...record,
+    //     // });
+    //     // setEditingKey(record.key);
+    // };
+
+    // const cancel = () => {
+    //     setEditingKey('');
+    // };
+    // const handleDelete = async (key) => {
+    //     // try {
+    //     //   await remove(child(ref(db), `SinhVien/${key}`));
+    //     //   const newData = studentData.filter((item) => item.key !== key);
+    //     //   setStudentData(newData);
+    //     // } catch (error) {
+    //     //   console.error('Error deleting data:', error);
+    //     // }
+    // };
+
+
     // const showModal = () => {
     //     setVisible(true);
+    // };
+
+    // const handleOk = () => {
+    //     setVisible(false);
+    //     setDetailVisible(false);
+    // };
+
+    // const handleCancel = () => {
+    //     setVisible(false);
+    //     setDetailVisible(false);
     // };
 
 
@@ -303,6 +342,7 @@ const AddSchool = ({data}) => {
                 text
             ),
     });
+
     const handleDelete = async (key) => {
       try {
         await remove(child(ref(db), `ListUni/${key}`));

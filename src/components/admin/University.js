@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import Header from '../../components/Header';
 import AddSchool from '../../pages/University/AddSchool';
 import { Button, Modal } from 'antd';
-import FormAdd from '../../pages/University/formAddSchool';
+// import FormAdd from '../../pages/University/formAddSchool';
 
 const AddUniversity = () => {
     const [position, setPosition] = useState('start');
@@ -30,34 +30,8 @@ const AddUniversity = () => {
             {/* <Header title="ADD UNIVERSITY" subtitle="List of University" /> */}
             {/* <Header title="UNIVERSITY MANAGERMENT" /> */}
 
-            <div
-                style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginBottom: '10px',
-                }}
-            >
-                <span style={{ fontWeight: 'bold', fontSize: '20px' }}>{/* List of University{" "} */}</span>
-                <Button style={{ width: '120px', marginRight: '30px' }} type="primary" onClick={showModal}>
-                    Add
-                </Button>
-                <Modal
-                    title="Add the University"
-                    visible={isModalVisible}
-                    onOk={handleOk}
-                    okText="Add"
-                    onCancel={handleCancel}
-                    style={{ top: '50px', left: '50px' }}
-                    destroyOnClose={true}
-                >
-                    <FormAdd></FormAdd>
-                </Modal>
-            </div>
             <div>
-                <>
                     <AddSchool></AddSchool>
-                </>
             </div>
         </Box>
     );

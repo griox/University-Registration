@@ -6,10 +6,10 @@ import 'react-pro-sidebar/dist/css/styles.css';
 import { tokens } from '../../theme';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 // import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
+import {SignatureOutlined, SolutionOutlined} from '@ant-design/icons' 
 import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
-import { SignatureOutlined, SolutionOutlined } from '@ant-design/icons';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import { merge } from '@mui/system';
 // import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
@@ -54,19 +54,19 @@ const Sidebar = () => {
         const storedSelected = localStorage.getItem('selectedMenuItem');
         return storedSelected ? storedSelected : 'Dashboard';
     });
-    useEffect(() => {
-        setUsername(JSON.parse(localStorage.getItem('Infor')));
-    }, [username]);
-    useEffect(() => {
-        localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
-    }, [isCollapsed]);
+    // useEffect(() => {
+    //     setUsername(JSON.parse(localStorage.getItem('Infor')));
+    // }, [username]);
+    // useEffect(() => {
+    //     localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
+    // }, [isCollapsed]);
 
-    useEffect(() => {
-        localStorage.setItem('selectedMenuItem', selected);
-    }, [selected]);
-    useEffect(() => {
-        setRole(localStorage.getItem('Role'));
-    }, [role]);
+    // useEffect(() => {
+    //     localStorage.setItem('selectedMenuItem', selected);
+    // }, [selected]);
+    // useEffect(() => {
+    //     setRole(localStorage.getItem('Role'));
+    // }, [role]);
     return (
         <Box
             sx={{

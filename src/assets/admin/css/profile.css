@@ -36,9 +36,7 @@
 h1 {
     font-size: 20px;
 }
-h2 {
-    font-size: 15px;
-}
+
 .name {
     font-size: 15px;
     border: 1px solid gray;
@@ -63,11 +61,6 @@ h2 {
     color: #fff;
 }
 
-.g {
-    background-color: #fafafa;
-    width: 90px;
-    font-size: 16px;
-}
 .g-s {
     height: 30px;
     width: 200px;
@@ -100,4 +93,8 @@ h2 {
 }
 .custom-select .ant-select-selector {
     font-size: 16px;
+}
+
+.size-input {
+    font-size: 14px;
 }

@@ -454,7 +454,7 @@ const AddSchool = () => {
                     showQuickJumper: true,
                     showTotal: (total) => `Total ${total} items`,
                 }}
-                scroll={{ x: false, y: 450 }}
+                scroll={{ x: false, y: 'calc(100vh - 300px)' }}
             />
             <Modal
                 visible={isModalDetailVisible}

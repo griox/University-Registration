@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button, Input, Select, Space, Table, Modal } from 'antd';
 import '../assets/admin/css/profile.css';
 import 'firebase/auth';
@@ -6,7 +6,9 @@ import { ref, child, getDatabase, get, set, update } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined, SearchOutlined } from '@ant-design/icons';
+import Highlighter from 'react-highlight-words';
+import { calc } from 'antd/es/theme/internal';
 
 const { Option } = Select;
 const MAX_COUNT = 5;
@@ -30,7 +32,101 @@ function Pr() {
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const [arr, setArr] = useState([]);
+    const searchInput = useRef(null);
+    const [searchText, setSearchText] = useState('');
+    const [searchedColumn, setSearchedColumn] = useState('');
 
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+    };
+    const handleReset = (clearFilters) => {
+        clearFilters();
+        setSearchText('');
+    };
+    const getColumnSearchProps = (dataIndex) => ({
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+            <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+                <Input
+                    ref={searchInput}
+                    placeholder={`Search ${dataIndex}`}
+                    value={selectedKeys[0]}
+                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    style={{
+                        marginBottom: 8,
+                        display: 'block',
+                    }}
+                />
+                <Space>
+                    <Button
+                        type="primary"
+                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                        icon={<SearchOutlined />}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        Search
+                    </Button>
+                    <Button
+                        onClick={() => clearFilters && handleReset(clearFilters)}
+                        size="small"
+                        style={{
+                            width: 90,
+                        }}
+                    >
+                        Reset
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            confirm({
+                                closeDropdown: false,
+                            });
+                            setSearchText(selectedKeys[0]);
+                            setSearchedColumn(dataIndex);
+                        }}
+                    >
+                        Filter
+                    </Button>
+                    <Button type="link" size="small" onClick={() => close()}>
+                        Close
+                    </Button>
+                </Space>
+            </div>
+        ),
+        filterIcon: (filtered) => (
+            <SearchOutlined
+                style={{
+                    color: filtered ? '#1677ff' : undefined,
+                }}
+            />
+        ),
+        onFilter: (value, record) => record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+        onFilterDropdownOpenChange: (visible) => {
+            if (visible) {
+                setTimeout(() => searchInput.current?.select(), 100);
+            }
+        },
+        render: (text) =>
+            searchedColumn === dataIndex ? (
+                <Highlighter
+                    highlightStyle={{
+                        backgroundColor: '#ffc069',
+                        padding: 0,
+                    }}
+                    searchWords={[searchText]}
+                    autoEscape
+                    textToHighlight={text ? text.toString() : ''}
+                />
+            ) : (
+                text
+            ),
+    });
     const suffix = (
         <>
             <span>
@@ -40,18 +136,6 @@ function Pr() {
         </>
     );
     useEffect(() => {
-        // get(child(ref(db), `Detail/minhquang`))
-        //     .then((snapshot) => {
-        //         if (snapshot.exists()) {
-        //             const x = snapshot.val();
-        //             dispatch({ type: 'user', payload: x });
-        //         } else {
-        //             console.log('No data available');
-        //         }
-        //     })
-        //     .catch((error) => {
-        //         console.error(error);
-        //     });
         const personal = JSON.parse(localStorage.getItem('Infor'));
 
         const averageScore = personal.EnglishScore + personal.LiteratureScore + personal.MathScore;
@@ -80,8 +164,6 @@ function Pr() {
             }
         });
         dispatch({ type: 'user', payload: personal });
-
-        // const k = JSON.parse(localStorage.getItem('Infor'));
     }, [db, dispatch]);
     const save = () => {
         const per = JSON.parse(localStorage.getItem('Infor'));
@@ -95,10 +177,6 @@ function Pr() {
             idenNum: detail.idenNum,
             email: detail.email,
             uniCode: detail.uniCode,
-
-            // EnglishScore: parseFloat(detail.EnglishScore),
-            // MathScore: parseFloat(detail.MathScoreScore),
-            // LiteratureScore: parseFloat(detail.LiteratureScore),
         })
             .then(() => {
                 toast.success('Updated sucessfully');
@@ -110,9 +188,7 @@ function Pr() {
         console.log(per.id);
     };
     const [size, setSize] = useState('middle');
-    // const handleChange = (value) => {
-    //   console.log(`Selected: ${value}`);
-    // };
+
     const [provinces, setProvinces] = useState([
         { value: 'Hà Nội', label: 'Hà Nội' },
         { value: 'Hồ Chí Minh', label: 'Hồ Chí Minh' },
@@ -283,33 +359,33 @@ function Pr() {
     };
     const handleSelect = (e, propertyName) => {
         const newValue = e;
-        // setEmail(newValue);
         dispatch({ type: 'update', payload: { propertyName, newValue } });
     };
-
-    // const [modalVisible, setModalVisible] = useState(false);
-    // const [selectedUniversity, setSelectedUniversity] = useState(null);
 
     const columns = [
         {
             title: 'Code',
             dataIndex: 'code',
             key: 'code',
+            ...getColumnSearchProps('code'),
         },
         {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
+            ...getColumnSearchProps('name'),
         },
         {
             title: 'Entrance Score',
             dataIndex: 'score',
             key: 'score',
+            ...getColumnSearchProps('score'),
         },
         {
             title: 'Target',
             dataIndex: 'capacity',
             key: 'capacity',
+            ...getColumnSearchProps('capacity'),
         },
         // các cột khác của bạn ở đây
         {
@@ -339,7 +415,7 @@ function Pr() {
                     <h1>Student Name: </h1>
                     <Space.Compact size="large">
                         <Input
-                            className="g-s"
+                            className="g-s size-input"
                             value={detail.name}
                             onChange={(e) => handleChange(e, 'name')}
                             options={gender}
@@ -381,7 +457,7 @@ function Pr() {
 
                     <Space.Compact size="large">
                         <Input
-                            className="g-s addr"
+                            className="g-s addr size-input"
                             value={detail.Address}
                             onChange={(e) => handleChange(e, 'Address')}
                         />
@@ -405,7 +481,11 @@ function Pr() {
                     <h1>CCCD: </h1>
 
                     <Space.Compact size="large">
-                        <Input className="g-s" value={detail.idenNum} onChange={(e) => handleChange(e, 'idenNum')} />
+                        <Input
+                            className="g-s size-input"
+                            value={detail.idenNum}
+                            onChange={(e) => handleChange(e, 'idenNum')}
+                        />
                     </Space.Compact>
                 </div>
 
@@ -413,8 +493,41 @@ function Pr() {
                     <h1>Email: </h1>
                     <Space.Compact size="large">
                         <Input
-                            className="g-s"
+                            className="g-s size-input"
                             value={detail.email}
+                            onChange={(e) => handleChange(e, 'email')}
+                            disabled={true}
+                        />
+                    </Space.Compact>
+                </div>
+                <div className="detail-item">
+                    <h1>MathScore: </h1>
+                    <Space.Compact size="large">
+                        <Input
+                            className="g-s size-input"
+                            value={detail.MathScore}
+                            onChange={(e) => handleChange(e, 'email')}
+                            disabled={true}
+                        />
+                    </Space.Compact>
+                </div>
+                <div className="detail-item">
+                    <h1>EnglishScore: </h1>
+                    <Space.Compact size="large">
+                        <Input
+                            className="g-s size-input"
+                            value={detail.EnglishScore}
+                            onChange={(e) => handleChange(e, 'email')}
+                            disabled={true}
+                        />
+                    </Space.Compact>
+                </div>
+                <div className="detail-item">
+                    <h1>LiteratureScore: </h1>
+                    <Space.Compact size="large">
+                        <Input
+                            className="g-s size-input"
+                            value={detail.LiteratureScore}
                             onChange={(e) => handleChange(e, 'email')}
                             disabled={true}
                         />
@@ -438,17 +551,24 @@ function Pr() {
                     </Space>
                 </div>
             </div>
+            <Button type="primary" onClick={() => save()} className="btn-save">
+                {'Save'}
+            </Button>
             <Table
                 dataSource={suitableSchoolList}
                 columns={columns}
                 rowKey="code"
                 style={{ marginTop: '20px' }}
-                scroll={{ x: 200, y: 350 }}
+                scroll={{ x: 190, y: 'calc(100vh - 590px)' }}
+                pagination={{
+                    defaultPageSize: '10',
+                    pageSizeOptions: ['10', '20', '40', '100'],
+                    total: suitableSchoolList.length,
+                    showSizeChanger: true,
+                    showQuickJumper: true,
+                    showTotal: (total) => `Total ${total} items`,
+                }}
             />
-
-            <Button type="primary" onClick={() => save()} className="btn-save">
-                {'Save'}
-            </Button>
         </div>
     );
 }

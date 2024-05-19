@@ -54,19 +54,19 @@ const Sidebar = () => {
         const storedSelected = localStorage.getItem('selectedMenuItem');
         return storedSelected ? storedSelected : 'Dashboard';
     });
-    useEffect(() => {
-        setUsername(JSON.parse(localStorage.getItem('Infor')));
-    }, [username]);
-    useEffect(() => {
-        localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
-    }, [isCollapsed]);
+    // useEffect(() => {
+    //     setUsername(JSON.parse(localStorage.getItem('Infor')));
+    // }, [username]);
+    // useEffect(() => {
+    //     localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
+    // }, [isCollapsed]);
 
-    useEffect(() => {
-        localStorage.setItem('selectedMenuItem', selected);
-    }, [selected]);
-    useEffect(() => {
-        setRole(localStorage.getItem('Role'));
-    }, [role]);
+    // useEffect(() => {
+    //     localStorage.setItem('selectedMenuItem', selected);
+    // }, [selected]);
+    // useEffect(() => {
+    //     setRole(localStorage.getItem('Role'));
+    // }, [role]);
     return (
         <Box
             sx={{

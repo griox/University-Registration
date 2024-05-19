@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Form,Table, Popconfirm, Button, Space, Input, InputNumber, Modal, Typography } from 'antd';
+import { Form, Table, Popconfirm, Button, Space, Input, InputNumber, Modal, Typography } from 'antd';
 import {
     SearchOutlined,
     EditOutlined,
@@ -15,42 +15,42 @@ import { initializeApp } from 'firebase/app';
 import FormDetail from './Modal_detail';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
-  authDomain: 'mock-proeject-b.firebaseapp.com',
-  databaseURL: 'https://mock-proeject-b-default-rtdb.firebaseio.com',
-  projectId: 'mock-proeject-b',
-  storageBucket: 'mock-proeject-b.appspot.com',
-  messagingSenderId: '898832925665',
-  appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
+    apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
+    authDomain: 'mock-proeject-b.firebaseapp.com',
+    databaseURL: 'https://mock-proeject-b-default-rtdb.firebaseio.com',
+    projectId: 'mock-proeject-b',
+    storageBucket: 'mock-proeject-b.appspot.com',
+    messagingSenderId: '898832925665',
+    appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
-  const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
-  return (
-      <td {...restProps}>
-          {editing ? (
-              <Form.Item
-                  name={dataIndex}
-                  style={{
-                      margin: 0,
-                  }}
-                  rules={[
-                      {
-                          required: true,
-                          message: `Please Input ${title}!`,
-                      },
-                  ]}
-              >
-                  {inputNode}
-              </Form.Item>
-          ) : (
-              children
-          )}
-      </td>
-  );
+    const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
+    return (
+        <td {...restProps}>
+            {editing ? (
+                <Form.Item
+                    name={dataIndex}
+                    style={{
+                        margin: 0,
+                    }}
+                    rules={[
+                        {
+                            required: true,
+                            message: `Please Input ${title}!`,
+                        },
+                    ]}
+                >
+                    {inputNode}
+                </Form.Item>
+            ) : (
+                children
+            )}
+        </td>
+    );
 };
 
 const data = [
@@ -164,7 +164,7 @@ const data = [
     },
 ];
 
-const AddSchool = ({data}) => {
+const AddSchool = ({ data }) => {
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState('');
     const [searchText, setSearchText] = useState('');
@@ -176,23 +176,25 @@ const AddSchool = ({data}) => {
     const tableRef = useRef(null);
     const searchInput = useRef(null);
     useEffect(() => {
-      const fetchData = async () => {
-          const uniRef = child(ref(db), 'ListUni');
-          try {
-              const snapshot = await get(uniRef);
-              if (snapshot.exists()) {
-                  const data = snapshot.val();
-                  const universityArray = Object.values(data).map((university) => ({ ...university, key: university.id }));
-                  setUniversityData(universityArray);
-              }
-          } catch (error) {
-              console.error(error);
-          }
-      };
+        const fetchData = async () => {
+            const uniRef = child(ref(db), 'ListUni');
+            try {
+                const snapshot = await get(uniRef);
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const universityArray = Object.values(data).map((university) => ({
+                        ...university,
+                        key: university.id,
+                    }));
+                    setUniversityData(universityArray);
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        };
 
-      fetchData();
-  }, []);
-
+        fetchData();
+    }, []);
 
     const handleSchoolDetail = (record) => {
         setModalDetail(record);
@@ -233,7 +235,6 @@ const AddSchool = ({data}) => {
     //     // }
     // };
 
-
     // const showModal = () => {
     //     setVisible(true);
     // };
@@ -248,7 +249,6 @@ const AddSchool = ({data}) => {
     //     setDetailVisible(false);
     // };
 
-
     // const onChange = (pagination, filters, sorter, extra) => {
     //     const totalRows = extra.total;
     //     if (totalRows <= 5 && pagination.current === 1) {
@@ -261,8 +261,7 @@ const AddSchool = ({data}) => {
 
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-            <div
-                style={{padding: 8}}onKeyDown={(e) => e.stopPropagation()}>
+            <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
                 <Input
                     ref={searchInput}
                     placeholder={`Search ${dataIndex}`}
@@ -344,76 +343,76 @@ const AddSchool = ({data}) => {
     });
 
     const handleDelete = async (key) => {
-      try {
-        await remove(child(ref(db), `ListUni/${key}`));
-        const newData = universityData.filter((item) => item.key !== key);
-        setUniversityData(newData);
-      } catch (error) {
-        console.error('Error deleting data:', error);
-      }
+        try {
+            await remove(child(ref(db), `ListUni/${key}`));
+            const newData = universityData.filter((item) => item.key !== key);
+            setUniversityData(newData);
+        } catch (error) {
+            console.error('Error deleting data:', error);
+        }
     };
 
     const edit = (record) => {
-      form.setFieldsValue({
-        name: '',
-        ucode: '',
-        address: '',
-        ...record,
-      });
-      setEditingKey(record.key);
+        form.setFieldsValue({
+            name: '',
+            ucode: '',
+            address: '',
+            ...record,
+        });
+        setEditingKey(record.key);
     };
 
     const cancel = () => {
-      setEditingKey('');
+        setEditingKey('');
     };
 
     const handleFieldChange = async (key, dataIndex, value) => {
-      console.log('ham da duoc goi');
-      const newData = [...universityData];
-      const index = newData.findIndex((item) => key === item.key);
+        console.log('ham da duoc goi');
+        const newData = [...universityData];
+        const index = newData.findIndex((item) => key === item.key);
 
-      if (index > -1) {
-          newData[index][dataIndex] = value;
-          setUniversityData(newData); // Update state
+        if (index > -1) {
+            newData[index][dataIndex] = value;
+            setUniversityData(newData); // Update state
 
-          try {
-              // Await the update promise for Firebase
-              await update(ref(db, `ListUni/${key}`), {
-                  [dataIndex]: value,
-              });
-              console.log('Data updated in Firebase successfully');
-          } catch (error) {
-              console.error('Error updating document:', error);
-              // Handle update error (optional: show notification to user)
-          }
+            try {
+                // Await the update promise for Firebase
+                await update(ref(db, `ListUni/${key}`), {
+                    [dataIndex]: value,
+                });
+                console.log('Data updated in Firebase successfully');
+            } catch (error) {
+                console.error('Error updating document:', error);
+                // Handle update error (optional: show notification to user)
+            }
         }
-      };
+    };
 
-      const save = async (key) => {
+    const save = async (key) => {
         try {
             // Validate fields and get data
             const values = await form.validateFields();
-    
+
             // Kiểm tra dữ liệu hợp lệ
             if (values) {
                 const newData = [...universityData];
                 const index = newData.findIndex((item) => key === item.key);
-    
+
                 if (index > -1) {
                     const item = newData[index];
-    
+
                     // Xử lý dữ liệu thay đổi
                     newData.splice(index, 1, {
                         ...item,
                         ...values,
                     });
-                    const updatedRow = {...newData[index]}
-    
+                    const updatedRow = { ...newData[index] };
+
                     // Cập nhật dữ liệu trên state
                     newData[index] = updatedRow;
                     setUniversityData(newData);
                     setEditingKey('');
-    
+
                     // Cập nhật dữ liệu trên Firebase
                     await update(ref(db, `ListUni/${key}`), updatedRow);
                     console.log('Data updated in Firebase successfully');
@@ -423,7 +422,7 @@ const AddSchool = ({data}) => {
                     setUniversityData(newData);
                     setEditingKey('');
                     handleFieldChange(key, Object.keys(values)[0], values[Object.keys(values)[0]]);
-    
+
                     // Thêm dữ liệu mới vào Firebase
                     await set(ref(db, `ListUni/${key}`), values); // Thêm dữ liệu mới
                     console.log('Data added to Firebase successfully');
@@ -434,7 +433,6 @@ const AddSchool = ({data}) => {
             // Xử lý lỗi validateFields(), ví dụ: Hiển thị thông báo cho người dùng
         }
     };
-    
 
     const handleIdClick = (record) => {
         setSelectUniversity(record);
@@ -444,7 +442,7 @@ const AddSchool = ({data}) => {
 
     const handleOk = () => {
         setUniVisible(false);
-    }
+    };
     const handleCancel = () => {
         setUniVisible(false);
     };
@@ -459,10 +457,10 @@ const AddSchool = ({data}) => {
             width: '25%',
             ...getColumnSearchProps('name'),
             render: (_, record) => (
-                <span onClick={() => handleIdClick(record)} style={{color: 'blue', cursor: 'pointer'}}>
+                <span onClick={() => handleIdClick(record)} style={{ color: 'blue', cursor: 'pointer' }}>
                     {record.name}
                 </span>
-            )
+            ),
         },
         {
             title: 'University code',
@@ -534,12 +532,10 @@ const AddSchool = ({data}) => {
                                     marginRight: 8,
                                 }}
                             >
-                            
                                 Edit
                             </Typography.Link>
                         </Popconfirm>
-                        <Typography.Link
-                            onClick={() => cancel()}>Cancel</Typography.Link>
+                        <Typography.Link onClick={() => cancel()}>Cancel</Typography.Link>
                     </span>
                 ) : (
                     <Space size={'middle'}>
@@ -583,42 +579,46 @@ const AddSchool = ({data}) => {
         <div>
             <FormAdd></FormAdd>
             <Space>
-                <Modal open={isModalUniVisible} width={600} onCancel={handleCancel}
-                footer={[
-                    <Button key="ok" type="primary" onClick={handleOk}>
-                      OK
-                    </Button>,
-                  ]}>
+                <Modal
+                    open={isModalUniVisible}
+                    width={600}
+                    onCancel={handleCancel}
+                    footer={[
+                        <Button key="ok" type="primary" onClick={handleOk}>
+                            OK
+                        </Button>,
+                    ]}
+                >
                     <FormDetail></FormDetail>
                 </Modal>
                 <Form form={form} component={false}>
-                <Table
-                    components={{
-                        body: {
-                            cell: EditableCell,
-                        }
-                    }}
-                    bordered
-                    dataSource={universityData}
-                    columns={mergedColumns}
-                    scroll={{
-                        x: 900,
-                        y: 500,
-                    }}
-                    style={{ height: '100%', marginRight: '-20px' }}
-                    rowClassName="editable-row"
-                    showSorterTooltip={{
-                        target: 'sorter-icon',
-                    }}
-                    pagination={{
+                    <Table
+                        components={{
+                            body: {
+                                cell: EditableCell,
+                            },
+                        }}
+                        bordered
+                        dataSource={universityData}
+                        columns={mergedColumns}
+                        scroll={{
+                            x: 900,
+                            y: 'calc(100vh - 300px)',
+                        }}
+                        style={{ height: '100%', marginRight: '-20px' }}
+                        rowClassName="editable-row"
+                        showSorterTooltip={{
+                            target: 'sorter-icon',
+                        }}
+                        pagination={{
                             defaultPageSize: '10',
                             pageSizeOptions: ['10', '20', '30', '50'],
                             total: 20,
                             showSizeChanger: true,
                             showQuickJumper: true,
                             showTotal: (total) => `Total ${total} items`,
-                    }}
-                    ref={tableRef}
+                        }}
+                        ref={tableRef}
                     />
                 </Form>
             </Space>

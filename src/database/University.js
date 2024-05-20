@@ -1,5 +1,5 @@
 import 'firebase/auth';
-import { ref,  getDatabase, set } from 'firebase/database';
+import { ref,  getDatabase, set,get,child,update } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { useEffect } from 'react';
 const firebaseConfig = {
@@ -136,9 +136,9 @@ export function createUniRecords() {
         let uniCode = uniCodes[i];
         let nameU =  nameUs[i];
         let address = addresses[i];
-        const registration = [];
+        let registration = [];
         let target = Math.floor(getRandomNumber(5,6))*1000;
-        let averageS = Math.floor(Math.random() * (30 - 15)) + 10;
+        let averageS = Math.floor(Math.random() * (30 - 13)) + 10;
         let isRegistered = getRandomNumber(2000,5000)
 
        writeUniRecord(uniCode,nameU,address,registration,target,averageS,isRegistered)
@@ -148,6 +148,27 @@ export function createUniRecords() {
 }
 export function useCreateUnitRecordsOnMount() {
   useEffect(() => {
-      createUniRecords();
+  createUniRecords()
   }, []); // Thực hiện chỉ một lần khi component được mount
 }
+const a = () => {
+          get(child(ref(db), `Detail/`)).then((snapshot) => {
+              if (snapshot.exists()) {
+                  const x = snapshot.val();
+                  for (let i in x) {
+                      const id = x[i].id;
+                      const a = x[i].uniCode;
+                      if (a !== undefined) {
+                          a.forEach((element) => {
+                              update(ref(db, `University/${element}/registeration/`), {
+                                  id: id,
+                              });
+                              console.log('thành công');
+                          });
+                      }
+                  }
+              } else {
+                  console.log('No data available');
+              }
+          });
+      };

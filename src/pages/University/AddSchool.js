@@ -85,7 +85,7 @@ const AddSchool = () => {
     };
     const handleSchoolDetail = (record) => {
         setModalDetail(record);
-        setDetailVisible(true);
+        setUniVisible(true);
     };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -210,12 +210,7 @@ const AddSchool = () => {
 
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-            <div
-                style={{
-                    padding: 8,
-                }}
-                onKeyDown={(e) => e.stopPropagation()}
-            >
+            <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
                 <Input
                     ref={searchInput}
                     placeholder={`Search ${dataIndex}`}
@@ -248,15 +243,22 @@ const AddSchool = () => {
                     >
                         Reset
                     </Button>
-                    {/* <Button
-            type="link"
-            size="small"
-            onClick={() => {
-              close();
-            }}
-          >
-            Close
-          </Button> */}
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            confirm({
+                                closeDropdown: false,
+                            });
+                            setSearchText(selectedKeys[0]);
+                            setSearchedColumn(dataIndex);
+                        }}
+                    >
+                        Filter
+                    </Button>
+                    <Button type="link" size="small" onClick={() => close()}>
+                        Close
+                    </Button>
                 </Space>
             </div>
         ),
@@ -328,6 +330,7 @@ const AddSchool = () => {
             title: 'Targets',
             dataIndex: 'target',
             width: '10%',
+            editable: true,
             sorter: (a, b) => a.targets - b.targets,
         },
         {
@@ -350,6 +353,7 @@ const AddSchool = () => {
                         <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
                             <Typography.Link>Cancel</Typography.Link>
                         </Popconfirm>
+                        <Typography.Link onClick={() => cancel()}>Cancel</Typography.Link>
                     </span>
                 ) : (
                     <Space size={'middle'}>

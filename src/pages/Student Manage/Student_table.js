@@ -511,7 +511,7 @@ const Student_List = ({ data }) => {
                         columns={mergedColumns}
                         scroll={{
                             x: 900,
-                            y: 500,
+                            y: 'calc(100vh - 280px)',
                         }}
                         style={{ height: '100%', marginRight: '-20px' }}
                         rowClassName="editable-row"

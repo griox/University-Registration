@@ -119,6 +119,7 @@ const Chart = () => {
                         } else {
                             m += 1;
                         }
+
                         mas += item.MathScore;
                         eas += item.EnglishScore;
                         las += item.LiteratureScore;
@@ -189,7 +190,7 @@ const Chart = () => {
         ],
         angleField: 'value',
         colorField: 'type',
-        width: 1100,
+        width: 1000,
         height: 650,
         marginTop: 100,
         label: {

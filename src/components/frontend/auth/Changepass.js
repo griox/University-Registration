@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import 'firebase/auth';
-import { child, get, getDatabase, ref, set } from 'firebase/database';
+import { child, get, getDatabase, ref, set, update } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
@@ -110,6 +110,76 @@ const Changepass = () => {
             eyeBtn3.removeEventListener('click', handleEyeBtn3);
         };
     }, []);
+    const firebaseConfig = {
+        apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
+        authDomain: 'mock-proeject-b.firebaseapp.com',
+        databaseURL: 'https://mock-proeject-b-default-rtdb.firebaseio.com',
+        projectId: 'mock-proeject-b',
+        storageBucket: 'mock-proeject-b.appspot.com',
+        messagingSenderId: '898832925665',
+        appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const [oldPass, setOldPass] = useState('');
+    const [newPass, setNewPass] = useState('');
+    const [reNewPass, setReNewPass] = useState('');
+    const clear = () => {
+        setOldPass('');
+        setNewPass('');
+        setReNewPass('');
+    };
+    const encodePath = (email) => {
+        if (email) return email.replace(/\./g, ',');
+        else return 0;
+    };
+    const handleLogout = () => {
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('selectedMenuItem');
+        history.push('/Login');
+    };
+    const changePassWord = () => {
+        let temp = JSON.parse(localStorage.getItem('Email'));
+        // const temp='BuiThiHien@gmail.com'
+
+        if (oldPass === '') {
+            toast.error('Please enter your old password');
+            return;
+        }
+        if (newPass === '') {
+            toast.error('Please enter your new password');
+            return;
+        }
+        if (reNewPass === '') {
+            toast.error('Please confirm your password again');
+            return;
+        }
+        if (newPass !== reNewPass) {
+            toast.error('You confirm your password is incorrect');
+            return;
+        }
+        temp = encodePath(temp);
+        get(child(ref(db), `Account/` + temp)).then((snapshot) => {
+            if (snapshot.exists()) {
+                const x = snapshot.val();
+                if (x.password === oldPass) {
+                    update(ref(db, 'Account/' + temp), {
+                        password: newPass,
+                    })
+                        .then(() => {
+                            handleLogout();
+                            toast.success('Updated sucessfully');
+                        })
+                        .catch((error) => {
+                            alert('lỗi' + error);
+                        });
+                }
+            } else {
+                console.log('No data available');
+            }
+        });
+    };
     return (
         <>
             <div className="background">
@@ -152,6 +222,8 @@ const Changepass = () => {
                                             className="input-field old_pass"
                                             placeholder="Enter Old Password"
                                             required
+                                            value={oldPass}
+                                            onChange={(e) => setOldPass(e.target.value)}
                                         />
                                         <i className="bx bx-lock-alt icon"></i>
                                         <i className="fa fa-eye eye1 icon"></i>
@@ -163,6 +235,8 @@ const Changepass = () => {
                                             className="input-field new_pass"
                                             placeholder="Enter New Password"
                                             required
+                                            value={newPass}
+                                            onChange={(e) => setNewPass(e.target.value)}
                                         />
                                         <i className="bx bx-lock-alt icon"></i>
                                         <i className="fa fa-eye eye2 icon"></i>
@@ -174,11 +248,12 @@ const Changepass = () => {
                                             className="input-field con_pass"
                                             placeholder="Confirm New Password"
                                             required
+                                            value={reNewPass}
+                                            onChange={(e) => setReNewPass(e.target.value)}
                                         />
                                         <i className="bx bx-lock-alt icon"></i>
                                         <i className="fa fa-eye eye3 icon"></i>
                                     </div>
-
                                     <div className="input-box">
                                         {/* <div
                                             type="submit"
@@ -194,8 +269,12 @@ const Changepass = () => {
                                         >
                                             <span>Regist</span>
                                         </div> */}
-                                        <Button type="primary" className="input-submit">
+                                        <Button type="primary" className="input-submit" onClick={changePassWord}>
                                             <span>Change</span>
+                                            <i className="bx bx-right-arrow-alt"></i>
+                                        </Button>
+                                        <Button type="primary" className="input-submit" onClick={clear}>
+                                            <span>Clear</span>
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </Button>
                                         {/* <Button

@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Button, Input, Select, Space, Table, Modal, Skeleton } from 'antd';
+import { Button, Input, Select, Space, Table, Modal, Skeleton, Spin } from 'antd';
 import '../assets/admin/css/profile.css';
 import 'firebase/auth';
 import { ref, child, getDatabase, get, set, update } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { DownOutlined, SaveOutlined, SearchOutlined, UploadOutlined } from '@ant-design/icons';
+import { CameraOutlined, DownOutlined, SaveOutlined, SearchOutlined, UploadOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import { calc } from 'antd/es/theme/internal';
 import { Avatar } from '@mui/material';
@@ -170,7 +170,49 @@ function Pr() {
         dispatch({ type: 'user', payload: personal });
         setLoading(false);
     }, [db, dispatch]);
+    const handleSubmit = () => {
+        if (!image) {
+            return;
+        }
+        const imgRef = storageRef(storage, `images/${image.name}`);
+        uploadBytes(imgRef, image)
+            .then(() => getDownloadURL(imgRef))
+            .then((downLoadUrl) => {
+                const per = JSON.parse(localStorage.getItem('Infor'));
+                update(ref(db, 'Detail/' + per.id), {
+                    img: downLoadUrl,
+                })
+                    .then(() => {
+                        // toast.success('Updated sucessfully');
+                    })
+                    .catch((error) => {
+                        alert('lỗi' + error);
+                    });
+                get(child(ref(db), `Detail/${per.id}/`)).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const x = snapshot.val();
+
+                        localStorage.setItem('Infor', JSON.stringify(x));
+                        dispatch({ type: 'user', payload: x });
+                    } else {
+                        console.log('No data available');
+                    }
+                });
+
+                handleSelect(downLoadUrl, 'img');
+
+                // setUrl(downLoadUrl);
+                setImage(null);
+            })
+            .catch((error) => {
+                console.log(error.message, 'Error');
+            })
+            .catch((error) => {
+                console.log(error.message, 'Error');
+            });
+    };
     const save = () => {
+        // console.log(detail.img);
         const per = JSON.parse(localStorage.getItem('Infor'));
 
         update(ref(db, 'Detail/' + per.id), {
@@ -182,6 +224,7 @@ function Pr() {
             idenNum: detail.idenNum,
             email: detail.email,
             uniCode: detail.uniCode,
+            img: detail.img,
         })
             .then(() => {
                 toast.success('Updated sucessfully');
@@ -189,6 +232,7 @@ function Pr() {
             .catch((error) => {
                 alert('lỗi' + error);
             });
+        // handleSubmit();
     };
     const [size, setSize] = useState('middle');
 
@@ -355,7 +399,7 @@ function Pr() {
         { value: 'December', label: 'December' },
     ]);
     const handleChange = (e, propertyName) => {
-        console.log(e);
+        // console.log(e);
         const newValue = e.target.value;
         // setEmail(newValue);
         dispatch({ type: 'update', payload: { propertyName, newValue } });
@@ -410,53 +454,24 @@ function Pr() {
     const addUniversity = (uniCode) => {
         dispatch({ type: 'pushUniCode', newValue: uniCode });
     };
-    const [image, setImage] = useState(null);
+    const [image, setImage] = useState('');
     // const [url, setUrl] = useState(null);
 
     const handleImgChange = (e) => {
-        if (e.target.files[0]) {
-            setImage(e.target.files[0]);
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setImage(e.target.result);
+                // handleSelect(e.target.result, 'img');
+                const propertyName = 'img';
+                const newValue = e;
+                dispatch({ type: 'update', payload: { propertyName, newValue } });
+            };
+            reader.readAsDataURL(file);
         }
     };
-    const handleSubmit = () => {
-        if (!image) return;
-        const imgRef = storageRef(storage, `images/${image.name}`);
-        uploadBytes(imgRef, image)
-            .then(() => getDownloadURL(imgRef))
-            .then((downLoadUrl) => {
-                const per = JSON.parse(localStorage.getItem('Infor'));
-                update(ref(db, 'Detail/' + per.id), {
-                    img: downLoadUrl,
-                })
-                    .then(() => {
-                        toast.success('Updated sucessfully');
-                    })
-                    .catch((error) => {
-                        alert('lỗi' + error);
-                    });
-                get(child(ref(db), `Detail/${per.id}/`)).then((snapshot) => {
-                    if (snapshot.exists()) {
-                        const x = snapshot.val();
 
-                        localStorage.setItem('Infor', JSON.stringify(x));
-                        dispatch({ type: 'user', payload: x });
-                    } else {
-                        console.log('No data available');
-                    }
-                });
-
-                handleSelect(downLoadUrl, 'img');
-
-                // setUrl(downLoadUrl);
-                setImage(null);
-            })
-            .catch((error) => {
-                console.log(error.message, 'Error');
-            })
-            .catch((error) => {
-                console.log(error.message, 'Error');
-            });
-    };
     return (
         <div className="container">
             {loading ? (
@@ -464,20 +479,39 @@ function Pr() {
             ) : (
                 <>
                     <div className="pr-content">
-                        <div className="avartar">
-                            <Avatar alt="Remy Sharp" src={detail.img} sx={{ fontSize: 50, width: 150, height: 150 }} />
-                            <div>
-                                <input type="file" onChange={handleImgChange} id="fileInput" />
-                                <input type="button" onClick={handleSubmit} id="btn-fileSubmit" />
+                        {/* <Avatar
+                                alt="Remy Sharp"
+                                src={detail.img}
+                                sx={{ fontSize: 50, width: 150, height: 150 }}
+                                className="avat"
+                            /> */}
+                        {/* <input type="file" onChange={handleImgChange} id="fileInput" />
                                 <div className="pr-btn">
+                                    <input type="button" onClick={handleSubmit} id="btn-fileSubmit" />
+
                                     <label htmlFor="btn-fileSubmit">
-                                        <SaveOutlined style={{ fontSize: '20px' }} />
+                                        {loadingImage ? (
+                                            <Spin style={{ fontSize: '20px' }} />
+                                        ) : (
+                                            <SaveOutlined style={{ fontSize: '20px' }} />
+                                        )}
                                     </label>
                                     <label htmlFor="fileInput">
                                         <UploadOutlined style={{ fontSize: '20px' }} />
                                     </label>
-                                </div>
+                                </div> */}
+                        <div className="avatar-container">
+                            <Avatar
+                                src={image}
+                                alt="Remy Sharp"
+                                className="avatar-img"
+                                size={150}
+                                style={{ width: '150px', height: '150px' }}
+                            />
+                            <div className="avatar-hover" onClick={() => document.getElementById('fileInput').click()}>
+                                <CameraOutlined />
                             </div>
+                            <input type="file" id="fileInput" style={{ display: 'none' }} onChange={handleImgChange} />
                         </div>
                         <div className="input">
                             <div className="detail-item">
@@ -622,10 +656,10 @@ function Pr() {
                                 className="g-s"
                             />
                         </Space>
+                        <Button type="primary" onClick={() => save()} className="btn-save">
+                            {'Save'}
+                        </Button>
                     </div>
-                    <Button type="primary" onClick={() => save()} className="btn-save">
-                        {'Save'}
-                    </Button>
                     <Table
                         dataSource={suitableSchoolList}
                         columns={columns}

@@ -343,16 +343,15 @@ const AddSchool = () => {
                 const editable = isEditing(record);
                 return editable ? (
                     <span>
-                        <Typography.Link
-                            onClick={() => save(record.key)}
-                            style={{
-                                marginRight: 8,
-                            }}
-                        >
-                            Edit
-                        </Typography.Link>
-                        <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-                            <Typography.Link>Cancel</Typography.Link>
+                        <Popconfirm title="Sure to cancel?" onConfirm={() => save(record.key)}>
+                            <Typography.Link
+                                onClick={() => {}}
+                                style={{
+                                    marginRight: 8,
+                                }}
+                            >
+                                Edit
+                            </Typography.Link>
                         </Popconfirm>
                     </span>
                 ) : (
@@ -397,6 +396,17 @@ const AddSchool = () => {
 
     return (
         <div>
+            <FormAdd></FormAdd>
+            <Modal
+                title="Edit the University"
+                open={isModalVisible}
+                onOk={handleOk}
+                okText="Save"
+                onCancel={handleCancel}
+                style={{ top: '50px', left: '50px' }}
+            >
+                <AddSchool/>
+            </Modal>
             <Form form={form} component={false}>
                 <Space direction="vertical">
                     <FormAdd />
@@ -434,16 +444,6 @@ const AddSchool = () => {
                 <FormDetail university={selectedUniverse} />
             </Modal>
 
-            <Modal
-                title="Edit the University"
-                open={isModalVisible}
-                onOk={handleOk}
-                okText="Save"
-                onCancel={handleCancel}
-                style={{ top: '50px', left: '50px' }}
-            >
-                <FormAdd />
-            </Modal>
         </div>
     );
 };

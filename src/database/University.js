@@ -14,7 +14,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 let isUniCreated = false; // Biến để đánh dấu xem hàm createStudentRecords đã được gọi hay chưa
-export function writeUniRecord(uniCode,nameU,address,registration,target,averageS) {
+export function writeUniRecord(uniCode,nameU,address,registration,target,averageS,isRegistered) {
   const univerRef = ref(db,`University/${uniCode}` ); // Tạo reference đến đường dẫn của sinh viên trong database
   set(univerRef, { // Sử dụng set để ghi dữ liệu lên đường dẫn đó
    uniCode:uniCode,
@@ -22,7 +22,8 @@ export function writeUniRecord(uniCode,nameU,address,registration,target,average
    address:address,
    registration:registration,
    target:target,
-   averageS:averageS
+   averageS:averageS,
+   isRegistered:isRegistered,
   }).then(() => {
       console.log("Record for university with username " + uniCode+ " has been written successfully!");
   }).catch((error) => {
@@ -126,7 +127,9 @@ const addresses = [
   "Khu đô thị Tây Đô, Ninh Kiều, Cần Thơ",
 ];
 
-
+function getRandomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
 export function createUniRecords() {
   if (!isUniCreated) { // Chỉ gọi hàm nếu biến isRecordsCreated là false
       for (let i = 0; i<addresses.length ; i++) {
@@ -134,10 +137,11 @@ export function createUniRecords() {
         let nameU =  nameUs[i];
         let address = addresses[i];
         const registration = [];
-        let target = Math.floor(Math.random()*5) *1000;
+        let target = Math.floor(getRandomNumber(5,6))*1000;
         let averageS = Math.floor(Math.random() * (30 - 15)) + 10;
+        let isRegistered = getRandomNumber(2000,5000)
 
-       writeUniRecord(uniCode,nameU,address,registration,target,averageS)
+       writeUniRecord(uniCode,nameU,address,registration,target,averageS,isRegistered)
       }
       isUniCreated = true; // Đánh dấu rằng hàm đã được gọi
   }

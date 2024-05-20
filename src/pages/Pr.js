@@ -11,8 +11,7 @@ import Highlighter from 'react-highlight-words';
 import { calc } from 'antd/es/theme/internal';
 import { Avatar } from '@mui/material';
 import { storage } from './firebaseConfig';
-import { getDownloadURL, getStorage, uploadBytes } from 'firebase/storage';
-import { ref as storageRef } from 'firebase/storage';
+import { getDownloadURL, uploadBytes, ref as storageRef } from 'firebase/storage';
 
 const { Option } = Select;
 const MAX_COUNT = 5;
@@ -190,8 +189,6 @@ function Pr() {
             .catch((error) => {
                 alert('lỗi' + error);
             });
-
-        console.log(per.id);
     };
     const [size, setSize] = useState('middle');
 
@@ -436,7 +433,6 @@ function Pr() {
             .catch((error) => {
                 console.log(error.message, 'Error');
             });
-        console.log(image);
     };
     return (
         <div className="container">
@@ -447,8 +443,10 @@ function Pr() {
                     <div className="pr-content">
                         <div className="avartar">
                             <Avatar alt="Remy Sharp" src={url} sx={{ fontSize: 50, width: 120, height: 120 }} />
-                            <input type="file" onChange={handleImgChange} />
-                            <button onClick={handleSubmit}>Submit</button>
+                            <div>
+                                <input type="file" onChange={handleImgChange} />
+                                <button onClick={handleSubmit}>Submit</button>
+                            </div>
                         </div>
                         <div className="input">
                             <div className="detail-item">

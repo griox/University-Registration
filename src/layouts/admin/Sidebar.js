@@ -199,8 +199,10 @@ const Sidebar = () => {
                                 </div>
                             </Box>
                             <Box textAlign="center">
-                                <input type="file" onChange={handleImgChange} />
-                                <button onClick={handleSubmit}>Submit</button>
+                                <div>
+                                    <input type="file" onChange={handleImgChange} />
+                                    <button onClick={handleSubmit}>Submit</button>
+                                </div>
                                 <Typography
                                     variant="h2"
                                     color={colors.grey[100]}

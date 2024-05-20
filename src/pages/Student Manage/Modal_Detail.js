@@ -173,7 +173,7 @@ const Modal_Detail = ({ visible, onClose, student }) => {
   ];
   const { TextArea } = Input; 
   return (
-    <Modal title="Information" onCancel={onClose} open={visible} width={600} >
+    <Modal title="Information" onCancel={onClose} open={visible} width={600} footer={null} >
      
        <Space direction="vertical">
           <Form>

@@ -1,19 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Form, Table, Popconfirm, Button, Space, Input, InputNumber, Modal, Typography } from 'antd';
+import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography } from 'antd';
 import {
     SearchOutlined,
     EditOutlined,
     DeleteOutlined,
     PlusCircleOutlined,
     MinusCircleOutlined,
+    ManOutlined,
 } from '@ant-design/icons';
+import { Button, Space, Modal } from 'antd';
 import Highlighter from 'react-highlight-words';
-import FormAdd from './formAddSchool';
-import { get, ref, child, getDatabase, remove, update, set } from 'firebase/database';
+import { WomanOutlined } from '@ant-design/icons';
+import { get, ref, child, getDatabase, remove, update, push, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
-// import { render } from '@testing-library/react';
 import FormDetail from './Modal_detail';
-
+import FormAdd from './formAddSchool';
 const firebaseConfig = {
     apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
     authDomain: 'mock-proeject-b.firebaseapp.com',
@@ -23,182 +24,65 @@ const firebaseConfig = {
     messagingSenderId: '898832925665',
     appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
-    const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
-    return (
-        <td {...restProps}>
-            {editing ? (
-                <Form.Item
-                    name={dataIndex}
-                    style={{
-                        margin: 0,
-                    }}
-                    rules={[
-                        {
-                            required: true,
-                            message: `Please Input ${title}!`,
-                        },
-                    ]}
-                >
-                    {inputNode}
-                </Form.Item>
-            ) : (
-                children
-            )}
-        </td>
-    );
-};
-
-const data = [
-    {
-        key: '1',
-        name: 'Nha Trang University',
-        ucode: 'NTU',
-        address: 'Khánh Hòa',
-        cutoff: '22',
-        number: '1500',
-        targets: 2100,
-    },
-    {
-        key: '2',
-        name: 'Van Lang University',
-        ucode: 'VLU',
-        address: 'TP.HCM',
-        cutoff: '22',
-        number: '1500',
-        targets: 3000,
-    },
-    {
-        key: '3',
-        name: 'Duy Tan University',
-        ucode: 'DTU',
-        address: 'Đà Nẵng',
-        cutoff: '22',
-        number: '1500',
-        targets: 2800,
-    },
-    {
-        key: '4',
-        name: 'Ha Noi Medical University',
-        ucode: 'HMU',
-        address: 'Hà Nội',
-        cutoff: '22',
-        number: '1500',
-        targets: 2000,
-    },
-    {
-        key: '5',
-        name: 'Hutech University',
-        ucode: 'DKC',
-        address: 'TP.HCM',
-        cutoff: '22',
-        number: '1500',
-        targets: 2400,
-    },
-    {
-        key: '6',
-        name: 'Ha Noi National University',
-        ucode: 'VNU',
-        address: 'Hà Nội',
-        cutoff: '22',
-        number: '1500',
-        targets: 2500,
-    },
-    {
-        key: '7',
-        name: 'Hanoi Polytechnic University ',
-        ucode: 'BKA',
-        address: 'Hà Nội',
-        cutoff: '22',
-        number: '1500',
-        targets: 3000,
-    },
-    {
-        key: '8',
-        name: 'University of Transportation Technology',
-        ucode: 'GTA',
-        address: 'TP.HCM',
-        cutoff: '22',
-        number: '1500',
-        targets: 2800,
-    },
-    {
-        key: '9',
-        name: 'University of Social Sciences and Humanities',
-        ucode: 'QHX',
-        address: 'TP.HCM',
-        cutoff: '22',
-        number: '1500',
-        targets: 2130,
-    },
-    {
-        key: '10',
-        name: 'University of Natural Resources and Environment',
-        ucode: 'HUNRE',
-        address: 'Hà Nội',
-        cutoff: '22',
-        number: '1500',
-        targets: 2450,
-    },
-    {
-        key: '11',
-        name: 'Ton Duc Thang University',
-        ucode: 'TDTU',
-        address: 'Khánh Hòa',
-        cutoff: '22',
-        number: '1500',
-        targets: 1900,
-    },
-    {
-        key: '12',
-        name: 'Khanh Hoa University',
-        ucode: 'UKH',
-        address: 'Khánh Hòa',
-        cutoff: '22',
-        number: '1500',
-        targets: 1750,
-    },
-];
-
-const AddSchool = ({ data }) => {
+const AddSchool = () => {
+    const [isModalVisible, setVisible] = useState(false);
+    const [isModalDetailVisible, setDetailVisible] = useState(false);
+    const [modalDetail, setModalDetail] = useState({});
+    const [searchText, setSearchText] = useState('');
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState('');
-    const [searchText, setSearchText] = useState('');
+    const [UniData, setUniData] = useState([]);
     const [searchedColumn, setSearchedColumn] = useState('');
-    const [universityData, setUniversityData] = useState([]);
-    const [selectedUniversity, setSelectUniversity] = useState(null);
-    const [isModalUniVisible, setUniVisible] = useState(false);
-    const [modalDetail, setModalDetail] = useState(false);
+    const [pagination, setPagination] = useState({ current: 1, pageSize: 5 });
     const tableRef = useRef(null);
     const searchInput = useRef(null);
     useEffect(() => {
         const fetchData = async () => {
-            const uniRef = child(ref(db), 'ListUni');
+            const uniRef = child(ref(db), 'University');
             try {
                 const snapshot = await get(uniRef);
                 if (snapshot.exists()) {
                     const data = snapshot.val();
-                    const universityArray = Object.values(data).map((university) => ({
-                        ...university,
-                        key: university.id,
-                    }));
-                    setUniversityData(universityArray);
+                    const uniArray = Object.values(data).map((uni) => ({ ...uni, key: uni.uniCode }));
+                    setUniData(uniArray);
                 }
             } catch (error) {
-                console.error(error);
+                console.errror('Cant now fetch University data', error);
             }
         };
-
         fetchData();
     }, []);
-
+    const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
+        const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
+        return (
+            <td {...restProps}>
+                {editing ? (
+                    <Form.Item
+                        name={dataIndex}
+                        style={{
+                            margin: 0,
+                        }}
+                        rules={[
+                            {
+                                required: true,
+                                message: `Please Input ${title}!`,
+                            },
+                        ]}
+                    >
+                        {inputNode}
+                    </Form.Item>
+                ) : (
+                    children
+                )}
+            </td>
+        );
+    };
     const handleSchoolDetail = (record) => {
         setModalDetail(record);
-        setUniVisible(true);
+        // setUniVisible(true);
     };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -212,6 +96,114 @@ const AddSchool = ({ data }) => {
     };
 
     const isEditing = (record) => record.key === editingKey;
+    const edit = (record) => {
+        form.setFieldsValue({
+            nameU: '',
+            uniCode: '',
+            address: '',
+            ...record,
+        });
+        console.log(record.key);
+        setEditingKey(record.key);
+        console.log(editingKey);
+    };
+
+    const cancel = () => {
+        setEditingKey('');
+    };
+    const handleDelete = async (key) => {
+        try {
+            await remove(child(ref(db), `University/${key}`));
+            const newUni = UniData.filter((item) => item.key !== key);
+            setUniData(newUni);
+        } catch (error) {
+            console.error('Error deleting data:', error);
+        }
+    };
+    const showModal = () => {
+        setVisible(true);
+    };
+
+    const handleOk = () => {
+        setVisible(false);
+        setDetailVisible(false);
+    };
+
+    const handleCancel = () => {
+        setVisible(false);
+        setDetailVisible(false);
+    };
+    const handleFieldChange = async (key, dataIndex, value) => {
+        const newData = [...UniData];
+        const index = newData.findIndex((item) => key === item.key);
+
+        if (index > -1) {
+            newData[index][dataIndex] = value;
+            setUniData(newData); // Update state
+
+            try {
+                // Await the update promise for Firebase
+                await update(ref(db, `University/${key}`), {
+                    [dataIndex]: value,
+                });
+                console.log('Data updated in Firebase successfully');
+            } catch (error) {
+                console.error('Error updating document:', error);
+                // Handle update error (optional: show notification to user)
+            }
+        }
+    };
+    const save = async (key) => {
+        try {
+            const row = await form.validateFields();
+            const newData = [...UniData];
+            const index = newData.findIndex((item) => key === item.key);
+
+            if (index > -1) {
+                const item = newData[index];
+
+                // Xử lý dữ liệu thay đổi
+                newData.splice(index, 1, {
+                    ...item,
+                    ...row,
+                });
+
+                // Chuyển đổi giá trị từ chuỗi sang số
+                const updatedRow = {
+                    ...newData[index],
+                };
+                // Cập nhật dữ liệu trên state
+                newData[index] = updatedRow;
+                setUniData(newData);
+                setEditingKey('');
+
+                // Cập nhật dữ liệu trên Firebase
+                await update(ref(db, `University/${key}`), updatedRow);
+                console.log('Data updated in Firebase successfully');
+            } else {
+                newData.push(row);
+                setUniData(newData);
+                setEditingKey('');
+                handleFieldChange(key, Object.keys(row)[0], row[Object.keys(row)[0]]);
+
+                // Thêm dữ liệu mới vào Firebase
+                await set(ref(db, `University/${key}`), row); // Thêm dữ liệu mới
+                console.log('Data added to Firebase successfully');
+            }
+        } catch (errInfo) {
+            console.log('Validate Failed:', errInfo);
+        }
+    };
+    const onChange = (pagination, filters, sorter, extra) => {
+        const totalRows = extra.total;
+        if (totalRows <= 5 && pagination.current === 1) {
+            setPagination({ ...pagination, current: 2 });
+        } else {
+            setPagination(pagination);
+        }
+        console.log('params', pagination, filters, sorter, extra);
+    };
+
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
             <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
@@ -295,177 +287,44 @@ const AddSchool = ({ data }) => {
             ),
     });
 
-    const handleDelete = async (key) => {
-        try {
-            await remove(child(ref(db), `ListUni/${key}`));
-            const newData = universityData.filter((item) => item.key !== key);
-            setUniversityData(newData);
-        } catch (error) {
-            console.error('Error deleting data:', error);
-        }
-    };
-
-    const edit = (record) => {
-        form.setFieldsValue({
-            name: '',
-            ucode: '',
-            address: '',
-            ...record,
-        });
-        setEditingKey(record.key);
-    };
-
-    const cancel = () => {
-        setEditingKey('');
-    };
-
-    const handleFieldChange = async (key, dataIndex, value) => {
-        console.log('ham da duoc goi');
-        const newData = [...universityData];
-        const index = newData.findIndex((item) => key === item.key);
-
-        if (index > -1) {
-            newData[index][dataIndex] = value;
-            setUniversityData(newData); // Update state
-
-            try {
-                // Await the update promise for Firebase
-                await update(ref(db, `ListUni/${key}`), {
-                    [dataIndex]: value,
-                });
-                console.log('Data updated in Firebase successfully');
-            } catch (error) {
-                console.error('Error updating document:', error);
-                // Handle update error (optional: show notification to user)
-            }
-        }
-    };
-
-    const save = async (key) => {
-        try {
-            // Validate fields and get data
-            const values = await form.validateFields();
-
-            // Kiểm tra dữ liệu hợp lệ
-            if (values) {
-                const newData = [...universityData];
-                const index = newData.findIndex((item) => key === item.key);
-
-                if (index > -1) {
-                    const item = newData[index];
-
-                    // Xử lý dữ liệu thay đổi
-                    newData.splice(index, 1, {
-                        ...item,
-                        ...values,
-                    });
-                    const updatedRow = { ...newData[index] };
-
-                    // Cập nhật dữ liệu trên state
-                    newData[index] = updatedRow;
-                    setUniversityData(newData);
-                    setEditingKey('');
-
-                    // Cập nhật dữ liệu trên Firebase
-                    await update(ref(db, `ListUni/${key}`), updatedRow);
-                    console.log('Data updated in Firebase successfully');
-                } else {
-                    // Thêm dữ liệu mới vào mảng universityData
-                    newData.push(values);
-                    setUniversityData(newData);
-                    setEditingKey('');
-                    handleFieldChange(key, Object.keys(values)[0], values[Object.keys(values)[0]]);
-
-                    // Thêm dữ liệu mới vào Firebase
-                    await set(ref(db, `ListUni/${key}`), values); // Thêm dữ liệu mới
-                    console.log('Data added to Firebase successfully');
-                }
-            }
-        } catch (errInfo) {
-            console.log('Validate Failed:', errInfo);
-            // Xử lý lỗi validateFields(), ví dụ: Hiển thị thông báo cho người dùng
-        }
-    };
-
-    const handleIdClick = (record) => {
-        setSelectUniversity(record);
-        console.log(record);
-        setUniVisible(true);
-    };
-
-    const handleOk = () => {
-        setUniVisible(false);
-    };
-    const handleCancel = () => {
-        setUniVisible(false);
-    };
-
     const columns = [
         {
             title: 'Name',
-            dataIndex: 'name',
+            dataIndex: 'nameU',
             key: 'name',
-            editable: true,
-            fixed: 'left',
-            width: '25%',
-            ...getColumnSearchProps('name'),
-            render: (_, record) => (
-                <span onClick={() => handleIdClick(record)} style={{ color: 'blue', cursor: 'pointer' }}>
-                    {record.name}
-                </span>
+            width: '30%',
+            ...getColumnSearchProps('nameU'),
+            render: (text, record) => (
+                <Typography.Link onClick={() => handleSchoolDetail(record)}>{text}</Typography.Link>
             ),
         },
         {
-            title: 'University code',
-            dataIndex: 'ucode',
-            width: '15%',
-            editable: true,
-            fixed: 'left',
+            title: 'UniCode',
+            dataIndex: 'key',
+            width: '13%',
             ...getColumnSearchProps('ucode'),
         },
         {
             title: 'Address',
             dataIndex: 'address',
-            editable: true,
-            filters: [
-                {
-                    text: 'Hà Nội',
-                    value: 'Hà Nội',
-                },
-                {
-                    text: 'TP.HCM',
-                    value: 'TP.HCM',
-                },
-                {
-                    text: 'Đà Nẵng',
-                    value: 'Đà Nẵng',
-                },
-                {
-                    text: 'Khánh Hòa',
-                    value: 'Khánh Hòa',
-                },
-            ],
-            onFilter: (value, record) => record.address.startsWith(value),
             filterSearch: true,
             width: '20%',
         },
         {
             title: 'Entrance score',
-            dataIndex: 'cutoff',
+            dataIndex: 'averageS',
             width: '15%',
-            editable: true,
-            sorter: (a, b) => a.cutoff - b.cutoff,
+            sorter: (a, b) => a.averageS - b.averageS,
         },
         {
-            title: 'Number of students registered',
-            dataIndex: 'number',
-            width: '20%',
-            editable: true,
-            sorter: (a, b) => a.number - b.number,
+            title: 'Number of registration',
+            dataIndex: 'isRegistered',
+            width: '10%',
+            sorter: (a, b) => a.isRegistered - b.isRegistered,
         },
         {
             title: 'Targets',
-            dataIndex: 'targets',
+            dataIndex: 'target',
             width: '10%',
             editable: true,
             sorter: (a, b) => a.targets - b.targets,
@@ -473,20 +332,22 @@ const AddSchool = ({ data }) => {
         {
             title: 'Manage',
             dataIndex: 'operation',
-            width: '15%',
+            width: '13%',
             fixed: 'right',
             render: (_, record) => {
                 const editable = isEditing(record);
                 return editable ? (
                     <span>
-                        <Popconfirm title="Sure to save?" onConfirm={() => save(record.key)}>
-                            <Typography.Link
-                                style={{
-                                    marginRight: 8,
-                                }}
-                            >
-                                Edit
-                            </Typography.Link>
+                        <Typography.Link
+                            onClick={() => save(record.key)}
+                            style={{
+                                marginRight: 8,
+                            }}
+                        >
+                            Edit
+                        </Typography.Link>
+                        <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+                            <Typography.Link>Cancel</Typography.Link>
                         </Popconfirm>
                         <Typography.Link onClick={() => cancel()}>Cancel</Typography.Link>
                     </span>
@@ -511,7 +372,6 @@ const AddSchool = ({ data }) => {
             },
         },
     ];
-
     const mergedColumns = columns.map((col) => {
         if (!col.editable) {
             return col;
@@ -520,7 +380,10 @@ const AddSchool = ({ data }) => {
             ...col,
             onCell: (record) => ({
                 record,
-                inputType: col.dataIndex === 'age' ? 'number' : 'text',
+                inputType:
+                    col.dataIndex === 'averageS' || col.dataIndex === 'isRegistered' || col.dataIndex === 'targets'
+                        ? 'number'
+                        : 'text',
                 dataIndex: col.dataIndex,
                 title: col.title,
                 editing: isEditing(record),
@@ -530,51 +393,50 @@ const AddSchool = ({ data }) => {
 
     return (
         <div>
-            <FormAdd></FormAdd>
-            <Space>
-                <Modal
-                    open={isModalUniVisible}
-                    width={600}
-                    onCancel={handleCancel}
-                    footer={[
-                        <Button key="ok" type="primary" onClick={handleOk}>
-                            OK
-                        </Button>,
-                    ]}
-                >
-                    <FormDetail></FormDetail>
-                </Modal>
-                <Form form={form} component={false}>
-                    <Table
-                        components={{
-                            body: {
-                                cell: EditableCell,
-                            },
-                        }}
-                        bordered
-                        dataSource={universityData}
-                        columns={mergedColumns}
-                        scroll={{
-                            x: 900,
-                            y: 'calc(100vh - 300px)',
-                        }}
-                        style={{ height: '100%', marginRight: '-20px' }}
-                        rowClassName="editable-row"
-                        showSorterTooltip={{
-                            target: 'sorter-icon',
-                        }}
-                        pagination={{
-                            defaultPageSize: '10',
-                            pageSizeOptions: ['10', '20', '30', '50'],
-                            total: 20,
-                            showSizeChanger: true,
-                            showQuickJumper: true,
-                            showTotal: (total) => `Total ${total} items`,
-                        }}
-                        ref={tableRef}
-                    />
-                </Form>
-            </Space>
+            <Form form={form} component={false}>
+                <Table
+                    columns={mergedColumns}
+                    dataSource={UniData}
+                    onChange={onChange}
+                    pagination={{
+                        defaultPageSize: '10',
+                        pageSizeOptions: ['10', '20', '40', '100'],
+                        showSizeChanger: true,
+                        showQuickJumper: true,
+                        showTotal: (total) => `Total ${total} items`,
+                    }}
+                    scroll={{ x: false, y: 500 }}
+                    components={{
+                        body: {
+                            cell: EditableCell,
+                        },
+                    }}
+                    bordered
+                    ref={tableRef}
+                />
+            </Form>
+            <Modal
+                open={isModalDetailVisible}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                width={800} // Độ rộng của modal là 800 pixel
+                height={600}
+                cancelButtonProps={{ style: { display: 'none' } }}
+                okButtonProps={{ style: { width: '80px' } }}
+            >
+                <FormDetail />
+            </Modal>
+
+            <Modal
+                title="Edit the University"
+                open={isModalVisible}
+                onOk={handleOk}
+                okText="Save"
+                onCancel={handleCancel}
+                style={{ top: '50px', left: '50px' }}
+            >
+                <FormAdd />
+            </Modal>
         </div>
     );
 };

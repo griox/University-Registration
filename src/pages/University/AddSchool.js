@@ -31,6 +31,7 @@ const AddSchool = () => {
     const [isModalVisible, setVisible] = useState(false);
     const [isModalDetailVisible, setDetailVisible] = useState(false);
     const [modalDetail, setModalDetail] = useState({});
+    const [selectedUniverse, setSelectedUniverse] = useState(null);
     const [searchText, setSearchText] = useState('');
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState('');
@@ -82,7 +83,12 @@ const AddSchool = () => {
     };
     const handleSchoolDetail = (record) => {
         setModalDetail(record);
+<<<<<<< HEAD
         // setUniVisible(true);
+=======
+        setDetailVisible(true);
+        setSelectedUniverse(record)
+>>>>>>> 2cc0179ceedd875616987689bee6b9445b6b194b
     };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -308,18 +314,21 @@ const AddSchool = () => {
             title: 'Address',
             dataIndex: 'address',
             filterSearch: true,
+            editable: true,
             width: '20%',
         },
         {
             title: 'Entrance score',
             dataIndex: 'averageS',
             width: '15%',
+            editable: true,
             sorter: (a, b) => a.averageS - b.averageS,
         },
         {
             title: 'Number of registration',
             dataIndex: 'isRegistered',
             width: '10%',
+            editable: true,
             sorter: (a, b) => a.isRegistered - b.isRegistered,
         },
         {
@@ -349,7 +358,6 @@ const AddSchool = () => {
                         <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
                             <Typography.Link>Cancel</Typography.Link>
                         </Popconfirm>
-                        <Typography.Link onClick={() => cancel()}>Cancel</Typography.Link>
                     </span>
                 ) : (
                     <Space size={'middle'}>
@@ -394,6 +402,7 @@ const AddSchool = () => {
     return (
         <div>
             <Form form={form} component={false}>
+<<<<<<< HEAD
                 <Table
                     columns={mergedColumns}
                     dataSource={UniData}
@@ -414,6 +423,31 @@ const AddSchool = () => {
                     bordered
                     ref={tableRef}
                 />
+=======
+                <Space direction="vertical">
+                    <FormAdd />
+                    <Table
+                        columns={mergedColumns}
+                        dataSource={UniData}
+                        onChange={onChange}
+                        pagination={{
+                            defaultPageSize: '10',
+                            pageSizeOptions: ['10', '20', '40', '100'],
+                            showSizeChanger: true,
+                            showQuickJumper: true,
+                            showTotal: (total) => `Total ${total} items`,
+                        }}
+                        scroll={{ x: false, y: 500 }}
+                        components={{
+                            body: {
+                                cell: EditableCell,
+                            },
+                        }}
+                        bordered
+                        ref={tableRef}
+                    />
+                </Space>
+>>>>>>> 2cc0179ceedd875616987689bee6b9445b6b194b
             </Form>
             <Modal
                 open={isModalDetailVisible}
@@ -424,7 +458,7 @@ const AddSchool = () => {
                 cancelButtonProps={{ style: { display: 'none' } }}
                 okButtonProps={{ style: { width: '80px' } }}
             >
-                <FormDetail />
+                <FormDetail university ={selectedUniverse} />
             </Modal>
 
             <Modal

@@ -10,6 +10,7 @@ const initState = {
     MathScore: 0,
     LiteratureScore: 0,
     uniCode: [],
+    img: '',
 };
 
 const reducer = (state = initState, action) => {

@@ -72,7 +72,11 @@ const Navbar = () => {
     };
 
     const handleMenuClick = (e) => {
-        if (e.key === 'logout') {
+        if (e.key === '1.1') {
+            // Nếu là mục "Change password"
+            message.info('Redirecting to change password page...'); // Thông báo trước khi điều hướng
+            history.push('/changepass'); // Điều hướng tới trang thay đổi mật khẩu
+        } else if (e.key === 'logout') {
             message.success('You have logged out successfully!');
             handleLogout();
         } else {

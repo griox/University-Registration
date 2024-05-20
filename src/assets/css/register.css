@@ -309,6 +309,15 @@
     color: #fff;
 }
 
+.eye3 {
+    right: 10px;
+    cursor: pointer;
+    display: none;
+}
+.eye3:hover {
+    color: #fff;
+}
+
 .input_container_login input:not([type='checkbox']):is(:focus, :valid) + i {
     color: #fff;
 }

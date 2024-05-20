@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ProSidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import { Box, IconButton, Typography, useTheme, Tooltip } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -6,7 +6,7 @@ import 'react-pro-sidebar/dist/css/styles.css';
 import { tokens } from '../../theme';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 // import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import {SignatureOutlined, SolutionOutlined} from '@ant-design/icons' 
+import { SignatureOutlined, SolutionOutlined } from '@ant-design/icons';
 import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
@@ -57,13 +57,26 @@ const Sidebar = () => {
     // useEffect(() => {
     //     setUsername(JSON.parse(localStorage.getItem('Infor')));
     // }, [username]);
-    // useEffect(() => {
-    //     localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
-    // }, [isCollapsed]);
+    const isInitialMountCollapsed = useRef(true);
+    const isInitialMountSelected = useRef(true);
 
-    // useEffect(() => {
-    //     localStorage.setItem('selectedMenuItem', selected);
-    // }, [selected]);
+    useEffect(() => {
+        if (isInitialMountCollapsed.current) {
+            isInitialMountCollapsed.current = false;
+        } else {
+            console.log('isCollapsed changed:', isCollapsed);
+            localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
+        }
+    }, [isCollapsed]);
+
+    useEffect(() => {
+        if (isInitialMountSelected.current) {
+            isInitialMountSelected.current = false;
+        } else {
+            console.log('selected changed:', selected);
+            localStorage.setItem('selectedMenuItem', selected);
+        }
+    }, [selected]);
     // useEffect(() => {
     //     setRole(localStorage.getItem('Role'));
     // }, [role]);

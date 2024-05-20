@@ -199,7 +199,7 @@ export const Login = () => {
                                             <input type="checkbox" />
                                             <span className="remembertxt_login"> Remember me</span>
                                         </div>
-                                        <a href="index.html">Forgot password?</a>
+                                        <Link to="/forgetpass">Forgot password?</Link>
                                     </div>
 
                                     <div className="input-box" onClick={() => getdt(email, password)}>

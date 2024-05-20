@@ -323,7 +323,7 @@ const AddSchool = () => {
         {
             title: 'Number of registration',
             dataIndex: 'isRegistered',
-            width: '10%',
+            width: '13%',
             editable: true,
             sorter: (a, b) => a.isRegistered - b.isRegistered,
         },
@@ -337,7 +337,7 @@ const AddSchool = () => {
         {
             title: 'Manage',
             dataIndex: 'operation',
-            width: '13%',
+            width: '10%',
             fixed: 'right',
             render: (_, record) => {
                 const editable = isEditing(record);
@@ -396,7 +396,6 @@ const AddSchool = () => {
 
     return (
         <div>
-            <FormAdd></FormAdd>
             <Modal
                 title="Edit the University"
                 open={isModalVisible}

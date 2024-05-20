@@ -1,14 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Button, Input, Select, Space, Table, Modal } from 'antd';
+import { Button, Input, Select, Space, Table, Modal, Skeleton } from 'antd';
 import '../assets/admin/css/profile.css';
 import 'firebase/auth';
 import { ref, child, getDatabase, get, set, update } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { DownOutlined, SearchOutlined } from '@ant-design/icons';
+import { DownOutlined, SaveOutlined, SearchOutlined, UploadOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import { calc } from 'antd/es/theme/internal';
+import { Avatar } from '@mui/material';
+import { storage } from './firebaseConfig';
+import { getDownloadURL, uploadBytes, ref as storageRef } from 'firebase/storage';
 
 const { Option } = Select;
 const MAX_COUNT = 5;
@@ -27,14 +30,15 @@ function Pr() {
         messagingSenderId: '898832925665',
         appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
     };
-    const detail = useSelector((state) => state);
-    const dispatch = useDispatch();
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const [arr, setArr] = useState([]);
+    const detail = useSelector((state) => state);
+    const dispatch = useDispatch();
     const searchInput = useRef(null);
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
+    const [loading, setLoading] = useState(true);
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -164,6 +168,7 @@ function Pr() {
             }
         });
         dispatch({ type: 'user', payload: personal });
+        setLoading(false);
     }, [db, dispatch]);
     const save = () => {
         const per = JSON.parse(localStorage.getItem('Infor'));
@@ -184,8 +189,6 @@ function Pr() {
             .catch((error) => {
                 alert('lỗi' + error);
             });
-
-        console.log(per.id);
     };
     const [size, setSize] = useState('middle');
 
@@ -407,168 +410,239 @@ function Pr() {
     const addUniversity = (uniCode) => {
         dispatch({ type: 'pushUniCode', newValue: uniCode });
     };
+    const [image, setImage] = useState(null);
+    // const [url, setUrl] = useState(null);
 
+    const handleImgChange = (e) => {
+        if (e.target.files[0]) {
+            setImage(e.target.files[0]);
+        }
+    };
+    const handleSubmit = () => {
+        if (!image) return;
+        const imgRef = storageRef(storage, `images/${image.name}`);
+        uploadBytes(imgRef, image)
+            .then(() => getDownloadURL(imgRef))
+            .then((downLoadUrl) => {
+                const per = JSON.parse(localStorage.getItem('Infor'));
+                update(ref(db, 'Detail/' + per.id), {
+                    img: downLoadUrl,
+                })
+                    .then(() => {
+                        toast.success('Updated sucessfully');
+                    })
+                    .catch((error) => {
+                        alert('lỗi' + error);
+                    });
+                get(child(ref(db), `Detail/${per.id}/`)).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const x = snapshot.val();
+
+                        localStorage.setItem('Infor', JSON.stringify(x));
+                        dispatch({ type: 'user', payload: x });
+                    } else {
+                        console.log('No data available');
+                    }
+                });
+
+                handleSelect(downLoadUrl, 'img');
+
+                // setUrl(downLoadUrl);
+                setImage(null);
+            })
+            .catch((error) => {
+                console.log(error.message, 'Error');
+            })
+            .catch((error) => {
+                console.log(error.message, 'Error');
+            });
+    };
     return (
         <div className="container">
-            <div className="input">
-                <div className="full-name">
-                    <h1>Student Name: </h1>
-                    <Space.Compact size="large">
-                        <Input
-                            className="g-s size-input"
-                            value={detail.name}
-                            onChange={(e) => handleChange(e, 'name')}
-                            options={gender}
-                        />
-                    </Space.Compact>
-                </div>
-                <div className="detail-item">
-                    <h1>Gender: </h1>
-                    <Space.Compact size="large">
-                        <Space.Compact>
+            {loading ? (
+                <Skeleton active />
+            ) : (
+                <>
+                    <div className="pr-content">
+                        <div className="avartar">
+                            <Avatar alt="Remy Sharp" src={detail.img} sx={{ fontSize: 50, width: 150, height: 150 }} />
+                            <div>
+                                <input type="file" onChange={handleImgChange} id="fileInput" />
+                                <input type="button" onClick={handleSubmit} id="btn-fileSubmit" />
+                                <div className="pr-btn">
+                                    <label htmlFor="btn-fileSubmit">
+                                        <SaveOutlined style={{ fontSize: '20px' }} />
+                                    </label>
+                                    <label htmlFor="fileInput">
+                                        <UploadOutlined style={{ fontSize: '20px' }} />
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="input">
+                            <div className="detail-item">
+                                <h1>Student Name: </h1>
+                                <Space.Compact size="large">
+                                    <Input
+                                        className="g-s size-input"
+                                        value={detail.name}
+                                        onChange={(e) => handleChange(e, 'name')}
+                                        options={gender}
+                                    />
+                                </Space.Compact>
+                            </div>
+                            <div className="detail-item">
+                                <h1>Gender: </h1>
+                                <Space.Compact size="large">
+                                    <Space.Compact>
+                                        <Select
+                                            showSearch
+                                            placeholder="Choose your gender"
+                                            options={gender}
+                                            className="g-s"
+                                            value={detail.gender}
+                                            onChange={(e) => handleSelect(e, 'gender')}
+                                        />
+                                    </Space.Compact>
+                                </Space.Compact>
+                            </div>
+
+                            <div className="detail-item">
+                                <h1>Place of birth: </h1>
+
+                                <Space.Compact size="large">
+                                    <Select
+                                        size={size}
+                                        showSearch
+                                        options={provinces}
+                                        className="g-s"
+                                        value={detail.placeOBirth}
+                                        onChange={(e) => handleSelect(e, 'placeOBirth')}
+                                    />
+                                </Space.Compact>
+                            </div>
+                            <div className="detail-item">
+                                <h1>Address: </h1>
+
+                                <Space.Compact size="large">
+                                    <Input
+                                        className="g-s addr size-input"
+                                        value={detail.Address}
+                                        onChange={(e) => handleChange(e, 'Address')}
+                                        style={{ width: '300px' }}
+                                    />
+                                </Space.Compact>
+                            </div>
+                            <div className="detail-item">
+                                <h1>Ethnicity: </h1>
+
+                                <Space.Compact size="large">
+                                    <Select
+                                        size={size}
+                                        value={detail.enthicity}
+                                        showSearch
+                                        onChange={(e) => handleSelect(e, 'enthicity')}
+                                        options={ethnicities}
+                                        className="g-s"
+                                    />
+                                </Space.Compact>
+                            </div>
+                            <div className="detail-item">
+                                <h1>CCCD: </h1>
+
+                                <Space.Compact size="large">
+                                    <Input
+                                        className="g-s size-input"
+                                        value={detail.idenNum}
+                                        onChange={(e) => handleChange(e, 'idenNum')}
+                                    />
+                                </Space.Compact>
+                            </div>
+
+                            <div className="detail-item">
+                                <h1>Email: </h1>
+                                <Space.Compact size="large">
+                                    <Input
+                                        className="g-s size-input"
+                                        value={detail.email}
+                                        onChange={(e) => handleChange(e, 'email')}
+                                        disabled={true}
+                                        style={{ width: '300px' }}
+                                    />
+                                </Space.Compact>
+                            </div>
+                            <div className="detail-item">
+                                <h1>MathScore: </h1>
+                                <Space.Compact size="large">
+                                    <Input
+                                        className="g-s size-input"
+                                        value={detail.MathScore}
+                                        onChange={(e) => handleChange(e, 'email')}
+                                        disabled={true}
+                                    />
+                                </Space.Compact>
+                            </div>
+                            <div className="detail-item">
+                                <h1>EnglishScore: </h1>
+                                <Space.Compact size="large">
+                                    <Input
+                                        className="g-s size-input"
+                                        value={detail.EnglishScore}
+                                        onChange={(e) => handleChange(e, 'email')}
+                                        disabled={true}
+                                    />
+                                </Space.Compact>
+                            </div>
+                            <div className="detail-item">
+                                <h1>LiteratureScore: </h1>
+                                <Space.Compact size="large">
+                                    <Input
+                                        className="g-s size-input"
+                                        value={detail.LiteratureScore}
+                                        onChange={(e) => handleChange(e, 'email')}
+                                        disabled={true}
+                                    />
+                                </Space.Compact>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="detail-item">
+                        <h1>University: </h1>
+                        <Space size="large">
                             <Select
+                                mode="multiple"
+                                maxCount={MAX_COUNT}
+                                value={detail.uniCode}
+                                options={arr}
+                                style={{ width: '800px', cursor: 'pointer' }}
+                                onChange={(e) => handleSelect(e, 'uniCode')}
+                                suffixIcon={suffix}
+                                placeholder="Selected universities"
                                 showSearch
-                                placeholder="Choose your gender"
-                                options={gender}
                                 className="g-s"
-                                value={detail.gender}
-                                onChange={(e) => handleSelect(e, 'gender')}
                             />
-                        </Space.Compact>
-                    </Space.Compact>
-                </div>
-
-                <div className="detail-item">
-                    <h1>Place of birth: </h1>
-
-                    <Space.Compact size="large">
-                        <Select
-                            size={size}
-                            showSearch
-                            options={provinces}
-                            className="g-s"
-                            value={detail.placeOBirth}
-                            onChange={(e) => handleSelect(e, 'placeOBirth')}
-                        />
-                    </Space.Compact>
-                </div>
-                <div className="detail-item">
-                    <h1>Address: </h1>
-
-                    <Space.Compact size="large">
-                        <Input
-                            className="g-s addr size-input"
-                            value={detail.Address}
-                            onChange={(e) => handleChange(e, 'Address')}
-                        />
-                    </Space.Compact>
-                </div>
-                <div className="detail-item">
-                    <h1>Ethnicity: </h1>
-
-                    <Space.Compact size="large">
-                        <Select
-                            size={size}
-                            value={detail.enthicity}
-                            showSearch
-                            onChange={(e) => handleSelect(e, 'enthicity')}
-                            options={ethnicities}
-                            className="g-s"
-                        />
-                    </Space.Compact>
-                </div>
-                <div className="detail-item">
-                    <h1>CCCD: </h1>
-
-                    <Space.Compact size="large">
-                        <Input
-                            className="g-s size-input"
-                            value={detail.idenNum}
-                            onChange={(e) => handleChange(e, 'idenNum')}
-                        />
-                    </Space.Compact>
-                </div>
-
-                <div className="detail-item">
-                    <h1>Email: </h1>
-                    <Space.Compact size="large">
-                        <Input
-                            className="g-s size-input"
-                            value={detail.email}
-                            onChange={(e) => handleChange(e, 'email')}
-                            disabled={true}
-                        />
-                    </Space.Compact>
-                </div>
-                <div className="detail-item">
-                    <h1>MathScore: </h1>
-                    <Space.Compact size="large">
-                        <Input
-                            className="g-s size-input"
-                            value={detail.MathScore}
-                            onChange={(e) => handleChange(e, 'email')}
-                            disabled={true}
-                        />
-                    </Space.Compact>
-                </div>
-                <div className="detail-item">
-                    <h1>EnglishScore: </h1>
-                    <Space.Compact size="large">
-                        <Input
-                            className="g-s size-input"
-                            value={detail.EnglishScore}
-                            onChange={(e) => handleChange(e, 'email')}
-                            disabled={true}
-                        />
-                    </Space.Compact>
-                </div>
-                <div className="detail-item">
-                    <h1>LiteratureScore: </h1>
-                    <Space.Compact size="large">
-                        <Input
-                            className="g-s size-input"
-                            value={detail.LiteratureScore}
-                            onChange={(e) => handleChange(e, 'email')}
-                            disabled={true}
-                        />
-                    </Space.Compact>
-                </div>
-                <div className="detail-item">
-                    <h1>University: </h1>
-                    <Space size="large">
-                        <Select
-                            mode="multiple"
-                            maxCount={MAX_COUNT}
-                            value={detail.uniCode}
-                            options={arr}
-                            style={{ width: '400px', cursor: 'pointer' }}
-                            onChange={(e) => handleSelect(e, 'uniCode')}
-                            suffixIcon={suffix}
-                            placeholder="Selected universities"
-                            showSearch
-                            className="g-s"
-                        />
-                    </Space>
-                </div>
-            </div>
-            <Button type="primary" onClick={() => save()} className="btn-save">
-                {'Save'}
-            </Button>
-            <Table
-                dataSource={suitableSchoolList}
-                columns={columns}
-                rowKey="code"
-                style={{ marginTop: '20px' }}
-                scroll={{ x: 190, y: 'calc(100vh - 590px)' }}
-                pagination={{
-                    defaultPageSize: '10',
-                    pageSizeOptions: ['10', '20', '40', '100'],
-                    total: suitableSchoolList.length,
-                    showSizeChanger: true,
-                    showQuickJumper: true,
-                    showTotal: (total) => `Total ${total} items`,
-                }}
-            />
+                        </Space>
+                    </div>
+                    <Button type="primary" onClick={() => save()} className="btn-save">
+                        {'Save'}
+                    </Button>
+                    <Table
+                        dataSource={suitableSchoolList}
+                        columns={columns}
+                        rowKey="code"
+                        style={{ marginTop: '20px' }}
+                        scroll={{ x: 190, y: 'calc(100vh - 590px)' }}
+                        pagination={{
+                            defaultPageSize: '10',
+                            pageSizeOptions: ['10', '20', '40', '100'],
+                            total: suitableSchoolList.length,
+                            showSizeChanger: true,
+                            showQuickJumper: true,
+                            showTotal: (total) => `Total ${total} items`,
+                        }}
+                    />
+                </>
+            )}
         </div>
     );
 }

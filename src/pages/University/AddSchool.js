@@ -83,8 +83,12 @@ const AddSchool = () => {
     };
     const handleSchoolDetail = (record) => {
         setModalDetail(record);
+<<<<<<< HEAD
+        // setUniVisible(true);
+=======
         setDetailVisible(true);
         setSelectedUniverse(record)
+>>>>>>> 2cc0179ceedd875616987689bee6b9445b6b194b
     };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -398,6 +402,28 @@ const AddSchool = () => {
     return (
         <div>
             <Form form={form} component={false}>
+<<<<<<< HEAD
+                <Table
+                    columns={mergedColumns}
+                    dataSource={UniData}
+                    onChange={onChange}
+                    pagination={{
+                        defaultPageSize: '10',
+                        pageSizeOptions: ['10', '20', '40', '100'],
+                        showSizeChanger: true,
+                        showQuickJumper: true,
+                        showTotal: (total) => `Total ${total} items`,
+                    }}
+                    scroll={{ x: false, y: 500 }}
+                    components={{
+                        body: {
+                            cell: EditableCell,
+                        },
+                    }}
+                    bordered
+                    ref={tableRef}
+                />
+=======
                 <Space direction="vertical">
                     <FormAdd />
                     <Table
@@ -421,6 +447,7 @@ const AddSchool = () => {
                         ref={tableRef}
                     />
                 </Space>
+>>>>>>> 2cc0179ceedd875616987689bee6b9445b6b194b
             </Form>
             <Modal
                 open={isModalDetailVisible}

@@ -85,7 +85,7 @@ const AddSchool = () => {
     };
     const handleSchoolDetail = (record) => {
         setModalDetail(record);
-        setUniVisible(true);
+        setDetailVisible(true);
     };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -342,16 +342,15 @@ const AddSchool = () => {
                 const editable = isEditing(record);
                 return editable ? (
                     <span>
-                        <Typography.Link
-                            onClick={() => save(record.key)}
-                            style={{
-                                marginRight: 8,
-                            }}
-                        >
-                            Edit
-                        </Typography.Link>
-                        <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-                            <Typography.Link>Cancel</Typography.Link>
+                        <Popconfirm title="Sure to cancel?" onConfirm={() => save(record.key)}>
+                            <Typography.Link
+                                onClick={() => {}}
+                                style={{
+                                    marginRight: 8,
+                                }}
+                            >
+                                Edit
+                            </Typography.Link>
                         </Popconfirm>
                         <Typography.Link onClick={() => cancel()}>Cancel</Typography.Link>
                     </span>
@@ -394,6 +393,17 @@ const AddSchool = () => {
     
     return (
         <div>
+            <FormAdd></FormAdd>
+            <Modal
+                title="Edit the University"
+                open={isModalVisible}
+                onOk={handleOk}
+                okText="Save"
+                onCancel={handleCancel}
+                style={{ top: '50px', left: '50px' }}
+            >
+                <AddSchool/>
+            </Modal>
             <Form form={form} component={false}>
             <Table
                 columns={mergedColumns}
@@ -428,16 +438,6 @@ const AddSchool = () => {
                 <FormDetail />
             </Modal>
 
-            <Modal
-                title="Edit the University"
-                open={isModalVisible}
-                onOk={handleOk}
-                okText="Save"
-                onCancel={handleCancel}
-                style={{ top: '50px', left: '50px' }}
-            >
-                <FormAdd />
-            </Modal>
         </div>
     );
 };

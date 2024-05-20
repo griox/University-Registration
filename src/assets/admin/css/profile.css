@@ -76,5 +76,16 @@ h1 {
 .avartar {
     width: 200px;
     height: 200px;
-    background-color: green;
+}
+input[type='file'] {
+    display: none;
+}
+input[type='button'] {
+    display: none;
+}
+
+.pr-btn {
+    width: 200px;
+    display: flex;
+    column-gap: 10px;
 }

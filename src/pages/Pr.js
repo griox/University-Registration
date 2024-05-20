@@ -6,7 +6,7 @@ import { ref, child, getDatabase, get, set, update } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { DownOutlined, SearchOutlined } from '@ant-design/icons';
+import { DownOutlined, SaveOutlined, SearchOutlined, UploadOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import { calc } from 'antd/es/theme/internal';
 import { Avatar } from '@mui/material';
@@ -163,12 +163,12 @@ function Pr() {
                             setSuitableSchoolList((pre) => [...pre, school]);
                         }
                     });
-                setLoading(false);
             } else {
                 console.log('No data available');
             }
         });
         dispatch({ type: 'user', payload: personal });
+        setLoading(false);
     }, [db, dispatch]);
     const save = () => {
         const per = JSON.parse(localStorage.getItem('Infor'));
@@ -411,7 +411,7 @@ function Pr() {
         dispatch({ type: 'pushUniCode', newValue: uniCode });
     };
     const [image, setImage] = useState(null);
-    const [url, setUrl] = useState(null);
+    // const [url, setUrl] = useState(null);
 
     const handleImgChange = (e) => {
         if (e.target.files[0]) {
@@ -424,7 +424,30 @@ function Pr() {
         uploadBytes(imgRef, image)
             .then(() => getDownloadURL(imgRef))
             .then((downLoadUrl) => {
-                setUrl(downLoadUrl);
+                const per = JSON.parse(localStorage.getItem('Infor'));
+                update(ref(db, 'Detail/' + per.id), {
+                    img: downLoadUrl,
+                })
+                    .then(() => {
+                        toast.success('Updated sucessfully');
+                    })
+                    .catch((error) => {
+                        alert('lỗi' + error);
+                    });
+                get(child(ref(db), `Detail/${per.id}/`)).then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const x = snapshot.val();
+
+                        localStorage.setItem('Infor', JSON.stringify(x));
+                        dispatch({ type: 'user', payload: x });
+                    } else {
+                        console.log('No data available');
+                    }
+                });
+
+                handleSelect(downLoadUrl, 'img');
+
+                // setUrl(downLoadUrl);
                 setImage(null);
             })
             .catch((error) => {
@@ -442,10 +465,18 @@ function Pr() {
                 <>
                     <div className="pr-content">
                         <div className="avartar">
-                            <Avatar alt="Remy Sharp" src={url} sx={{ fontSize: 50, width: 120, height: 120 }} />
+                            <Avatar alt="Remy Sharp" src={detail.img} sx={{ fontSize: 50, width: 150, height: 150 }} />
                             <div>
-                                <input type="file" onChange={handleImgChange} />
-                                <button onClick={handleSubmit}>Submit</button>
+                                <input type="file" onChange={handleImgChange} id="fileInput" />
+                                <input type="button" onClick={handleSubmit} id="btn-fileSubmit" />
+                                <div className="pr-btn">
+                                    <label htmlFor="btn-fileSubmit">
+                                        <SaveOutlined style={{ fontSize: '20px' }} />
+                                    </label>
+                                    <label htmlFor="fileInput">
+                                        <UploadOutlined style={{ fontSize: '20px' }} />
+                                    </label>
+                                </div>
                             </div>
                         </div>
                         <div className="input">

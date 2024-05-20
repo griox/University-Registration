@@ -6,7 +6,7 @@ import 'react-pro-sidebar/dist/css/styles.css';
 import { tokens } from '../../theme';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 // import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import { SignatureOutlined, SolutionOutlined } from '@ant-design/icons';
+import { SaveOutlined, SignatureOutlined, SolutionOutlined, UploadOutlined } from '@ant-design/icons';
 import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
@@ -200,8 +200,18 @@ const Sidebar = () => {
                             </Box>
                             <Box textAlign="center">
                                 <div>
-                                    <input type="file" onChange={handleImgChange} />
-                                    <button onClick={handleSubmit}>Submit</button>
+                                    <input id="sb-fileInput" type="file" onChange={handleImgChange} />
+                                    <button id="sb-btn" onClick={handleSubmit} style={{ display: 'none' }}>
+                                        Submit
+                                    </button>
+                                    <div style={{ display: 'flex', marginLeft: '60px', columnGap: '10px' }}>
+                                        <label htmlFor="sb-btn">
+                                            <SaveOutlined style={{ fontSize: '20px', color: '#000' }} />
+                                        </label>
+                                        <label htmlFor="sb-fileInput">
+                                            <UploadOutlined style={{ fontSize: '20px', color: '#000' }} />
+                                        </label>
+                                    </div>
                                 </div>
                                 <Typography
                                     variant="h2"

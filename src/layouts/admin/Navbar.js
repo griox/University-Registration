@@ -67,15 +67,20 @@ const Navbar = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('selectedMenuItem');
         history.push('/');
     };
 
     const handleMenuClick = (e) => {
-        if (e.key === 'logout') {
-            message.success('You have logged out successfully!');
+        if (e.key === '1.1') {
+            // Nếu là mục "Change password"
+            // message.info('Redirecting to change password page...');
+            history.push('/changepass'); // Điều hướng tới trang thay đổi mật khẩu
+        } else if (e.key === 'logout') {
+            // message.success('You have logged out successfully!');
             handleLogout();
         } else {
-            message.info('Click on menu item.');
+            // message.info('Click on menu item.');
             console.log('click', e);
         }
     };

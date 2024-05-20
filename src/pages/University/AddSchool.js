@@ -411,7 +411,7 @@ const AddSchool = () => {
                             showQuickJumper: true,
                             showTotal: (total) => `Total ${total} items`,
                         }}
-                        scroll={{ x: false, y: 500 }}
+                        scroll={{ x: false, y: 'calc(100vh - 350px)' }}
                         components={{
                             body: {
                                 cell: EditableCell,

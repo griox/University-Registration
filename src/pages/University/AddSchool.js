@@ -1,137 +1,88 @@
-import React, { useState, useRef } from 'react';
-import { Table, Popconfirm, Button, Space, Input, Modal, Typography } from 'antd';
+import React, { useState, useRef, useEffect } from 'react';
+import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography } from 'antd';
 import {
     SearchOutlined,
     EditOutlined,
     DeleteOutlined,
     PlusCircleOutlined,
     MinusCircleOutlined,
+    ManOutlined,
 } from '@ant-design/icons';
+import { Button, Space, Modal } from 'antd';
 import Highlighter from 'react-highlight-words';
-import FormAdd from './formAddSchool';
+import { WomanOutlined } from '@ant-design/icons';
+import { get, ref, child, getDatabase, remove, update, push, set } from 'firebase/database';
+import { initializeApp } from 'firebase/app';
 import FormDetail from './Modal_detail';
+import FormAdd from './formAddSchool';
+const firebaseConfig = {
+    apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
+    authDomain: 'mock-proeject-b.firebaseapp.com',
+    databaseURL: 'https://mock-proeject-b-default-rtdb.firebaseio.com',
+    projectId: 'mock-proeject-b',
+    storageBucket: 'mock-proeject-b.appspot.com',
+    messagingSenderId: '898832925665',
+    appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
+};
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-const data = [
-    {
-        key: '1',
-        name: 'Nha Trang University',
-        ucode: 'NTU',
-        address: 'Khánh Hòa',
-        cutoff: '22',
-        number: '1500',
-        targets: 2100,
-    },
-    {
-        key: '2',
-        name: 'Van Lang University',
-        ucode: 'VLU',
-        address: 'TP.HCM',
-        cutoff: '22',
-        number: '1500',
-        targets: 3000,
-    },
-    {
-        key: '3',
-        name: 'Duy Tan University',
-        ucode: 'DTU',
-        address: 'Đà Nẵng',
-        cutoff: '22',
-        number: '1500',
-        targets: 2800,
-    },
-    {
-        key: '4',
-        name: 'Ha Noi Medical University',
-        ucode: 'HMU',
-        address: 'Hà Nội',
-        cutoff: '22',
-        number: '1500',
-        targets: 2000,
-    },
-    {
-        key: '5',
-        name: 'Hutech University',
-        ucode: 'DKC',
-        address: 'TP.HCM',
-        cutoff: '22',
-        number: '1500',
-        targets: 2400,
-    },
-    {
-        key: '6',
-        name: 'Ha Noi National University',
-        ucode: 'VNU',
-        address: 'Hà Nội',
-        cutoff: '22',
-        number: '1500',
-        targets: 2500,
-    },
-    {
-        key: '7',
-        name: 'Hanoi Polytechnic University ',
-        ucode: 'BKA',
-        address: 'Hà Nội',
-        cutoff: '22',
-        number: '1500',
-        targets: 3000,
-    },
-    {
-        key: '8',
-        name: 'University of Transportation Technology',
-        ucode: 'GTA',
-        address: 'TP.HCM',
-        cutoff: '22',
-        number: '1500',
-        targets: 2800,
-    },
-    {
-        key: '9',
-        name: 'University of Social Sciences and Humanities',
-        ucode: 'QHX',
-        address: 'TP.HCM',
-        cutoff: '22',
-        number: '1500',
-        targets: 2130,
-    },
-    {
-        key: '10',
-        name: 'University of Natural Resources and Environment',
-        ucode: 'HUNRE',
-        address: 'Hà Nội',
-        cutoff: '22',
-        number: '1500',
-        targets: 2450,
-    },
-    {
-        key: '11',
-        name: 'Ton Duc Thang University',
-        ucode: 'TDTU',
-        address: 'Khánh Hòa',
-        cutoff: '22',
-        number: '1500',
-        targets: 1900,
-    },
-    {
-        key: '12',
-        name: 'Khanh Hoa University',
-        ucode: 'UKH',
-        address: 'Khánh Hòa',
-        cutoff: '22',
-        number: '1500',
-        targets: 1750,
-    },
-];
+
+
 
 const AddSchool = () => {
-    const [searchText, setSearchText] = useState('');
-    const [searchedColumn, setSearchedColumn] = useState('');
-    const searchInput = useRef(null);
-    const [pagination, setPagination] = useState({ current: 1, pageSize: 5 });
     const [isModalVisible, setVisible] = useState(false);
     const [isModalDetailVisible, setDetailVisible] = useState(false);
-    const [editingKey, setEditingKey] = useState('');
     const [modalDetail, setModalDetail] = useState({});
-
+    const [searchText, setSearchText] = useState('');
+    const [form] = Form.useForm();
+    const [editingKey, setEditingKey] = useState('');
+    const [UniData, setUniData] = useState([]);
+    const [searchedColumn, setSearchedColumn] = useState('');
+    const [pagination, setPagination] = useState({ current: 1, pageSize: 5 });
+    const tableRef = useRef(null);
+    const searchInput = useRef(null);
+    useEffect(() => {
+        const fetchData = async () => {
+            const uniRef = child(ref(db), 'University');
+            try {
+                const snapshot = await get(uniRef);
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const uniArray = Object.values(data).map((uni) => ({ ...uni, key: uni.uniCode }));
+                    setUniData(uniArray);
+                }
+            } catch (error) {
+                console.errror('Cant now fetch University data', error);
+            }
+        };
+        fetchData();
+    }, []);
+    const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
+        const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
+        return (
+            <td {...restProps}>
+                {editing ? (
+                    <Form.Item
+                        name={dataIndex}
+                        style={{
+                            margin: 0,
+                        }}
+                        rules={[
+                            {
+                                required: true,
+                                message: `Please Input ${title}!`,
+                            },
+                        ]}
+                    >
+                        {inputNode}
+                    </Form.Item>
+                ) : (
+                    children
+                )}
+            </td>
+        );
+    };
     const handleSchoolDetail = (record) => {
         setModalDetail(record);
         setDetailVisible(true);
@@ -149,46 +100,29 @@ const AddSchool = () => {
 
     const isEditing = (record) => record.key === editingKey;
     const edit = (record) => {
-        // form.setFieldsValue({
-        //   name: '',
-        //   id: '',
-        //   email: '',
-        //   ...record,
-        // });
-        // setEditingKey(record.key);
+        form.setFieldsValue({
+          nameU: '',
+          uniCode: '',
+          address: '',
+          ...record,
+        });
+        console.log(record.key);
+        setEditingKey(record.key);
+        console.log(editingKey);
     };
 
     const cancel = () => {
         setEditingKey('');
     };
     const handleDelete = async (key) => {
-        // try {
-        //   await remove(child(ref(db), `SinhVien/${key}`));
-        //   const newData = studentData.filter((item) => item.key !== key);
-        //   setStudentData(newData);
-        // } catch (error) {
-        //   console.error('Error deleting data:', error);
-        // }
+        try {
+          await remove(child(ref(db), `University/${key}`));
+          const newUni = UniData.filter((item) => item.key !== key);
+          setUniData(newUni);
+        } catch (error) {
+          console.error('Error deleting data:', error);
+        }
     };
-
-    const handleDeleteAccount = async (record) => {
-        // try {
-        //   // Create an object with the data to be updated in the database
-        //   const updates = {};
-        //   updates[`SinhVien/${record.key}/isRegister`] = false;
-        //   updates[`Account/${record.key}`] = null; // Use null to delete the node
-        //   // Perform the update operation
-        //   await update(ref(db), updates);
-        //   // Update state
-        //   const newData = studentData.map((item) =>
-        //     item.key === record.key ? { ...item, isRegister: false } : item
-        //   );
-        //   setStudentData(newData);
-        // } catch (error) {
-        //   console.error('Error deleting account', error);
-        // }
-    };
-
     const showModal = () => {
         setVisible(true);
     };
@@ -202,32 +136,68 @@ const AddSchool = () => {
         setVisible(false);
         setDetailVisible(false);
     };
+    const handleFieldChange = async (key, dataIndex, value) => {
+      
+        const newData = [...UniData];
+        const index = newData.findIndex((item) => key === item.key);
 
-    const handleProvideAccount = async (record) => {
-        // const { email } = record;
-        // try {
-        //   // Cập nhật giá trị isRegister của sinh viên
-        //   await update(ref(db, `SinhVien/${record.key}`), {
-        //     isRegister: true,
-        //   });
-        //   // Thêm dữ liệu vào bảng account
-        //   const accountRef = child(ref(db), 'Account');
-        //   const newAccountRef = push(accountRef);
-        //   await set(newAccountRef, {
-        //     email: email,
-        //     password: 'Tvx1234@',
-        //     Role: 'user',
-        //   });
-        //   // Cập nhật state
-        //   const newData = studentData.map((item) =>
-        //     item.key === record.key ? { ...item, isRegister: true } : item
-        //   );
-        //   setStudentData(newData);
-        // } catch (error) {
-        //   console.error('Error provide account student:', error);
-        // }
+        if (index > -1) {
+            newData[index][dataIndex] = value;
+            setUniData(newData); // Update state
+
+            try {
+                // Await the update promise for Firebase
+                await update(ref(db, `University/${key}`), {
+                    [dataIndex]: value,
+                });
+                console.log('Data updated in Firebase successfully');
+            } catch (error) {
+                console.error('Error updating document:', error);
+                // Handle update error (optional: show notification to user)
+            }
+        }
     };
+    const save = async (key) => {
+        try {
+            const row = await form.validateFields();
+            const newData = [...UniData];
+            const index = newData.findIndex((item) => key === item.key);
 
+            if (index > -1) {
+                const item = newData[index];
+
+                // Xử lý dữ liệu thay đổi
+                newData.splice(index, 1, {
+                    ...item,
+                    ...row,
+                });
+
+                // Chuyển đổi giá trị từ chuỗi sang số
+                const updatedRow = {
+                    ...newData[index],
+                };
+                // Cập nhật dữ liệu trên state
+                newData[index] = updatedRow;
+                setUniData(newData);
+                setEditingKey('');
+
+                // Cập nhật dữ liệu trên Firebase
+                await update(ref(db, `University/${key}`), updatedRow);
+                console.log('Data updated in Firebase successfully');
+            } else {
+                newData.push(row);
+                setUniData(newData);
+                setEditingKey('');
+                handleFieldChange(key, Object.keys(row)[0], row[Object.keys(row)[0]]);
+
+                // Thêm dữ liệu mới vào Firebase
+                await set(ref(db, `University/${key}`), row); // Thêm dữ liệu mới
+                console.log('Data added to Firebase successfully');
+            }
+        } catch (errInfo) {
+            console.log('Validate Failed:', errInfo);
+        }
+    };
     const onChange = (pagination, filters, sorter, extra) => {
         const totalRows = extra.total;
         if (totalRows <= 5 && pagination.current === 1) {
@@ -318,84 +288,59 @@ const AddSchool = () => {
                 text
             ),
     });
-
+    
     const columns = [
         {
-            title: 'STT',
-            dataIndex: 'key',
-            rowScope: 'row',
-            width: '5%',
-        },
-        {
             title: 'Name',
-            dataIndex: 'name',
+            dataIndex: 'nameU',
             key: 'name',
             width: '30%',
-            ...getColumnSearchProps('name'),
+            ...getColumnSearchProps('nameU'),
             render: (text, record) => (
                 <Typography.Link onClick={() => handleSchoolDetail(record)}>{text}</Typography.Link>
             ),
         },
         {
-            title: 'University code',
-            dataIndex: 'ucode',
-            width: '10%',
+            title: 'UniCode',
+            dataIndex: 'key',
+            width: '13%',
             ...getColumnSearchProps('ucode'),
         },
         {
             title: 'Address',
             dataIndex: 'address',
-            filters: [
-                {
-                    text: 'Hà Nội',
-                    value: 'Hà Nội',
-                },
-                {
-                    text: 'TP.HCM',
-                    value: 'TP.HCM',
-                },
-                {
-                    text: 'Đà Nẵng',
-                    value: 'Đà Nẵng',
-                },
-                {
-                    text: 'Khánh Hòa',
-                    value: 'Khánh Hòa',
-                },
-            ],
-            onFilter: (value, record) => record.address.startsWith(value),
             filterSearch: true,
             width: '20%',
         },
         {
-            title: 'Admission cutoff score',
-            dataIndex: 'cutoff',
+            title: 'Entrance score',
+            dataIndex: 'averageS',
             width: '15%',
-            sorter: (a, b) => a.cutoff - b.cutoff,
+            sorter: (a, b) => a.averageS - b.averageS,
         },
         {
-            title: 'Number of students registered',
-            dataIndex: 'number',
-            width: '20%',
-            sorter: (a, b) => a.number - b.number,
+            title: 'Number of registration',
+            dataIndex: 'isRegistered',
+            width: '10%',
+            sorter: (a, b) => a.isRegistered - b.isRegistered,
         },
         {
             title: 'Targets',
-            dataIndex: 'targets',
+            dataIndex: 'target',
             width: '10%',
             sorter: (a, b) => a.targets - b.targets,
         },
         {
             title: 'Manage',
             dataIndex: 'operation',
-            width: '10%',
+            width: '13%',
             fixed: 'right',
             render: (_, record) => {
                 const editable = isEditing(record);
                 return editable ? (
                     <span>
                         <Typography.Link
-                            onClick={() => SVGAElement(record.key)}
+                            onClick={() => save(record.key)}
                             style={{
                                 marginRight: 8,
                             }}
@@ -422,42 +367,53 @@ const AddSchool = () => {
                                 <DeleteOutlined />
                             </Typography.Link>
                         </Popconfirm>
-                        {!record.isRegister ? (
-                            <Popconfirm title="Provide Account?" onConfirm={() => handleProvideAccount(record)}>
-                                <Typography.Link>
-                                    <PlusCircleOutlined />
-                                </Typography.Link>
-                            </Popconfirm>
-                        ) : (
-                            <Popconfirm title="Delete Account?" onConfirm={() => handleDeleteAccount(record)}>
-                                <Typography.Link>
-                                    <MinusCircleOutlined />
-                                </Typography.Link>
-                            </Popconfirm>
-                        )}
                     </Space>
                 );
             },
         },
     ];
+    const mergedColumns = columns.map((col) => {
+        if (!col.editable) {
+            return col;
+        }
+        return {
+            ...col,
+            onCell: (record) => ({
+                record,
+                inputType: col.dataIndex === 'averageS' || col.dataIndex === 'isRegistered' || col.dataIndex === 'targets' ? 'number' : 'text',
+                dataIndex: col.dataIndex,
+                title: col.title,
+                editing: isEditing(record),
+            }),
+        };
+    });
+    
     return (
         <div>
+            <Form form={form} component={false}>
             <Table
-                columns={columns}
-                dataSource={data}
+                columns={mergedColumns}
+                dataSource={UniData}
                 onChange={onChange}
                 pagination={{
                     defaultPageSize: '10',
                     pageSizeOptions: ['10', '20', '40', '100'],
-                    total: data.length,
                     showSizeChanger: true,
                     showQuickJumper: true,
                     showTotal: (total) => `Total ${total} items`,
                 }}
-                scroll={{ x: false, y: 450 }}
+                scroll={{ x: false, y: 500 }}
+                components={{
+                    body: {
+                        cell: EditableCell,
+                    },
+                }}
+                bordered
+                ref={tableRef}
             />
+            </Form>
             <Modal
-                visible={isModalDetailVisible}
+                open={isModalDetailVisible}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 width={800} // Độ rộng của modal là 800 pixel
@@ -465,18 +421,18 @@ const AddSchool = () => {
                 cancelButtonProps={{ style: { display: 'none' } }}
                 okButtonProps={{ style: { width: '80px' } }}
             >
-                <FormDetail></FormDetail>
+                <FormDetail />
             </Modal>
 
             <Modal
                 title="Edit the University"
-                visible={isModalVisible}
+                open={isModalVisible}
                 onOk={handleOk}
                 okText="Save"
                 onCancel={handleCancel}
                 style={{ top: '50px', left: '50px' }}
             >
-                <FormAdd></FormAdd>
+                <FormAdd />
             </Modal>
         </div>
     );

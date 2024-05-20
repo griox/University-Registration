@@ -9,6 +9,7 @@ import store from './pages/store';
 import { ToastContainer } from 'react-toastify';
 import PrivateRoute from './PrivateRoute';
 import {useCreateInforRecordsOnMount} from './database/Student_details'
+import {useCreateUnitRecordsOnMount} from './database/University'
 function App() { 
     return (
         <Provider store={store}>

@@ -31,6 +31,7 @@ const db = getDatabase(app);
 
 const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
     const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
+
     return (
         <td {...restProps}>
             {editing ? (
@@ -420,7 +421,7 @@ const Student_List = ({ data }) => {
         {
             title: 'Manage',
             dataIndex: 'operation',
-            width: '13%',
+            width: '15%',
             fixed: 'right',
             render: (_, record) => {
                 const editable = isEditing(record);

@@ -84,10 +84,7 @@ const AddSchool = () => {
     const handleSchoolDetail = (record) => {
         setModalDetail(record);
         setDetailVisible(true);
-<<<<<<< HEAD
-=======
         setSelectedUniverse(record);
->>>>>>> ade0c3efcb0b606a0a2c23d22f83c3de2fc7bd7d
     };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {

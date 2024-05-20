@@ -212,53 +212,6 @@ const AddSchool = ({ data }) => {
     };
 
     const isEditing = (record) => record.key === editingKey;
-    // const edit = (record) => {
-    //     // form.setFieldsValue({
-    //     //   name: '',
-    //     //   id: '',
-    //     //   email: '',
-    //     //   ...record,
-    //     // });
-    //     // setEditingKey(record.key);
-    // };
-
-    // const cancel = () => {
-    //     setEditingKey('');
-    // };
-    // const handleDelete = async (key) => {
-    //     // try {
-    //     //   await remove(child(ref(db), `SinhVien/${key}`));
-    //     //   const newData = studentData.filter((item) => item.key !== key);
-    //     //   setStudentData(newData);
-    //     // } catch (error) {
-    //     //   console.error('Error deleting data:', error);
-    //     // }
-    // };
-
-    // const showModal = () => {
-    //     setVisible(true);
-    // };
-
-    // const handleOk = () => {
-    //     setVisible(false);
-    //     setDetailVisible(false);
-    // };
-
-    // const handleCancel = () => {
-    //     setVisible(false);
-    //     setDetailVisible(false);
-    // };
-
-    // const onChange = (pagination, filters, sorter, extra) => {
-    //     const totalRows = extra.total;
-    //     if (totalRows <= 5 && pagination.current === 1) {
-    //         setPagination({ ...pagination, current: 2 });
-    //     } else {
-    //         setPagination(pagination);
-    //     }
-    //     console.log('params', pagination, filters, sorter, extra);
-    // };
-
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
             <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>

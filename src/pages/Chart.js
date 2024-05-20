@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ArrowDownOutlined, ArrowUpOutlined, ManOutlined, WomanOutlined } from '@ant-design/icons';
 import { Column, Pie } from '@ant-design/plots';
+import { Skeleton } from 'antd';
 import '../assets/admin/css/chart.css';
 import { child, get, getDatabase, ref } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
@@ -23,6 +24,7 @@ const Chart = () => {
     const [registZero, setRegistZero] = useState(0);
     const [average, setAverage] = useState(0);
     const aRef = useRef(studentTotal);
+    const [loading, setLoading] = useState(true);
     const firebaseConfig = {
         apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
         authDomain: 'mock-proeject-b.firebaseapp.com',
@@ -35,27 +37,29 @@ const Chart = () => {
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+
     useEffect(() => {
         aRef.current = allUni;
     }, [allUni]);
+
     useEffect(() => {
         const updateUniversity = () => {
             get(child(ref(db), 'University/')).then((snapshot) => {
                 if (snapshot.exists()) {
                     const x = snapshot.val();
                     const listItem = Object.values(x).map((item) => item);
-
                     setAllUni(listItem.length);
                 }
             });
         };
         const timer = setTimeout(updateUniversity, 10);
-
         return () => clearTimeout(timer);
     }, []);
+
     useEffect(() => {
         aRef.current = studentTotal;
     }, [studentTotal]);
+
     useEffect(() => {
         const regist = () => {
             get(child(ref(db), 'Detail/')).then((snapshot) => {
@@ -83,7 +87,6 @@ const Chart = () => {
                         }
                     }
                 }
-                // localStorage.setItem('UniOfStudent', JSON.stringify([a, b, c, d, e, f]));
                 setRegistZero(f);
                 setRegistOne(e);
                 setRegistTwo(d);
@@ -93,7 +96,6 @@ const Chart = () => {
             });
         };
         const timer = setTimeout(regist, 10);
-
         return () => clearTimeout(timer);
     }, [db]);
 
@@ -138,15 +140,14 @@ const Chart = () => {
                     setStudentTotal(listItem.length);
                     setStLessThanF(k);
                     setStMoreThanF(y);
-                    setMale((pre) => m);
-                    setFemale((pre) => f);
-                    setAverage((pre) => sum);
-                    // localStorage.setItem('Numbe/rOfStudentGradeThan5', JSON.stringify(y));
+                    setMale(m);
+                    setFemale(f);
+                    setAverage(sum);
                 }
+                setLoading(false);
             });
         };
         const timer = setTimeout(updateStudent, 10);
-
         return () => clearTimeout(timer);
     }, [db]);
 
@@ -176,6 +177,7 @@ const Chart = () => {
             width: 50,
         },
     };
+
     const con = {
         data: [
             { type: 'Không có trường nào', value: registZero },
@@ -202,11 +204,11 @@ const Chart = () => {
             },
         },
         style: {
-            fontSize: 14, // Kích thước chữ của nhãn
-            textAlign: 'center', // Căn giữa nhãn
+            fontSize: 14,
+            textAlign: 'center',
         },
     };
-    console.log(average);
+
     const gen = {
         data: [
             { gender: 'Male', value: male },
@@ -230,83 +232,91 @@ const Chart = () => {
             },
         },
     };
+
     return (
         <div className="container">
-            <div className="mainer">
-                <div className="cards">
-                    <div className="carder">
-                        <div className="card-name">All students </div>
-                        <div className="number" title={'Total students: ' + studentTotal}>
-                            {studentTotal}
-                        </div>
-                        <div className="card-content">
-                            <div className="content-chart">
-                                <ArrowUpOutlined style={{ fontSize: '30px', color: 'green' }} />
-                                <div
-                                    className="number-below"
-                                    title={'Students scores more than 5: ' + stMoreThanF}
-                                    style={{ color: 'green' }}
-                                >
-                                    {stMoreThanF}
+            {loading ? (
+                <Skeleton active />
+            ) : (
+                <>
+                    <div className="mainer">
+                        <div className="cards">
+                            <div className="carder">
+                                <div className="card-name">All students </div>
+                                <div className="number" title={'Total students: ' + studentTotal}>
+                                    {studentTotal}
+                                </div>
+                                <div className="card-content">
+                                    <div className="content-chart">
+                                        <ArrowUpOutlined style={{ fontSize: '30px', color: 'green' }} />
+                                        <div
+                                            className="number-below"
+                                            title={'Students scores more than 5: ' + stMoreThanF}
+                                            style={{ color: 'green' }}
+                                        >
+                                            {stMoreThanF}
+                                        </div>
+                                    </div>
+                                    <div className="content-chart">
+                                        <ArrowDownOutlined style={{ fontSize: '30px', color: 'red' }} />
+                                        <div
+                                            className="number-below"
+                                            title={'Students scores less than 5: ' + stLessThanF}
+                                            style={{ color: 'red' }}
+                                        >
+                                            {stLessThanF}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="content-chart">
-                                <ArrowDownOutlined style={{ fontSize: '30px', color: 'red' }} />
-                                <div
-                                    className="number-below"
-                                    title={'Students scores less than 5: ' + stLessThanF}
-                                    style={{ color: 'red' }}
-                                >
-                                    {stLessThanF}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div className="carder">
-                        <div className="card-name">All university </div>
-                        <div className="number" title={'Total universities' + allUni}>
-                            {allUni}
-                        </div>
-                        <div className="card-content">
-                            <div className="content-chart">
-                                <ArrowUpOutlined style={{ fontSize: '30px', color: 'green' }} />
-                                <div
-                                    className="number-below"
-                                    title={'Number of Universities has less than 50% registration: ' + 12}
-                                    style={{ color: 'green' }}
-                                >
-                                    {12}
+                            <div className="carder">
+                                <div className="card-name">All university </div>
+                                <div className="number" title={'Total universities' + allUni}>
+                                    {allUni}
+                                </div>
+                                <div className="card-content">
+                                    <div className="content-chart">
+                                        <ArrowUpOutlined style={{ fontSize: '30px', color: 'green' }} />
+                                        <div
+                                            className="number-below"
+                                            title={'Number of Universities has less than 50% registration: ' + 12}
+                                            style={{ color: 'green' }}
+                                        >
+                                            {12}
+                                        </div>
+                                    </div>
+                                    <div className="content-chart">
+                                        <ArrowDownOutlined style={{ fontSize: '30px', color: 'red' }} />
+                                        <div
+                                            className="number-below"
+                                            title={'Number of Universities has more than 50% registration: ' + 20}
+                                            style={{ color: 'red' }}
+                                        >
+                                            {20}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="content-chart">
-                                <ArrowDownOutlined style={{ fontSize: '30px', color: 'red' }} />
-                                <div
-                                    className="number-below"
-                                    title={'Number of Universities has more than 50% registration: ' + 20}
-                                    style={{ color: 'red' }}
-                                >
-                                    {20}
-                                </div>
+
+                            <div className="carder">
+                                <div className="card-name">Gender </div>
+                                <Pie {...gen} />
                             </div>
                         </div>
                     </div>
-                    <div className="carder">
-                        <div className="card-name">Gender </div>
-                        <Pie {...gen} />
+                    <div className="charts">
+                        <div className="charter">
+                            <h2>Average scores of subjects</h2>
+                            <Column {...config} />
+                        </div>
+                        <div className="charter" style={{ height: '700px' }}>
+                            <h2>Number of schools each member registers</h2>
+                            <Pie {...con} />
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div className="charts">
-                <div className="charter">
-                    <h2>Average scores of subjects</h2>
-                    <Column {...config} />
-                </div>
-                <div className="charter" style={{ height: '700px' }}>
-                    <h2>Number of schools each member registers</h2>
-                    <Pie {...con} />
-                </div>
-            </div>
+                </>
+            )}
         </div>
     );
 };

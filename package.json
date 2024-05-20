@@ -16,6 +16,7 @@
     "@testing-library/user-event": "^13.5.0",
     "antd": "^5.17.0",
     "aos": "^2.3.4",
+    "boxicons": "^2.1.4",
     "date-fns": "^3.6.0",
     "firebase": "^10.11.1",
     "react": "^18.3.1",

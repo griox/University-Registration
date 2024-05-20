@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import '../../assets/css/style.css';
+// import '../../assets/css/style.css';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import AOS from 'aos';

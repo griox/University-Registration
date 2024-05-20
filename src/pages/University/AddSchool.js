@@ -27,13 +27,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-
-
-
 const AddSchool = () => {
     const [isModalVisible, setVisible] = useState(false);
     const [isModalDetailVisible, setDetailVisible] = useState(false);
     const [modalDetail, setModalDetail] = useState({});
+    const [selectedUniverse, setSelectedUniverse] = useState(null);
     const [searchText, setSearchText] = useState('');
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState('');
@@ -86,6 +84,10 @@ const AddSchool = () => {
     const handleSchoolDetail = (record) => {
         setModalDetail(record);
         setDetailVisible(true);
+<<<<<<< HEAD
+=======
+        setSelectedUniverse(record);
+>>>>>>> ade0c3efcb0b606a0a2c23d22f83c3de2fc7bd7d
     };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -101,10 +103,10 @@ const AddSchool = () => {
     const isEditing = (record) => record.key === editingKey;
     const edit = (record) => {
         form.setFieldsValue({
-          nameU: '',
-          uniCode: '',
-          address: '',
-          ...record,
+            nameU: '',
+            uniCode: '',
+            address: '',
+            ...record,
         });
         console.log(record.key);
         setEditingKey(record.key);
@@ -116,11 +118,11 @@ const AddSchool = () => {
     };
     const handleDelete = async (key) => {
         try {
-          await remove(child(ref(db), `University/${key}`));
-          const newUni = UniData.filter((item) => item.key !== key);
-          setUniData(newUni);
+            await remove(child(ref(db), `University/${key}`));
+            const newUni = UniData.filter((item) => item.key !== key);
+            setUniData(newUni);
         } catch (error) {
-          console.error('Error deleting data:', error);
+            console.error('Error deleting data:', error);
         }
     };
     const showModal = () => {
@@ -137,7 +139,6 @@ const AddSchool = () => {
         setDetailVisible(false);
     };
     const handleFieldChange = async (key, dataIndex, value) => {
-      
         const newData = [...UniData];
         const index = newData.findIndex((item) => key === item.key);
 
@@ -290,7 +291,7 @@ const AddSchool = () => {
                 text
             ),
     });
-    
+
     const columns = [
         {
             title: 'Name',
@@ -312,18 +313,21 @@ const AddSchool = () => {
             title: 'Address',
             dataIndex: 'address',
             filterSearch: true,
+            editable: true,
             width: '20%',
         },
         {
             title: 'Entrance score',
             dataIndex: 'averageS',
             width: '15%',
+            editable: true,
             sorter: (a, b) => a.averageS - b.averageS,
         },
         {
             title: 'Number of registration',
             dataIndex: 'isRegistered',
             width: '10%',
+            editable: true,
             sorter: (a, b) => a.isRegistered - b.isRegistered,
         },
         {
@@ -352,7 +356,6 @@ const AddSchool = () => {
                                 Edit
                             </Typography.Link>
                         </Popconfirm>
-                        <Typography.Link onClick={() => cancel()}>Cancel</Typography.Link>
                     </span>
                 ) : (
                     <Space size={'middle'}>
@@ -383,14 +386,17 @@ const AddSchool = () => {
             ...col,
             onCell: (record) => ({
                 record,
-                inputType: col.dataIndex === 'averageS' || col.dataIndex === 'isRegistered' || col.dataIndex === 'targets' ? 'number' : 'text',
+                inputType:
+                    col.dataIndex === 'averageS' || col.dataIndex === 'isRegistered' || col.dataIndex === 'targets'
+                        ? 'number'
+                        : 'text',
                 dataIndex: col.dataIndex,
                 title: col.title,
                 editing: isEditing(record),
             }),
         };
     });
-    
+
     return (
         <div>
             <FormAdd></FormAdd>
@@ -405,26 +411,29 @@ const AddSchool = () => {
                 <AddSchool/>
             </Modal>
             <Form form={form} component={false}>
-            <Table
-                columns={mergedColumns}
-                dataSource={UniData}
-                onChange={onChange}
-                pagination={{
-                    defaultPageSize: '10',
-                    pageSizeOptions: ['10', '20', '40', '100'],
-                    showSizeChanger: true,
-                    showQuickJumper: true,
-                    showTotal: (total) => `Total ${total} items`,
-                }}
-                scroll={{ x: false, y: 500 }}
-                components={{
-                    body: {
-                        cell: EditableCell,
-                    },
-                }}
-                bordered
-                ref={tableRef}
-            />
+                <Space direction="vertical">
+                    <FormAdd />
+                    <Table
+                        columns={mergedColumns}
+                        dataSource={UniData}
+                        onChange={onChange}
+                        pagination={{
+                            defaultPageSize: '10',
+                            pageSizeOptions: ['10', '20', '40', '100'],
+                            showSizeChanger: true,
+                            showQuickJumper: true,
+                            showTotal: (total) => `Total ${total} items`,
+                        }}
+                        scroll={{ x: false, y: 'calc(100vh - 350px)' }}
+                        components={{
+                            body: {
+                                cell: EditableCell,
+                            },
+                        }}
+                        bordered
+                        ref={tableRef}
+                    />
+                </Space>
             </Form>
             <Modal
                 open={isModalDetailVisible}
@@ -435,7 +444,7 @@ const AddSchool = () => {
                 cancelButtonProps={{ style: { display: 'none' } }}
                 okButtonProps={{ style: { width: '80px' } }}
             >
-                <FormDetail />
+                <FormDetail university={selectedUniverse} />
             </Modal>
 
         </div>

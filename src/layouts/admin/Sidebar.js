@@ -110,14 +110,14 @@ const Sidebar = () => {
     // }, [role]);
     useEffect(() => {
         setUsername(JSON.parse(localStorage.getItem('Infor')));
-    }, []);
+    }, [username]);
     useEffect(() => {
         localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
     }, []);
 
     useEffect(() => {
         localStorage.setItem('selectedMenuItem', selected);
-    }, []);
+    }, [role]);
     useEffect(() => {
         setRole(localStorage.getItem('Role'));
     }, []);

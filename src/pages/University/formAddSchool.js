@@ -71,26 +71,11 @@ const FormAdd = () => {
     setVisible(false);
   };
 
-  const generateID = async () => {
-    const snapshot = await get(child(ref(db), 'University'));
-    let count = 0;
-  
-    if (snapshot.exists()) {
-      const universities = snapshot.val();
-      count = Object.keys(universities).length; // Đếm số trường đã tồn tại
-    }
-  
-    // Định dạng ID mới dựa trên số lượng trường đã tồn tại
-    const newID = `Uni${String(count + 1).padStart(3, '0')}`;
-    return newID;
-  };
   
 
   const AddSchool = async () => {
-    const newID = await generateID();
-    const uniRef = ref(db, `University/${newID}`);
+    const uniRef = ref(db, `University/${uniCode}`);
     await set(uniRef, {
-      id: newID,
       nameU: uniName,
       uniCode: uniCode,
       address: address,
@@ -156,7 +141,7 @@ const FormAdd = () => {
                 placeholder="Uni's Code"
                 allowClear
                 onChange={(e) => setUniCode(e.target.value)}
-                maxLength={3}
+                maxLength={10}
                 style={{
                   marginLeft: '13px',
                   maxWidth: '50%',

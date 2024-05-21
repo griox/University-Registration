@@ -195,8 +195,8 @@ const Chart = () => {
         marginTop: 50,
         marginBottom: 50,
         label: {
-            text: (d) => `${d.type}\n${d.value}`,
-            position: 'spider',
+            text: (d) => `${d.value}`,
+            position: 'outside',
         },
         legend: {
             color: {

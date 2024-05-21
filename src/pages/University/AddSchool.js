@@ -85,6 +85,7 @@ const AddSchool = () => {
         setModalDetail(record);
         setDetailVisible(true);
         setSelectedUniverse(record);
+        console.log(record);
     };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -323,7 +324,7 @@ const AddSchool = () => {
         {
             title: 'Number of registration',
             dataIndex: 'isRegistered',
-            width: '10%',
+            width: '13%',
             editable: true,
         },
         {
@@ -396,6 +397,16 @@ const AddSchool = () => {
 
     return (
         <div>
+            <Modal
+                title="Edit the University"
+                open={isModalVisible}
+                onOk={handleOk}
+                okText="Save"
+                onCancel={handleCancel}
+                style={{ top: '50px', left: '50px' }}
+            >
+                <AddSchool />
+            </Modal>
             <Form form={form} component={false}>
                 <Space direction="vertical">
                     <FormAdd />
@@ -431,17 +442,6 @@ const AddSchool = () => {
                 okButtonProps={{ style: { width: '80px' } }}
             >
                 <FormDetail university={selectedUniverse} />
-            </Modal>
-
-            <Modal
-                title="Edit the University"
-                open={isModalVisible}
-                onOk={handleOk}
-                okText="Save"
-                onCancel={handleCancel}
-                style={{ top: '50px', left: '50px' }}
-            >
-                <FormAdd />
             </Modal>
         </div>
     );

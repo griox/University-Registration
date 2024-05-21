@@ -3,10 +3,13 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import Upload from './bin';
+import MyAvatar from './bin';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     // <React.StrictMode>
-    <BrowserRouter>{<App />}</BrowserRouter>,
+    <BrowserRouter>
+        <App />
+    </BrowserRouter>,
     // </React.StrictMode>,
 );

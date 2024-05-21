@@ -75,26 +75,34 @@ export const Login = () => {
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    function saveOnLocal() {
-        get(child(ref(db), 'Detail/')).then((snapshot) => {
-            if (snapshot.exists()) {
-                const x = snapshot.val();
-                for (let item in x) {
-                    if (x[item].email === email) {
-                        localStorage.setItem('Infor', JSON.stringify(x[item]));
-                        localStorage.setItem('Email', JSON.stringify(email));
-                        localStorage.setItem('LoginState', JSON.stringify(true));
+    function saveOnLocal(role) {
+        if (role === 'super_admin') {
+            get(child(ref(db), 'Admin/')).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const x = snapshot.val();
+                    for (let item in x) {
+                        if (x[item].email === email) {
+                            localStorage.setItem('Infor', JSON.stringify(x[item]));
+                            localStorage.setItem('Email', JSON.stringify(email));
+                            // localStorage.setItem('LoginState', JSON.stringify(true));
+                        }
                     }
                 }
-                // console.log(x);
-                // x.forEach((element) => {
-                //     if (element.email === email) {
-                //         localStorage.setItem('myObject', JSON.stringify(element));
-                //         return true;
-                //     }
-                // });
-            }
-        });
+            });
+        } else {
+            get(child(ref(db), 'Detail/')).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const x = snapshot.val();
+                    for (let item in x) {
+                        if (x[item].email === email) {
+                            localStorage.setItem('Infor', JSON.stringify(x[item]));
+                            localStorage.setItem('Email', JSON.stringify(email));
+                            localStorage.setItem('LoginState', JSON.stringify(true));
+                        }
+                    }
+                }
+            });
+        }
     }
 
     function getdt(email, password) {
@@ -118,7 +126,7 @@ export const Login = () => {
                                     localStorage.setItem('Role', y[0].Role);
                                     // console.log(y[0].Role);
                                     console.log(y);
-                                    saveOnLocal();
+                                    saveOnLocal(y[0].Role);
                                     <Link to="/admin/dashboard" />;
                                     setIsLoggedIn(true);
                                     // navigate('/Register');

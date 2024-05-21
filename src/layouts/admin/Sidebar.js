@@ -113,14 +113,14 @@ const Sidebar = () => {
     }, [username]);
     useEffect(() => {
         localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
-    }, []);
+    }, [isCollapsed]);
 
     useEffect(() => {
         localStorage.setItem('selectedMenuItem', selected);
-    }, [role]);
+    }, [selected]);
     useEffect(() => {
         setRole(localStorage.getItem('Role'));
-    }, []);
+    }, [role]);
     function stringToColor(string) {
         let hash = 0;
         let i;

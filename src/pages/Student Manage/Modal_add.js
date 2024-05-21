@@ -314,7 +314,7 @@ const Modal_Add = () => {
       <Button type="primary" onClick={showModal}>
         Add a new student
       </Button>
-      <Modal title="Register for Student" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={900}>
+      <Modal title="Register for Student" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={900}  destroyOnClose>
         <Space direction="vertical">
           <Form>
             <Space.Compact size="small">

@@ -174,7 +174,7 @@ const Modal_Add = () => {
   function validateFullname(name) {
     return /^[A-Za-z]+$/.test(name);
   }
-  
+
   // function validateMathScore(Mathscore) {
   //   return /^\d+$/.test(Mathscore);
   // }
@@ -308,55 +308,81 @@ const Modal_Add = () => {
   ];
 
   const { TextArea } = Input;
-
+  
   return (
     <>
       <Button type="primary" onClick={showModal}>
         Add a new student
       </Button>
-      <Modal title="Register for Student" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={600}>
+      <Modal title="Register for Student" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={900}>
         <Space direction="vertical">
           <Form>
             <Space.Compact size="small">
               <Space size={'large'}>
                 <Form.Item
                   label="Name"
+                  name="Input"
                   validateStatus={!validateFullname(Fullname) && Fullname ? 'error' : ''}
-                  help={validateFullname(Fullname) && Fullname ? '' : 'Name must contain only letters and no spaces'}
+                  // help={validateFullname(Fullname) && Fullname ? '' : 'Name must contain only letters and spaces'}
                   style={{fontWeight:600}}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input!',
+                    },
+                  ]}
                 >
                   <Input
                     placeholder="Enter Student's name"
+                    style={{width: '247px'}}
                     prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
                     value={Fullname}
+                    suffix={
+                      <Tooltip title="Name must contain only letters and spaces">
+                        <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+                      </Tooltip>
+                    }
                     onChange={(e) => {
                       setFullname(e.target.value);
                     }}
                     allowClear  
                   />
                 </Form.Item>
-                <Form.Item label="Gender" style={{fontWeight:600}}>
-                  <Select defaultValue="Female" options={genders} onChange={(value) => setGender(value)} />
+                <Form.Item label="Gender" name="gender" style={{fontWeight:600,paddingLeft: '97px'}}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input!',
+                    },
+                  ]}
+                >
+                  <Select defaultValue="Female" style={{height: '30px'}}options={genders} onChange={(value) => setGender(value)} />
                 </Form.Item>
               </Space>
             </Space.Compact>
             <Space.Compact>
               <Space size={'large'}>
                 <Form.Item
-                  label="Email"
+                  label="Email" name="email"
                   validateStatus={!validateEmailFormat(Email) && Email? 'error' : ''}
-                  help={validateEmailFormat(Email) && Email ? '':'Email must contain @example'}
-                  style={{fontWeight:500}}
+                  // help={validateEmailFormat(Email) && Email ? '':'Email must contain @example'}
+                  style={{fontWeight:600}}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input!',
+                    },
+                  ]}
                 >
                   <Input
                     placeholder="Enter Student's email"
                     prefix={<MailOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
                     suffix={
-                      <Tooltip title="Private Email">
+                      <Tooltip title="Email must contain @example">
                         <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
                       </Tooltip>
                     }
-                    style={{ width: '100%' }}
+                    style={{ width: '250px' }}
                     value={Email}
                     onChange={(e) => {
                       setEmail(e.target.value);
@@ -364,27 +390,68 @@ const Modal_Add = () => {
                     showClear
                   />
                 </Form.Item>
-                <Form.Item label="Enthicity"  style={{fontWeight:500}}>
+                <Form.Item label="Enthicity" name="ethicity" style={{fontWeight:600, paddingLeft: '90px'}}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input!',
+                    },
+                  ]}
+                >
                   <Select defaultValue="Kinh" options={enthicities} onChange={(value) => setEnthicity(value)} showSearch style={{ width: 150 }} />
                 </Form.Item>
               </Space>
             </Space.Compact>
             <Space.Compact>
               <Space size={'large'}>
-                <Form.Item label="Date of Birth"  style={{fontWeight:500}}>
-                  <DatePicker format="DD/MM/YYYY" value={dateOfBirth} onChange={(value) => setDateOfBirth(value)} />
+                <Form.Item label="Date of Birth" name= "DofB" style={{fontWeight:600}}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input!',
+                    },
+                  ]}
+                >
+                  <DatePicker format="DD/MM/YYYY" style={{width: '200px'}} value={dateOfBirth} onChange={(value) => setDateOfBirth(value)} />
                 </Form.Item>
-                <Form.Item label="Place of Birth" style={{fontWeight:500}}>
+                <Form.Item label="Place of Birth" name="place" style={{fontWeight:600, paddingLeft: '60px'}}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input!',
+                    },
+                  ]}
+                >
                   <Select defaultValue='Khánh Hòa'  options={cities} showSearch style={{ width: 150 }} onChange={(value) => setPlaceOfBirth(value)} />
                 </Form.Item>
               </Space>
               </Space.Compact>
+              <Space.Compact>
+              <Space>
+                <Form.Item label="Address" name="address" style={{fontWeight:600}}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input!',
+                    },
+                  ]}
+                >
+                  <TextArea showCount maxLength={100} style={{width: '230px'}} placeholder="Student's Address" onChange={(e) => setAddress(e.target.value)} value={Address} />
+                </Form.Item>
+              </Space>
+            </Space.Compact>
             <Space.Compact>
               <Space>
                 <Form.Item
-                  label="Identify number"
+                  label="Identify number" name="indentify"
                   validateStatus={! validateIdenNumber(Identify) && Identify? 'error' : ''}
-                  style={{fontWeight:500}}
+                  style={{fontWeight:600, paddingLeft: '65px'}}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input!',
+                    },
+                  ]}
                 >
                   <Input
                     onChange={(e) => {
@@ -400,26 +467,46 @@ const Modal_Add = () => {
                 </Form.Item>
               </Space>
             </Space.Compact>
-            <Space.Compact>
+            <br/>
+            <Space.Compact style={{paddingTop: '20px'}}>
               <Space wrap>
-                <Form.Item label="Math" style={{fontWeight:500}}>
+                <Form.Item label="Math" name="math" style={{fontWeight:600}}
+                  // validateStatus={!validateMathScore(Mathscore) && Mathscore ? 'error' : ''}
+                  // help={validateFullname(Mathscore) && Mathscore ? '' : 'Name must contain only letters and spaces'}
+                    rules={[
+                    {
+                      required: true,
+                      message: 'Please input!',
+                    },
+                  ]}
+                >
                   <InputNumber min={0} max={10} step={0.2} value={Mathscore} onChange={(value) => setMathscore(value)} />
                 </Form.Item>
-                <Form.Item label="English" style={{fontWeight:500}}>
-                  <InputNumber min={0} max={10} step={0.2} value={Englishscore} onChange={(value) => setEnglishscore(value)} />
+                <Form.Item label="English" name="english" style={{fontWeight:600, paddingLeft: '100px'}}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input!',
+                    },
+                  ]}
+                >
+                  <InputNumber min={0} max={10} step={0.2} value={Englishscore} onChange={(value) => setEnglishscore(value)}
+                  />
                 </Form.Item>
-                <Form.Item label="Literature" style={{fontWeight:500}}>
+                <Form.Item label="Literature" name="liter" style={{fontWeight:600, paddingLeft: '95px'}}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input!',
+                    },
+                  ]}
+                >
                   <InputNumber min={0} max={10} step={0.2} value={Literaturescore} onChange={(value) => setLiteraturescore(value)} />
                 </Form.Item>
               </Space>
             </Space.Compact>
-            <Space.Compact>
-              <Space>
-                <Form.Item label="Address" style={{fontWeight:500}}>
-                  <TextArea showCount maxLength={100} placeholder="Student's Address" onChange={(e) => setAddress(e.target.value)} value={Address} />
-                </Form.Item>
-              </Space>
-            </Space.Compact>
+            <br/>
+            
           </Form>
         </Space>
       </Modal>

@@ -622,9 +622,9 @@ function Pr() {
                                 className="g-s"
                             />
                         </Space>
-                    <Button type="primary" onClick={() => save()} className="btn-save">
+                        <Button type="primary" onClick={() => save()} className="btn-save">
                         {'Save'}
-                    </Button>
+                        </Button>
                     </div>
                     <Table
                         dataSource={suitableSchoolList}

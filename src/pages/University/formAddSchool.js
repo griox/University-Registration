@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Button, Form, Input, InputNumber, Space } from 'antd';
+import { Modal, Button, Form, Input, InputNumber, Space, message } from 'antd';
 import 'firebase/auth';
 import { getDatabase, ref, child, get, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
@@ -27,6 +27,7 @@ const FormAdd = () => {
   const [averageScore, setAverageScore] = useState(null);
   const [targetScore, setTargetScore] = useState(null);
   const [registeredNumber, setRegisteredNumber] = useState(null);
+  const [inputError, setInputError] = useState('');
 
   const showModal = () => {
     setVisible(true);
@@ -109,12 +110,34 @@ const FormAdd = () => {
     return /^[A-Za-z]+$/.test(uniCode);
   }
 
+  // const validateNumber = (rule, value) => {
+  //   if (value === undefined || value === null || value === '') {
+  //     return Promise.reject('Please input!');
+  //   }
+  //   const reg = /^[1-9]\d*$/;
+  //   if (!reg.test(value)) {
+  //     return Promise.reject('Only positive numbers are allowed!');
+  //   }
+  //   return Promise.resolve();
+  // };
+
+  const handleChange = (value) => {
+    const reg = /^[0-9]*$/;
+    if (!reg.test(value)) {
+      setInputError('Only positive numbers are allowed!');
+      message.error('Only positive numbers are allowed!');
+    } else {
+      setInputError('');
+      setAverageScore(value);
+    }
+  };
+  
   return (
     <>
       <Button style={{ marginBottom: '20px' }} type='primary' onClick={showModal}>
         Add University
       </Button>
-      <Modal title="Add a university" open={isModalVisible} onOk={handleOk} onCancel={handleCancel} width={600} okText='Add'>
+      <Modal title="Add a university" open={isModalVisible} onOk={handleOk} onCancel={handleCancel} width={600} okText='Add' destroyOnClose>
         <Space direction='vertical'>
           <Form>
             <Form.Item
@@ -189,6 +212,8 @@ const FormAdd = () => {
               label="Entrance Score"
               style={{ fontWeight: 600 }}
               name="Entrance"
+              validateStatus={inputError ? 'error' : ''}
+              help={inputError || ''}
               rules={[
                 {
                   required: true,
@@ -206,6 +231,11 @@ const FormAdd = () => {
                 }}
                 value={averageScore}
                 onChange={(value) => setAverageScore(value)}
+                rule={[
+                  {
+                    required: true,
+                  }
+                ]}
               />
             </Form.Item>
 

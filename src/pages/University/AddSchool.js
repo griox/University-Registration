@@ -304,7 +304,7 @@ const AddSchool = () => {
             title: 'UniCode',
             dataIndex: 'key',
             width: '13%',
-            ...getColumnSearchProps('ucode'),
+            ...getColumnSearchProps('key'),
         },
         {
             title: 'Address',
@@ -323,7 +323,7 @@ const AddSchool = () => {
         {
             title: 'Number of registration',
             dataIndex: 'isRegistered',
-            width: '10%',
+            width: '13%',
             editable: true,
             sorter: (a, b) => a.isRegistered - b.isRegistered,
         },
@@ -343,7 +343,7 @@ const AddSchool = () => {
                 const editable = isEditing(record);
                 return editable ? (
                     <span>
-                        <Popconfirm title="Sure to cancel?" onConfirm={() => save(record.key)}>
+                        <Popconfirm title="Sure to save edit?" onConfirm={() => save(record.key)}>
                             <Typography.Link
                                 onClick={() => {}}
                                 style={{
@@ -353,6 +353,7 @@ const AddSchool = () => {
                                 Edit
                             </Typography.Link>
                         </Popconfirm>
+                        <Typography.Link onClick={cancel}>Cancel</Typography.Link>
                     </span>
                 ) : (
                     <Space size={'middle'}>
@@ -396,7 +397,7 @@ const AddSchool = () => {
 
     return (
         <div>
-            <FormAdd></FormAdd>
+    
             <Modal
                 title="Edit the University"
                 open={isModalVisible}

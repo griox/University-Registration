@@ -614,7 +614,7 @@ function Pr() {
                                 maxCount={MAX_COUNT}
                                 value={detail.uniCode}
                                 options={arr}
-                                style={{ width: '800px', cursor: 'pointer' }}
+                                style={{ width: '740px', cursor: 'pointer' }}
                                 onChange={(e) => handleSelect(e, 'uniCode')}
                                 suffixIcon={suffix}
                                 placeholder="Selected universities"
@@ -622,10 +622,10 @@ function Pr() {
                                 className="g-s"
                             />
                         </Space>
-                    </div>
                     <Button type="primary" onClick={() => save()} className="btn-save">
                         {'Save'}
                     </Button>
+                    </div>
                     <Table
                         dataSource={suitableSchoolList}
                         columns={columns}

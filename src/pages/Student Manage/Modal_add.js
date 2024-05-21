@@ -175,7 +175,17 @@ const Modal_Add = () => {
     return /^[A-Za-z]+$/.test(name);
   }
   
+  // function validateMathScore(Mathscore) {
+  //   return /^\d+$/.test(Mathscore);
+  // }
+  
+  // function validateEnglishscore(Englishscore) {
+  //   return /^\d+$/.test(Englishscore);
+  // }
 
+  // function validateLiteraturescore(Literaturescore) {
+  //   return /^\d+$/.test(Literaturescore);
+  // }
   function validateIdenNumber(idenNum) {
     return idenNum.length === 12;
   }

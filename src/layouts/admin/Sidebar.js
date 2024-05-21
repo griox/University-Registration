@@ -230,7 +230,7 @@ const Sidebar = () => {
                                     <button id="sb-btn" onClick={handleSubmit} style={{ display: 'none' }}>
                                         Submit
                                     </button>
-                                    <div style={{ display: 'flex', marginLeft: '60px', columnGap: '10px' }}>
+                                    <div style={{ display: 'flex', marginLeft: '110px', columnGap: '10px', marginTop: '10px' }}>
                                         <label htmlFor="sb-btn">
                                             <SaveOutlined style={{ fontSize: '20px', color: '#000' }} />
                                         </label>

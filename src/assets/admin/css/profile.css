@@ -48,8 +48,8 @@ h1 {
 
 .btn-save {
     width: 100px;
-    height: 60px;
-    font-size: 20px;
+    height: auto;
+    font-size: 15px;
 }
 .input {
     display: grid;

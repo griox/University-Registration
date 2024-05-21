@@ -1,12 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Button, Input, Select, Space, Table, Modal, Skeleton, Spin } from 'antd';
+import { Button, Input, Select, Space, Table, Modal, Skeleton, Spin, Form, Tooltip } from 'antd';
 import '../assets/admin/css/profile.css';
 import 'firebase/auth';
 import { ref, child, getDatabase, get, set, update } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { CameraOutlined, DownOutlined, SaveOutlined, SearchOutlined, UploadOutlined } from '@ant-design/icons';
+import {
+    CameraOutlined,
+    DownOutlined,
+    InfoCircleOutlined,
+    MailOutlined,
+    SaveOutlined,
+    SearchOutlined,
+    UploadOutlined,
+    UserOutlined,
+} from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import { calc } from 'antd/es/theme/internal';
 import { Avatar } from '@mui/material';
@@ -18,7 +27,7 @@ const MAX_COUNT = 5;
 function Pr() {
     const [gender, setGender] = useState([
         { value: 'Male', label: 'Male' },
-        { value: 'Female', label: 'Femail' },
+        { value: 'Female', label: 'Female' },
     ]);
     const [suitableSchoolList, setSuitableSchoolList] = useState([]);
     const firebaseConfig = {
@@ -158,6 +167,7 @@ function Pr() {
                                 name: item.nameU,
                                 score: item.averageS,
                                 capacity: item.target,
+                                isRegistered: item.isRegistered,
                             };
                             setArr((pre) => [...pre, element]);
                             setSuitableSchoolList((pre) => [...pre, school]);
@@ -374,8 +384,8 @@ function Pr() {
         // các cột khác của bạn ở đây
         {
             title: 'Number of students registered',
-            dataIndex: 'capacity',
-            key: 'capacity',
+            dataIndex: 'isRegistered',
+            key: 'isRegistered',
         },
         {
             title: 'Action',
@@ -408,7 +418,6 @@ function Pr() {
             reader.readAsDataURL(e.target.files[0]);
         }
     };
-    const [te, setTe] = useState(false);
 
     const handleSubmit = () => {
         if (!image) return;
@@ -447,7 +456,6 @@ function Pr() {
                 console.log(error.message, 'Error');
             });
     };
-
     const save = () => {
         setLoadingSave(true);
         const per = JSON.parse(localStorage.getItem('Infor'));
@@ -462,20 +470,65 @@ function Pr() {
             uniCode: detail.uniCode,
         })
             .then(() => handleSubmit())
-            .then(() => setLoadingSave(false));
-        get(child(ref(db), `Detail/${per.id}/`)).then((snapshot) => {
-            if (snapshot.exists()) {
-                const x = snapshot.val();
+            .then(() => {
+                detail.uniCode.forEach((item) => {
+                    if (per.uniCode.includes(item) === false) {
+                        get(child(ref(db), `University/` + item)).then((snapshot) => {
+                            if (snapshot.exists()) {
+                                const x = snapshot.val();
 
-                localStorage.setItem('Infor', JSON.stringify(x));
-                dispatch({ type: 'user', payload: x });
-            } else {
-                console.log('No data available');
-            }
-        });
+                                let m = x.registeration;
+                                m[detail.email.replace(/\./g, ',')] = { email: detail.email, id: detail.id };
+                                console.log(m);
+                                update(ref(db, 'University/' + item), {
+                                    isRegistered: x.isRegistered + 1,
+                                    registeration: m,
+                                });
+                            }
+                        });
+                    }
+                });
+                per.uniCode.forEach((item) => {
+                    if (detail.uniCode.includes(item) === false) {
+                        get(child(ref(db), `University/` + item)).then((snapshot) => {
+                            if (snapshot.exists()) {
+                                const x = snapshot.val();
+                                for (let k in x.registeration) {
+                                    if (x.registeration[k].email === detail.email) {
+                                        delete x.registeration[k];
+                                    }
+                                }
+
+                                update(ref(db, 'University/' + item), {
+                                    isRegistered: x.isRegistered - 1,
+                                    registeration: x.registeration,
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+        get(child(ref(db), `Detail/${per.id}/`))
+            .then((snapshot) => {
+                if (snapshot.exists()) {
+                    const x = snapshot.val();
+
+                    localStorage.setItem('Infor', JSON.stringify(x));
+                    dispatch({ type: 'user', payload: x });
+                } else {
+                    console.log('No data available');
+                }
+            })
+            .then(() => setLoadingSave(false));
 
         toast.success('Updated sucessfully');
     };
+    function validateEmailFormat(email) {
+        return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(email);
+    }
+    function validateFullname(name) {
+        return /^[A-Za-z]+$/.test(name);
+    }
     return (
         <div className="container">
             {loading ? (
@@ -577,17 +630,14 @@ function Pr() {
                             </div>
                             <div className="detail-item">
                                 <h1>Ethnicity: </h1>
-
-                                <Space.Compact size="large">
-                                    <Select
-                                        size={size}
-                                        value={detail.enthicity}
-                                        showSearch
-                                        onChange={(e) => handleSelect(e, 'enthicity')}
-                                        options={ethnicities}
-                                        className="g-s"
-                                    />
-                                </Space.Compact>
+                                <Select
+                                    defaultValue="Kinh"
+                                    options={ethnicities}
+                                    onChange={(e) => handleSelect(e, 'enthicity')}
+                                    showSearch
+                                    style={{ width: 200 }}
+                                    className="g-s"
+                                />
                             </div>
                             <div className="detail-item">
                                 <h1>CCCD: </h1>
@@ -608,8 +658,11 @@ function Pr() {
                                         className="g-s size-input"
                                         value={detail.email}
                                         onChange={(e) => handleChange(e, 'email')}
-                                        disabled={true}
-                                        style={{ width: '300px' }}
+                                        suffix={
+                                            <Tooltip title="Private Email">
+                                                <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+                                            </Tooltip>
+                                        }
                                     />
                                 </Space.Compact>
                             </div>

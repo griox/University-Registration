@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import { Button, Modal, Space, Select, InputNumber, DatePicker, Form } from 'antd';
 import { InfoCircleOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
 import { Input, Tooltip } from 'antd';
-
+import moment from 'moment'
 
 const firebaseConfig = {
   apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
@@ -19,7 +19,9 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-
+function encodeEmail(email) {
+  return email.replace('.', ',');
+}
 const Modal_Add = () => {
   const [Fullname, setFullname] = useState('');
   const [Gender, setGender] = useState('Female');
@@ -81,6 +83,13 @@ const Modal_Add = () => {
         Address: Address,
         uniCode: [],
         isRegister: 'true',
+      });
+      const accountRef = child(ref(db), 'Account');
+      const newAccountRef = push(accountRef);
+      await set(newAccountRef, {
+          email: Email,
+          password: 'Tvx1234@',
+          Role: 'user',
       });
       toast.success('Added a new student');
       setIsModalOpen(false);
@@ -166,7 +175,24 @@ const Modal_Add = () => {
     setLiteraturescore(null);
     setIsModalOpen(false);
   };
+  const validateDate = (_, value) => {
+    if (!value) {
+        return Promise.reject(new Error('Please select a date'));
+    }
+    const selectedYear = value.year();
+    const currentYear = moment().year();
 
+    if (selectedYear > currentYear) {
+        return Promise.reject(new Error('Year cannot be greater than the current year'));
+    }
+    if (selectedYear >= 2010) {
+        return Promise.reject(new Error('Year must be less than 2010'));
+    }
+    return Promise.resolve();
+};
+function validateScore(score) {
+  return /^([0-9]|10)(\.[02468])?$/.test(score);
+}
   function validateEmailFormat(email) {
     return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(email);
   }
@@ -312,8 +338,15 @@ const Modal_Add = () => {
                 <Form.Item
                   label="Name"
                   validateStatus={!validateFullname(Fullname) && Fullname ? 'error' : ''}
-                  help={validateFullname(Fullname) && Fullname ? '' : 'Name must contain only letters and no spaces'}
+                  help={validateFullname(Fullname) && Fullname ? '' : ''}
                   style={{fontWeight:600}}
+                  name="Name"
+                  rules={[
+                    {
+                      required: true,
+                      validator:validateDate,
+                    },
+                  ]}
                 >
                   <Input
                     placeholder="Enter Student's name"
@@ -322,6 +355,11 @@ const Modal_Add = () => {
                     onChange={(e) => {
                       setFullname(e.target.value);
                     }}
+                    suffix={
+                      <Tooltip title="Name must contain letters and no space ">
+                        <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+                      </Tooltip>
+                    }
                     allowClear  
                   />
                 </Form.Item>
@@ -335,17 +373,25 @@ const Modal_Add = () => {
                 <Form.Item
                   label="Email"
                   validateStatus={!validateEmailFormat(Email) && Email? 'error' : ''}
-                  help={validateEmailFormat(Email) && Email ? '':'Email must contain @example'}
-                  style={{fontWeight:500}}
+                  help={validateEmailFormat(Email) && Email ? ' ':''}
+                  style={{fontWeight:600}}
+                  name="Email"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input!',
+                    },
+                  ]}
                 >
                   <Input
                     placeholder="Enter Student's email"
                     prefix={<MailOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
                     suffix={
-                      <Tooltip title="Private Email">
+                      <Tooltip title="Email must contain @example">
                         <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
                       </Tooltip>
                     }
+                    
                     style={{ width: '100%' }}
                     value={Email}
                     onChange={(e) => {
@@ -354,17 +400,31 @@ const Modal_Add = () => {
                     showClear
                   />
                 </Form.Item>
-                <Form.Item label="Enthicity"  style={{fontWeight:500}}>
+                <Form.Item label="Enthicity"  style={{fontWeight:600}}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input!',
+                    },
+                  ]}>
                   <Select defaultValue="Kinh" options={enthicities} onChange={(value) => setEnthicity(value)} showSearch style={{ width: 150 }} />
                 </Form.Item>
               </Space>
             </Space.Compact>
             <Space.Compact>
               <Space size={'large'}>
-                <Form.Item label="Date of Birth"  style={{fontWeight:500}}>
+                <Form.Item label="Date of Birth"  style={{fontWeight:600}}
+                name="Date"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please input!',
+                  },
+                ]}
+                >
                   <DatePicker format="DD/MM/YYYY" value={dateOfBirth} onChange={(value) => setDateOfBirth(value)} />
                 </Form.Item>
-                <Form.Item label="Place of Birth" style={{fontWeight:500}}>
+                <Form.Item label="Place of Birth" style={{fontWeight:600}}>
                   <Select defaultValue='Khánh Hòa'  options={cities} showSearch style={{ width: 150 }} onChange={(value) => setPlaceOfBirth(value)} />
                 </Form.Item>
               </Space>
@@ -374,7 +434,14 @@ const Modal_Add = () => {
                 <Form.Item
                   label="Identify number"
                   validateStatus={! validateIdenNumber(Identify) && Identify? 'error' : ''}
-                  style={{fontWeight:500}}
+                  style={{fontWeight:600}}
+                  name="Iden"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input!',
+                    },
+                  ]}
                 >
                   <Input
                     onChange={(e) => {
@@ -392,21 +459,49 @@ const Modal_Add = () => {
             </Space.Compact>
             <Space.Compact>
               <Space wrap>
-                <Form.Item label="Math" style={{fontWeight:500}}>
+                <Form.Item label="Math" style={{fontWeight:600}}
+                name="Math"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input!',
+                    },
+                  ]}
+                  validateStatus={!validateScore(Mathscore) && Mathscore ? 'error' : ''}>
                   <InputNumber min={0} max={10} step={0.2} value={Mathscore} onChange={(value) => setMathscore(value)} />
                 </Form.Item>
-                <Form.Item label="English" style={{fontWeight:500}}>
+                <Form.Item label="English" style={{fontWeight:600}}
+                name="English"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input!',
+                    },
+                  ]}>
                   <InputNumber min={0} max={10} step={0.2} value={Englishscore} onChange={(value) => setEnglishscore(value)} />
                 </Form.Item>
-                <Form.Item label="Literature" style={{fontWeight:500}}>
+                <Form.Item label="Literature" style={{fontWeight:600}}
+                name="Literature"
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input!',
+                    },
+                  ]}>
                   <InputNumber min={0} max={10} step={0.2} value={Literaturescore} onChange={(value) => setLiteraturescore(value)} />
                 </Form.Item>
               </Space>
             </Space.Compact>
             <Space.Compact>
               <Space>
-                <Form.Item label="Address" style={{fontWeight:500}}>
-                  <TextArea showCount maxLength={100} placeholder="Student's Address" onChange={(e) => setAddress(e.target.value)} value={Address} />
+                <Form.Item label="Address" style={{fontWeight:600}}
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input!',
+                    },
+                  ]}>
+                  <TextArea showCount maxLength={100} placeholder="Student's Address" width={700} onChange={(e) => setAddress(e.target.value)} value={Address} style={{ width: '450px', height:'100px' }} />
                 </Form.Item>
               </Space>
             </Space.Compact>

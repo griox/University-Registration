@@ -361,6 +361,11 @@ const Student_List = ({ data }) => {
             key: 'name',
             ...getColumnSearchProps('name'),
             render: (text, record) => renderNameWithGender(text, record),
+            // return (
+            //     <Tooltip title={record.isRegister ? 'Registered ' : 'Not registered '}>
+            //         <span style={{ color: record.isRegister ? 'green' : 'red' }}>{text}</span>
+            //     </Tooltip>
+            // );
         },
         {
             title: 'Email',
@@ -511,7 +516,7 @@ const Student_List = ({ data }) => {
                         columns={mergedColumns}
                         scroll={{
                             x: 900,
-                            y: 'calc(100vh - 280px)',
+                            y: 'calc(100vh - 300px)',
                         }}
                         style={{ height: '100%', marginRight: '-20px' }}
                         rowClassName="editable-row"

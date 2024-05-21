@@ -325,7 +325,6 @@ const AddSchool = () => {
             dataIndex: 'isRegistered',
             width: '10%',
             editable: true,
-            sorter: (a, b) => a.isRegistered - b.isRegistered,
         },
         {
             title: 'Targets',

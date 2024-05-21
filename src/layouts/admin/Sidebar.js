@@ -73,7 +73,8 @@ const Sidebar = () => {
             });
     };
     const us = JSON.parse(localStorage.getItem('Infor'));
-    const [username, setUsername] = useState(JSON.parse(localStorage.getItem('Infor')));
+    // const detail = useSelector((state) => state);
+    const [username, setUsername] = useState(useSelector((state) => state));
     const [isCollapsed, setIsCollapsed] = useState(() => {
         const collapsedState = localStorage.getItem('sidebarCollapsed');
         return collapsedState ? JSON.parse(collapsedState) : false;

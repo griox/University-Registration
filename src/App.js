@@ -12,7 +12,10 @@ import { ToastContainer } from 'react-toastify';
 import PrivateRoute from './PrivateRoute';
 import { useCreateInforRecordsOnMount } from './database/Student_details';
 import { useCreateUnitRecordsOnMount } from './database/University';
+import { Bin } from './bin';
 function App() {
+    // useCreateInforRecordsOnMount();
+    // useCreateUnitRecordsOnMount();
     return (
         <Provider store={store}>
             <div className="App">

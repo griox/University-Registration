@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Button, Input, Select, Space, Table, Modal, Skeleton } from 'antd';
+import { Button, Input, Select, Space, Table, Modal, Skeleton, Spin } from 'antd';
 import '../assets/admin/css/profile.css';
 import 'firebase/auth';
 import { ref, child, getDatabase, get, set, update } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { DownOutlined, SaveOutlined, SearchOutlined, UploadOutlined } from '@ant-design/icons';
+import { CameraOutlined, DownOutlined, SaveOutlined, SearchOutlined, UploadOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
 import { calc } from 'antd/es/theme/internal';
 import { Avatar } from '@mui/material';
@@ -18,7 +18,7 @@ const MAX_COUNT = 5;
 function Pr() {
     const [gender, setGender] = useState([
         { value: 'Male', label: 'Male' },
-        { value: 'Femail', label: 'Femail' },
+        { value: 'Female', label: 'Femail' },
     ]);
     const [suitableSchoolList, setSuitableSchoolList] = useState([]);
     const firebaseConfig = {
@@ -39,7 +39,7 @@ function Pr() {
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
     const [loading, setLoading] = useState(true);
-
+    const [loadingSave, setLoadingSave] = useState(false);
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
@@ -170,26 +170,7 @@ function Pr() {
         dispatch({ type: 'user', payload: personal });
         setLoading(false);
     }, [db, dispatch]);
-    const save = () => {
-        const per = JSON.parse(localStorage.getItem('Infor'));
 
-        update(ref(db, 'Detail/' + per.id), {
-            name: detail.name,
-            gender: detail.gender,
-            placeOBirth: detail.placeOBirth,
-            Address: detail.Address,
-            enthicity: detail.enthicity,
-            idenNum: detail.idenNum,
-            email: detail.email,
-            uniCode: detail.uniCode,
-        })
-            .then(() => {
-                toast.success('Updated sucessfully');
-            })
-            .catch((error) => {
-                alert('lỗi' + error);
-            });
-    };
     const [size, setSize] = useState('middle');
 
     const [provinces, setProvinces] = useState([
@@ -400,7 +381,10 @@ function Pr() {
             title: 'Action',
             key: 'action',
             render: (text, record) => (
-                <Button onClick={() => addUniversity(record.code)} disabled={detail.uniCode.includes(record.code)}>
+                <Button
+                    onClick={() => addUniversity(record.code)}
+                    disabled={detail.uniCode.includes(record.code) || detail.uniCode.length === 5}
+                >
                     Add
                 </Button>
             ),
@@ -416,8 +400,16 @@ function Pr() {
     const handleImgChange = (e) => {
         if (e.target.files[0]) {
             setImage(e.target.files[0]);
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const imgUrl = event.target.result;
+                document.getElementById('avatarImg').src = imgUrl;
+            };
+            reader.readAsDataURL(e.target.files[0]);
         }
     };
+    const [te, setTe] = useState(false);
+
     const handleSubmit = () => {
         if (!image) return;
         const imgRef = storageRef(storage, `images/${image.name}`);
@@ -428,9 +420,7 @@ function Pr() {
                 update(ref(db, 'Detail/' + per.id), {
                     img: downLoadUrl,
                 })
-                    .then(() => {
-                        toast.success('Updated sucessfully');
-                    })
+                    .then(() => {})
                     .catch((error) => {
                         alert('lỗi' + error);
                     });
@@ -457,6 +447,35 @@ function Pr() {
                 console.log(error.message, 'Error');
             });
     };
+
+    const save = () => {
+        setLoadingSave(true);
+        const per = JSON.parse(localStorage.getItem('Infor'));
+        update(ref(db, 'Detail/' + per.id), {
+            name: detail.name,
+            gender: detail.gender,
+            placeOBirth: detail.placeOBirth,
+            Address: detail.Address,
+            enthicity: detail.enthicity,
+            idenNum: detail.idenNum,
+            email: detail.email,
+            uniCode: detail.uniCode,
+        })
+            .then(() => handleSubmit())
+            .then(() => setLoadingSave(false));
+        get(child(ref(db), `Detail/${per.id}/`)).then((snapshot) => {
+            if (snapshot.exists()) {
+                const x = snapshot.val();
+
+                localStorage.setItem('Infor', JSON.stringify(x));
+                dispatch({ type: 'user', payload: x });
+            } else {
+                console.log('No data available');
+            }
+        });
+
+        toast.success('Updated sucessfully');
+    };
     return (
         <div className="container">
             {loading ? (
@@ -464,7 +483,7 @@ function Pr() {
             ) : (
                 <>
                     <div className="pr-content">
-                        <div className="avartar">
+                        {/* <div className="avartar">
                             <Avatar alt="Remy Sharp" src={detail.img} sx={{ fontSize: 50, width: 150, height: 150 }} />
                             <div>
                                 <input type="file" onChange={handleImgChange} id="fileInput" />
@@ -478,7 +497,31 @@ function Pr() {
                                     </label>
                                 </div>
                             </div>
+                        </div> */}
+                        <div className="avatar">
+                            <div className="avatar-container">
+                                <Avatar
+                                    alt="Avatar"
+                                    src={image ? URL.createObjectURL(image) : detail.img}
+                                    sx={{ width: 200, height: 200 }}
+                                    id="avatarImg"
+                                />
+                                <div className="avatar-overlay">
+                                    <label htmlFor="fileInput">
+                                        <CameraOutlined style={{ fontSize: '50px', color: 'white' }} />
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <input
+                                    type="file"
+                                    onChange={handleImgChange}
+                                    id="fileInput"
+                                    style={{ display: 'none' }}
+                                />
+                            </div>
                         </div>
+
                         <div className="input">
                             <div className="detail-item">
                                 <h1>Student Name: </h1>
@@ -487,7 +530,6 @@ function Pr() {
                                         className="g-s size-input"
                                         value={detail.name}
                                         onChange={(e) => handleChange(e, 'name')}
-                                        options={gender}
                                     />
                                 </Space.Compact>
                             </div>
@@ -614,7 +656,7 @@ function Pr() {
                                 maxCount={MAX_COUNT}
                                 value={detail.uniCode}
                                 options={arr}
-                                style={{ width: '740px', cursor: 'pointer' }}
+                                style={{ width: '800px', cursor: 'pointer' }}
                                 onChange={(e) => handleSelect(e, 'uniCode')}
                                 suffixIcon={suffix}
                                 placeholder="Selected universities"
@@ -622,9 +664,11 @@ function Pr() {
                                 className="g-s"
                             />
                         </Space>
-                        <Button type="primary" onClick={() => save()} className="btn-save">
-                        {'Save'}
-                        </Button>
+                        <Spin spinning={loadingSave}>
+                            <Button type="primary" onClick={() => save()} className="btn-save">
+                                {'Save'}
+                            </Button>
+                        </Spin>
                     </div>
                     <Table
                         dataSource={suitableSchoolList}

@@ -337,7 +337,7 @@ const AddSchool = () => {
         {
             title: 'Manage',
             dataIndex: 'operation',
-            width: '13%',
+            width: '10%',
             fixed: 'right',
             render: (_, record) => {
                 const editable = isEditing(record);
@@ -397,10 +397,9 @@ const AddSchool = () => {
 
     return (
         <div>
-    
             <Modal
                 title="Edit the University"
-                open={isModalVisible}
+                visible={isModalVisible}
                 onOk={handleOk}
                 okText="Save"
                 onCancel={handleCancel}
@@ -416,7 +415,7 @@ const AddSchool = () => {
                         dataSource={UniData}
                         onChange={onChange}
                         pagination={{
-                            defaultPageSize: '10',
+                            defaultPageSize: 10,
                             pageSizeOptions: ['10', '20', '40', '100'],
                             showSizeChanger: true,
                             showQuickJumper: true,

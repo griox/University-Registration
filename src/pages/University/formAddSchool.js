@@ -72,26 +72,11 @@ const FormAdd = () => {
     setVisible(false);
   };
 
-  const generateID = async () => {
-    const snapshot = await get(child(ref(db), 'University'));
-    let count = 0;
-  
-    if (snapshot.exists()) {
-      const universities = snapshot.val();
-      count = Object.keys(universities).length; // Đếm số trường đã tồn tại
-    }
-  
-    // Định dạng ID mới dựa trên số lượng trường đã tồn tại
-    const newID = `Uni${String(count + 1).padStart(3, '0')}`;
-    return newID;
-  };
   
 
   const AddSchool = async () => {
-    const newID = await generateID();
-    const uniRef = ref(db, `University/${newID}`);
+    const uniRef = ref(db, `University/${uniCode}`);
     await set(uniRef, {
-      id: newID,
       nameU: uniName,
       uniCode: uniCode,
       address: address,
@@ -106,44 +91,26 @@ const FormAdd = () => {
     return /^[A-Za-zÀ-ÿ\s]+$/.test(uniName);
   }
 
-  function validateUniCode(uniCode) {
-    return /^[A-Za-z]+$/.test(uniCode);
+  // function validateUniCode(uniCode) {
+  //   return /^[A-Za-z]+$/.test(uniCode);
+  // }
+
+  function validateNumber(averageScore) {
+    return /^[0-9]+$/.test(averageScore);
   }
-
-  // const validateNumber = (rule, value) => {
-  //   if (value === undefined || value === null || value === '') {
-  //     return Promise.reject('Please input!');
-  //   }
-  //   const reg = /^[1-9]\d*$/;
-  //   if (!reg.test(value)) {
-  //     return Promise.reject('Only positive numbers are allowed!');
-  //   }
-  //   return Promise.resolve();
-  // };
-
-  const handleChange = (value) => {
-    const reg = /^[0-9]*$/;
-    if (!reg.test(value)) {
-      setInputError('Only positive numbers are allowed!');
-      message.error('Only positive numbers are allowed!');
-    } else {
-      setInputError('');
-      setAverageScore(value);
-    }
-  };
   
   return (
     <>
       <Button style={{ marginBottom: '20px' }} type='primary' onClick={showModal}>
         Add University
       </Button>
-      <Modal title="Add a university" open={isModalVisible} onOk={handleOk} onCancel={handleCancel} width={600} okText='Add' destroyOnClose>
+      <Modal title="Add a university" open={isModalVisible} onOk={handleOk} onCancel={handleCancel} width={700} okText='Add' destroyOnClose>
         <Space direction='vertical'>
           <Form>
             <Form.Item
               label="University Name"
               validateStatus={!validateName(uniName) && uniName ? 'error' : ''}
-              help={!validateName(uniName) && uniName ? 'Name must contain only letters and spaces' : ''}
+              help={!validateName(uniName) && uniName ? 'University Name must contain only letters and spaces' : ''}
               name="Input"
               style={{ fontWeight: 600 }}
               rules={[
@@ -156,7 +123,7 @@ const FormAdd = () => {
               <Input
                 placeholder="Enter University's name"
                 prefix={<BankOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
-                style={{ marginLeft: '10px' }}
+                style={{ marginLeft: '15px', width: '326px' }}
                 onChange={(e) => setUniName(e.target.value)}
                 value={uniName}
                 allowClear
@@ -165,7 +132,8 @@ const FormAdd = () => {
 
             <Form.Item
               label="University Code"
-              validateStatus={!validateUniCode(uniCode) && uniCode ? 'error' : ''}
+              validateStatus={!validateName(uniCode) && uniCode ? 'error' : ''}
+              help={!validateName(uniCode) && uniCode ? 'University Code must contain only letters and no spaces' : ''}
               name="InputCode"
               style={{ fontWeight: 600 }}
               rules={[
@@ -179,12 +147,86 @@ const FormAdd = () => {
                 placeholder="Uni's Code"
                 allowClear
                 onChange={(e) => setUniCode(e.target.value)}
-                maxLength={3}
+                maxLength={4}
                 style={{
-                  marginLeft: '13px',
-                  maxWidth: '50%',
+                  marginLeft: '18px',
+                  maxWidth: '165px',
                 }}
                 value={uniCode}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Entrance Score"
+              validateStatus={!validateNumber(averageScore) && averageScore ? 'error' : ''}
+              help={!validateNumber(averageScore) && averageScore ? 'Entrance Score must contain only number and no spaces' : ''}
+              name="entrance"
+              style={{ fontWeight: 600 }}
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input!',
+                },
+              ]}
+            >
+              <Input
+                allowClear
+                value={averageScore}
+                onChange={(e) => setAverageScore(e.target.value)}
+                maxLength={4}
+                style={{
+                  marginLeft: '25px',
+                  width: '39%',
+                }}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Num of Registered"
+              style={{ fontWeight: 600 }}
+              name="Registered"
+              validateStatus={!validateNumber(registeredNumber) && registeredNumber ? 'error' : ''}
+              help={!validateNumber(registeredNumber) && registeredNumber ? 'Number of Registered must contain only number and no spaces' : ''}
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input!',
+                },
+              ]}
+            >
+              <Input
+                maxLength={5}
+                allowClear
+                style={{
+                  width: '42%',
+                }}
+                value={registeredNumber}
+                onChange={(e) => setRegisteredNumber(e.target.value)}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Targets"
+              style={{ fontWeight: 600 }}
+              name="Target"
+              validateStatus={!validateNumber(targetScore) && targetScore ? 'error' : ''}
+              help={!validateNumber(targetScore) && targetScore ? 'Target must contain only number and no spaces' : ''}
+              rules={[
+                {
+                  required: true,
+                  message: 'Please input!',
+                },
+              ]}
+            >
+              <Input
+                allowClear
+                maxLength={5}
+                style={{
+                  marginLeft: '77px',
+                  width: '35%',
+                }}
+                value={targetScore}
+                onChange={(e) => setTargetScore(e.target.value)}
               />
             </Form.Item>
 
@@ -201,89 +243,10 @@ const FormAdd = () => {
             >
               <Input.TextArea
                 placeholder="Uni's address"
-                style={{ marginLeft: '63px' }}
+                style={{ marginLeft: '72px', width: '330px' }}
                 allowClear
                 onChange={(e) => setAddress(e.target.value)}
                 value={address}
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="Entrance Score"
-              style={{ fontWeight: 600 }}
-              name="Entrance"
-              validateStatus={inputError ? 'error' : ''}
-              help={inputError || ''}
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input!',
-                },
-              ]}
-            >
-              <InputNumber
-                min={0}
-                max={10000}
-                maxLength={5}
-                style={{
-                  marginLeft: '20px',
-                  maxWidth: '34%',
-                }}
-                value={averageScore}
-                onChange={(value) => setAverageScore(value)}
-                rule={[
-                  {
-                    required: true,
-                  }
-                ]}
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="Registered"
-              style={{ fontWeight: 600 }}
-              name="Regist"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input!',
-                },
-              ]}
-            >
-              <InputNumber
-                min={0}
-                max={10000}
-                maxLength={5}
-                style={{
-                  marginLeft: '46px',
-                  maxWidth: '30%',
-                }}
-                value={registeredNumber}
-                onChange={(value) => setRegisteredNumber(value)}
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="Targets"
-              style={{ fontWeight: 600 }}
-              name="Target"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input!',
-                },
-              ]}
-            >
-              <InputNumber
-                min={0}
-                max={10000}
-                maxLength={5}
-                style={{
-                  marginLeft: '68px',
-                  maxWidth: '28%',
-                }}
-                value={targetScore}
-                onChange={(value) => setTargetScore(value)}
               />
             </Form.Item>
           </Form>

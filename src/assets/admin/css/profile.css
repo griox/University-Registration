@@ -34,7 +34,9 @@
     gap: 30px;
 }
 h1 {
-    font-size: 15px;
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 300;
 }
 
 .label-input {
@@ -73,10 +75,6 @@ h1 {
     column-gap: 20px;
 }
 
-.avartar {
-    width: 200px;
-    height: 200px;
-}
 input[type='file'] {
     display: none;
 }
@@ -88,4 +86,42 @@ input[type='button'] {
     width: 200px;
     display: flex;
     column-gap: 10px;
+}
+.avatar {
+    width: 200px;
+    height: 200px;
+}
+.avatar-container {
+    position: relative;
+    display: inline-block;
+    border-radius: 50%; /* Làm hình tròn */
+    width: 200px; /* Kích thước ảnh */
+    height: 200px; /* Kích thước ảnh */
+}
+
+.avatar-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 200px; /* Kích thước giống với cha (.avatar-container) */
+    height: 200px; /* Kích thước giống với cha (.avatar-container) */
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: 50%; /* Hiệu ứng hiển thị mờ */
+}
+
+.avatar-container:hover .avatar-overlay {
+    opacity: 1; /* Hiển thị khi di chuột vào */
+}
+
+.avatar-overlay label {
+    cursor: pointer;
+}
+
+.save-icon {
+    cursor: pointer;
 }

@@ -85,6 +85,7 @@ const AddSchool = () => {
         setModalDetail(record);
         setDetailVisible(true);
         setSelectedUniverse(record);
+        console.log(record);
     };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -325,7 +326,7 @@ const AddSchool = () => {
             dataIndex: 'isRegistered',
             width: '13%',
             editable: true,
-            sorter: (a, b) => a.isRegistered - b.isRegistered,
+          
         },
         {
             title: 'Targets',
@@ -337,7 +338,7 @@ const AddSchool = () => {
         {
             title: 'Manage',
             dataIndex: 'operation',
-            width: '10%',
+            width: '13%',
             fixed: 'right',
             render: (_, record) => {
                 const editable = isEditing(record);
@@ -353,20 +354,19 @@ const AddSchool = () => {
                                 Edit
                             </Typography.Link>
                         </Popconfirm>
-                        <Typography.Link onClick={cancel}>Cancel</Typography.Link>
                     </span>
                 ) : (
                     <Space size={'middle'}>
-                        <Typography.Link
-                            disabled={editingKey !== ''}
-                            onClick={() => edit(record)}
-                            style={{
-                                marginRight: 8,
-                            }}
-                        >
-                            <EditOutlined />
-                        </Typography.Link>
-                        <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
+                    <Typography.Link
+                        disabled={editingKey !== ''}
+                        onClick={() => edit(record)}
+                        style={{
+                            marginRight: 8,
+                        }}
+                    >
+                        <EditOutlined />
+                    </Typography.Link>
+                    <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
                             <Typography.Link>
                                 <DeleteOutlined />
                             </Typography.Link>

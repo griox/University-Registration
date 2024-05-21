@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Modal, Button, Form, Input, InputNumber, Space, message } from 'antd';
+import { Modal, Button, Form, Input, InputNumber, Space, Tooltip } from 'antd';
 import 'firebase/auth';
 import { getDatabase, ref, child, get, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
-import { BankOutlined } from '@ant-design/icons';
+import { BankOutlined,InfoCircleOutlined } from '@ant-design/icons';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
@@ -36,9 +36,38 @@ const FormAdd = () => {
   const handleOk = async () => {
     let hasError = false;
     // Initial checks
-    if (uniName === '' || address === '' || averageScore === null || registeredNumber === null || targetScore === null) {
+    if (uniName === '' || address === '' || averageScore === null || registeredNumber === null || targetScore === null || uniCode===null) {
       toast.error('Please fill in all information');
       hasError = true;
+      if(uniName!==''){
+        if(uniCode!==''){
+          if(!validateName(uniCode)){
+            toast.error('Invalid uniCode format')
+            hasError = true;
+          }
+          else{
+            const snapshot = await get(child(ref(db), `University/`));
+            if(snapshot.exists()){
+              const inFors = snapshot.val();
+              const uniCodeExists = Object.values(inFors).some((uni) => uni.uniCode === uniCode);
+              if(uniCodeExists){
+                toast.error('This uniCode has already exists');
+                hasError = true;
+              }
+            }
+          }
+        }
+      }else{
+        const snapshot = await get(child(ref(db), `University/`));
+        if(snapshot.exists()){
+          const inFors = snapshot.val();
+          const uniCodeExists = Object.values(inFors).some((uni) => uni.nameU === uniName);
+          if(uniCodeExists){
+            toast.error('This university has already exists');
+            hasError = true;
+          }
+        }
+      }
     } else if (!validateName(uniName)) {
       toast.error('Invalid name');
       hasError = true;
@@ -88,6 +117,9 @@ const FormAdd = () => {
   };
 
   function validateName(uniName) {
+    return /^[A-Za-zÀ-ÿ]+$/.test(uniName);
+  }
+  function validateNameUni(uniName) {
     return /^[A-Za-zÀ-ÿ\s]+$/.test(uniName);
   }
 
@@ -95,8 +127,8 @@ const FormAdd = () => {
   //   return /^[A-Za-z]+$/.test(uniCode);
   // }
 
-  function validateNumber(averageScore) {
-    return /^[0-9]+$/.test(averageScore);
+  function validateNumber(EntranceScore) {
+    return /^[0-9]+$/.test(EntranceScore);
   }
   
   return (
@@ -119,14 +151,20 @@ const FormAdd = () => {
                   message: 'Please input!',
                 },
               ]}
+              
             >
               <Input
                 placeholder="Enter University's name"
                 prefix={<BankOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
-                style={{ marginLeft: '15px', width: '326px' }}
+                style={{ marginLeft: '10px', width: '326px' }}
                 onChange={(e) => setUniName(e.target.value)}
                 value={uniName}
                 allowClear
+                suffix={
+                  <Tooltip title="Name just only contain letters and no numbers">
+                    <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+                  </Tooltip>
+                }
               />
             </Form.Item>
 
@@ -147,21 +185,24 @@ const FormAdd = () => {
                 placeholder="Uni's Code"
                 allowClear
                 onChange={(e) => setUniCode(e.target.value)}
-                maxLength={4}
+                maxLength={6}
                 style={{
-                  marginLeft: '18px',
+                  marginLeft: '13px',
                   maxWidth: '165px',
                 }}
+                suffix={
+                  <Tooltip title="uniCode just contain only letters ">
+                    <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+                  </Tooltip>
+                }
                 value={uniCode}
               />
             </Form.Item>
 
             <Form.Item
-              label="Entrance Score"
-              validateStatus={!validateNumber(averageScore) && averageScore ? 'error' : ''}
-              help={!validateNumber(averageScore) && averageScore ? 'Entrance Score must contain only number and no spaces' : ''}
-              name="entrance"
+              label="Address"
               style={{ fontWeight: 600 }}
+              name="TextArea"
               rules={[
                 {
                   required: true,
@@ -169,24 +210,21 @@ const FormAdd = () => {
                 },
               ]}
             >
-              <Input
+              <Input.TextArea
+                placeholder="Uni's address"
+                style={{ marginLeft: '63px', width: '393px' }}
                 allowClear
-                value={averageScore}
-                onChange={(e) => setAverageScore(e.target.value)}
-                maxLength={4}
-                style={{
-                  marginLeft: '25px',
-                  width: '39%',
-                }}
+                onChange={(e) => setAddress(e.target.value)}
+                value={address}
               />
             </Form.Item>
 
             <Form.Item
-              label="Num of Registered"
+              label="Entrance Score"
               style={{ fontWeight: 600 }}
-              name="Registered"
-              validateStatus={!validateNumber(registeredNumber) && registeredNumber ? 'error' : ''}
-              help={!validateNumber(registeredNumber) && registeredNumber ? 'Number of Registered must contain only number and no spaces' : ''}
+              name="Entrance"
+              validateStatus={!validateNumber(averageScore) && averageScore ? 'error' : ''}
+              help={!validateNumber(averageScore) && averageScore ? 'Entrance Score must contain only number and no spaces' : ''}
               rules={[
                 {
                   required: true,
@@ -195,13 +233,19 @@ const FormAdd = () => {
               ]}
             >
               <Input
-                maxLength={5}
                 allowClear
+                maxLength={2}
                 style={{
-                  width: '42%',
+                  marginLeft: '20px',
+                  maxWidth: '34%',
                 }}
-                value={registeredNumber}
-                onChange={(e) => setRegisteredNumber(e.target.value)}
+                value={averageScore}
+                onChange={(e)=>setAverageScore(e.target.value)}
+                suffix={
+                  <Tooltip title="Average Score just contain only number ">
+                    <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+                  </Tooltip>
+                }
               />
             </Form.Item>
 
@@ -219,34 +263,19 @@ const FormAdd = () => {
               ]}
             >
               <Input
-                allowClear
+              allowClear
                 maxLength={5}
                 style={{
-                  marginLeft: '77px',
-                  width: '35%',
+                  marginLeft: '75px',
+                  maxWidth: '30%',
                 }}
+                suffix={
+                  <Tooltip title="Average Score just contain only number ">
+                    <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+                  </Tooltip>
+                }
                 value={targetScore}
-                onChange={(e) => setTargetScore(e.target.value)}
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="Address"
-              style={{ fontWeight: 600 }}
-              name="TextArea"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input!',
-                },
-              ]}
-            >
-              <Input.TextArea
-                placeholder="Uni's address"
-                style={{ marginLeft: '72px', width: '330px' }}
-                allowClear
-                onChange={(e) => setAddress(e.target.value)}
-                value={address}
+                onChange={(e)=>setTargetScore(e.target.value)}
               />
             </Form.Item>
           </Form>

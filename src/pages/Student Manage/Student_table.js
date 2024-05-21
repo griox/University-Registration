@@ -360,7 +360,12 @@ const Student_List = ({ data }) => {
             fixed: 'left',
             key: 'name',
             ...getColumnSearchProps('name'),
-            render: (text, record) => renderNameWithGender(text, record),
+            render: (text, record) => (
+                renderNameWithGender(text, record),
+                <Tooltip title={record.uniCode.length===5 ? 'can not register more':''}>
+                    <span style={{ color: record.uniCode.length ===5 ? '#FF8C00' : 'black' }}>{text}</span>
+                </Tooltip>
+            )
         },
         {
             title: 'Email',
@@ -369,7 +374,7 @@ const Student_List = ({ data }) => {
             editable: true,
             ...getColumnSearchProps('email'),
             render: (text, record) => (
-                <Tooltip title={record.isRegister ? 'Registered ' : 'Not registered '}>
+                <Tooltip title={record.isRegister ? 'had account' : 'account not exists'}>
                     <span style={{ color: record.isRegister ? 'green' : 'red' }}>{text}</span>
                 </Tooltip>
             ),

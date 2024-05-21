@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'firebase/auth';
 import { getDatabase, ref, child, get,set,push } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
@@ -118,7 +118,7 @@ const Modal_Add = () => {
         toast.error('Invalid Email');
         hasError = true;
       } else {
-        const snapshot = await get(child(ref(db), `SinhVien/`));
+        const snapshot = await get(child(ref(db), `Detail/`));
         if (snapshot.exists()) {
           const students = snapshot.val();
           const emailExists = Object.values(students).some((user) => user.email === Email);
@@ -136,7 +136,7 @@ const Modal_Add = () => {
         toast.error('Invalid identify');
         hasError = true;
       } else {
-        const snapshot = await get(child(ref(db), `Infor/`));
+        const snapshot = await get(child(ref(db), `Detail/`));
         if (snapshot.exists()) {
           const Infors = snapshot.val();
           const IdenExists = Object.values(Infors).some((user) => user.idenNum === Identify);
@@ -164,8 +164,11 @@ const Modal_Add = () => {
   };
   
   const handleCancel = () => {
+    setAddress('');
+    setIsModalOpen(false);
+    // Reset form validation status
     setFullname('');
-    setEmail('')
+    setEmail('');
     setDateOfBirth('');
     setAddress('');
     setPlaceOfBirth('');
@@ -173,8 +176,8 @@ const Modal_Add = () => {
     setMathscore(null);
     setEnglishscore(null);
     setLiteraturescore(null);
-    setIsModalOpen(false);
   };
+  
   const validateDate = (_, value) => {
     if (!value) {
         return Promise.reject(new Error('Please select a date'));
@@ -330,7 +333,7 @@ function validateScore(score) {
       <Button type="primary" onClick={showModal}>
         Add a new student
       </Button>
-      <Modal title="Register for Student" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={600}>
+      <Modal title="Register for Student" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={600} destroyOnClose>
         <Space direction="vertical">
           <Form>
             <Space.Compact size="small">
@@ -340,18 +343,17 @@ function validateScore(score) {
                   validateStatus={!validateFullname(Fullname) && Fullname ? 'error' : ''}
                   help={validateFullname(Fullname) && Fullname ? '' : ''}
                   style={{fontWeight:600}}
-                  name="Name"
+                  name="name"
                   rules={[
                     {
                       required: true,
-                      validator:validateDate,
+                      message:'Please Input'
                     },
                   ]}
                 >
                   <Input
                     placeholder="Enter Student's name"
                     prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
-                    value={Fullname}
                     onChange={(e) => {
                       setFullname(e.target.value);
                     }}
@@ -375,7 +377,7 @@ function validateScore(score) {
                   validateStatus={!validateEmailFormat(Email) && Email? 'error' : ''}
                   help={validateEmailFormat(Email) && Email ? ' ':''}
                   style={{fontWeight:600}}
-                  name="Email"
+                  name="email"
                   rules={[
                     {
                       required: true,
@@ -393,7 +395,6 @@ function validateScore(score) {
                     }
                     
                     style={{ width: '100%' }}
-                    value={Email}
                     onChange={(e) => {
                       setEmail(e.target.value);
                     }}
@@ -422,7 +423,7 @@ function validateScore(score) {
                   },
                 ]}
                 >
-                  <DatePicker format="DD/MM/YYYY" value={dateOfBirth} onChange={(value) => setDateOfBirth(value)} />
+                  <DatePicker format="DD/MM/YYYY"  onChange={(value) => setDateOfBirth(value)} />
                 </Form.Item>
                 <Form.Item label="Place of Birth" style={{fontWeight:600}}>
                   <Select defaultValue='Khánh Hòa'  options={cities} showSearch style={{ width: 150 }} onChange={(value) => setPlaceOfBirth(value)} />
@@ -460,35 +461,35 @@ function validateScore(score) {
             <Space.Compact>
               <Space wrap>
                 <Form.Item label="Math" style={{fontWeight:600}}
-                name="Math"
+                name="math"
                   rules={[
                     {
                       required: true,
                       message: 'Please input!',
                     },
                   ]}
-                  validateStatus={!validateScore(Mathscore) && Mathscore ? 'error' : ''}>
-                  <InputNumber min={0} max={10} step={0.2} value={Mathscore} onChange={(value) => setMathscore(value)} />
+                  >
+                  <InputNumber min={0} max={10} step={0.2}  onChange={(value) => setMathscore(value)} />
                 </Form.Item>
                 <Form.Item label="English" style={{fontWeight:600}}
-                name="English"
+                name="english"
                   rules={[
                     {
                       required: true,
                       message: 'Please input!',
                     },
                   ]}>
-                  <InputNumber min={0} max={10} step={0.2} value={Englishscore} onChange={(value) => setEnglishscore(value)} />
+                  <InputNumber min={0} max={10} step={0.2}  onChange={(value) => setEnglishscore(value)} />
                 </Form.Item>
                 <Form.Item label="Literature" style={{fontWeight:600}}
-                name="Literature"
+                name="literature"
                   rules={[
                     {
                       required: true,
                       message: 'Please input!',
                     },
                   ]}>
-                  <InputNumber min={0} max={10} step={0.2} value={Literaturescore} onChange={(value) => setLiteraturescore(value)} />
+                  <InputNumber min={0} max={10} step={0.2}  onChange={(value) => setLiteraturescore(value)} />
                 </Form.Item>
               </Space>
             </Space.Compact>

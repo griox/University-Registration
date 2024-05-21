@@ -279,7 +279,7 @@ const Modal_Detail = ({ visible, onClose, student }) => {
             <Space.Compact>
               <Space>
                 <Form.Item label="Address" style={{fontWeight:500}}>
-                  <TextArea showCount maxLength={100} placeholder="Student's Address" onChange={(e) => setAddress(e.target.value)} value={Address} disabled={true} />
+                  <TextArea showCount maxLength={100} placeholder="Student's Address" onChange={(e) => setAddress(e.target.value)} value={Address} disabled={true} style={{ width: '450px', height:'100px' }} />
                 </Form.Item>
               </Space>
             </Space.Compact>

@@ -181,12 +181,12 @@ const Chart = () => {
 
     const con = {
         data: [
-            { type: 'Không có trường nào', value: registZero },
-            { type: 'Một trường', value: registOne },
-            { type: 'Hai trường', value: registTwo },
-            { type: 'Ba trường', value: registThree },
-            { type: 'Bốn trường', value: registFour },
-            { type: 'Năm trường', value: registFive },
+            { type: 'None', value: registZero },
+            { type: 'One', value: registOne },
+            { type: 'Two', value: registTwo },
+            { type: 'Three', value: registThree },
+            { type: 'Four', value: registFour },
+            { type: 'Five', value: registFive },
         ],
         angleField: 'value',
         colorField: 'type',
@@ -312,7 +312,7 @@ const Chart = () => {
                             <Column {...config} />
                         </div>
                         <div className="charter" style={{ height: '700px' }}>
-                            <h2>Number of schools each member registers</h2>
+                            <h2>The number of courses each student registers</h2>
                             <Pie {...con} />
                         </div>
                     </div>

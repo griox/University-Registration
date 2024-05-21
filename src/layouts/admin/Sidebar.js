@@ -159,6 +159,7 @@ const Sidebar = () => {
             children: `${firstChar}${lastChar}`,
         };
     }
+    const isAdminOrSuperAdmin = role === 'admin' || role === 'super_admin';
     return (
         <Box
             sx={{
@@ -225,7 +226,7 @@ const Sidebar = () => {
                                 </div>
                             </Box>
                             <Box textAlign="center">
-                                <div>
+                                {/* <div>
                                     <input id="sb-fileInput" type="file" onChange={handleImgChange} />
                                     <button id="sb-btn" onClick={handleSubmit} style={{ display: 'none' }}>
                                         Submit
@@ -238,7 +239,7 @@ const Sidebar = () => {
                                             <UploadOutlined style={{ fontSize: '20px', color: '#000' }} />
                                         </label>
                                     </div>
-                                </div>
+                                </div> */}
                                 <Typography
                                     variant="h2"
                                     color={colors.grey[100]}
@@ -263,38 +264,46 @@ const Sidebar = () => {
                             setSelected={setSelected}
                             tooltip="Dashboard"
                         />
-                        <Item
-                            title="University Managerment"
-                            to="/admin/university"
-                            icon={<SchoolIcon />}
-                            selected={selected}
-                            setSelected={setSelected}
-                            tooltip="University Managerment"
-                        />
-                        <Item
-                            title="Student Managerment"
-                            to="/admin/student"
-                            icon={<SolutionOutlined />}
-                            selected={selected}
-                            setSelected={setSelected}
-                            tooltip="Student Managerment"
-                        />
-                        <Item
-                            title="Profile"
-                            to="/admin/profile"
-                            icon={<ContactsOutlinedIcon />}
-                            selected={selected}
-                            setSelected={setSelected}
-                            tooltip="Profile"
-                        />
-                        <Item
-                            title="Register Account"
-                            to="/register"
-                            icon={<SignatureOutlined />}
-                            selected={selected}
-                            setSelected={setSelected}
-                            tooltip="Register Account"
-                        />
+                        {isAdminOrSuperAdmin && (
+                            <>
+                                <Item
+                                    title="University Managerment"
+                                    to="/admin/university"
+                                    icon={<SchoolIcon />}
+                                    selected={selected}
+                                    setSelected={setSelected}
+                                    tooltip="University Managerment"
+                                />
+                                <Item
+                                    title="Student Managerment"
+                                    to="/admin/student"
+                                    icon={<SolutionOutlined />}
+                                    selected={selected}
+                                    setSelected={setSelected}
+                                    tooltip="Student Managerment"
+                                />
+                                <Item
+                                    title="Register Account"
+                                    to="/register"
+                                    icon={<SignatureOutlined />}
+                                    selected={selected}
+                                    setSelected={setSelected}
+                                    tooltip="Register Account"
+                                />
+                            </>
+                        )}
+                        {role === 'user' && (
+                            <>
+                                <Item
+                                    title="Profile"
+                                    to="/admin/profile"
+                                    icon={<ContactsOutlinedIcon />}
+                                    selected={selected}
+                                    setSelected={setSelected}
+                                    tooltip="Profile"
+                                />
+                            </>
+                        )}
                     </Box>
                 </Menu>
             </ProSidebar>

@@ -127,11 +127,12 @@ export const Login = () => {
                                 if (y.length !== 0) {
                                     localStorage.setItem('Role', y[0].Role);
                                     localStorage.setItem('Name', y[0].name);
-
+                                    
                                     saveOnLocal(y[0].Role);
-
+                                    
                                     setIsLoggedIn(true);
                                     localStorage.setItem('isLoggedIn', 'true');
+                                    <Link to="/admin/dashboard" />;
                                 } else {
                                     toast.error('Account not found. Please check your email and password again.');
                                 }
@@ -150,7 +151,6 @@ export const Login = () => {
             toast.error('Please enter your email');
         }
 
-        <Link to="/admin/dashboard" />;
     }
 
     return (

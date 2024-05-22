@@ -151,7 +151,7 @@ const Sidebar = () => {
                             <Box display="flex" justifyContent="center" alignItems="center">
                                 <Avatar
                                     alt="Remy Sharp"
-                                    {...stringAvatar(username.name)}
+                                    {...stringAvatar(username)}
                                     sx={{ fontSize: 50, width: 120, height: 120 }}
                                 />
                             </Box>
@@ -162,7 +162,8 @@ const Sidebar = () => {
                                     fontWeight="bold"
                                     sx={{ m: '10px 0 0 0' }}
                                 >
-                                    {username.name}
+                                    {username}
+                                    {console.log(username)}
                                 </Typography>
                                 <Typography variant="h5" color={colors.greenAccent[500]}>
                                     {role}

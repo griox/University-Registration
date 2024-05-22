@@ -299,7 +299,12 @@ const Register = () => {
                                         >
                                             <span>Regist</span>
                                         </div> */}
-                                        <Button
+                                        <div className="input-box">
+                                            <button className="button-clear">User</button>
+                                            <button className="button-submit">Admin</button>
+                                        </div>
+
+                                        {/* <Button
                                             type="primary"
                                             loading={loadings[0]}
                                             onClick={() => enterLoading(0)}
@@ -310,7 +315,7 @@ const Register = () => {
                                         >
                                             <span style={span}>Regist</span>
                                             <i className="bx bx-right-arrow-alt"></i>
-                                        </Button>
+                                        </Button> */}
                                         {/* <Button
                                             type="primary"
                                             loading={loadings[1]}

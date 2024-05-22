@@ -159,6 +159,10 @@ const Sidebar = () => {
             children: `${firstChar}${lastChar}`,
         };
     }
+
+    // const isUser = role === 'user';
+    const isAdminOrSuperAdmin = role === 'admin' || role === 'super_admin';
+
     return (
         <Box
             sx={{
@@ -263,22 +267,26 @@ const Sidebar = () => {
                             setSelected={setSelected}
                             tooltip="Dashboard"
                         />
-                        <Item
-                            title="University Managerment"
-                            to="/admin/university"
-                            icon={<SchoolIcon />}
-                            selected={selected}
-                            setSelected={setSelected}
-                            tooltip="University Managerment"
-                        />
-                        <Item
-                            title="Student Managerment"
-                            to="/admin/student"
-                            icon={<SolutionOutlined />}
-                            selected={selected}
-                            setSelected={setSelected}
-                            tooltip="Student Managerment"
-                        />
+                        {isAdminOrSuperAdmin && (
+                            <>
+                                <Item
+                                    title="University Managerment"
+                                    to="/admin/university"
+                                    icon={<SchoolIcon />}
+                                    selected={selected}
+                                    setSelected={setSelected}
+                                    tooltip="University Managerment"
+                                />
+                                <Item
+                                    title="Student Managerment"
+                                    to="/admin/student"
+                                    icon={<SolutionOutlined />}
+                                    selected={selected}
+                                    setSelected={setSelected}
+                                    tooltip="Student Managerment"
+                                />
+                            </>
+                        )}
                         <Item
                             title="Profile"
                             to="/admin/profile"
@@ -287,14 +295,16 @@ const Sidebar = () => {
                             setSelected={setSelected}
                             tooltip="Profile"
                         />
-                        <Item
-                            title="Register Account"
-                            to="/register"
-                            icon={<SignatureOutlined />}
-                            selected={selected}
-                            setSelected={setSelected}
-                            tooltip="Register Account"
-                        />
+                        {isAdminOrSuperAdmin && (
+                            <Item
+                                title="Register Account"
+                                to="/register"
+                                icon={<SignatureOutlined />}
+                                selected={selected}
+                                setSelected={setSelected}
+                                tooltip="Register Account"
+                            />
+                        )}
                     </Box>
                 </Menu>
             </ProSidebar>

@@ -35,17 +35,15 @@ const Sidebar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [role, setRole] = useState(localStorage.getItem('Role') || '');
-    const username = useSelector((state) => state);
+    const [username, setUsername] = useState(localStorage.getItem('Name') || '');
 
     const [isCollapsed, setIsCollapsed] = useState(() => JSON.parse(localStorage.getItem('sidebarCollapsed')) || false);
     const [selected, setSelected] = useState(() => localStorage.getItem('selectedMenuItem') || 'Dashboard');
 
     const isInitialMountCollapsed = useRef(true);
     const isInitialMountSelected = useRef(true);
-    const dispatch = useDispatch();
+
     useEffect(() => {
-        const x = JSON.parse(localStorage.getItem('Infor'));
-        dispatch({ type: 'user', payload: x });
         if (isInitialMountCollapsed.current) {
             isInitialMountCollapsed.current = false;
         } else {
@@ -148,11 +146,10 @@ const Sidebar = () => {
                     </MenuItem>
                     {!isCollapsed && (
                         <Box mb="25px">
-                            {/* {console.log(username.name)} */}
                             <Box display="flex" justifyContent="center" alignItems="center">
                                 <Avatar
                                     alt="Remy Sharp"
-                                    {...stringAvatar(username.name)}
+                                    {...stringAvatar(username)}
                                     sx={{ fontSize: 50, width: 120, height: 120 }}
                                 />
                             </Box>
@@ -163,7 +160,8 @@ const Sidebar = () => {
                                     fontWeight="bold"
                                     sx={{ m: '10px 0 0 0' }}
                                 >
-                                    {username.name}
+                                    {username}
+                                    {console.log(username)}
                                 </Typography>
                                 <Typography variant="h5" color={colors.greenAccent[500]}>
                                     {role}

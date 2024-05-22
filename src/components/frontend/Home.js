@@ -150,7 +150,7 @@ const Home = () => {
                                     style={{ fontSize: '17px', borderRadius: '10px' }}
                                     className="btn btn-brand ms-lg-3"
                                 >
-                                    Đăng Nhập new 1
+                                    Đăng Nhập
                                 </button>
                             </div>
                         </div>

@@ -1,7 +1,7 @@
 
 import React, { useState,useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { Modal, Space, Select, InputNumber, DatePicker, Form } from 'antd';
+import { Modal, Space, Select, InputNumber, DatePicker, Form, Col, Row } from 'antd';
 import { InfoCircleOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
 import { Input, Tooltip } from 'antd';
 import dayjs from 'dayjs';
@@ -173,119 +173,177 @@ const Modal_Detail = ({ visible, onClose, student }) => {
   ];
   const { TextArea } = Input; 
   return (
-    <Modal title="Information" onCancel={onClose} open={visible} width={600} footer={null} >
-     
-       <Space direction="vertical">
-          <Form>
-            <Space.Compact size="small">
-              <Space size={'large'}>
-                <Form.Item
-                  label="Name"
-                  validateStatus={!validateFullname(Fullname) && Fullname ? 'error' : ''}
-                  help={validateFullname(Fullname) && Fullname ? '' : 'Name must contain only letters and no spaces'}
-                  style={{fontWeight:600}}
-                >
-                  <Input
-                    placeholder="Enter Student's name"
-                    prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
-                    value={Fullname}
-                    onChange={(e) => {
-                      setFullname(e.target.value);
-                    }}
-                    allowClear
-                    disabled={true}
-                  />
-                </Form.Item>
-                <Form.Item label="Gender" style={{fontWeight:600}}>
-                  <Select value={Gender} options={genders} onChange={(value) => setGender(value)} disabled={true} />
-                </Form.Item>
-              </Space>
-            </Space.Compact>
-            <Space.Compact>
-              <Space size={'large'}>
-                <Form.Item
-                  label="Email"
-                  validateStatus={!validateEmailFormat(Email) && Email? 'error' : ''}
-                  help={validateEmailFormat(Email) && Email ? '':'Email must contain @example'}
-                  style={{fontWeight:500}}
-                >
-                  <Input
-                    placeholder="Enter Student's email"
-                    prefix={<MailOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
-                    suffix={
-                      <Tooltip title="Private Email">
-                        <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
-                      </Tooltip>
-                    }
-                    style={{ width: '100%' }}
-                    value={Email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                    }}
-                    showClear
-                    disabled={true}
-                  />
-                </Form.Item>
-                <Form.Item label="Enthicity"  style={{fontWeight:500}}>
-                  <Select defaultValue="Kinh" options={enthicities} onChange={(value) => setEnthicity(value)} showSearch style={{ width: 150 }} disabled={true}/>
-                </Form.Item>
-              </Space>
-            </Space.Compact>
-            <Space.Compact>
-              <Space size={'large'}>
-                <Form.Item label="Date of Birth"  style={{fontWeight:500}}>
-                  <DatePicker format="DD/MM/YYYY"  value={dateOfBirth} onChange={(value) => setDateOfBirth(value)} disabled={true} />
-                </Form.Item>
-                <Form.Item label="Place of Birth" style={{fontWeight:500}}>
-                  <Select defaultValue='Khánh Hòa'  options={cities} showSearch style={{ width: 150 }} onChange={(value) => setPlaceOfBirth(value)} disabled={true}/>
-                </Form.Item>
-              </Space>
-              </Space.Compact>
-            <Space.Compact>
-              <Space>
-                <Form.Item
-                  label="Identify number"
-                  validateStatus={! validateIdenNumber(Identify) && Identify? 'error' : ''}
-                  style={{fontWeight:500}}
-                >
-                  <Input
-                    onChange={(e) => {
-                      setIdentify(e.target.value);
-                    }}
-                    value={Identify}
-                    suffix={
-                      <Tooltip title="Identify number must has 12 digits">
-                        <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
-                      </Tooltip>
-                    }
-                    disabled={true}
-                  />
-                </Form.Item>
-              </Space>
-            </Space.Compact>
-            <Space.Compact>
-              <Space wrap>
-                <Form.Item label="Math" style={{fontWeight:500}}>
-                  <InputNumber min={0} max={10} step={0.2} value={Mathscore} onChange={(value) => setMathscore(value)} disabled={true} />
-                </Form.Item>
-                <Form.Item label="English" style={{fontWeight:500}}>
-                  <InputNumber min={0} max={10} step={0.2} value={Englishscore} onChange={(value) => setEnglishscore(value)} disabled={true} />
-                </Form.Item>
-                <Form.Item label="Literature" style={{fontWeight:500}}>
-                  <InputNumber min={0} max={10} step={0.2} value={Literaturescore} onChange={(value) => setLiteraturescore(value)} disabled={true}/>
-                </Form.Item>
-              </Space>
-            </Space.Compact>
-            <Space.Compact>
-              <Space>
-                <Form.Item label="Address" style={{fontWeight:500}}>
-                  <TextArea showCount maxLength={100} placeholder="Student's Address" onChange={(e) => setAddress(e.target.value)} value={Address} disabled={true} style={{ width: '450px', height:'100px' }} />
-                </Form.Item>
-              </Space>
-            </Space.Compact>
-          </Form>
-        </Space>
-    </Modal>
+    <Modal title="Information" onCancel={onClose} open={visible} width={600} footer={null}>
+  <Space direction="vertical">
+    <Form>
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item
+            label="Name"
+            validateStatus={!validateFullname(Fullname) && Fullname ? 'error' : ''}
+            help={validateFullname(Fullname) && Fullname ? '' : 'Name must contain only letters and no spaces'}
+            style={{ fontWeight: 600 }}>
+            <Input
+              placeholder="Enter Student's name"
+              prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
+              value={Fullname}
+              onChange={(e) => {
+                setFullname(e.target.value);
+              }}
+              allowClear
+              disabled={true}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item label="Gender" style={{ fontWeight: 600 }}>
+            <Select
+              value={Gender}
+              options={genders}
+              onChange={(value) => setGender(value)}
+              disabled={true}
+              style={{width: '150px',marginLeft: '52px'}}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item label="Date of Birth" style={{ fontWeight: 600 }}>
+            <DatePicker
+              format="DD/MM/YYYY"
+              value={dateOfBirth}
+              onChange={(value) => setDateOfBirth(value)}
+              disabled={true}
+              style={{marginLeft: '25px', width: '142px'}}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item label="Place of Birth" style={{ fontWeight: 600 }}>
+            <Select
+              defaultValue='Khánh Hòa'
+              options={cities}
+              showSearch
+              style={{ width: 150 , marginLeft: '12px'}}
+              onChange={(value) => setPlaceOfBirth(value)}
+              disabled={true}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item
+            label="Identify number"
+            validateStatus={!validateIdenNumber(Identify) && Identify ? 'error' : ''}
+            style={{ fontWeight: 600 }}>
+            <Input
+              onChange={(e) => {
+                setIdentify(e.target.value);
+              }}
+              value={Identify}
+              suffix={
+                <Tooltip title="Identify number must have 12 digits">
+                  <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+                </Tooltip>
+              }
+              disabled={true}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item label="Enthicity" style={{ fontWeight: 600 }}>
+            <Select
+              defaultValue="Kinh"
+              options={enthicities}
+              onChange={(value) => setEnthicity(value)}
+              showSearch
+              style={{ width: 150, marginLeft: '42px' }}
+              disabled={true}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Form.Item
+        label="Email"
+        validateStatus={!validateEmailFormat(Email) && Email ? 'error' : ''}
+        help={validateEmailFormat(Email) && Email ? '' : 'Email must contain @example'}
+        style={{ fontWeight: 600 }}>
+        <Input
+          placeholder="Enter Student's email"
+          prefix={<MailOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
+          suffix={
+            <Tooltip title="Private Email">
+              <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+            </Tooltip>
+          }
+          style={{ width: '100%' }}
+          value={Email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+          }}
+          showClear
+          disabled={true}
+        />
+      </Form.Item>
+      <Row gutter={16}>
+        <Col span={8}>
+          <Form.Item label="Math" style={{ fontWeight: 600 }}>
+            <InputNumber
+              min={0}
+              max={10}
+              step={0.2}
+              value={Mathscore}
+              onChange={(value) => setMathscore(value)}
+              disabled={true}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="English" style={{ fontWeight: 600 }}>
+            <InputNumber
+              min={0}
+              max={10}
+              step={0.2}
+              value={Englishscore}
+              onChange={(value) => setEnglishscore(value)}
+              disabled={true}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item label="Literature" style={{ fontWeight: 600 }}>
+            <InputNumber
+              min={0}
+              max={10}
+              step={0.2}
+              value={Literaturescore}
+              onChange={(value) => setLiteraturescore(value)}
+              disabled={true}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row gutter={16}>
+        <Col span={12}>
+          <Form.Item label="Address" style={{ fontWeight: 600 }}>
+            <TextArea
+              showCount
+              maxLength={100}
+              placeholder="Student's Address"
+              onChange={(e) => setAddress(e.target.value)}
+              value={Address}
+              disabled={true}
+              style={{ width: '480px', height: '100px' }}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+    </Form>
+  </Space>
+</Modal>
+
   );
 };
 

@@ -8,6 +8,7 @@ import {
     MinusCircleOutlined,
     ManOutlined,
 } from '@ant-design/icons';
+import { toast } from 'react-toastify';
 import { Button, Space, Modal } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { WomanOutlined } from '@ant-design/icons';
@@ -15,6 +16,7 @@ import { get, ref, child, getDatabase, remove, update, push, set } from 'firebas
 import { initializeApp } from 'firebase/app';
 import FormDetail from './Modal_detail';
 import FormAdd from './formAddSchool';
+import { render } from '@testing-library/react';
 const firebaseConfig = {
     apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
     authDomain: 'mock-proeject-b.firebaseapp.com',
@@ -38,6 +40,7 @@ const AddSchool = () => {
     const [UniData, setUniData] = useState([]);
     const [searchedColumn, setSearchedColumn] = useState('');
     const [pagination, setPagination] = useState({ current: 1, pageSize: 5 });
+    const [loading, setLoading] = useState(true);
     const tableRef = useRef(null);
     const searchInput = useRef(null);
     useEffect(() => {
@@ -135,11 +138,12 @@ const AddSchool = () => {
     const handleCancel = () => {
         setVisible(false);
         setDetailVisible(false);
+        setLoading(true);
     };
     const handleFieldChange = async (key, dataIndex, value) => {
         const newData = [...UniData];
         const index = newData.findIndex((item) => key === item.key);
-
+        
         if (index > -1) {
             newData[index][dataIndex] = value;
             setUniData(newData); // Update state
@@ -164,7 +168,11 @@ const AddSchool = () => {
 
             if (index > -1) {
                 const item = newData[index];
-
+                if (row.target < item.isRegistered) {
+                    console.log(row.target);
+                    toast.error("Targets must not be less than Number of registration");
+                    return; // Không thực hiện lưu nếu điều kiện không được đáp ứng
+                }
                 // Xử lý dữ liệu thay đổi
                 newData.splice(index, 1, {
                     ...item,
@@ -174,6 +182,7 @@ const AddSchool = () => {
                 // Chuyển đổi giá trị từ chuỗi sang số
                 const updatedRow = {
                     ...newData[index],
+                    target:parseInt(newData[index].target),
                 };
                 // Cập nhật dữ liệu trên state
                 newData[index] = updatedRow;
@@ -182,7 +191,7 @@ const AddSchool = () => {
 
                 // Cập nhật dữ liệu trên Firebase
                 await update(ref(db, `University/${key}`), updatedRow);
-                console.log('Data updated in Firebase successfully');
+                toast.success('Data updated successfully');
             } else {
                 newData.push(row);
                 setUniData(newData);
@@ -305,7 +314,13 @@ const AddSchool = () => {
             title: 'UniCode',
             dataIndex: 'key',
             width: '13%',
-            ...getColumnSearchProps('key'),
+            ...getColumnSearchProps('ucode'),
+            render: (text,record)=>(
+                <Tooltip title={record.isRegistered === record.targer ? 'Can not regist':''}>
+                    <span style={{color:record.isRegistered === record.target ? 'green':'black'}}>{text}</span>
+                </Tooltip>
+                
+            )
         },
         {
             title: 'Address',
@@ -326,7 +341,6 @@ const AddSchool = () => {
             dataIndex: 'isRegistered',
             width: '13%',
             editable: true,
-          
         },
         {
             title: 'Targets',
@@ -344,30 +358,29 @@ const AddSchool = () => {
                 const editable = isEditing(record);
                 return editable ? (
                     <span>
-                        <Popconfirm title="Sure to save edit?" onConfirm={() => save(record.key)}>
-                            <Typography.Link
-                                onClick={() => {}}
-                                style={{
-                                    marginRight: 8,
-                                }}
-                            >
-                                Edit
-                            </Typography.Link>
-                        </Popconfirm>
+                        <Typography.Link
+                            onClick={() => save(record.key)}
+                            style={{
+                                marginRight: 8,
+                            }}
+                        >
+                            Edit
+                        </Typography.Link>
                         <Typography.Link onClick={cancel}>Cancel</Typography.Link>
+                    
                     </span>
                 ) : (
                     <Space size={'middle'}>
-                    <Typography.Link
-                        disabled={editingKey !== ''}
-                        onClick={() => edit(record)}
-                        style={{
-                            marginRight: 8,
-                        }}
-                    >
-                        <EditOutlined />
-                    </Typography.Link>
-                    <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
+                        <Typography.Link
+                            disabled={editingKey !== ''}
+                            onClick={() => edit(record)}
+                            style={{
+                                marginRight: 8,
+                            }}
+                        >
+                            <EditOutlined />
+                        </Typography.Link>
+                        <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
                             <Typography.Link>
                                 <DeleteOutlined />
                             </Typography.Link>
@@ -406,7 +419,7 @@ const AddSchool = () => {
                 onCancel={handleCancel}
                 style={{ top: '50px', left: '50px' }}
             >
-                <AddSchool/>
+                <AddSchool />
             </Modal>
             <Form form={form} component={false}>
                 <Space direction="vertical">
@@ -435,16 +448,15 @@ const AddSchool = () => {
             </Form>
             <Modal
                 open={isModalDetailVisible}
-                onOk={handleOk}
                 onCancel={handleCancel}
-                width={800} // Độ rộng của modal là 800 pixel
+                width={800} 
                 height={600}
-                cancelButtonProps={{ style: { display: 'none' } }}
-                okButtonProps={{ style: { width: '80px' } }}
             >
-                <FormDetail university={selectedUniverse} />
+                <FormDetail  university={selectedUniverse}
+                        visible={isModalDetailVisible}
+                        setLoading={setLoading} // Pass down the setLoading function
+                        loading={loading} />
             </Modal>
-
         </div>
     );
 };

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 // import '../../assets/css/style.css';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import AOS from 'aos';
 
 const Home = () => {
@@ -16,6 +16,8 @@ const Home = () => {
             anchorPlacement: 'top-bottom',
         });
     }, []);
+
+    const history = useHistory();
 
     const [scrollValue, setScrollValue] = useState(0);
     const [isVisible, setIsVisible] = useState(false);
@@ -143,13 +145,13 @@ const Home = () => {
                                         </a>
                                     </li>
                                 </ul>
-                                <a
-                                    href="login"
+                                <button
+                                    onClick={() => history.push('/Login')}
                                     style={{ fontSize: '17px', borderRadius: '10px' }}
                                     className="btn btn-brand ms-lg-3"
                                 >
                                     Đăng Nhập
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </nav>

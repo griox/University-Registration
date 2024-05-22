@@ -35,14 +35,14 @@ const Sidebar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [role, setRole] = useState(localStorage.getItem('Role') || '');
-    const username = useSelector((state) => state);
+    const [username, setUsername] = useState(localStorage.getItem('Name') || '');
 
     const [isCollapsed, setIsCollapsed] = useState(() => JSON.parse(localStorage.getItem('sidebarCollapsed')) || false);
     const [selected, setSelected] = useState(() => localStorage.getItem('selectedMenuItem') || 'Dashboard');
 
     const isInitialMountCollapsed = useRef(true);
     const isInitialMountSelected = useRef(true);
-    const dispatch = useDispatch();
+
     useEffect(() => {
         const x = JSON.parse(localStorage.getItem('Infor'));
         dispatch({ type: 'user', payload: x });

@@ -8,6 +8,7 @@ import {
     MinusCircleOutlined,
     ManOutlined,
 } from '@ant-design/icons';
+import { toast } from 'react-toastify';
 import { Button, Space, Divider } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { WomanOutlined } from '@ant-design/icons';
@@ -64,6 +65,7 @@ const Student_List = ({ data }) => {
     const [studentData, setStudentData] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState(null);
+    const [Loading,setLoading] = useState(true);
     const tableRef = useRef(null);
     useEffect(() => {
         const fetchData = async () => {
@@ -274,7 +276,10 @@ const Student_List = ({ data }) => {
 
             if (index > -1) {
                 const item = newData[index];
-
+                if(row.MathScore>10||row.EnglishScore>10||row.LiteratureScore>10){
+                    toast.error('Score must not be less or equal to 10');
+                    return;
+                }
                 // Xử lý dữ liệu thay đổi
                 newData.splice(index, 1, {
                     ...item,
@@ -305,7 +310,7 @@ const Student_List = ({ data }) => {
 
                 // Cập nhật dữ liệu trên Firebase
                 await update(ref(db, `Detail/${key}`), updatedRow);
-                console.log('Data updated in Firebase successfully');
+                toast.success('Data updated successfully');
             } else {
                 newData.push(row);
                 setStudentData(newData);
@@ -314,7 +319,7 @@ const Student_List = ({ data }) => {
 
                 // Thêm dữ liệu mới vào Firebase
                 await set(ref(db, `Detail/${key}`), row); // Thêm dữ liệu mới
-                console.log('Data added to Firebase successfully');
+                toast.success('Data added to Firebase successfully');
             }
         } catch (errInfo) {
             console.log('Validate Failed:', errInfo);
@@ -360,7 +365,14 @@ const Student_List = ({ data }) => {
             fixed: 'left',
             key: 'name',
             ...getColumnSearchProps('name'),
-            render: (text, record) => renderNameWithGender(text, record),
+            render: (text, record) => (
+                renderNameWithGender(text, record),
+                (
+                    <Tooltip title={record.uniCode.length === 5 ? 'can not register more' : ''}>
+                        <span style={{ color: record.uniCode.length === 5 ? '#FF8C00' : 'black' }}>{text}</span>
+                    </Tooltip>
+                )
+            ),
         },
         {
             title: 'Email',
@@ -369,7 +381,7 @@ const Student_List = ({ data }) => {
             editable: true,
             ...getColumnSearchProps('email'),
             render: (text, record) => (
-                <Tooltip title={record.isRegister ? 'Registered ' : 'Not registered '}>
+                <Tooltip title={record.isRegister ? 'had account' : 'account not exists'}>
                     <span style={{ color: record.isRegister ? 'green' : 'red' }}>{text}</span>
                 </Tooltip>
             ),
@@ -496,8 +508,10 @@ const Student_List = ({ data }) => {
                 <Modal_Add />
                 <Modal_Detail
                     visible={isModalVisible}
-                    onClose={() => setIsModalVisible(false)}
+                    onClose={() => (setIsModalVisible(false), setLoading(true))}
                     student={selectedStudent}
+                    Loading = {Loading}
+                    setLoading ={setLoading}
                 />
                 <Form form={form} component={false}>
                     <Table
@@ -511,7 +525,7 @@ const Student_List = ({ data }) => {
                         columns={mergedColumns}
                         scroll={{
                             x: 900,
-                            y: 'calc(100vh - 280px)',
+                            y: 'calc(100vh - 300px)',
                         }}
                         style={{ height: '100%', marginRight: '-20px' }}
                         rowClassName="editable-row"

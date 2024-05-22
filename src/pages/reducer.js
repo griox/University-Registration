@@ -30,6 +30,7 @@ const reducer = (state = initState, action) => {
                 uniCode: [...state.uniCode, action.newValue],
             };
         case 'user':
+            console.log('runhere');
             return {
                 ...state,
                 ...action.payload,

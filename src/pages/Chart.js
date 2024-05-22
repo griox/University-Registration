@@ -25,6 +25,9 @@ const Chart = () => {
     const [average, setAverage] = useState(0);
     const aRef = useRef(studentTotal);
     const [loading, setLoading] = useState(true);
+    const [listUniMoreRegister, setListUniMoreRegister] = useState(0);
+    const [listUniLessRegister, setListUniLessRegister] = useState(0);
+
     const firebaseConfig = {
         apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
         authDomain: 'mock-proeject-b.firebaseapp.com',
@@ -49,6 +52,13 @@ const Chart = () => {
                     const x = snapshot.val();
                     const listItem = Object.values(x).map((item) => item);
                     setAllUni(listItem.length);
+                    listItem.forEach((item) => {
+                        if (item.isRegistered * 2 > item.target) {
+                            setListUniMoreRegister((prev) => prev + 1);
+                        } else {
+                            setListUniLessRegister((prev) => prev + 1);
+                        }
+                    });
                 }
             });
         };
@@ -192,10 +202,11 @@ const Chart = () => {
         colorField: 'type',
         width: 1000,
         height: 650,
-        marginTop: 100,
+        marginTop: 50,
+        marginBottom: 50,
         label: {
-            text: (d) => `${d.type}\n${d.value}`,
-            position: 'spider',
+            text: (d) => `${d.value}`,
+            position: 'outside',
         },
         legend: {
             color: {
@@ -281,20 +292,26 @@ const Chart = () => {
                                         <ArrowUpOutlined style={{ fontSize: '30px', color: 'green' }} />
                                         <div
                                             className="number-below"
-                                            title={'Number of Universities has less than 50% registration: ' + 12}
+                                            title={
+                                                'Number of Universities has more than 50% registration: ' +
+                                                { listUniMoreRegister }
+                                            }
                                             style={{ color: 'green' }}
                                         >
-                                            {12}
+                                            {listUniMoreRegister}
                                         </div>
                                     </div>
                                     <div className="content-chart">
                                         <ArrowDownOutlined style={{ fontSize: '30px', color: 'red' }} />
                                         <div
                                             className="number-below"
-                                            title={'Number of Universities has more than 50% registration: ' + 20}
+                                            title={
+                                                'Number of Universities has less than 50% registration: ' +
+                                                { listUniLessRegister }
+                                            }
                                             style={{ color: 'red' }}
                                         >
-                                            {20}
+                                            {listUniLessRegister}
                                         </div>
                                     </div>
                                 </div>

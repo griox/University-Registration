@@ -26,7 +26,7 @@ const FormAdd = () => {
   const [address, setAddress] = useState('');
   const [entranceScore, setEntranceScore] = useState(null);
   const [targetNumber, setTargetNumber] = useState(null);
-  const [registeredNumber, setRegisteredNumber] = useState(null);
+
   const [inputError, setInputError] = useState('');
 
   const showModal = () => {
@@ -36,7 +36,7 @@ const FormAdd = () => {
   const handleOk = async () => {
     let hasError = false;
     // Initial checks
-    if (uniName === '' || address === '' || entranceScore === null || registeredNumber === null || targetNumber === null || uniCode===null) {
+    if (uniName === '' || address === '' || entranceScore === null  || targetNumber === null || uniCode===''  ) {
       toast.error('Please fill in all information');
       hasError = true;
       if(uniName!==''){
@@ -81,7 +81,6 @@ const FormAdd = () => {
         setUniCode('');
         setAddress('');
         setEntranceScore(null);
-        setRegisteredNumber(null);
         setTargetNumber(null);
         setVisible(false);
       } catch (error) {
@@ -96,7 +95,6 @@ const FormAdd = () => {
     setUniCode('');
     setAddress('');
     setEntranceScore(null);
-    setRegisteredNumber(null);
     setTargetNumber(null);
     setVisible(false);
   };
@@ -110,7 +108,7 @@ const FormAdd = () => {
       uniCode: uniCode,
       address: address,
       averageS: entranceScore,
-      isRegistered: registeredNumber,
+      isRegistered: 0,
       target: targetNumber,
     });
     toast.success('Added a university');

@@ -1,9 +1,9 @@
-import { get, ref, child, getDatabase, remove, update, push, set } from 'firebase/database';
+import { get, ref, child, getDatabase,  } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import React, { useEffect, useState } from 'react';
-import { Descriptions, Divider, Table, Form } from 'antd';
-export const Form_Detail = ({ university }) => {
-    const [student, setStudents] = useState(null);
+import { Descriptions, Divider, Table, Form,Spin } from 'antd';
+export const Form_Detail = ({ university,loading,setLoading }) => {
+    const [student, setStudents] = useState([]);
     const [form] = Form.useForm();
    const student_regist = university.registeration;
     // console.log(student_regist);
@@ -20,31 +20,30 @@ export const Form_Detail = ({ university }) => {
     const db = getDatabase(app);
     useEffect(() => {
         const fetchData = async () => {
-          const uniRef = child(ref(db), 'Detail');
-          try {
-            const snapshot = await get(uniRef);
-            if (snapshot.exists()) {
-              const data = snapshot.val();
-              const studentArray = Object.values(data).map((item) => ({ ...item, key: item.id }));
-              console.log('studentArray:', studentArray);
-    
-              // Convert student_regist object to an array
-              if (student_regist && typeof student_regist === 'object') {
-                const studentList = Object.keys(student_regist).map((key) => ({
-                  id: key,
-                  ...student_regist[key]
-                }));
-                setStudents(studentList);
-              } else {
+            if (student_regist && typeof student_regist === 'object') {
+                console.log(student_regist);    
+                const studentList = Object.values(student_regist).map((student) => student.id);
+                const studentsData = [];
+                for (const studentId of studentList) {
+                    const studentRef = child(ref(db), `Detail/${studentId}`);
+                    try {
+                        const snapshot = await get(studentRef);
+                        if (snapshot.exists()) {
+                            const studentData = snapshot.val();
+                            studentsData.push({ id: studentId, ...studentData });
+                        }
+                    } catch (error) {
+                        console.error('Cannot fetch student details:', error);
+                    }
+                }
+                setLoading(false);
+                setStudents(studentsData);
+            } else {
                 console.error('student_regist is not a valid object');
-              }
             }
-          } catch (error) {
-            console.error('Cannot fetch University data', error);
-          }
         };
         fetchData();
-      }, [student_regist, db]);
+    }, [student_regist, db]);
     const cancel = () => {
         form.resetFields();
     };
@@ -142,7 +141,9 @@ export const Form_Detail = ({ university }) => {
                 ))}
             </Descriptions>
             <Divider />
+            <h4>List Of Student</h4>
             <Form form={form} component={false}>
+                <Spin spinning={loading} >
                 <Table
                     bordered
                     dataSource={student}
@@ -161,6 +162,8 @@ export const Form_Detail = ({ university }) => {
                         showQuickJumper: true,
                     }}
                 />
+                </Spin>
+                
             </Form>
         </>
     );

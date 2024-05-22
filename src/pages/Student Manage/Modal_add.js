@@ -366,7 +366,7 @@ function validateScore(score) {
                   />
                 </Form.Item>
                 <Form.Item label="Gender" style={{fontWeight:600}}>
-                  <Select defaultValue="Female" options={genders} onChange={(value) => setGender(value)} />
+                  <Select defaultValue="Female" options={genders} onChange={(value) => setGender(value)} width/>
                 </Form.Item>
               </Space>
             </Space.Compact>

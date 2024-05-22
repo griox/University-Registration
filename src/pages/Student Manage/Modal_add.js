@@ -32,9 +32,9 @@ const Modal_Add = () => {
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [placeOfBirth, setPlaceOfBirth] = useState('Khánh Hòa');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [Mathscore, setMathscore] = useState(null);
-  const [Englishscore, setEnglishscore] = useState(null);
-  const [Literaturescore, setLiteraturescore] = useState(null);
+  const [Mathscore, setMathscore] = useState('');
+  const [Englishscore, setEnglishscore] = useState('');
+  const [Literaturescore, setLiteraturescore] = useState('');
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -350,7 +350,7 @@ function validateScore(score) {
       <Button type="primary" onClick={showModal}>
         Add a new student
       </Button>
-      <Modal title="Register for Student" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={700} destroyOnClose>
+      <Modal title="Register for Student" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={700} style={{height: 'auto'}} destroyOnClose>
       <Form layout="vertical">
     <Row gutter={16}>
       <Col span={12}>

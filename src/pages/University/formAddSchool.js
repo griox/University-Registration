@@ -49,7 +49,7 @@ const FormAdd = () => {
             const snapshot = await get(child(ref(db), `University/`));
             if(snapshot.exists()){
               const inFors = snapshot.val();
-              const uniCodeExists = Object.values(inFors).some((uni) => uni.uniCode === uniCode);
+              const uniCodeExists = Object.values(inFors).some((uni) => uni.uniCode === uniCode.toLowerCase());
               if(uniCodeExists){
                 toast.error('This uniCode has already exists');
                 hasError = true;
@@ -120,8 +120,8 @@ const FormAdd = () => {
     return /^[A-Za-zÀ-ÿ]+$/.test(uniName);
   }
   function validateNameUni(uniName) {
-    return /^[A-Za-zÀ-ÿ\s]+$/.test(uniName);
-  }
+    return /^[^\d!@#$%^&*()_+={[}\]|\\:;"'<,>.?/]+$/.test(uniName);
+}
   return (
     <>
       <Button style={{ marginBottom: '20px' }} type='primary' onClick={showModal}>

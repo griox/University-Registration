@@ -104,8 +104,8 @@ const Modal_Detail = ({ visible, onClose, student,Loading,setLoading }) => {
         },
         {
             key: '5',
-            label: 'Address',
-            children: student.Address,
+            label: 'Place Of Birth',
+            children: student.placeOBirth,
         },
         {
             key: '6 ',
@@ -119,8 +119,8 @@ const Modal_Detail = ({ visible, onClose, student,Loading,setLoading }) => {
         },
         {
             key: '8 ',
-            label: 'Place Of Birth',
-            children: student.placeOBirth,
+            label: 'Address',
+            children: student.Address,
         },
         {
           key: '9 ',
@@ -129,7 +129,7 @@ const Modal_Detail = ({ visible, onClose, student,Loading,setLoading }) => {
       },
     ];
     return (
-        <Modal open={visible} width={1000} title="Student's Information" onCancel={onClose} footer={null}>
+        <Modal open={visible} width={1000} title="Student's Information" onCancel={onClose} footer={null}   >
             <Descriptions  column={3}>
                 {items.map((item) => (
                     <Descriptions.Item key={item.key} label={item.label}>

@@ -340,7 +340,6 @@ const AddSchool = () => {
             title: 'Number of registration',
             dataIndex: 'isRegistered',
             width: '13%',
-            editable: true,
         },
         {
             title: 'Targets',

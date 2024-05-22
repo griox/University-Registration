@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Button, Form, Input, InputNumber, Space, Tooltip } from 'antd';
+import { Modal, Button, Form, Input, InputNumber, Space, Tooltip, Col, Row } from 'antd';
 import 'firebase/auth';
 import { getDatabase, ref, child, get, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
@@ -24,8 +24,8 @@ const FormAdd = () => {
   const [uniName, setUniName] = useState('');
   const [uniCode, setUniCode] = useState('');
   const [address, setAddress] = useState('');
-  const [averageScore, setAverageScore] = useState(null);
-  const [targetScore, setTargetScore] = useState(null);
+  const [entranceScore, setEntranceScore] = useState(null);
+  const [targetNumber, setTargetNumber] = useState(null);
   const [registeredNumber, setRegisteredNumber] = useState(null);
   const [inputError, setInputError] = useState('');
 
@@ -36,7 +36,7 @@ const FormAdd = () => {
   const handleOk = async () => {
     let hasError = false;
     // Initial checks
-    if (uniName === '' || address === '' || averageScore === null || registeredNumber === null || targetScore === null || uniCode===null) {
+    if (uniName === '' || address === '' || entranceScore === null || registeredNumber === null || targetNumber === null || uniCode===null) {
       toast.error('Please fill in all information');
       hasError = true;
       if(uniName!==''){
@@ -80,9 +80,9 @@ const FormAdd = () => {
         setUniName('');
         setUniCode('');
         setAddress('');
-        setAverageScore(null);
+        setEntranceScore(null);
         setRegisteredNumber(null);
-        setTargetScore(null);
+        setTargetNumber(null);
         setVisible(false);
       } catch (error) {
         console.error('Error adding university:', error);
@@ -95,9 +95,9 @@ const FormAdd = () => {
     setUniName('');
     setUniCode('');
     setAddress('');
-    setAverageScore(null);
+    setEntranceScore(null);
     setRegisteredNumber(null);
-    setTargetScore(null);
+    setTargetNumber(null);
     setVisible(false);
   };
 
@@ -109,9 +109,9 @@ const FormAdd = () => {
       nameU: uniName,
       uniCode: uniCode,
       address: address,
-      averageS: averageScore,
+      averageS: entranceScore,
       isRegistered: registeredNumber,
-      target: targetScore,
+      target: targetNumber,
     });
     toast.success('Added a university');
   };
@@ -128,7 +128,11 @@ const FormAdd = () => {
   // }
 
   function validateNumber(EntranceScore) {
-    return /^[0-9]+$/.test(EntranceScore);
+    return /^[0-9.]+$/.test(EntranceScore);
+  }
+
+  function validateTarget(targetScore) {
+    return /^[0-9]+$/.test(targetScore);
   }
   
   return (
@@ -136,14 +140,24 @@ const FormAdd = () => {
       <Button style={{ marginBottom: '20px' }} type='primary' onClick={showModal}>
         Add University
       </Button>
-      <Modal title="Add a university" open={isModalVisible} onOk={handleOk} onCancel={handleCancel} width={700} okText='Add' destroyOnClose>
-        <Space direction='vertical'>
-          <Form>
-            <Form.Item
+      <Modal
+      title="Add a university"
+      open={isModalVisible}
+      onOk={handleOk}
+      onCancel={handleCancel}
+      width={600}
+      okText="Add"
+      destroyOnClose
+      style={{ top: 80 }}
+    >
+      <Form layout="vertical">
+        <Row gutter={16}>
+          <Col span={12}>
+              <Form.Item
               label="University Name"
               validateStatus={!validateName(uniName) && uniName ? 'error' : ''}
               help={!validateName(uniName) && uniName ? 'University Name must contain only letters and spaces' : ''}
-              name="Input"
+              name="uniName"
               style={{ fontWeight: 600 }}
               rules={[
                 {
@@ -151,28 +165,27 @@ const FormAdd = () => {
                   message: 'Please input!',
                 },
               ]}
-              
             >
               <Input
                 placeholder="Enter University's name"
                 prefix={<BankOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
-                style={{ marginLeft: '10px', width: '326px' }}
                 onChange={(e) => setUniName(e.target.value)}
                 value={uniName}
                 allowClear
                 suffix={
-                  <Tooltip title="Name just only contain letters and no numbers">
+                  <Tooltip title="Name must contain only letters and no numbers">
                     <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
                   </Tooltip>
                 }
               />
             </Form.Item>
-
-            <Form.Item
+          </Col>
+          <Col span={12}>
+              <Form.Item
               label="University Code"
               validateStatus={!validateName(uniCode) && uniCode ? 'error' : ''}
               help={!validateName(uniCode) && uniCode ? 'University Code must contain only letters and no spaces' : ''}
-              name="InputCode"
+              name="uniCode"
               style={{ fontWeight: 600 }}
               rules={[
                 {
@@ -186,101 +199,114 @@ const FormAdd = () => {
                 allowClear
                 onChange={(e) => setUniCode(e.target.value)}
                 maxLength={6}
-                style={{
-                  marginLeft: '13px',
-                  maxWidth: '165px',
-                }}
                 suffix={
-                  <Tooltip title="uniCode just contain only letters ">
+                  <Tooltip title="University Code must contain only letters">
                     <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
                   </Tooltip>
                 }
                 value={uniCode}
               />
             </Form.Item>
-
-            <Form.Item
-              label="Address"
-              style={{ fontWeight: 600 }}
-              name="TextArea"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input!',
-                },
-              ]}
-            >
-              <Input.TextArea
-                placeholder="Uni's address"
-                style={{ marginLeft: '63px', width: '393px' }}
-                allowClear
-                onChange={(e) => setAddress(e.target.value)}
-                value={address}
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="Entrance Score"
-              style={{ fontWeight: 600 }}
-              name="Entrance"
-              validateStatus={!validateNumber(averageScore) && averageScore ? 'error' : ''}
-              help={!validateNumber(averageScore) && averageScore ? 'Entrance Score must contain only number and no spaces' : ''}
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input!',
-                },
-              ]}
-            >
-              <Input
-                allowClear
-                maxLength={2}
-                style={{
-                  marginLeft: '20px',
-                  maxWidth: '34%',
-                }}
-                value={averageScore}
-                onChange={(e)=>setAverageScore(e.target.value)}
-                suffix={
-                  <Tooltip title="Average Score just contain only number ">
-                    <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
-                  </Tooltip>
-                }
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="Targets"
-              style={{ fontWeight: 600 }}
-              name="Target"
-              validateStatus={!validateNumber(targetScore) && targetScore ? 'error' : ''}
-              help={!validateNumber(targetScore) && targetScore ? 'Target must contain only number and no spaces' : ''}
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input!',
-                },
-              ]}
-            >
-              <Input
-              allowClear
-                maxLength={5}
-                style={{
-                  marginLeft: '75px',
-                  maxWidth: '30%',
-                }}
-                suffix={
-                  <Tooltip title="Average Score just contain only number ">
-                    <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
-                  </Tooltip>
-                }
-                value={targetScore}
-                onChange={(e)=>setTargetScore(e.target.value)}
-              />
-            </Form.Item>
-          </Form>
-        </Space>
-      </Modal>
+          </Col>
+        </Row>
+        <Row gutter={16}>
+            <Col span={12}>
+                <Form.Item
+                  label="Entrance Score"
+                  style={{ fontWeight: 600 }}
+                  name="entranceScore"
+                  validateStatus={
+                    (!validateNumber(entranceScore) && entranceScore) || (entranceScore && parseFloat(entranceScore) > 30)
+                      ? 'error'
+                      : ''
+                  }
+                  help={
+                    !validateNumber(entranceScore) && entranceScore
+                      ? 'Entrance Score must contain only numbers and no spaces'
+                      : (entranceScore && parseFloat(entranceScore) > 30)
+                      ? 'Entrance Score must be less than or equal to 30'
+                      : ''
+                  }
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input!',
+                    },
+                  ]}
+                >
+                  <Input
+                    allowClear
+                    maxLength={4}
+                    value={entranceScore}
+                    onChange={(e) => setEntranceScore(e.target.value)}
+                    suffix={
+                      <Tooltip title="Entrance Score must contain only numbers">
+                        <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+                      </Tooltip>
+                    }
+                  />
+                </Form.Item>
+            </Col>
+            <Col span={12}>
+                <Form.Item
+                  label="Target"
+                  style={{ fontWeight: 600 }}
+                  name="target"
+                  validateStatus={
+                    targetNumber && (!validateTarget(targetNumber) || Number(targetNumber) > 10000)
+                      ? 'error'
+                      : ''
+                  }
+                  help={
+                    targetNumber
+                      ? !validateTarget(targetNumber)
+                        ? 'Target must contain only positive numbers and no spaces'
+                        : Number(targetNumber) > 10000
+                        ? 'Target must be less than 10,000'
+                        : ''
+                      : ''
+                  }
+                  rules={[
+                    {
+                      required: true,
+                      message: 'Please input!',
+                    },
+                  ]}
+                >
+                  <Input
+                    allowClear
+                    maxLength={5}
+                    value={targetNumber}
+                    onChange={(e) => setTargetNumber(e.target.value)}
+                    suffix={
+                      <Tooltip title="Target must contain only numbers">
+                        <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+                      </Tooltip>
+                    }
+                  />
+                </Form.Item>
+            </Col>
+        </Row>
+        <Form.Item
+          label="Address"
+          style={{ fontWeight: 600}}
+          name="address"
+          rules={[
+            {
+              required: true,
+              message: 'Please input!',
+            },
+          ]}
+        >
+          <Input.TextArea
+            placeholder="University's address"
+            allowClear
+            onChange={(e) => setAddress(e.target.value)}
+            value={address}
+          />
+        </Form.Item>
+      </Form>
+    </Modal>
     </>
   );
 };

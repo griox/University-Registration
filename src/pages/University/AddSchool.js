@@ -354,6 +354,7 @@ const AddSchool = () => {
                                 Edit
                             </Typography.Link>
                         </Popconfirm>
+                        <Typography.Link onClick={cancel}>Cancel</Typography.Link>
                     </span>
                 ) : (
                     <Space size={'middle'}>

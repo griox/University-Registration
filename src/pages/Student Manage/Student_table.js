@@ -8,6 +8,7 @@ import {
     MinusCircleOutlined,
     ManOutlined,
 } from '@ant-design/icons';
+import { toast } from 'react-toastify';
 import { Button, Space, Divider } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { WomanOutlined } from '@ant-design/icons';
@@ -64,6 +65,7 @@ const Student_List = ({ data }) => {
     const [studentData, setStudentData] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState(null);
+    const [Loading,setLoading] = useState(true);
     const tableRef = useRef(null);
     useEffect(() => {
         const fetchData = async () => {
@@ -92,7 +94,7 @@ const Student_List = ({ data }) => {
         setSearchedColumn(dataIndex);
     };
     const handleProvideAccount = async (record) => {
-        const { email } = record;
+        const encodeEmail = encodeEmails(record.email)
         try {
             // Cập nhật giá trị isRegister của sinh viên
             await update(ref(db, `Detail/${record.key}`), {
@@ -100,11 +102,11 @@ const Student_List = ({ data }) => {
             });
 
             // Thêm dữ liệu vào bảng account
-            const accountRef = child(ref(db), 'Account');
-            const newAccountRef = push(accountRef);
-            await set(newAccountRef, {
-                email: email,
+            const accountRef = ref(db, `Account/${encodeEmail}`);
+            await set(accountRef, {
+                email: record.email,
                 password: 'Tvx1234@',
+                name: record.name,
                 Role: 'user',
             });
 
@@ -117,15 +119,8 @@ const Student_List = ({ data }) => {
     };
     const handleDeleteAccount = async (record) => {
         try {
-            // Create an object with the data to be updated in the database
-            const updates = {};
-            updates[`Detail/${record.key}/isRegister`] = false;
-            updates[`Account/${record.key}`] = null; // Use null to delete the node
-
-            // Perform the update operation
-            await update(ref(db), updates);
-
-            // Update state
+            const encodeEmail = encodeEmails(record.email)
+            await remove(child(ref(db),`Account/${encodeEmail}`))
             const newData = studentData.map((item) =>
                 item.key === record.key ? { ...item, isRegister: false } : item,
             );
@@ -222,10 +217,16 @@ const Student_List = ({ data }) => {
                 text
             ),
     });
+    function encodeEmails(email) {
+        return email.replace('.', ',');
+    }
     const handleDelete = async (key) => {
         try {
-            await remove(child(ref(db), `Detail/${key}`));
-            const newData = studentData.filter((item) => item.key !== key);
+            console.log(key);
+            await remove(child(ref(db), `Detail/${key.id}`));
+            const emailhash = encodeEmails(key.email)
+            await remove(child(ref(db),`Account/${key.emailhash}`))
+            const newData = studentData.filter((item) => item.id !== key.id);
             setStudentData(newData);
         } catch (error) {
             console.error('Error deleting data:', error);
@@ -274,7 +275,10 @@ const Student_List = ({ data }) => {
 
             if (index > -1) {
                 const item = newData[index];
-
+                if(row.MathScore>10||row.EnglishScore>10||row.LiteratureScore>10){
+                    toast.error('Score must not be less or equal to 10');
+                    return;
+                }
                 // Xử lý dữ liệu thay đổi
                 newData.splice(index, 1, {
                     ...item,
@@ -305,7 +309,7 @@ const Student_List = ({ data }) => {
 
                 // Cập nhật dữ liệu trên Firebase
                 await update(ref(db, `Detail/${key}`), updatedRow);
-                console.log('Data updated in Firebase successfully');
+                toast.success('Data updated successfully');
             } else {
                 newData.push(row);
                 setStudentData(newData);
@@ -314,7 +318,7 @@ const Student_List = ({ data }) => {
 
                 // Thêm dữ liệu mới vào Firebase
                 await set(ref(db, `Detail/${key}`), row); // Thêm dữ liệu mới
-                console.log('Data added to Firebase successfully');
+                toast.success('Data added to Firebase successfully');
             }
         } catch (errInfo) {
             console.log('Validate Failed:', errInfo);
@@ -457,7 +461,7 @@ const Student_List = ({ data }) => {
                         >
                             <EditOutlined />
                         </Typography.Link>
-                        <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
+                        <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record)}>
                             <Typography.Link>
                                 <DeleteOutlined />
                             </Typography.Link>
@@ -503,8 +507,10 @@ const Student_List = ({ data }) => {
                 <Modal_Add />
                 <Modal_Detail
                     visible={isModalVisible}
-                    onClose={() => setIsModalVisible(false)}
+                    onClose={() => (setIsModalVisible(false), setLoading(true))}
                     student={selectedStudent}
+                    Loading = {Loading}
+                    setLoading ={setLoading}
                 />
                 <Form form={form} component={false}>
                     <Table

@@ -81,7 +81,7 @@ const Modal_Add = () => {
         LiteratureScore: Literaturescore,
         AverageScore: round(Mathscore + Englishscore + Literaturescore,1),
         Address: Address,
-        uniCode: [],
+        uniCode: [''],
         isRegister: 'true',
       });
       const accountRef = child(ref(db), 'Account');

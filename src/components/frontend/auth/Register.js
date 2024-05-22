@@ -42,6 +42,7 @@ const Register = () => {
     };
 
     const history = useHistory();
+    const [author, setAuthor] = useState(localStorage.getItem('Role') || '');
 
     useEffect(() => {
         const passwordInput1 = document.querySelector('.pass_login_1');
@@ -144,12 +145,12 @@ const Register = () => {
                 if (y !== null) {
                     if (props.againPassword === props.password) {
                         const encodeEmail = encodePath(props.email);
-                        console.log(encodeEmail);
+                        // console.log(encodeEmail);
                         const ip = {
                             name: props.name,
                             email: props.email,
                             password: props.password,
-                            role: 'user',
+                            Role: 'user',
                         };
                         set(ref(db, 'Account/' + encodeEmail), ip);
                         clear();
@@ -301,8 +302,25 @@ const Register = () => {
                                             <span>Regist</span>
                                         </div> */}
                                         <div className="input-box">
-                                            <button className="button-clear">User</button>
-                                            <button className="button-submit">Admin</button>
+                                            {author === 'admin' ? (
+                                                <Button
+                                                    type="primary"
+                                                    loading={loadings[1]}
+                                                    onClick={() => enterLoading(1)}
+                                                    className="input-submit"
+                                                    style={buttonStyle}
+                                                    onMouseEnter={() => setIsHovered(true)}
+                                                    onMouseLeave={() => setIsHovered(false)}
+                                                >
+                                                    <span>Regist</span>
+                                                    <i className="bx bx-right-arrow-alt"></i>
+                                                </Button>
+                                            ) : (
+                                                <>
+                                                    <button className="button-clear">User</button>
+                                                    <button className="button-submit">Admin</button>
+                                                </>
+                                            )}
                                         </div>
 
                                         {/* <Button
@@ -326,8 +344,8 @@ const Register = () => {
                                             onMouseEnter={() => setIsHovered(true)}
                                             onMouseLeave={() => setIsHovered(false)}
                                         >
-                                        <span>Regist</span>
-                                        <i className="bx bx-right-arrow-alt"></i>
+                                            <span>Regist</span>
+                                            <i className="bx bx-right-arrow-alt"></i>
                                         </Button> */}
                                     </div>
                                     <div className="input-box">

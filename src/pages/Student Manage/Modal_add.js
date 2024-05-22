@@ -5,7 +5,7 @@ import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
 import { Button, Modal, Space, Select, InputNumber, DatePicker, Form } from 'antd';
 import { InfoCircleOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
-import { Input, Tooltip } from 'antd';
+import { Input, Tooltip, Row, Col } from 'antd';
 import moment from 'moment'
 
 const firebaseConfig = {
@@ -201,12 +201,29 @@ function validateScore(score) {
   }
 
   function validateFullname(name) {
-    return /^[A-Za-z]+$/.test(name);
+    return /^[A-Za-zÀ-ÿ]+$/.test(name);
   }
-  
+  // function validateFullname(name) {
+  //   return /^[A-Za-z]+$/.test(name);
+  // }
 
+  // function validateMathScore(Mathscore) {
+  //   return /^\d+$/.test(Mathscore);
+  // }
+  
+  // function validateEnglishscore(Englishscore) {
+  //   return /^\d+$/.test(Englishscore);
+  // }
+
+  // function validateLiteraturescore(Literaturescore) {
+  //   return /^\d+$/.test(Literaturescore);
+  // }
   function validateIdenNumber(idenNum) {
-    return idenNum.length === 12;
+    return idenNum.length === 12 && /^[0-9]+$/.test(idenNum);
+  }
+
+  function validateNumber(EntranceScore) {
+    return /^[0-9.]+$/.test(EntranceScore);
   }
 
   const genders = [
@@ -327,188 +344,264 @@ function validateScore(score) {
   ];
 
   const { TextArea } = Input;
-
+  
   return (
     <>
       <Button type="primary" onClick={showModal}>
         Add a new student
       </Button>
-      <Modal title="Register for Student" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={600} destroyOnClose>
-        <Space direction="vertical">
-          <Form>
-            <Space.Compact size="small">
-              <Space size={'large'}>
-                <Form.Item
-                  label="Name"
-                  validateStatus={!validateFullname(Fullname) && Fullname ? 'error' : ''}
-                  help={validateFullname(Fullname) && Fullname ? '' : ''}
-                  style={{fontWeight:600}}
-                  name="name"
-                  rules={[
-                    {
-                      required: true,
-                      message:'Please Input'
-                    },
-                  ]}
-                >
-                  <Input
-                    placeholder="Enter Student's name"
-                    prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
-                    onChange={(e) => {
-                      setFullname(e.target.value);
-                    }}
-                    suffix={
-                      <Tooltip title="Name must contain letters and no space ">
-                        <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
-                      </Tooltip>
-                    }
-                    allowClear  
-                  />
-                </Form.Item>
-                <Form.Item label="Gender" style={{fontWeight:600}}>
-                  <Select defaultValue="Female" options={genders} onChange={(value) => setGender(value)} width/>
-                </Form.Item>
-              </Space>
-            </Space.Compact>
-            <Space.Compact>
-              <Space size={'large'}>
-                <Form.Item
-                  label="Email"
-                  validateStatus={!validateEmailFormat(Email) && Email? 'error' : ''}
-                  help={validateEmailFormat(Email) && Email ? ' ':''}
-                  style={{fontWeight:600}}
-                  name="email"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please input!',
-                    },
-                  ]}
-                >
-                  <Input
-                    placeholder="Enter Student's email"
-                    prefix={<MailOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
-                    suffix={
-                      <Tooltip title="Email must contain @example">
-                        <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
-                      </Tooltip>
-                    }
-                    
-                    style={{ width: '100%' }}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                    }}
-                    showClear
-                  />
-                </Form.Item>
-                <Form.Item label="Enthicity"  style={{fontWeight:600}}
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please input!',
-                    },
-                  ]}>
-                  <Select defaultValue="Kinh" options={enthicities} onChange={(value) => setEnthicity(value)} showSearch style={{ width: 150 }} />
-                </Form.Item>
-              </Space>
-            </Space.Compact>
-            <Space.Compact>
-              <Space size={'large'}>
-                <Form.Item label="Date of Birth"  style={{fontWeight:600}}
-                name="Date"
-                rules={[
-                  {
-                    required: true,
-                    message: 'Please input!',
-                  },
-                ]}
-                >
-                  <DatePicker format="DD/MM/YYYY"  onChange={(value) => setDateOfBirth(value)} />
-                </Form.Item>
-                <Form.Item label="Place of Birth" style={{fontWeight:600}}>
-                  <Select defaultValue='Khánh Hòa'  options={cities} showSearch style={{ width: 150 }} onChange={(value) => setPlaceOfBirth(value)} />
-                </Form.Item>
-              </Space>
-              </Space.Compact>
-            <Space.Compact>
-              <Space>
-                <Form.Item
-                  label="Identify number"
-                  validateStatus={! validateIdenNumber(Identify) && Identify? 'error' : ''}
-                  style={{fontWeight:600}}
-                  name="Iden"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please input!',
-                    },
-                  ]}
-                >
-                  <Input
-                    onChange={(e) => {
-                      setIdentify(e.target.value);
-                    }}
-                    value={Identify}
-                    suffix={
-                      <Tooltip title="Identify number must has 12 digits">
-                        <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
-                      </Tooltip>
-                    }
-                  />
-                </Form.Item>
-              </Space>
-            </Space.Compact>
-            <Space.Compact>
-              <Space wrap>
-                <Form.Item label="Math" style={{fontWeight:600}}
-                name="math"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please input!',
-                    },
-                  ]}
-                  >
-                  <InputNumber min={0} max={10} step={0.2}  onChange={(value) => setMathscore(value)} />
-                </Form.Item>
-                <Form.Item label="English" style={{fontWeight:600}}
-                name="english"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please input!',
-                    },
-                  ]}>
-                  <InputNumber min={0} max={10} step={0.2}  onChange={(value) => setEnglishscore(value)} />
-                </Form.Item>
-                <Form.Item label="Literature" style={{fontWeight:600}}
-                name="literature"
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please input!',
-                    },
-                  ]}>
-                  <InputNumber min={0} max={10} step={0.2}  onChange={(value) => setLiteraturescore(value)} />
-                </Form.Item>
-              </Space>
-            </Space.Compact>
-            <Space.Compact>
-              <Space>
-                <Form.Item label="Address" style={{fontWeight:600}}
-                  rules={[
-                    {
-                      required: true,
-                      message: 'Please input!',
-                    },
-                  ]}>
-                  <TextArea showCount maxLength={100} placeholder="Student's Address" width={700} onChange={(e) => setAddress(e.target.value)} value={Address} style={{ width: '450px', height:'100px' }} />
-                </Form.Item>
-              </Space>
-            </Space.Compact>
-          </Form>
-        </Space>
-      </Modal>
+      <Modal title="Register for Student" open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={700} destroyOnClose>
+      <Form layout="vertical">
+    <Row gutter={16}>
+      <Col span={12}>
+        <Form.Item
+          label="Name"
+          name="name"
+          validateStatus={!validateFullname(Fullname) && Fullname ? 'error' : ''}
+              help={!validateFullname(Fullname) && Fullname ? 'University Name must contain only letters and spaces' : ''}
+          style={{ fontWeight: 600 }}
+          rules={[
+            {
+              required: true,
+              message: 'Please input!',
+            },
+          ]}
+        >
+          <Input
+            placeholder="Enter Student's name"
+            prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
+            onChange={(e) => setFullname(e.target.value)}
+            suffix={
+              <Tooltip title="Name must contain letters and no space ">
+                <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+              </Tooltip>
+            }
+            allowClear
+          />
+        </Form.Item>
+      </Col>
+      <Col span={12}>
+        <Form.Item
+          label="Gender"
+          name="gender"
+          style={{fontWeight: 600}}
+          rules={[
+            {
+              required: true,
+              message: 'Please input!',
+            },
+          ]}
+        >
+          <Select defaultValue="Female" options={genders} onChange={(value) => setGender(value)} />
+        </Form.Item>
+      </Col>
+    </Row>
+    <Row gutter={16}>
+      <Col span={12}>
+        <Form.Item
+          label="Date of Birth"
+          name="dob"
+          style={{fontWeight: 600}}
+          rules={[
+            {
+              required: true,
+              message: 'Please input!',
+            },
+          ]}
+        >
+          <DatePicker format="DD/MM/YYYY" onChange={(value) => setDateOfBirth(value)} />
+        </Form.Item>
+      </Col>
+      <Col span={12}>
+        <Form.Item
+          label="Place of Birth"
+          name="pob"
+          style={{fontWeight: 600}}
+          rules={[
+            {
+              required: true,
+              message: 'Please input!',
+            },
+          ]}
+        >
+          <Select defaultValue='Khánh Hòa' options={cities} showSearch onChange={(value) => setPlaceOfBirth(value)} />
+        </Form.Item>
+      </Col>
+    </Row>
+        <Form.Item
+          label="Email"
+          name="email"
+          style={{fontWeight: 600}}
+          validateStatus={!validateEmailFormat(Email) && Email ? 'error' : ''}
+          help={validateEmailFormat(Email) && Email ? ' ' : ''}
+          rules={[
+            {
+              required: true,
+              message: 'Please input!',
+            },
+          ]}
+        >
+          <Input
+            placeholder="Enter Student's email"
+            prefix={<MailOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
+            suffix={
+              <Tooltip title="Email must contain @example">
+                <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+              </Tooltip>
+            }
+            onChange={(e) => setEmail(e.target.value)}
+            allowClear
+          />
+        </Form.Item>
+    <Row gutter={16}>
+      <Col span={12}>
+        <Form.Item
+          label="Identify Number"
+          name="identify"
+          style={{fontWeight: 600}}
+          validateStatus={!validateIdenNumber(Identify) && Identify ? 'error' : ''}
+          help={!validateIdenNumber(Identify) && Identify ? 'Identify number must be 12 digits and contain only number ' : ''}
+          rules={[
+            {
+              required: true,
+              message: 'Please input!',
+            },
+          ]}
+        >
+          <Input
+            onChange={(e) => setIdentify(e.target.value)}
+            showCount maxLength={12}
+            value={Identify}
+            // suffix={
+            //   <Tooltip title="Identify number must have 12 digits">
+            //     <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+            //   </Tooltip>
+            // }
+          />
+        </Form.Item>
+      </Col>
+      <Col span={12}>
+        <Form.Item
+          label="Ethnicity"
+          name="ethnicity"
+          style={{fontWeight: 600}}
+          rules={[
+            {
+              required: true,
+              message: 'Please input!',
+            },
+          ]}
+        >
+          <Select defaultValue="Kinh" options={enthicities} onChange={(value) => setEnthicity(value)} showSearch />
+        </Form.Item>
+      </Col>
+    </Row>
+    <Row gutter={16}>
+      <Col span={24}>
+        <Form.Item
+          label="Address"
+          name="address"
+          style={{fontWeight: 600}}
+          rules={[
+            {
+              required: true,
+              message: 'Please input!',
+            },
+          ]}
+        >
+          <TextArea showCount maxLength={100} allowClear placeholder="Student's Address" onChange={(e) => setAddress(e.target.value)} value={Address} />
+        </Form.Item>
+      </Col>
+    </Row>
+    <Row gutter={16}>
+      <Col span={8}>
+      <Form.Item
+        label="Math"
+        style={{ fontWeight: 600 }}
+        name="math"
+        validateStatus={
+          (!validateNumber(Mathscore) && Mathscore) || (Mathscore && parseFloat(Mathscore) > 10)
+            ? 'error'
+            : ''
+        }
+        help={
+          !validateNumber(Mathscore) && Mathscore
+            ? 'Math Score must contain only numbers and no spaces'
+            : (Mathscore && parseFloat(Mathscore) > 10)
+            ? 'Math Score must be less than or equal to 10'
+            : ''
+        }
+        rules={[
+          {
+            required: true,
+            message: 'Please input!',
+          },
+        ]}
+      >
+        <Input
+          maxLength={4}
+          style={{ width: '50%' }}
+          onChange={(e) => setMathscore(e.target.value)}
+        />
+      </Form.Item>
+      </Col>
+      <Col span={8}>
+        <Form.Item
+          label="English"
+          name="english"
+          style={{fontWeight: 600}}
+          validateStatus={
+            (!validateNumber(Englishscore) && Englishscore) || (Englishscore && parseFloat(Englishscore) > 10)
+              ? 'error'
+              : ''
+          }
+          help={
+            !validateNumber(Englishscore) && Englishscore
+              ? 'English Score must contain only numbers and no spaces'
+              : (Englishscore && parseFloat(Englishscore) > 10)
+              ? 'English Score must be less than or equal to 10'
+              : ''
+          }
+          rules={[
+            {
+              required: true,
+              message: 'Please input!',
+            },
+          ]}
+        >
+          <Input maxLength={4} style={{width: '50%'}} onChange={(e) => setEnglishscore(e.target.value)} />
+        </Form.Item>
+      </Col>
+      <Col span={8}>
+        <Form.Item
+          label="Literature"
+          name="literature"
+          style={{fontWeight: 600}}
+          validateStatus={
+            (!validateNumber(Literaturescore) && Literaturescore) || (Literaturescore && parseFloat(Literaturescore) > 10)
+              ? 'error'
+              : ''
+          }
+          help={
+            !validateNumber(Literaturescore) && Literaturescore
+              ? 'Literature Score must contain only numbers and no spaces'
+              : (Literaturescore && parseFloat(Literaturescore) > 10)
+              ? 'Literature Score must be less than or equal to 10'
+              : ''
+          }
+          rules={[
+            {
+              required: true,
+              message: 'Please input!',
+            },
+          ]}
+        >
+          <Input maxLength={4} style={{width: '50%'}} onChange={(e) => setLiteraturescore(e.target.value)} />
+        </Form.Item>
+      </Col>
+    </Row>
+  </Form>
+</Modal>
     </>
   );
 };

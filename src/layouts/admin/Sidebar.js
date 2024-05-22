@@ -44,6 +44,7 @@ const Sidebar = () => {
     const isInitialMountSelected = useRef(true);
 
     useEffect(() => {
+
         if (isInitialMountCollapsed.current) {
             isInitialMountCollapsed.current = false;
         } else {
@@ -146,6 +147,7 @@ const Sidebar = () => {
                     </MenuItem>
                     {!isCollapsed && (
                         <Box mb="25px">
+                            {/* {console.log(username.name)} */}
                             <Box display="flex" justifyContent="center" alignItems="center">
                                 <Avatar
                                     alt="Remy Sharp"

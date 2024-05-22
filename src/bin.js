@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { child, get, getDatabase, push, ref, update } from 'firebase/database';
+import { child, get, getDatabase, push, ref, remove, update } from 'firebase/database';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -23,21 +23,26 @@ function Bin() {
     const db = getDatabase(app);
 
     const a = () => {
-        get(child(ref(db), `University/`)).then((snapshot) => {
-            if (snapshot.exists()) {
-                const x = snapshot.val();
-                for (let i in x) {
-                    let size = Object.keys(x[i].registeration).length;
-                    update(ref(db, 'University/' + x[i].uniCode), {
-                        isRegistered: size,
-                    });
-                }
-            }
-        });
         // get(child(ref(db), `University/`)).then((snapshot) => {
         //     if (snapshot.exists()) {
         //         const x = snapshot.val();
-        //         setListUni(Object.values(x).map((user) => user.uniCode));
+        //         for (let i in x) {
+        // let size = Object.keys(x[i].registeration).length;
+        // const y = x[i].uniCode + '/' + 'Target';
+        // console.log(y);
+        // remove(ref(db, 'University/' + y));
+        //         }
+        //     }
+        // });
+        // get(child(ref(db), `Detail/`)).then((snapshot) => {
+        //     if (snapshot.exists()) {
+        //         const x = snapshot.val();
+        //         // setListUni(Object.values(x).map((user) => user.uniCode));
+        //         for (let i in x) {
+        //             update(ref(db, `Account/` + x[i].email.replace(/\./g, ',')), {
+        //                 name: x[i].name,
+        //             });
+        //         }
         //     }
         // });
         // get(child(ref(db), `Detail/`)).then((snapshot) => {

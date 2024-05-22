@@ -160,6 +160,21 @@ const AddSchool = () => {
             }
         }
     };
+    const checkUniCodeExistence = async (newUniCode) => {
+        try {
+            const snapshot = await get(child(ref(db), 'University'));
+            if (snapshot.exists()) {
+                const universities = snapshot.val();
+                const uniCodeExists = Object.values(universities).some((uni) => uni.uniCode === newUniCode);
+                return uniCodeExists;
+            }
+            return false;
+        } catch (error) {
+            console.error('Error checking uniCode existence:', error);
+            return false;
+        }
+    };
+    
     const save = async (key) => {
         try {
             const row = await form.validateFields();
@@ -169,11 +184,19 @@ const AddSchool = () => {
             if (index > -1) {
                 const item = newData[index];
                 if (row.target < item.isRegistered) {
-                    console.log(row.target);
                     toast.error("Targets must not be less than Number of registration");
                     return; // Không thực hiện lưu nếu điều kiện không được đáp ứng
                 }
-                // Xử lý dữ liệu thay đổi
+                if(row.averageS>30||row.averageS<0){
+                    toast.error('Invalid Entrance Score Format')
+                }
+                // if (row.uniCode !== item.uniCode) {
+                //     const uniCodeExists = await checkUniCodeExistence(row.uniCode);
+                //     if (uniCodeExists) {
+                //         toast.error('This uniCode already exists');
+                //         return;
+                //     }
+                // }
                 newData.splice(index, 1, {
                     ...item,
                     ...row,
@@ -305,6 +328,7 @@ const AddSchool = () => {
             dataIndex: 'nameU',
             key: 'name',
             width: '30%',
+            editable: true,
             ...getColumnSearchProps('nameU'),
             render: (text, record) => (
                 <Typography.Link onClick={() => handleSchoolDetail(record)}>{text}</Typography.Link>
@@ -314,6 +338,7 @@ const AddSchool = () => {
             title: 'UniCode',
             dataIndex: 'key',
             width: '13%',
+            editable: true,
             ...getColumnSearchProps('ucode'),
             render: (text,record)=>(
                 <Tooltip title={record.isRegistered === record.targer ? 'Can not regist':''}>

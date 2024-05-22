@@ -1,7 +1,6 @@
 /* POPPINS FONT */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-
 /* ====== BASE ===== */
 * {
     margin: 0;
@@ -206,7 +205,7 @@
 
 .input-box input:not([type='checkbox']) {
     display: block;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     width: 100%;
     border-radius: 5px;
     border: 1px solid rgb(194, 199, 208);

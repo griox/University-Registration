@@ -208,7 +208,7 @@
 
 .input-box input:not([type='checkbox']) {
     display: block;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     width: 100%;
     border-radius: 5px;
     border: 1px solid rgb(194, 199, 208);
@@ -248,7 +248,6 @@
     font-size: 22px;
 }
 
-.bx-user,
 .bx-lock-alt,
 .bx-envelope {
     left: 10px;
@@ -300,6 +299,8 @@
     width: 100%;
     display: flex;
     gap: 5px;
+    margin-bottom: 10px;
+    height: 20px;
 }
 
 .forget-pass a {
@@ -312,7 +313,8 @@
 
 .remembertxt_login {
     color: #fff;
-    font-size: 14px;
+    font-size: 15px;
+    width: 100%;
 }
 
 .forget-pass a:hover {

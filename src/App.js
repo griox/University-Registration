@@ -13,6 +13,8 @@ import PrivateRoute from './PrivateRoute';
 import { useCreateInforRecordsOnMount } from './database/Student_details';
 import { useCreateUnitRecordsOnMount } from './database/University';
 function App() {
+    // useCreateInforRecordsOnMount();
+    // useCreateUnitRecordsOnMount();
     return (
         <Provider store={store}>
             <div className="App">

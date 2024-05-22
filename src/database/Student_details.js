@@ -1,6 +1,6 @@
 import 'firebase/auth';
 import { format } from 'date-fns';
-import { ref, getDatabase, set, get, child } from 'firebase/database';
+import { ref, getDatabase, set, get, child, update } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { useEffect } from 'react';
 const firebaseConfig = {
@@ -254,6 +254,118 @@ const fetchData = async () => {
 
 export async function useCreateInforRecordsOnMount() {
   useEffect(() => {
-    createInforRecords(); // Tạo bản ghi tài khoản
+    clearUniCodesForAllStudents(); // Tạo bản ghi tài khoản
   }, []); // Thực hiện chỉ một lần khi component được mount
 }
+
+const updateUniCode = async (studentID, newUniCodes) => {
+  try {
+    const studentRef = ref(db, `Detail/${studentID}`);
+    const studentSnapshot = await get(studentRef);
+    if (studentSnapshot.exists()) {
+      const studentData = studentSnapshot.val();
+      const currentUniCodes = studentData.uniCode || [];
+      
+      // Merge newUniCodes with currentUniCodes, remove duplicates
+      const mergedUniCodes = Array.from(new Set([...currentUniCodes, ...newUniCodes]));
+
+      // Ensure that the number of uniCodes does not exceed 5
+      const updatedUniCodes = mergedUniCodes.slice(0, 5);
+
+      // Update the student's uniCode field
+      await update(studentRef, { uniCode: updatedUniCodes });
+      console.log('Updated uniCodes for student:', studentID);
+    } else {
+      console.error('Student not found');
+    }
+  } catch (error) {
+    console.error('Error updating uniCodes:', error);
+  }
+};
+
+const updateUniCodesForAllStudents = async () => {
+  try {
+    const detailRef = ref(db, 'Detail');
+    const snapshot = await get(detailRef);
+    if (snapshot.exists()) {
+      const studentData = snapshot.val();
+      const existingStudentIDs = Object.keys(studentData);
+      
+      // Số lượng sinh viên đã có
+      const numExistingStudents = existingStudentIDs.length;
+      const numNewStudents = 394 - numExistingStudents; // Số lượng sinh viên cần tạo
+
+      // Tạo 150 sinh viên đăng ký 5 trường
+      for (let i = 0; i < 150; i++) {
+        const studentID = generateUniqueID();
+        const newUniCodes = getRandomUniCodes(5);
+        await updateUniCode(studentID, newUniCodes);
+      }
+
+      // Tạo 10 sinh viên đăng ký 1 trường
+      for (let i = 0; i < 10; i++) {
+        const studentID = generateUniqueID();
+        const newUniCodes = getRandomUniCodes(1);
+        await updateUniCode(studentID, newUniCodes);
+      }
+
+      // Tạo 20 sinh viên đăng ký 3 trường
+      for (let i = 0; i < 20; i++) {
+        const studentID = generateUniqueID();
+        const newUniCodes = getRandomUniCodes(3);
+        await updateUniCode(studentID, newUniCodes);
+      }
+
+      // Tạo 50 sinh viên đăng ký 2 trường
+      for (let i = 0; i < 50; i++) {
+        const studentID = generateUniqueID();
+        const newUniCodes = getRandomUniCodes(2);
+        await updateUniCode(studentID, newUniCodes);
+      }
+
+      // Số lượng sinh viên cần tạo cho việc đăng ký 4 trường
+      const remainingStudents = numNewStudents - 150 - 10 - 20 - 50;
+
+      // Tạo số lượng sinh viên cần cho việc đăng ký 4 trường
+      for (let i = 0; i < remainingStudents; i++) {
+        const studentID = generateUniqueID();
+        const newUniCodes = getRandomUniCodes(4);
+        await updateUniCode(studentID, newUniCodes);
+      }
+
+      console.log('Updated uniCodes for all students');
+    } else {
+      console.error('No student data available');
+    }
+  } catch (error) {
+    console.error('Error updating uniCodes for all students:', error);
+  }
+};
+const getRandomUniCodes = (numCodes) => {
+  const newUniCodes = [];
+  while (newUniCodes.length < numCodes) {
+    const code = unicodes[Math.floor(Math.random() * unicodes.length)];
+    if (!newUniCodes.includes(code)) {
+      newUniCodes.push(code);
+    }
+  }
+  return newUniCodes;
+};
+const clearUniCodesForAllStudents = async () => {
+  try {
+    const detailRef = ref(db, 'Detail');
+    const snapshot = await get(detailRef);
+    if (snapshot.exists()) {
+      const studentData = snapshot.val();
+      for (const studentID in studentData) {
+        await updateUniCode(studentID, []); // Gọi hàm updateUniCode với mảng rỗng
+      }
+      console.log('Cleared uniCodes for all students');
+    } else {
+      console.error('No student data available');
+    }
+  } catch (error) {
+    console.error('Error clearing uniCodes for all students:', error);
+  }
+};
+

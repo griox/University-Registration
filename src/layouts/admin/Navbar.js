@@ -66,6 +66,7 @@ const Navbar = () => {
     const history = useHistory();
 
     const handleLogout = () => {
+        localStorage.setItem('Infor', JSON.stringify(''));
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('selectedMenuItem');
         history.push('/');

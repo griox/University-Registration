@@ -118,8 +118,8 @@ const Register = () => {
         setAgainPassword('');
     };
     function regist(props) {
-        if (props.name === '') {
-            toast.error('Please enter your full name');
+        if (props.fullName === '') {
+            toast.error('Please enter your name');
             return;
         }
         if (props.email === '') {
@@ -146,7 +146,8 @@ const Register = () => {
                         const encodeEmail = encodePath(props.email);
                         console.log(encodeEmail);
                         const ip = {
-                            email: encodePath(props.email),
+                            name: props.name,
+                            email: props.email,
                             password: props.password,
                             role: 'user',
                         };

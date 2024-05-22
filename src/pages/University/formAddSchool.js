@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Modal, Button, Form, Input, InputNumber, Space } from 'antd';
+import { Modal, Button, Form, Input, InputNumber, Space, Tooltip } from 'antd';
 import 'firebase/auth';
 import { getDatabase, ref, child, get, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
-import { BankOutlined } from '@ant-design/icons';
+import { BankOutlined,InfoCircleOutlined } from '@ant-design/icons';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
@@ -27,6 +27,7 @@ const FormAdd = () => {
   const [averageScore, setAverageScore] = useState(null);
   const [targetScore, setTargetScore] = useState(null);
   const [registeredNumber, setRegisteredNumber] = useState(null);
+  const [inputError, setInputError] = useState('');
 
   const showModal = () => {
     setVisible(true);
@@ -35,9 +36,38 @@ const FormAdd = () => {
   const handleOk = async () => {
     let hasError = false;
     // Initial checks
-    if (uniName === '' || address === '' || averageScore === null || registeredNumber === null || targetScore === null) {
+    if (uniName === '' || address === '' || averageScore === null || registeredNumber === null || targetScore === null || uniCode===null) {
       toast.error('Please fill in all information');
       hasError = true;
+      if(uniName!==''){
+        if(uniCode!==''){
+          if(!validateName(uniCode)){
+            toast.error('Invalid uniCode format')
+            hasError = true;
+          }
+          else{
+            const snapshot = await get(child(ref(db), `University/`));
+            if(snapshot.exists()){
+              const inFors = snapshot.val();
+              const uniCodeExists = Object.values(inFors).some((uni) => uni.uniCode === uniCode);
+              if(uniCodeExists){
+                toast.error('This uniCode has already exists');
+                hasError = true;
+              }
+            }
+          }
+        }
+      }else{
+        const snapshot = await get(child(ref(db), `University/`));
+        if(snapshot.exists()){
+          const inFors = snapshot.val();
+          const uniCodeExists = Object.values(inFors).some((uni) => uni.nameU === uniName);
+          if(uniCodeExists){
+            toast.error('This university has already exists');
+            hasError = true;
+          }
+        }
+      }
     } else if (!validateName(uniName)) {
       toast.error('Invalid name');
       hasError = true;
@@ -87,25 +117,31 @@ const FormAdd = () => {
   };
 
   function validateName(uniName) {
+    return /^[A-Za-zÀ-ÿ]+$/.test(uniName);
+  }
+  function validateNameUni(uniName) {
     return /^[A-Za-zÀ-ÿ\s]+$/.test(uniName);
   }
 
-  function validateUniCode(uniCode) {
-    return /^[A-Za-z]+$/.test(uniCode);
-  }
+  // function validateUniCode(uniCode) {
+  //   return /^[A-Za-z]+$/.test(uniCode);
+  // }
 
+  function validateNumber(EntranceScore) {
+    return /^[0-9]+$/.test(EntranceScore);
+  }
+  
   return (
     <>
       <Button style={{ marginBottom: '20px' }} type='primary' onClick={showModal}>
         Add University
       </Button>
-      <Modal title="Add a university" open={isModalVisible} onOk={handleOk} onCancel={handleCancel} width={600} okText='Add'>
+      <Modal title="Add a university" open={isModalVisible} onOk={handleOk} onCancel={handleCancel} width={700} okText='Add' destroyOnClose>
         <Space direction='vertical'>
           <Form>
             <Form.Item
               label="University Name"
-              validateStatus={!validateName(uniName) && uniName ? 'error' : ''}
-              help={!validateName(uniName) && uniName ? 'Name must contain only letters and spaces' : ''}
+              validateStatus={!validateNameUni(uniName) && uniName ? 'error' : ''}
               name="Input"
               style={{ fontWeight: 600 }}
               rules={[
@@ -114,20 +150,26 @@ const FormAdd = () => {
                   message: 'Please input!',
                 },
               ]}
+              
             >
               <Input
                 placeholder="Enter University's name"
                 prefix={<BankOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
-                style={{ marginLeft: '10px' }}
+                style={{ marginLeft: '10px', width: '326px' }}
                 onChange={(e) => setUniName(e.target.value)}
                 value={uniName}
                 allowClear
+                suffix={
+                  <Tooltip title="Name just only contain letters and no numbers">
+                    <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+                  </Tooltip>
+                }
               />
             </Form.Item>
 
             <Form.Item
               label="University Code"
-              validateStatus={!validateUniCode(uniCode) && uniCode ? 'error' : ''}
+              validateStatus={!validateName(uniCode) && uniCode ? 'error' : ''}
               name="InputCode"
               style={{ fontWeight: 600 }}
               rules={[
@@ -141,11 +183,16 @@ const FormAdd = () => {
                 placeholder="Uni's Code"
                 allowClear
                 onChange={(e) => setUniCode(e.target.value)}
-                maxLength={10}
+                maxLength={6}
                 style={{
                   marginLeft: '13px',
-                  maxWidth: '50%',
+                  maxWidth: '165px',
                 }}
+                suffix={
+                  <Tooltip title="uniCode just contain only letters ">
+                    <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+                  </Tooltip>
+                }
                 value={uniCode}
               />
             </Form.Item>
@@ -163,7 +210,7 @@ const FormAdd = () => {
             >
               <Input.TextArea
                 placeholder="Uni's address"
-                style={{ marginLeft: '63px' }}
+                style={{ marginLeft: '63px', width: '393px' }}
                 allowClear
                 onChange={(e) => setAddress(e.target.value)}
                 value={address}
@@ -182,39 +229,16 @@ const FormAdd = () => {
               ]}
             >
               <InputNumber
-                min={0}
-                max={10000}
-                maxLength={5}
+                maxLength={2}
                 style={{
                   marginLeft: '20px',
                   maxWidth: '34%',
                 }}
                 value={averageScore}
-                onChange={(value) => setAverageScore(value)}
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="Registered"
-              style={{ fontWeight: 600 }}
-              name="Regist"
-              rules={[
-                {
-                  required: true,
-                  message: 'Please input!',
-                },
-              ]}
-            >
-              <InputNumber
+                onChange={(value)=>setAverageScore(value)}
                 min={0}
-                max={10000}
-                maxLength={5}
-                style={{
-                  marginLeft: '46px',
-                  maxWidth: '30%',
-                }}
-                value={registeredNumber}
-                onChange={(value) => setRegisteredNumber(value)}
+                max={30}
+                step={0.2}
               />
             </Form.Item>
 
@@ -230,15 +254,16 @@ const FormAdd = () => {
               ]}
             >
               <InputNumber
-                min={0}
-                max={10000}
                 maxLength={5}
                 style={{
-                  marginLeft: '68px',
-                  maxWidth: '28%',
+                  marginLeft: '75px',
+                  maxWidth: '30%',
                 }}
                 value={targetScore}
-                onChange={(value) => setTargetScore(value)}
+                onChange={(value)=>setTargetScore(value)}
+                max={500}
+                min={0}
+                step={100}
               />
             </Form.Item>
           </Form>

@@ -85,6 +85,7 @@ const AddSchool = () => {
         setModalDetail(record);
         setDetailVisible(true);
         setSelectedUniverse(record);
+        console.log(record);
     };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -325,7 +326,6 @@ const AddSchool = () => {
             dataIndex: 'isRegistered',
             width: '13%',
             editable: true,
-            sorter: (a, b) => a.isRegistered - b.isRegistered,
         },
         {
             title: 'Targets',
@@ -337,21 +337,22 @@ const AddSchool = () => {
         {
             title: 'Manage',
             dataIndex: 'operation',
-            width: '10%',
+            width: '13%',
             fixed: 'right',
             render: (_, record) => {
                 const editable = isEditing(record);
                 return editable ? (
                     <span>
-                        <Popconfirm title="Sure to cancel?" onConfirm={() => save(record.key)}>
-                            <Typography.Link
-                                onClick={() => {}}
-                                style={{
-                                    marginRight: 8,
-                                }}
-                            >
-                                Edit
-                            </Typography.Link>
+                        <Typography.Link
+                            onClick={() => save(record.key)}
+                            style={{
+                                marginRight: 8,
+                            }}
+                        >
+                            Edit
+                        </Typography.Link>
+                        <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
+                            <Typography.Link>Cancel</Typography.Link>
                         </Popconfirm>
                     </span>
                 ) : (
@@ -404,7 +405,7 @@ const AddSchool = () => {
                 onCancel={handleCancel}
                 style={{ top: '50px', left: '50px' }}
             >
-                <AddSchool/>
+                <AddSchool />
             </Modal>
             <Form form={form} component={false}>
                 <Space direction="vertical">
@@ -442,7 +443,6 @@ const AddSchool = () => {
             >
                 <FormDetail university={selectedUniverse} />
             </Modal>
-
         </div>
     );
 };

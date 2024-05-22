@@ -7,11 +7,14 @@ import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
 import { Link, Redirect } from 'react-router-dom';
 import '../../../assets/css/login.css';
+import { useDispatch } from 'react-redux';
 // import '../../../assets/js/login';
 export const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const dispatch = useDispatch();
+
     function validateEmailFormat(val) {
         return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(val) || /w+([-+.]w+)*@w+([-.]w+)*.w+([-.]w+)*/.test(val);
     }
@@ -75,30 +78,37 @@ export const Login = () => {
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    function saveOnLocal() {
-        get(child(ref(db), 'Detail/')).then((snapshot) => {
-            if (snapshot.exists()) {
-                const x = snapshot.val();
-                for (let item in x) {
-                    if (x[item].email === email) {
-                        localStorage.setItem('Infor', JSON.stringify(x[item]));
-                        localStorage.setItem('Email', JSON.stringify(email));
-                        localStorage.setItem('LoginState', JSON.stringify(true));
+    const [role, setRole] = useState('');
+    function saveOnLocal(role) {
+        if (role === 'super_admin') {
+            get(child(ref(db), 'Admin/')).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const x = snapshot.val();
+                    for (let item in x) {
+                        if (x[item].email === email) {
+                            localStorage.setItem('Infor', JSON.stringify(x[item]));
+                            localStorage.setItem('Email', JSON.stringify(email));
+                        }
                     }
                 }
-                // console.log(x);
-                // x.forEach((element) => {
-                //     if (element.email === email) {
-                //         localStorage.setItem('myObject', JSON.stringify(element));
-                //         return true;
-                //     }
-                // });
-            }
-        });
+            });
+        } else {
+            get(child(ref(db), 'Detail/')).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const x = snapshot.val();
+                    for (let item in x) {
+                        if (x[item].email === email) {
+                            const temp = x[item];
+                            localStorage.setItem('Infor', JSON.stringify(temp));
+                            localStorage.setItem('Email', JSON.stringify(email));
+                        }
+                    }
+                }
+            });
+        }
     }
 
     function getdt(email, password) {
-        // console.log(email,password)
         if (email !== '') {
             if (validateEmailFormat(email) !== true) {
                 toast.error('Incorrect format');
@@ -116,12 +126,11 @@ export const Login = () => {
                                 );
                                 if (y.length !== 0) {
                                     localStorage.setItem('Role', y[0].Role);
-                                    // console.log(y[0].Role);
-                                    console.log(y);
-                                    saveOnLocal();
-                                    <Link to="/admin/dashboard" />;
+                                    localStorage.setItem('Name', y[0].name);
+
+                                    saveOnLocal(y[0].Role);
+
                                     setIsLoggedIn(true);
-                                    // navigate('/Register');
                                     localStorage.setItem('isLoggedIn', 'true');
                                 } else {
                                     toast.error('Account not found. Please check your email and password again.');
@@ -140,6 +149,8 @@ export const Login = () => {
         } else {
             toast.error('Please enter your email');
         }
+
+        <Link to="/admin/dashboard" />;
     }
 
     return (

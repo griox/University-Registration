@@ -44,8 +44,7 @@ const Sidebar = () => {
     const isInitialMountSelected = useRef(true);
 
     useEffect(() => {
-        const x = JSON.parse(localStorage.getItem('Infor'));
-        dispatch({ type: 'user', payload: x });
+
         if (isInitialMountCollapsed.current) {
             isInitialMountCollapsed.current = false;
         } else {

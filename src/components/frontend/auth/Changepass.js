@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { Button } from 'antd';
 import { useHistory } from 'react-router-dom';
 import '../../../assets/css/register.css';
+import { useDispatch } from 'react-redux';
 
 const Changepass = () => {
     const history = useHistory();
@@ -125,6 +126,7 @@ const Changepass = () => {
     const [oldPass, setOldPass] = useState('');
     const [newPass, setNewPass] = useState('');
     const [reNewPass, setReNewPass] = useState('');
+    const dispatch = useDispatch();
     const clear = () => {
         setOldPass('');
         setNewPass('');
@@ -137,6 +139,7 @@ const Changepass = () => {
     const handleLogout = () => {
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('selectedMenuItem');
+        dispatch({ type: 'logout' });
         history.push('/Login');
     };
     const changePassWord = () => {

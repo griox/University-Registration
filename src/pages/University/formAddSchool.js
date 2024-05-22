@@ -114,7 +114,7 @@ const FormAdd = () => {
             uniCode: uniCode,
             address: address,
             averageS: averageScore,
-            isRegistered: registeredNumber,
+            isRegistered: 0,
             target: targetScore,
         });
         toast.success('Added a university');
@@ -126,15 +126,6 @@ const FormAdd = () => {
     function validateNameUni(uniName) {
         return /^[A-Za-zÀ-ÿ\s]+$/.test(uniName);
     }
-
-    // function validateUniCode(uniCode) {
-    //   return /^[A-Za-z]+$/.test(uniCode);
-    // }
-
-    function validateNumber(EntranceScore) {
-        return /^[0-9]+$/.test(EntranceScore);
-    }
-
     return (
         <>
             <Button style={{ marginBottom: '20px' }} type="primary" onClick={showModal}>

@@ -71,7 +71,12 @@ const Navbar = () => {
         localStorage.setItem('Infor', JSON.stringify(''));
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('selectedMenuItem');
+        localStorage.setItem('Name', '');
+        localStorage.setItem('Email', JSON.stringify(''));
+        localStorage.setItem('Role', '');
+
         dispatch({ type: 'logout' });
+
         history.push('/');
     };
 

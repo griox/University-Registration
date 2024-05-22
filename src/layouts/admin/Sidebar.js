@@ -5,12 +5,11 @@ import { Link } from 'react-router-dom';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { tokens } from '../../theme';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import { SaveOutlined, SignatureOutlined, SolutionOutlined, UploadOutlined } from '@ant-design/icons';
+import { SignatureOutlined, SolutionOutlined } from '@ant-design/icons';
 import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
-import { storage } from '../../pages/firebaseConfig';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
     const theme = useTheme();
@@ -36,34 +35,13 @@ const Sidebar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const [role, setRole] = useState(localStorage.getItem('Role') || '');
-    const [image, setImage] = useState(null);
-    const [url, setUrl] = useState(null);
-    const [username, setUsername] = useState(() => JSON.parse(localStorage.getItem('Infor')) || {});
+    const [username, setUsername] = useState(localStorage.getItem('Name') || '');
+
     const [isCollapsed, setIsCollapsed] = useState(() => JSON.parse(localStorage.getItem('sidebarCollapsed')) || false);
     const [selected, setSelected] = useState(() => localStorage.getItem('selectedMenuItem') || 'Dashboard');
 
     const isInitialMountCollapsed = useRef(true);
     const isInitialMountSelected = useRef(true);
-
-    const handleImgChange = (e) => {
-        if (e.target.files[0]) {
-            setImage(e.target.files[0]);
-        }
-    };
-
-    const handleSubmit = () => {
-        if (!image) return;
-        const imgRef = ref(storage, `images/${image.name}`);
-        uploadBytes(imgRef, image)
-            .then(() => getDownloadURL(imgRef))
-            .then((downLoadUrl) => {
-                setUrl(downLoadUrl);
-                setImage(null);
-            })
-            .catch((error) => {
-                console.log(error.message, 'Error');
-            });
-    };
 
     useEffect(() => {
         if (isInitialMountCollapsed.current) {
@@ -95,6 +73,9 @@ const Sidebar = () => {
     }
 
     function stringAvatar(name = 'nth') {
+        if (name === '') {
+            name = 'nothing';
+        }
         let words = name.split(' ');
         let firstChar = '';
         let lastChar = '';
@@ -150,7 +131,12 @@ const Sidebar = () => {
                         {!isCollapsed && (
                             <Box display="flex" justifyContent="space-between" alignItems="center" ml="15px">
                                 <Typography variant="h3" color={colors.grey[100]}>
-                                    <img alt="profile-user" width="100px" height="auto" src={`../../assets/fptnew.png`} />
+                                    <img
+                                        alt="profile-user"
+                                        width="100px"
+                                        height="auto"
+                                        src={`../../assets/fptnew.png`}
+                                    />
                                 </Typography>
                                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                                     <MenuOutlinedIcon />
@@ -163,14 +149,19 @@ const Sidebar = () => {
                             <Box display="flex" justifyContent="center" alignItems="center">
                                 <Avatar
                                     alt="Remy Sharp"
-                                    src={url}
-                                    {...stringAvatar(username.name)}
+                                    {...stringAvatar(username)}
                                     sx={{ fontSize: 50, width: 120, height: 120 }}
                                 />
                             </Box>
                             <Box textAlign="center">
-                                <Typography variant="h2" color={colors.grey[100]} fontWeight="bold" sx={{ m: '10px 0 0 0' }}>
-                                    {username.name}
+                                <Typography
+                                    variant="h2"
+                                    color={colors.grey[100]}
+                                    fontWeight="bold"
+                                    sx={{ m: '10px 0 0 0' }}
+                                >
+                                    {username}
+                                    {console.log(username)}
                                 </Typography>
                                 <Typography variant="h5" color={colors.greenAccent[500]}>
                                     {role}

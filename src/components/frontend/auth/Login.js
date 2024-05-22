@@ -7,11 +7,14 @@ import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
 import { Link, Redirect } from 'react-router-dom';
 import '../../../assets/css/login.css';
+import { useDispatch } from 'react-redux';
 // import '../../../assets/js/login';
 export const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const dispatch = useDispatch();
+
     function validateEmailFormat(val) {
         return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(val) || /w+([-+.]w+)*@w+([-.]w+)*.w+([-.]w+)*/.test(val);
     }
@@ -75,6 +78,7 @@ export const Login = () => {
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    const [role, setRole] = useState('');
     function saveOnLocal(role) {
         if (role === 'super_admin') {
             get(child(ref(db), 'Admin/')).then((snapshot) => {
@@ -84,7 +88,6 @@ export const Login = () => {
                         if (x[item].email === email) {
                             localStorage.setItem('Infor', JSON.stringify(x[item]));
                             localStorage.setItem('Email', JSON.stringify(email));
-                            // localStorage.setItem('LoginState', JSON.stringify(true));
                         }
                     }
                 }
@@ -95,9 +98,9 @@ export const Login = () => {
                     const x = snapshot.val();
                     for (let item in x) {
                         if (x[item].email === email) {
-                            localStorage.setItem('Infor', JSON.stringify(x[item]));
+                            const temp = x[item];
+                            localStorage.setItem('Infor', JSON.stringify(temp));
                             localStorage.setItem('Email', JSON.stringify(email));
-                            localStorage.setItem('LoginState', JSON.stringify(true));
                         }
                     }
                 }
@@ -106,7 +109,6 @@ export const Login = () => {
     }
 
     function getdt(email, password) {
-        // console.log(email,password)
         if (email !== '') {
             if (validateEmailFormat(email) !== true) {
                 toast.error('Incorrect format');
@@ -124,12 +126,11 @@ export const Login = () => {
                                 );
                                 if (y.length !== 0) {
                                     localStorage.setItem('Role', y[0].Role);
-                                    // console.log(y[0].Role);
-                                    console.log(y);
+                                    localStorage.setItem('Name', y[0].name);
+
                                     saveOnLocal(y[0].Role);
-                                    <Link to="/admin/dashboard" />;
+
                                     setIsLoggedIn(true);
-                                    // navigate('/Register');
                                     localStorage.setItem('isLoggedIn', 'true');
                                 } else {
                                     toast.error('Account not found. Please check your email and password again.');
@@ -148,6 +149,8 @@ export const Login = () => {
         } else {
             toast.error('Please enter your email');
         }
+
+        <Link to="/admin/dashboard" />;
     }
 
     return (

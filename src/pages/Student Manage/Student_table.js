@@ -367,10 +367,12 @@ const Student_List = ({ data }) => {
             ...getColumnSearchProps('name'),
             render: (text, record) => (
                 renderNameWithGender(text, record),
-                <Tooltip title={record.uniCode.length===5 ? 'can not register more':''}>
-                    <span style={{ color: record.uniCode.length ===5 ? '#FF8C00' : 'black' }}>{text}</span>
-                </Tooltip>
-            )
+                (
+                    <Tooltip title={record.uniCode.length === 5 ? 'can not register more' : ''}>
+                        <span style={{ color: record.uniCode.length === 5 ? '#FF8C00' : 'black' }}>{text}</span>
+                    </Tooltip>
+                )
+            ),
         },
         {
             title: 'Email',
@@ -523,7 +525,7 @@ const Student_List = ({ data }) => {
                         columns={mergedColumns}
                         scroll={{
                             x: 900,
-                            y: 'calc(100vh - 280px)',
+                            y: 'calc(100vh - 300px)',
                         }}
                         style={{ height: '100%', marginRight: '-20px' }}
                         rowClassName="editable-row"

@@ -118,8 +118,8 @@ const Register = () => {
         setAgainPassword('');
     };
     function regist(props) {
-        if (props.name === '') {
-            toast.error('Please enter your full name');
+        if (props.fullName === '') {
+            toast.error('Please enter your name');
             return;
         }
         if (props.email === '') {
@@ -146,7 +146,8 @@ const Register = () => {
                         const encodeEmail = encodePath(props.email);
                         console.log(encodeEmail);
                         const ip = {
-                            email: encodePath(props.email),
+                            name: props.name,
+                            email: props.email,
                             password: props.password,
                             role: 'user',
                         };
@@ -299,7 +300,12 @@ const Register = () => {
                                         >
                                             <span>Regist</span>
                                         </div> */}
-                                        <Button
+                                        <div className="input-box">
+                                            <button className="button-clear">User</button>
+                                            <button className="button-submit">Admin</button>
+                                        </div>
+
+                                        {/* <Button
                                             type="primary"
                                             loading={loadings[0]}
                                             onClick={() => enterLoading(0)}
@@ -310,7 +316,7 @@ const Register = () => {
                                         >
                                             <span style={span}>Regist</span>
                                             <i className="bx bx-right-arrow-alt"></i>
-                                        </Button>
+                                        </Button> */}
                                         {/* <Button
                                             type="primary"
                                             loading={loadings[1]}

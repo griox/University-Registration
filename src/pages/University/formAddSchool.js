@@ -24,9 +24,9 @@ const FormAdd = () => {
   const [uniName, setUniName] = useState('');
   const [uniCode, setUniCode] = useState('');
   const [address, setAddress] = useState('');
-  const [entranceScore, setEntranceScore] = useState(null);
-  const [targetNumber, setTargetNumber] = useState(null);
-
+  const [averageScore, setAverageScore] = useState(null);
+  const [targetScore, setTargetScore] = useState(null);
+ 
   const [inputError, setInputError] = useState('');
 
   const showModal = () => {
@@ -36,7 +36,7 @@ const FormAdd = () => {
   const handleOk = async () => {
     let hasError = false;
     // Initial checks
-    if (uniName === '' || address === '' || entranceScore === null  || targetNumber === null || uniCode===''  ) {
+    if (uniName === '' || address === '' || averageScore === null || targetScore === null || uniCode==='') {
       toast.error('Please fill in all information');
       hasError = true;
       if(uniName!==''){
@@ -80,8 +80,8 @@ const FormAdd = () => {
         setUniName('');
         setUniCode('');
         setAddress('');
-        setEntranceScore(null);
-        setTargetNumber(null);
+        setAverageScore(null);
+        setTargetScore(null);
         setVisible(false);
       } catch (error) {
         console.error('Error adding university:', error);
@@ -94,8 +94,8 @@ const FormAdd = () => {
     setUniName('');
     setUniCode('');
     setAddress('');
-    setEntranceScore(null);
-    setTargetNumber(null);
+    setAverageScore(null);
+    setTargetScore(null);
     setVisible(false);
   };
 
@@ -107,9 +107,9 @@ const FormAdd = () => {
       nameU: uniName,
       uniCode: uniCode,
       address: address,
-      averageS: entranceScore,
+      averageS: averageScore,
       isRegistered: 0,
-      target: targetNumber,
+      target: targetScore,
     });
     toast.success('Added a university');
   };
@@ -214,14 +214,14 @@ const FormAdd = () => {
                   style={{ fontWeight: 600 }}
                   name="entranceScore"
                   validateStatus={
-                    (!validateNumber(entranceScore) && entranceScore) || (entranceScore && parseFloat(entranceScore) > 30)
+                    (!validateNumber(averageScore) && averageScore) || (averageScore && parseFloat(averageScore) > 30)
                       ? 'error'
                       : ''
                   }
                   help={
-                    !validateNumber(entranceScore) && entranceScore
+                    !validateNumber(averageScore) && averageScore
                       ? 'Entrance Score must contain only numbers and no spaces'
-                      : (entranceScore && parseFloat(entranceScore) > 30)
+                      : (averageScore && parseFloat(averageScore) > 30)
                       ? 'Entrance Score must be less than or equal to 30'
                       : ''
                   }
@@ -235,8 +235,8 @@ const FormAdd = () => {
                   <Input
                     allowClear
                     maxLength={4}
-                    value={entranceScore}
-                    onChange={(e) => setEntranceScore(e.target.value)}
+                    value={averageScore}
+                    onChange={(e) => setAverageScore(e.target.value)}
                     suffix={
                       <Tooltip title="Entrance Score must contain only numbers">
                         <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
@@ -251,15 +251,15 @@ const FormAdd = () => {
                   style={{ fontWeight: 600 }}
                   name="target"
                   validateStatus={
-                    targetNumber && (!validateTarget(targetNumber) || Number(targetNumber) > 10000)
+                    targetScore && (!validateTarget(targetScore) || Number(targetScore) > 10000)
                       ? 'error'
                       : ''
                   }
                   help={
-                    targetNumber
-                      ? !validateTarget(targetNumber)
+                    targetScore
+                      ? !validateTarget(targetScore)
                         ? 'Target must contain only positive numbers and no spaces'
-                        : Number(targetNumber) > 10000
+                        : Number(targetScore) > 10000
                         ? 'Target must be less than 10,000'
                         : ''
                       : ''
@@ -274,8 +274,8 @@ const FormAdd = () => {
                   <Input
                     allowClear
                     maxLength={5}
-                    value={targetNumber}
-                    onChange={(e) => setTargetNumber(e.target.value)}
+                    value={targetScore}
+                    onChange={(e) => setTargetScore(e.target.value)}
                     suffix={
                       <Tooltip title="Target must contain only numbers">
                         <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />

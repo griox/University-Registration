@@ -320,10 +320,13 @@ footer .line {
 
 .change form {
     border-radius: 10px;
+    border: 1px solid #fff;
 }
 
 .form-control {
     border-radius: 10px;
+    background-color: transparent;
+    color: #fff;
 }
 
 /* #progress {

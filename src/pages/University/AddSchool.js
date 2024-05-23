@@ -1,22 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography } from 'antd';
-import {
-    SearchOutlined,
-    EditOutlined,
-    DeleteOutlined,
-    PlusCircleOutlined,
-    MinusCircleOutlined,
-    ManOutlined,
-} from '@ant-design/icons';
+import {SearchOutlined, EditOutlined,DeleteOutlined,} from '@ant-design/icons';
 import { toast } from 'react-toastify';
 import { Button, Space, Modal } from 'antd';
 import Highlighter from 'react-highlight-words';
-import { WomanOutlined } from '@ant-design/icons';
 import { get, ref, child, getDatabase, remove, update, push, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import FormDetail from './Modal_detail';
 import FormAdd from './formAddSchool';
-import { render } from '@testing-library/react';
 const firebaseConfig = {
     apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
     authDomain: 'mock-proeject-b.firebaseapp.com',
@@ -26,10 +17,11 @@ const firebaseConfig = {
     messagingSenderId: '898832925665',
     appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
 };
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+
 
 const AddSchool = () => {
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
     const [isModalVisible, setVisible] = useState(false);
     const [isModalDetailVisible, setDetailVisible] = useState(false);
     const [modalDetail, setModalDetail] = useState({});
@@ -43,6 +35,7 @@ const AddSchool = () => {
     const [loading, setLoading] = useState(true);
     const tableRef = useRef(null);
     const searchInput = useRef(null);
+    
     useEffect(() => {
         const fetchData = async () => {
             const uniRef = child(ref(db), 'University');
@@ -58,7 +51,7 @@ const AddSchool = () => {
             }
         };
         fetchData();
-    }, []);
+    }, [db]);
     const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
         const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
         return (
@@ -85,10 +78,10 @@ const AddSchool = () => {
         );
     };
     const handleSchoolDetail = (record) => {
-        setModalDetail(record);
+        // setModalDetail(record);
         setDetailVisible(true);
         setSelectedUniverse(record);
-        console.log(record);
+        // console.log(record);
     };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -109,7 +102,6 @@ const AddSchool = () => {
             address: '',
             ...record,
         });
-        console.log(record.key);
         setEditingKey(record.key);
         console.log(editingKey);
     };
@@ -126,9 +118,9 @@ const AddSchool = () => {
             console.error('Error deleting data:', error);
         }
     };
-    const showModal = () => {
-        setVisible(true);
-    };
+    // const showModal = () => {
+    //     setVisible(true);
+    // };
 
     const handleOk = () => {
         setVisible(false);
@@ -160,6 +152,35 @@ const AddSchool = () => {
             }
         }
     };
+    const checkUniCodeExistence = async (newUniCode) => {
+        try {
+            const snapshot = await get(child(ref(db), 'University'));
+            if (snapshot.exists()) {
+                const universities = snapshot.val();
+                const uniCodeExists = Object.values(universities).some((uni) => uni.uniCode === newUniCode.toLowerCase());
+                return uniCodeExists;
+            }
+            return false;
+        } catch (error) {
+            console.error('Error checking uniCode existence:', error);
+            return false;
+        }
+    };
+    const checkNameExistence = async (newName) => {
+        try {
+            const snapshot = await get(child(ref(db), 'University'));
+            if (snapshot.exists()) {
+                const universities = snapshot.val();
+                const uniNameExists = Object.values(universities).some((uni) => uni.nameU === newName.toLowerCase());
+                return uniNameExists;
+            }
+            return false;
+        } catch (error) {
+            console.error('Error checking uniName existence:', error);
+            return false;
+        }
+    };
+    
     const save = async (key) => {
         try {
             const row = await form.validateFields();
@@ -169,11 +190,27 @@ const AddSchool = () => {
             if (index > -1) {
                 const item = newData[index];
                 if (row.target < item.isRegistered) {
-                    console.log(row.target);
                     toast.error("Targets must not be less than Number of registration");
-                    return; // Không thực hiện lưu nếu điều kiện không được đáp ứng
+                    return; 
                 }
-                // Xử lý dữ liệu thay đổi
+                if(row.averageS>30||row.averageS<0){
+                    toast.error('Invalid Entrance Score Format')
+                }
+                if (row.uniCode !== item.uniCode) {
+                    console.log(row.uniCode,item.uniCode)
+                    const uniCodeExists = await checkUniCodeExistence(row.uniCode);
+                    if (uniCodeExists) {
+                        toast.error('This uniCode already exists');
+                        return;
+                    }
+                }
+                if (row.nameU !== item.nameU) {
+                    const uniNameExists = await checkNameExistence(row.nameU);
+                    if (uniNameExists) {
+                        toast.error('This Name already exists');
+                        return;
+                    }
+                }
                 newData.splice(index, 1, {
                     ...item,
                     ...row,
@@ -305,6 +342,7 @@ const AddSchool = () => {
             dataIndex: 'nameU',
             key: 'name',
             width: '30%',
+            editable: true,
             ...getColumnSearchProps('nameU'),
             render: (text, record) => (
                 <Typography.Link onClick={() => handleSchoolDetail(record)}>{text}</Typography.Link>
@@ -312,8 +350,9 @@ const AddSchool = () => {
         },
         {
             title: 'UniCode',
-            dataIndex: 'key',
+            dataIndex: 'uniCode',
             width: '13%',
+            editable: true,
             ...getColumnSearchProps('ucode'),
             render: (text,record)=>(
                 <Tooltip title={record.isRegistered === record.targer ? 'Can not regist':''}>
@@ -340,7 +379,6 @@ const AddSchool = () => {
             title: 'Number of registration',
             dataIndex: 'isRegistered',
             width: '13%',
-            editable: true,
         },
         {
             title: 'Targets',

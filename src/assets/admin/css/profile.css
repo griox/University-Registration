@@ -124,3 +124,28 @@ input[type='button'] {
 .save-icon {
     cursor: pointer;
 }
+.CameraIcon {
+    font-size: 50px;
+    color: white;
+}
+
+.avatar-input {
+    display: none;
+}
+
+.addr {
+    width: 300px;
+}
+.ethnicity {
+    width: 200px;
+}
+.InfoCircleOutlined {
+    color: 'rgba(0,0,0,.45)';
+}
+.university {
+    width: 800px;
+    cursor: pointer;
+}
+.table {
+    margin-top: 20px;
+}

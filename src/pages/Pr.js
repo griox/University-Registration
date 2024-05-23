@@ -263,18 +263,13 @@ function Pr() {
                                 />
                                 <div className="avatar-overlay">
                                     <label htmlFor="fileInput">
-                                        <CameraOutlined style={{ fontSize: '50px', color: 'white' }} />
+                                        <CameraOutlined className="CameraIcon" />
                                     </label>
                                 </div>
                             </div>
 
                             <div>
-                                <input
-                                    type="file"
-                                    onChange={handleImgChange}
-                                    id="fileInput"
-                                    style={{ display: 'none' }}
-                                />
+                                <input type="file" onChange={handleImgChange} id="fileInput" className="avatar-input" />
                             </div>
                         </div>
 
@@ -327,7 +322,6 @@ function Pr() {
                                         className="g-s addr size-input"
                                         value={detail.Address}
                                         onChange={(e) => handleChange(e, 'Address')}
-                                        style={{ width: '300px' }}
                                     />
                                 </Space.Compact>
                             </div>
@@ -338,8 +332,7 @@ function Pr() {
                                     options={ethnicities}
                                     onChange={(e) => handleSelect(e, 'enthicity')}
                                     showSearch
-                                    style={{ width: 200 }}
-                                    className="g-s"
+                                    className="g-s ethnicity"
                                 />
                             </div>
                             <div className="detail-item">
@@ -363,7 +356,7 @@ function Pr() {
                                         onChange={(e) => handleChange(e, 'email')}
                                         suffix={
                                             <Tooltip title="Private Email">
-                                                <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+                                                <InfoCircleOutlined className="InfoCircleOutlined" />
                                             </Tooltip>
                                         }
                                     />
@@ -412,12 +405,11 @@ function Pr() {
                                 maxCount={MAX_COUNT}
                                 value={detail.uniCode}
                                 options={arr}
-                                style={{ width: '800px', cursor: 'pointer' }}
                                 onChange={(e) => handleSelect(e, 'uniCode')}
                                 suffixIcon={suffix}
                                 placeholder="Selected universities"
                                 showSearch
-                                className="g-s"
+                                className="g-s university"
                             />
                         </Space>
                         <Spin spinning={loadingSave}>
@@ -431,7 +423,6 @@ function Pr() {
                             dataSource={suitableSchoolList}
                             columns={columns}
                             rowKey="code"
-                            style={{ marginTop: '20px' }}
                             scroll={{ x: 190, y: 'calc(100vh - 590px)' }}
                             pagination={{
                                 defaultPageSize: '10',
@@ -441,6 +432,7 @@ function Pr() {
                                 showQuickJumper: true,
                                 showTotal: (total) => `Total ${total} items`,
                             }}
+                            className="table"
                         />
                     </Spin>
                 </>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { ProSidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import { Box, IconButton, Typography, useTheme, Tooltip, Avatar } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -10,18 +10,22 @@ import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
 import { useDispatch, useSelector } from 'react-redux';
+import { MenuContext } from '../../pages/MenuContext';
 
 const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    const { selectedMenuItem, setSelectedMenuItem } = useContext(MenuContext);
     return (
         <Tooltip title={tooltip} placement="right" arrow>
             <MenuItem
-                active={selected === title}
+                // active={selected === title}
+                active={selectedMenuItem === title}
                 style={{
                     color: colors.grey[100],
                 }}
-                onClick={() => setSelected(title)}
+                // onClick={() => setSelected(title)}
+                onClick={() => setSelectedMenuItem(title)}
                 icon={icon}
             >
                 <Typography>{title}</Typography>
@@ -38,13 +42,11 @@ const Sidebar = () => {
     const [username, setUsername] = useState(localStorage.getItem('Name') || '');
 
     const [isCollapsed, setIsCollapsed] = useState(() => JSON.parse(localStorage.getItem('sidebarCollapsed')) || false);
-    const [selected, setSelected] = useState(() => localStorage.getItem('selectedMenuItem') || 'Dashboard');
+    const { selectedMenuItem, setSelectedMenuItem } = useContext(MenuContext);
 
     const isInitialMountCollapsed = useRef(true);
-    const isInitialMountSelected = useRef(true);
 
     useEffect(() => {
-
         if (isInitialMountCollapsed.current) {
             isInitialMountCollapsed.current = false;
         } else {
@@ -52,13 +54,13 @@ const Sidebar = () => {
         }
     }, [isCollapsed]);
 
-    useEffect(() => {
-        if (isInitialMountSelected.current) {
-            isInitialMountSelected.current = false;
-        } else {
-            localStorage.setItem('selectedMenuItem', selected);
-        }
-    }, [selected]);
+    // useEffect(() => {
+    //     if (isInitialMountSelected.current) {
+    //         isInitialMountSelected.current = false;
+    //     } else {
+    //         localStorage.setItem('selectedMenuItem', selected);
+    //     }
+    // }, [selected]);
 
     function stringToColor(string) {
         let hash = 0;
@@ -176,8 +178,8 @@ const Sidebar = () => {
                             title="Dashboard"
                             to="/admin/dashboard"
                             icon={<HomeOutlinedIcon />}
-                            selected={selected}
-                            setSelected={setSelected}
+                            // selected={selected}
+                            // setSelected={setSelected}
                             tooltip="Dashboard"
                         />
                         {isAdminOrSuperAdmin && (
@@ -186,24 +188,24 @@ const Sidebar = () => {
                                     title="University Managerment"
                                     to="/admin/university"
                                     icon={<SchoolIcon />}
-                                    selected={selected}
-                                    setSelected={setSelected}
+                                    // selected={selected}
+                                    // setSelected={setSelected}
                                     tooltip="University Managerment"
                                 />
                                 <Item
                                     title="Student Managerment"
                                     to="/admin/student"
                                     icon={<SolutionOutlined />}
-                                    selected={selected}
-                                    setSelected={setSelected}
+                                    // selected={selected}
+                                    // setSelected={setSelected}
                                     tooltip="Student Managerment"
                                 />
                                 <Item
                                     title="Register Account"
                                     to="/register"
                                     icon={<SignatureOutlined />}
-                                    selected={selected}
-                                    setSelected={setSelected}
+                                    // selected={selected}
+                                    // setSelected={setSelected}
                                     tooltip="Register Account"
                                 />
                             </>
@@ -214,8 +216,8 @@ const Sidebar = () => {
                                     title="Profile"
                                     to="/admin/profile"
                                     icon={<ContactsOutlinedIcon />}
-                                    selected={selected}
-                                    setSelected={setSelected}
+                                    // selected={selected}
+                                    // setSelected={setSelected}
                                     tooltip="Profile"
                                 />
                             </>

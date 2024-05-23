@@ -15,9 +15,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 let isInforCreated = false; // Biến để đánh dấu xem hàm createStudentRecords đã được gọi hay chưa
-function encodeEmail(email) {
-  return email.replace('.', ',');
-}
 function writeInforRecord(name, gender, email, enthicity, dateObirth, placeOBirth, idenNum, MathScore, EnglishScore, LiteratureScore, Address, uniCode, id,AverageScore,isRegister) {
   const DetailRef = ref(db, `Detail/${id}`);
   set(DetailRef, {
@@ -176,7 +173,7 @@ const mathScores = [];
 const EnglishScores = [];
 const LiteratureScores = [];
 const Emails = [];
-const studentMap = {}; // Sử dụng một đối tượng để lưu trữ thông tin sinh viên bằng email và tên
+
 export async function createInforRecords() {
   if (!isInforCreated) {
     await fetchData();
@@ -283,74 +280,74 @@ const updateUniCode = async (studentID, newUniCodes) => {
   }
 };
 
-const updateUniCodesForAllStudents = async () => {
-  try {
-    const detailRef = ref(db, 'Detail');
-    const snapshot = await get(detailRef);
-    if (snapshot.exists()) {
-      const studentData = snapshot.val();
-      const existingStudentIDs = Object.keys(studentData);
+// const updateUniCodesForAllStudents = async () => {
+//   try {
+//     const detailRef = ref(db, 'Detail');
+//     const snapshot = await get(detailRef);
+//     if (snapshot.exists()) {
+//       const studentData = snapshot.val();
+//       const existingStudentIDs = Object.keys(studentData);
       
-      // Số lượng sinh viên đã có
-      const numExistingStudents = existingStudentIDs.length;
-      const numNewStudents = 394 - numExistingStudents; // Số lượng sinh viên cần tạo
+//       // Số lượng sinh viên đã có
+//       const numExistingStudents = existingStudentIDs.length;
+//       const numNewStudents = 394 - numExistingStudents; // Số lượng sinh viên cần tạo
 
-      // Tạo 150 sinh viên đăng ký 5 trường
-      for (let i = 0; i < 150; i++) {
-        const studentID = generateUniqueID();
-        const newUniCodes = getRandomUniCodes(5);
-        await updateUniCode(studentID, newUniCodes);
-      }
+//       // Tạo 150 sinh viên đăng ký 5 trường
+//       for (let i = 0; i < 150; i++) {
+//         const studentID = generateUniqueID();
+//         const newUniCodes = getRandomUniCodes(5);
+//         await updateUniCode(studentID, newUniCodes);
+//       }
 
-      // Tạo 10 sinh viên đăng ký 1 trường
-      for (let i = 0; i < 10; i++) {
-        const studentID = generateUniqueID();
-        const newUniCodes = getRandomUniCodes(1);
-        await updateUniCode(studentID, newUniCodes);
-      }
+//       // Tạo 10 sinh viên đăng ký 1 trường
+//       for (let i = 0; i < 10; i++) {
+//         const studentID = generateUniqueID();
+//         const newUniCodes = getRandomUniCodes(1);
+//         await updateUniCode(studentID, newUniCodes);
+//       }
 
-      // Tạo 20 sinh viên đăng ký 3 trường
-      for (let i = 0; i < 20; i++) {
-        const studentID = generateUniqueID();
-        const newUniCodes = getRandomUniCodes(3);
-        await updateUniCode(studentID, newUniCodes);
-      }
+//       // Tạo 20 sinh viên đăng ký 3 trường
+//       for (let i = 0; i < 20; i++) {
+//         const studentID = generateUniqueID();
+//         const newUniCodes = getRandomUniCodes(3);
+//         await updateUniCode(studentID, newUniCodes);
+//       }
 
-      // Tạo 50 sinh viên đăng ký 2 trường
-      for (let i = 0; i < 50; i++) {
-        const studentID = generateUniqueID();
-        const newUniCodes = getRandomUniCodes(2);
-        await updateUniCode(studentID, newUniCodes);
-      }
+//       // Tạo 50 sinh viên đăng ký 2 trường
+//       for (let i = 0; i < 50; i++) {
+//         const studentID = generateUniqueID();
+//         const newUniCodes = getRandomUniCodes(2);
+//         await updateUniCode(studentID, newUniCodes);
+//       }
 
-      // Số lượng sinh viên cần tạo cho việc đăng ký 4 trường
-      const remainingStudents = numNewStudents - 150 - 10 - 20 - 50;
+//       // Số lượng sinh viên cần tạo cho việc đăng ký 4 trường
+//       const remainingStudents = numNewStudents - 150 - 10 - 20 - 50;
 
-      // Tạo số lượng sinh viên cần cho việc đăng ký 4 trường
-      for (let i = 0; i < remainingStudents; i++) {
-        const studentID = generateUniqueID();
-        const newUniCodes = getRandomUniCodes(4);
-        await updateUniCode(studentID, newUniCodes);
-      }
+//       // Tạo số lượng sinh viên cần cho việc đăng ký 4 trường
+//       for (let i = 0; i < remainingStudents; i++) {
+//         const studentID = generateUniqueID();
+//         const newUniCodes = getRandomUniCodes(4);
+//         await updateUniCode(studentID, newUniCodes);
+//       }
 
-      console.log('Updated uniCodes for all students');
-    } else {
-      console.error('No student data available');
-    }
-  } catch (error) {
-    console.error('Error updating uniCodes for all students:', error);
-  }
-};
-const getRandomUniCodes = (numCodes) => {
-  const newUniCodes = [];
-  while (newUniCodes.length < numCodes) {
-    const code = unicodes[Math.floor(Math.random() * unicodes.length)];
-    if (!newUniCodes.includes(code)) {
-      newUniCodes.push(code);
-    }
-  }
-  return newUniCodes;
-};
+//       console.log('Updated uniCodes for all students');
+//     } else {
+//       console.error('No student data available');
+//     }
+//   } catch (error) {
+//     console.error('Error updating uniCodes for all students:', error);
+//   }
+// };
+// const getRandomUniCodes = (numCodes) => {
+//   const newUniCodes = [];
+//   while (newUniCodes.length < numCodes) {
+//     const code = unicodes[Math.floor(Math.random() * unicodes.length)];
+//     if (!newUniCodes.includes(code)) {
+//       newUniCodes.push(code);
+//     }
+//   }
+//   return newUniCodes;
+// };
 const clearUniCodesForAllStudents = async () => {
   try {
     const detailRef = ref(db, 'Detail');

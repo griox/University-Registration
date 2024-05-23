@@ -7,6 +7,7 @@ import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import { MenuContext } from '../../pages/MenuContext';
 import { useDispatch } from 'react-redux';
+import confirm from 'antd/es/modal/confirm';
 
 const items = [
     {
@@ -65,16 +66,21 @@ const Navbar = () => {
     const { selectedMenuItem } = useContext(MenuContext);
 
     const handleLogout = () => {
-        localStorage.setItem('Infor', JSON.stringify(''));
-        localStorage.removeItem('isLoggedIn');
-        localStorage.removeItem('selectedMenuItem');
-        localStorage.setItem('Name', '');
-        localStorage.setItem('Email', JSON.stringify(''));
-        localStorage.setItem('Role', '');
+        const confirm = window.confirm('Are you sure want to log out?');
+        if (confirm) {
+            localStorage.setItem('Infor', JSON.stringify(''));
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('selectedMenuItem');
+            localStorage.setItem('Name', '');
+            localStorage.setItem('Email', JSON.stringify(''));
+            localStorage.setItem('Role', '');
 
-        dispatch({ type: 'logout' });
+            dispatch({ type: 'logout' });
 
-        history.push('/');
+            history.push('/');
+        } else {
+            return;
+        }
     };
 
     const handleMenuClick = (e) => {

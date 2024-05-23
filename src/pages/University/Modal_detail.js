@@ -1,49 +1,14 @@
-import { get, ref, child, getDatabase,  } from 'firebase/database';
-import { initializeApp } from 'firebase/app';
+import { get, ref, child } from 'firebase/database';
 import React, { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import { Descriptions, Divider, Table, Form,Spin } from 'antd';
+import { database } from '../firebaseConfig.js';
+import './css/Modal_detail.css';
+
 export const Form_Detail = ({ university,loading,setLoading }) => {
     const [student, setStudents] = useState([]);
     const [form] = Form.useForm();
-   const student_regist = university.registeration;
-    // console.log(student_regist);
-    const firebaseConfig = {
-        apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
-        authDomain: 'mock-proeject-b.firebaseapp.com',
-        databaseURL: 'https://mock-proeject-b-default-rtdb.firebaseio.com',
-        projectId: 'mock-proeject-b',
-        storageBucket: 'mock-proeject-b.appspot.com',
-        messagingSenderId: '898832925665',
-        appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
-    };
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    useEffect(() => {
-        const fetchData = async () => {
-            if (student_regist && typeof student_regist === 'object') {
-                console.log(student_regist);    
-                const studentList = Object.values(student_regist).map((student) => student.id);
-                const studentsData = [];
-                for (const studentId of studentList) {
-                    const studentRef = child(ref(db), `Detail/${studentId}`);
-                    try {
-                        const snapshot = await get(studentRef);
-                        if (snapshot.exists()) {
-                            const studentData = snapshot.val();
-                            studentsData.push({ id: studentId, ...studentData });
-                        }
-                    } catch (error) {
-                        console.error('Cannot fetch student details:', error);
-                    }
-                }
-                setLoading(false);
-                setStudents(studentsData);
-            } else {
-                console.error('student_regist is not a valid object');
-            }
-        };
-        fetchData();
-    }, [student_regist, db]);
+    const student_regist = university.registeration;
     const cancel = () => {
         form.resetFields();
     };
@@ -131,6 +96,33 @@ export const Form_Detail = ({ university,loading,setLoading }) => {
             sorter: (a, b) => a.AverageScore - b.AverageScore,
         },
     ];
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (student_regist && typeof student_regist === 'object') { 
+                const studentList = Object.values(student_regist).map((student) => student.id);
+                const studentsData = [];
+                for (const studentId of studentList) {
+                    const studentRef = child(ref(database), `Detail/${studentId}`);
+                    try {
+                        const snapshot = await get(studentRef);
+                        if (snapshot.exists()) {
+                            const studentData = snapshot.val();
+                            studentsData.push({ id: studentId, ...studentData });
+                        }
+                    } catch (error) {
+                        toast.error('Cannot fetch student details')
+                    }
+                }
+                setLoading(false);
+                setStudents(studentsData);
+            } else {
+                toast.error('Student_regist is not a valid object')
+            }
+        };
+        fetchData();
+    }, [student_regist, setLoading]);
+    
     return (
         <>
             <Descriptions title="University Infomation" column={2}>
@@ -144,7 +136,7 @@ export const Form_Detail = ({ university,loading,setLoading }) => {
             <h4>List Of Student</h4>
             <Form form={form} component={false}>
                 <Spin spinning={loading} >
-                <Table
+                <Table className='table'
                     bordered
                     dataSource={student}
                     columns={colums}
@@ -152,7 +144,6 @@ export const Form_Detail = ({ university,loading,setLoading }) => {
                         x: 900,
                         y: 'calc(100vh - 580px)',
                     }}
-                    style={{ height: '100%', marginRight: '-20px' }}
                     showSorterTooltip={{
                         target: 'sorter-icon',
                     }}

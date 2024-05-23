@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ArrowDownOutlined, ArrowUpOutlined, ManOutlined, WomanOutlined } from '@ant-design/icons';
+import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import { Column, Pie } from '@ant-design/plots';
 import { Skeleton } from 'antd';
 import '../assets/admin/css/chart.css';
 import { child, get, getDatabase, ref } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
+import { firebaseConfig } from '../constants/constants';
 
 const Chart = () => {
     const [studentTotal, setStudentTotal] = useState(0);
@@ -27,19 +28,90 @@ const Chart = () => {
     const [loading, setLoading] = useState(true);
     const [listUniMoreRegister, setListUniMoreRegister] = useState(0);
     const [listUniLessRegister, setListUniLessRegister] = useState(0);
-
-    const firebaseConfig = {
-        apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
-        authDomain: 'mock-proeject-b.firebaseapp.com',
-        databaseURL: 'https://mock-proeject-b-default-rtdb.firebaseio.com',
-        projectId: 'mock-proeject-b',
-        storageBucket: 'mock-proeject-b.appspot.com',
-        messagingSenderId: '898832925665',
-        appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
-    };
-
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    const config = {
+        data: [
+            { subject: 'Math', score: mathAS },
+            { subject: 'Enghlish', score: englishAS },
+            { subject: 'Literature', score: literatureAS },
+            { subject: 'Total Students', score: average },
+        ],
+        width: 1000,
+        height: 400,
+        xField: 'subject',
+        yField: 'score',
+        scale: {
+            x: { padding: 0.8 },
+            y: {
+                domainMax: 10,
+                domainMin: 0,
+            },
+        },
+        label: {
+            text: (d) => `${d.score.toFixed(2)}`,
+            textBaseline: 'bottom',
+        },
+        style: {
+            width: 50,
+        },
+    };
+
+    const con = {
+        data: [
+            { type: 'None', value: registZero },
+            { type: 'One', value: registOne },
+            { type: 'Two', value: registTwo },
+            { type: 'Three', value: registThree },
+            { type: 'Four', value: registFour },
+            { type: 'Five', value: registFive },
+        ],
+        angleField: 'value',
+        colorField: 'type',
+        width: 1000,
+        height: 650,
+        marginTop: 50,
+        marginBottom: 50,
+        label: {
+            text: (d) => `${d.value}`,
+            position: 'outside',
+        },
+        legend: {
+            color: {
+                title: false,
+                position: 'right',
+                rowPadding: 5,
+            },
+        },
+        style: {
+            fontSize: 14,
+            textAlign: 'center',
+        },
+    };
+
+    const gen = {
+        data: [
+            { gender: 'Male', value: male },
+            { gender: 'Female', value: female },
+        ],
+        angleField: 'value',
+        colorField: 'gender',
+        width: 350,
+        height: 250,
+        label: {
+            text: (d) => `${d.gender}\n${d.value}`,
+            style: {
+                fontWeight: 'bold',
+            },
+        },
+        legend: {
+            color: {
+                title: false,
+                position: 'right',
+                rowPadding: 5,
+            },
+        },
+    };
 
     useEffect(() => {
         aRef.current = allUni;
@@ -64,7 +136,7 @@ const Chart = () => {
         };
         const timer = setTimeout(updateUniversity, 10);
         return () => clearTimeout(timer);
-    }, []);
+    }, [db]);
 
     useEffect(() => {
         aRef.current = studentTotal;
@@ -162,89 +234,6 @@ const Chart = () => {
         return () => clearTimeout(timer);
     }, [db]);
 
-    const config = {
-        data: [
-            { subject: 'Math', score: mathAS },
-            { subject: 'Enghlish', score: englishAS },
-            { subject: 'Literature', score: literatureAS },
-            { subject: 'Total Students', score: average },
-        ],
-        width: 1000,
-        height: 400,
-        xField: 'subject',
-        yField: 'score',
-        scale: {
-            x: { padding: 0.8 },
-            y: {
-                domainMax: 10,
-                domainMin: 0,
-            },
-        },
-        label: {
-            text: (d) => `${d.score.toFixed(2)}`,
-            textBaseline: 'bottom',
-        },
-        style: {
-            width: 50,
-        },
-    };
-
-    const con = {
-        data: [
-            { type: 'None', value: registZero },
-            { type: 'One', value: registOne },
-            { type: 'Two', value: registTwo },
-            { type: 'Three', value: registThree },
-            { type: 'Four', value: registFour },
-            { type: 'Five', value: registFive },
-        ],
-        angleField: 'value',
-        colorField: 'type',
-        width: 1000,
-        height: 650,
-        marginTop: 50,
-        marginBottom: 50,
-        label: {
-            text: (d) => `${d.value}`,
-            position: 'outside',
-        },
-        legend: {
-            color: {
-                title: false,
-                position: 'right',
-                rowPadding: 5,
-            },
-        },
-        style: {
-            fontSize: 14,
-            textAlign: 'center',
-        },
-    };
-
-    const gen = {
-        data: [
-            { gender: 'Male', value: male },
-            { gender: 'Female', value: female },
-        ],
-        angleField: 'value',
-        colorField: 'gender',
-        width: 350,
-        height: 250,
-        label: {
-            text: (d) => `${d.gender}\n${d.value}`,
-            style: {
-                fontWeight: 'bold',
-            },
-        },
-        legend: {
-            color: {
-                title: false,
-                position: 'right',
-                rowPadding: 5,
-            },
-        },
-    };
-
     return (
         <div className="container">
             {loading ? (
@@ -260,21 +249,19 @@ const Chart = () => {
                                 </div>
                                 <div className="card-content">
                                     <div className="content-chart">
-                                        <ArrowUpOutlined style={{ fontSize: '30px', color: 'green' }} />
+                                        <ArrowUpOutlined className="content-chart-icon-green" />
                                         <div
-                                            className="number-below"
+                                            className="number-below-green"
                                             title={'Students scores more than 5: ' + stMoreThanF}
-                                            style={{ color: 'green' }}
                                         >
                                             {stMoreThanF}
                                         </div>
                                     </div>
                                     <div className="content-chart">
-                                        <ArrowDownOutlined style={{ fontSize: '30px', color: 'red' }} />
+                                        <ArrowDownOutlined className="content-chart-icon-red" />
                                         <div
-                                            className="number-below"
+                                            className="number-below-red"
                                             title={'Students scores less than 5: ' + stLessThanF}
-                                            style={{ color: 'red' }}
                                         >
                                             {stLessThanF}
                                         </div>
@@ -289,27 +276,25 @@ const Chart = () => {
                                 </div>
                                 <div className="card-content">
                                     <div className="content-chart">
-                                        <ArrowUpOutlined style={{ fontSize: '30px', color: 'green' }} />
+                                        <ArrowUpOutlined className="content-chart-icon-green" />
                                         <div
-                                            className="number-below"
+                                            className="number-below-green"
                                             title={
                                                 'Number of Universities has more than 50% registration: ' +
                                                 { listUniMoreRegister }
                                             }
-                                            style={{ color: 'green' }}
                                         >
                                             {listUniMoreRegister}
                                         </div>
                                     </div>
                                     <div className="content-chart">
-                                        <ArrowDownOutlined style={{ fontSize: '30px', color: 'red' }} />
+                                        <ArrowDownOutlined className="content-chart-icon-red" />
                                         <div
-                                            className="number-below"
+                                            className="number-below-red"
                                             title={
                                                 'Number of Universities has less than 50% registration: ' +
                                                 { listUniLessRegister }
                                             }
-                                            style={{ color: 'red' }}
                                         >
                                             {listUniLessRegister}
                                         </div>
@@ -328,7 +313,7 @@ const Chart = () => {
                             <h2>Average scores of subjects</h2>
                             <Column {...config} />
                         </div>
-                        <div className="charter" style={{ height: '700px' }}>
+                        <div className="charter">
                             <h2>The number of courses each student registers</h2>
                             <Pie {...con} />
                         </div>

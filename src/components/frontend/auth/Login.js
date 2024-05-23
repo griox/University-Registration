@@ -1,29 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
-// import 'boxicons/css/boxicons.min.css';
 import 'firebase/auth';
 import { ref, child, getDatabase, get } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
 import { Link, Redirect } from 'react-router-dom';
 import '../../../assets/css/login.css';
-import { useDispatch } from 'react-redux';
-// import '../../../assets/js/login';
+import { firebaseConfig } from '../../../constants/constants';
+import { decodePath, validateEmailFormat } from '../../../commonFunctions';
 export const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const dispatch = useDispatch();
-
-    function validateEmailFormat(val) {
-        return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(val) || /w+([-+.]w+)*@w+([-.]w+)*.w+([-.]w+)*/.test(val);
-    }
-
-    const decodePath = (email) => {
-        if (email) return email.replace(/%2E/g, '.');
-        else return 0;
-    };
-
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
     useEffect(() => {
         const passwordInput = document.querySelector('.pass_login');
         const eyeBtn = document.querySelector('.eye');
@@ -66,20 +56,7 @@ export const Login = () => {
         };
     }, []);
 
-    const firebaseConfig = {
-        apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
-        authDomain: 'mock-proeject-b.firebaseapp.com',
-        databaseURL: 'https://mock-proeject-b-default-rtdb.firebaseio.com',
-        projectId: 'mock-proeject-b',
-        storageBucket: 'mock-proeject-b.appspot.com',
-        messagingSenderId: '898832925665',
-        appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const [role, setRole] = useState('');
-    function saveOnLocal(role) {
+    const saveOnLocal = (role) => {
         if (role === 'super_admin') {
             get(child(ref(db), 'Super_Admin/')).then((snapshot) => {
                 if (snapshot.exists()) {
@@ -118,9 +95,9 @@ export const Login = () => {
                 }
             });
         }
-    }
+    };
 
-    function getdt(email, password) {
+    const getdt = (email, password) => {
         if (email !== '') {
             if (validateEmailFormat(email) !== true) {
                 toast.error('Incorrect format');
@@ -130,19 +107,15 @@ export const Login = () => {
                         .then((snapshot) => {
                             if (snapshot.exists()) {
                                 const x = snapshot.val();
-                                // setDd(x.length);
                                 const listItem = Object.values(x).map((user) => user);
-
                                 const y = listItem.filter(
                                     (item) => decodePath(item.email) === email && item.password === password,
                                 );
                                 if (y.length !== 0) {
-                                    console.log(y);
                                     for (let i in y) {
                                         if (y[i].name !== undefined && y[i].name !== null) {
                                             localStorage.setItem('Role', y[i].Role);
                                             localStorage.setItem('Name', y[i].name);
-                                            console.log(y[i].name);
                                             saveOnLocal(y[i].Role);
                                         } else {
                                             saveOnLocal(y[i].Role);
@@ -151,6 +124,7 @@ export const Login = () => {
 
                                     setIsLoggedIn(true);
                                     localStorage.setItem('isLoggedIn', 'true');
+                                    <Link to="/admin/dashboard" />;
                                 } else {
                                     toast.error('Account not found. Please check your email and password again.');
                                 }
@@ -170,7 +144,7 @@ export const Login = () => {
         }
 
         <Link to="/admin/dashboard" />;
-    }
+    };
 
     return (
         <>
@@ -193,7 +167,6 @@ export const Login = () => {
 
                     <div className="col col-2">
                         <form action="">
-                            {/* Trang đăng nhập */}
                             <div className="login-form">
                                 <div className="form-title">
                                     <span>LOGIN</span>

@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
 import { Button } from 'antd';
 import { useHistory } from 'react-router-dom';
-import '../../../assets/css/register.css';
+import '../../../assets/css/changepass.css';
 
 const Changepass = () => {
     const history = useHistory();
@@ -269,14 +269,15 @@ const Changepass = () => {
                                         >
                                             <span>Regist</span>
                                         </div> */}
-                                        <Button type="primary" className="input-submit" onClick={changePassWord}>
+                                        <br />
+                                        <Button type="submit" className="input-submit" onClick={changePassWord}>
                                             <span>Change</span>
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </Button>
-                                        <Button type="primary" className="input-submit" onClick={clear}>
+                                        {/* <Button type="primary" className="input-submit" onClick={clear}>
                                             <span>Clear</span>
                                             <i className="bx bx-right-arrow-alt"></i>
-                                        </Button>
+                                        </Button> */}
                                         {/* <Button
                                             type="primary"
                                             loading={loadings[1]}
@@ -290,12 +291,12 @@ const Changepass = () => {
                                         <i className="bx bx-right-arrow-alt"></i>
                                         </Button> */}
                                     </div>
-                                    {/* <div className="input-box">
-                                        <div type="submit" className="input-submit">
+                                    <div className="input-box">
+                                        <div type="submit" className="input-submit" onClick={clear}>
                                             <span>Clear</span>
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </div>
-                                    </div> */}
+                                    </div>
                                 </div>
                             </div>
                         </form>

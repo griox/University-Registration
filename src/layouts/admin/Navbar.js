@@ -5,6 +5,7 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { Dropdown, Space, message } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 const items = [
     {
@@ -63,12 +64,19 @@ const Navbar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const colorMode = useContext(ColorModeContext);
+    const dispatch = useDispatch();
     const history = useHistory();
 
     const handleLogout = () => {
         localStorage.setItem('Infor', JSON.stringify(''));
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('selectedMenuItem');
+        localStorage.setItem('Name', '');
+        localStorage.setItem('Email', JSON.stringify(''));
+        localStorage.setItem('Role', '');
+
+        dispatch({ type: 'logout' });
+
         history.push('/');
     };
 

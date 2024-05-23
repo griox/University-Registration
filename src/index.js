@@ -10,7 +10,6 @@ root.render(
     // <React.StrictMode>
     <BrowserRouter>
         <App />
-        {/* {() => createUniRecords()} */}
     </BrowserRouter>,
     // </React.StrictMode>,
 );

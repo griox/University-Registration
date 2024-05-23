@@ -44,7 +44,6 @@ const Sidebar = () => {
     const isInitialMountSelected = useRef(true);
 
     useEffect(() => {
-
         if (isInitialMountCollapsed.current) {
             isInitialMountCollapsed.current = false;
         } else {

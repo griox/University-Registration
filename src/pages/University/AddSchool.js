@@ -109,7 +109,6 @@ const AddSchool = () => {
             address: '',
             ...record,
         });
-        console.log(record.key);
         setEditingKey(record.key);
         console.log(editingKey);
     };
@@ -165,12 +164,26 @@ const AddSchool = () => {
             const snapshot = await get(child(ref(db), 'University'));
             if (snapshot.exists()) {
                 const universities = snapshot.val();
-                const uniCodeExists = Object.values(universities).some((uni) => uni.uniCode === newUniCode);
+                const uniCodeExists = Object.values(universities).some((uni) => uni.uniCode === newUniCode.toLowerCase());
                 return uniCodeExists;
             }
             return false;
         } catch (error) {
             console.error('Error checking uniCode existence:', error);
+            return false;
+        }
+    };
+    const checkNameExistence = async (newName) => {
+        try {
+            const snapshot = await get(child(ref(db), 'University'));
+            if (snapshot.exists()) {
+                const universities = snapshot.val();
+                const uniNameExists = Object.values(universities).some((uni) => uni.nameU === newName.toLowerCase());
+                return uniNameExists;
+            }
+            return false;
+        } catch (error) {
+            console.error('Error checking uniName existence:', error);
             return false;
         }
     };
@@ -185,18 +198,26 @@ const AddSchool = () => {
                 const item = newData[index];
                 if (row.target < item.isRegistered) {
                     toast.error("Targets must not be less than Number of registration");
-                    return; // Không thực hiện lưu nếu điều kiện không được đáp ứng
+                    return; 
                 }
                 if(row.averageS>30||row.averageS<0){
                     toast.error('Invalid Entrance Score Format')
                 }
-                // if (row.uniCode !== item.uniCode) {
-                //     const uniCodeExists = await checkUniCodeExistence(row.uniCode);
-                //     if (uniCodeExists) {
-                //         toast.error('This uniCode already exists');
-                //         return;
-                //     }
-                // }
+                if (row.uniCode !== item.uniCode) {
+                    console.log(row.uniCode,item.uniCode)
+                    const uniCodeExists = await checkUniCodeExistence(row.uniCode);
+                    if (uniCodeExists) {
+                        toast.error('This uniCode already exists');
+                        return;
+                    }
+                }
+                if (row.nameU !== item.nameU) {
+                    const uniNameExists = await checkNameExistence(row.nameU);
+                    if (uniNameExists) {
+                        toast.error('This Name already exists');
+                        return;
+                    }
+                }
                 newData.splice(index, 1, {
                     ...item,
                     ...row,
@@ -336,7 +357,7 @@ const AddSchool = () => {
         },
         {
             title: 'UniCode',
-            dataIndex: 'key',
+            dataIndex: 'uniCode',
             width: '13%',
             editable: true,
             ...getColumnSearchProps('ucode'),

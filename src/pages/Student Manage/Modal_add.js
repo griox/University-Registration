@@ -20,7 +20,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-const Modal_Add = () => {
+const Modal_Add = ({studentData,setStudentData}) => {
     const [Fullname, setFullname] = useState('');
     const [Gender, setGender] = useState('Female');
     const [Email, setEmail] = useState('');
@@ -93,6 +93,24 @@ const Modal_Add = () => {
                 name: Fullname,
                 Role: 'user',
             });
+            const newData ={
+              id: newID, // Use the generated ID
+              email: Email,
+              name: Fullname,
+              enthicity: enthicity,
+              gender: Gender,
+              dateObirth: formattedDateOfBirth,
+              placeOBirth: placeOfBirth,
+              idenNum: Identify,
+              MathScore: Mathscore,
+              EnglishScore: Englishscore,
+              LiteratureScore: Literaturescore,
+              AverageScore: round(Mathscore + Englishscore + Literaturescore, 1),
+              Address: Address,
+              uniCode: [''],
+              isRegister: 'true',
+            }
+            setStudentData([...studentData,newData]);
             toast.success('Added a new student');
             setIsModalOpen(false);
         } catch (error) {
@@ -172,6 +190,7 @@ const Modal_Add = () => {
             setEnglishscore(null);
             setLiteraturescore(null);
         }
+        
     };
 
     const handleCancel = () => {
@@ -402,8 +421,8 @@ const Modal_Add = () => {
                                 ]}
                             >
                                 <DatePicker
-                                    minDate={dayjs('01/01/2006', dateFormat)}
-                                    maxDate={dayjs('31/12/2006', dateFormat)}
+                                    minDate={dayjs('01/01/2004', dateFormat)}
+                                    maxDate={dayjs('31/12/2004', dateFormat)}
                                     format="DD/MM/YYYY"
                                     onChange={(value) => setDateOfBirth(value)}
                                 />

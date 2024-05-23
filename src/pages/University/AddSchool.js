@@ -1,22 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography } from 'antd';
-import {
-    SearchOutlined,
-    EditOutlined,
-    DeleteOutlined,
-    PlusCircleOutlined,
-    MinusCircleOutlined,
-    ManOutlined,
-} from '@ant-design/icons';
+import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin } from 'antd';
+import { SearchOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { toast } from 'react-toastify';
 import { Button, Space, Modal } from 'antd';
 import Highlighter from 'react-highlight-words';
-import { WomanOutlined } from '@ant-design/icons';
-import { get, ref, child, getDatabase, remove, update, push, set } from 'firebase/database';
+import { get, ref, child, getDatabase, remove, update, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import FormDetail from './Modal_detail';
 import FormAdd from './formAddSchool';
-import { render } from '@testing-library/react';
 const firebaseConfig = {
     apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
     authDomain: 'mock-proeject-b.firebaseapp.com',
@@ -32,7 +23,6 @@ const db = getDatabase(app);
 const AddSchool = () => {
     const [isModalVisible, setVisible] = useState(false);
     const [isModalDetailVisible, setDetailVisible] = useState(false);
-    const [modalDetail, setModalDetail] = useState({});
     const [selectedUniverse, setSelectedUniverse] = useState(null);
     const [searchText, setSearchText] = useState('');
     const [form] = Form.useForm();
@@ -52,6 +42,7 @@ const AddSchool = () => {
                     const data = snapshot.val();
                     const uniArray = Object.values(data).map((uni) => ({ ...uni, key: uni.uniCode }));
                     setUniData(uniArray);
+                    setLoading(false);
                 }
             } catch (error) {
                 console.error('Cant now fetch University data', error);
@@ -85,10 +76,9 @@ const AddSchool = () => {
         );
     };
     const handleSchoolDetail = (record) => {
-        setModalDetail(record);
         setDetailVisible(true);
         setSelectedUniverse(record);
-        console.log(record);
+        setLoading(true);
     };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -125,10 +115,6 @@ const AddSchool = () => {
             console.error('Error deleting data:', error);
         }
     };
-    const showModal = () => {
-        setVisible(true);
-    };
-
     const handleOk = () => {
         setVisible(false);
         setDetailVisible(false);
@@ -137,12 +123,12 @@ const AddSchool = () => {
     const handleCancel = () => {
         setVisible(false);
         setDetailVisible(false);
-        setLoading(true);
+        setLoading(false);
     };
     const handleFieldChange = async (key, dataIndex, value) => {
         const newData = [...UniData];
         const index = newData.findIndex((item) => key === item.key);
-        
+
         if (index > -1) {
             newData[index][dataIndex] = value;
             setUniData(newData); // Update state
@@ -164,7 +150,9 @@ const AddSchool = () => {
             const snapshot = await get(child(ref(db), 'University'));
             if (snapshot.exists()) {
                 const universities = snapshot.val();
-                const uniCodeExists = Object.values(universities).some((uni) => uni.uniCode === newUniCode.toLowerCase());
+                const uniCodeExists = Object.values(universities).some(
+                    (uni) => uni.uniCode === newUniCode.toLowerCase(),
+                );
                 return uniCodeExists;
             }
             return false;
@@ -187,7 +175,7 @@ const AddSchool = () => {
             return false;
         }
     };
-    
+
     const save = async (key) => {
         try {
             const row = await form.validateFields();
@@ -197,14 +185,14 @@ const AddSchool = () => {
             if (index > -1) {
                 const item = newData[index];
                 if (row.target < item.isRegistered) {
-                    toast.error("Targets must not be less than Number of registration");
-                    return; 
+                    toast.error('Targets must not be less than Number of registration');
+                    return;
                 }
-                if(row.averageS>30||row.averageS<0){
-                    toast.error('Invalid Entrance Score Format')
+                if (row.averageS > 30 || row.averageS < 0) {
+                    toast.error('Invalid Entrance Score Format');
                 }
                 if (row.uniCode !== item.uniCode) {
-                    console.log(row.uniCode,item.uniCode)
+                    console.log(row.uniCode, item.uniCode);
                     const uniCodeExists = await checkUniCodeExistence(row.uniCode);
                     if (uniCodeExists) {
                         toast.error('This uniCode already exists');
@@ -226,7 +214,7 @@ const AddSchool = () => {
                 // Chuyển đổi giá trị từ chuỗi sang số
                 const updatedRow = {
                     ...newData[index],
-                    target:parseInt(newData[index].target),
+                    target: parseInt(newData[index].target),
                 };
                 // Cập nhật dữ liệu trên state
                 newData[index] = updatedRow;
@@ -259,7 +247,7 @@ const AddSchool = () => {
         }
         console.log('params', pagination, filters, sorter, extra);
     };
-  
+
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
             <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
@@ -361,12 +349,11 @@ const AddSchool = () => {
             width: '13%',
             editable: true,
             ...getColumnSearchProps('uniCode'),
-            render: (text,record)=>(
-                <Tooltip title={record.isRegistered === record.targer ? 'Can not regist':''}>
-                    <span style={{color:record.isRegistered === record.target ? 'green':'black'}}>{text}</span>
+            render: (text, record) => (
+                <Tooltip title={record.isRegistered === record.targer ? 'Can not regist' : ''}>
+                    <span style={{ color: record.isRegistered === record.target ? 'green' : 'black' }}>{text}</span>
                 </Tooltip>
-                
-            )
+            ),
         },
         {
             title: 'Address',
@@ -412,7 +399,6 @@ const AddSchool = () => {
                             Edit
                         </Typography.Link>
                         <Typography.Link onClick={cancel}>Cancel</Typography.Link>
-                    
                     </span>
                 ) : (
                     <Space size={'middle'}>
@@ -469,38 +455,37 @@ const AddSchool = () => {
             <Form form={form} component={false}>
                 <Space direction="vertical">
                     <FormAdd />
-                    <Table
-                        columns={mergedColumns}
-                        dataSource={UniData}
-                        onChange={onChange}
-                        pagination={{
-                            defaultPageSize: 10,
-                            pageSizeOptions: ['10', '20', '40', '100'],
-                            showSizeChanger: true,
-                            showQuickJumper: true,
-                            showTotal: (total) => `Total ${total} items`,
-                        }}
-                        scroll={{ x: false, y: 'calc(100vh - 350px)' }}
-                        components={{
-                            body: {
-                                cell: EditableCell,
-                            },
-                        }}
-                        bordered
-                        ref={tableRef}
-                    />
+                    <Spin spinning={loading}>
+                        <Table
+                            columns={mergedColumns}
+                            dataSource={UniData}
+                            onChange={onChange}
+                            pagination={{
+                                defaultPageSize: 10,
+                                pageSizeOptions: ['10', '20', '40', '100'],
+                                showSizeChanger: true,
+                                showQuickJumper: true,
+                                showTotal: (total) => `Total ${total} items`,
+                            }}
+                            scroll={{ x: false, y: 'calc(100vh - 350px)' }}
+                            components={{
+                                body: {
+                                    cell: EditableCell,
+                                },
+                            }}
+                            bordered
+                            ref={tableRef}
+                        />
+                    </Spin>
                 </Space>
             </Form>
-            <Modal
-                open={isModalDetailVisible}
-                onCancel={handleCancel}
-                width={800} 
-                height={600}
-            >
-                <FormDetail  university={selectedUniverse}
-                        visible={isModalDetailVisible}
-                        setLoading={setLoading} // Pass down the setLoading function
-                        loading={loading} />
+            <Modal open={isModalDetailVisible} onCancel={handleCancel} width={800} height={600}>
+                <FormDetail
+                    university={selectedUniverse}
+                    visible={isModalDetailVisible}
+                    setLoading={setLoading} // Pass down the setLoading function
+                    loading={loading}
+                />
             </Modal>
         </div>
     );

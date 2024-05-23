@@ -1,22 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography } from 'antd';
-import {
-    SearchOutlined,
-    EditOutlined,
-    DeleteOutlined,
-    PlusCircleOutlined,
-    MinusCircleOutlined,
-    ManOutlined,
-} from '@ant-design/icons';
+import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin } from 'antd';
+import { SearchOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { toast } from 'react-toastify';
 import { Button, Space, Modal } from 'antd';
 import Highlighter from 'react-highlight-words';
-import { WomanOutlined } from '@ant-design/icons';
-import { get, ref, child, getDatabase, remove, update, push, set } from 'firebase/database';
+import { get, ref, child, getDatabase, remove, update, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import FormDetail from './Modal_detail';
 import FormAdd from './formAddSchool';
-import { render } from '@testing-library/react';
 const firebaseConfig = {
     apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
     authDomain: 'mock-proeject-b.firebaseapp.com',
@@ -32,7 +23,6 @@ const db = getDatabase(app);
 const AddSchool = () => {
     const [isModalVisible, setVisible] = useState(false);
     const [isModalDetailVisible, setDetailVisible] = useState(false);
-    const [modalDetail, setModalDetail] = useState({});
     const [selectedUniverse, setSelectedUniverse] = useState(null);
     const [searchText, setSearchText] = useState('');
     const [form] = Form.useForm();
@@ -52,6 +42,7 @@ const AddSchool = () => {
                     const data = snapshot.val();
                     const uniArray = Object.values(data).map((uni) => ({ ...uni, key: uni.uniCode }));
                     setUniData(uniArray);
+                    setLoading(false);
                 }
             } catch (error) {
                 console.error('Cant now fetch University data', error);
@@ -85,10 +76,9 @@ const AddSchool = () => {
         );
     };
     const handleSchoolDetail = (record) => {
-        setModalDetail(record);
         setDetailVisible(true);
         setSelectedUniverse(record);
-        console.log(record);
+        setLoading(true);
     };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -125,10 +115,6 @@ const AddSchool = () => {
             console.error('Error deleting data:', error);
         }
     };
-    const showModal = () => {
-        setVisible(true);
-    };
-
     const handleOk = () => {
         setVisible(false);
         setDetailVisible(false);
@@ -137,7 +123,7 @@ const AddSchool = () => {
     const handleCancel = () => {
         setVisible(false);
         setDetailVisible(false);
-        setLoading(true);
+        setLoading(false);
     };
     const handleFieldChange = async (key, dataIndex, value) => {
         const newData = [...UniData];
@@ -469,26 +455,28 @@ const AddSchool = () => {
             <Form form={form} component={false}>
                 <Space direction="vertical">
                     <FormAdd />
-                    <Table
-                        columns={mergedColumns}
-                        dataSource={UniData}
-                        onChange={onChange}
-                        pagination={{
-                            defaultPageSize: 10,
-                            pageSizeOptions: ['10', '20', '40', '100'],
-                            showSizeChanger: true,
-                            showQuickJumper: true,
-                            showTotal: (total) => `Total ${total} items`,
-                        }}
-                        scroll={{ x: false, y: 'calc(100vh - 350px)' }}
-                        components={{
-                            body: {
-                                cell: EditableCell,
-                            },
-                        }}
-                        bordered
-                        ref={tableRef}
-                    />
+                    <Spin spinning={loading}>
+                        <Table
+                            columns={mergedColumns}
+                            dataSource={UniData}
+                            onChange={onChange}
+                            pagination={{
+                                defaultPageSize: 10,
+                                pageSizeOptions: ['10', '20', '40', '100'],
+                                showSizeChanger: true,
+                                showQuickJumper: true,
+                                showTotal: (total) => `Total ${total} items`,
+                            }}
+                            scroll={{ x: false, y: 'calc(100vh - 350px)' }}
+                            components={{
+                                body: {
+                                    cell: EditableCell,
+                                },
+                            }}
+                            bordered
+                            ref={tableRef}
+                        />
+                    </Spin>
                 </Space>
             </Form>
             <Modal open={isModalDetailVisible} onCancel={handleCancel} width={800} height={600}>

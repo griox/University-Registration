@@ -1,5 +1,5 @@
 import 'firebase/auth';
-import { ref,  getDatabase, set,get,child,update } from 'firebase/database';
+import { ref,  getDatabase, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { useEffect } from 'react';
 const firebaseConfig = {
@@ -151,24 +151,24 @@ export function useCreateUnitRecordsOnMount() {
   createUniRecords()
   }, []); // Thực hiện chỉ một lần khi component được mount
 }
-const a = () => {
-          get(child(ref(db), `Detail/`)).then((snapshot) => {
-              if (snapshot.exists()) {
-                  const x = snapshot.val();
-                  for (let i in x) {
-                      const id = x[i].id;
-                      const a = x[i].uniCode;
-                      if (a !== undefined) {
-                          a.forEach((element) => {
-                              update(ref(db, `University/${element}/registeration/`), {
-                                  id: id,
-                              });
-                              console.log('thành công');
-                          });
-                      }
-                  }
-              } else {
-                  console.log('No data available');
-              }
-          });
-      };
+// const a = () => {
+//           get(child(ref(db), `Detail/`)).then((snapshot) => {
+//               if (snapshot.exists()) {
+//                   const x = snapshot.val();
+//                   for (let i in x) {
+//                       const id = x[i].id;
+//                       const a = x[i].uniCode;
+//                       if (a !== undefined) {
+//                           a.forEach((element) => {
+//                               update(ref(db, `University/${element}/registeration/`), {
+//                                   id: id,
+//                               });
+//                               console.log('thành công');
+//                           });
+//                       }
+//                   }
+//               } else {
+//                   console.log('No data available');
+//               }
+//           });
+//       };

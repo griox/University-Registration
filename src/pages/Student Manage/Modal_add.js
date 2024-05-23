@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import 'firebase/auth';
-import { getDatabase, ref, child, get, set, push } from 'firebase/database';
+import { getDatabase, ref, child, get, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
-import { Button, Modal, Space, Select, InputNumber, DatePicker, Form } from 'antd';
+import { Button, Modal, Select, InputNumber, DatePicker, Form } from 'antd';
 import { InfoCircleOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
 import { Input, Tooltip, Row, Col } from 'antd';
 import dayjs from 'dayjs';
@@ -20,7 +20,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-const Modal_Add = ({ studentData, setStudentData }) => {
+const ModalAdd = ({ studentData, setStudentData }) => {
     const [Fullname, setFullname] = useState('');
     const [Gender, setGender] = useState('Female');
     const [Email, setEmail] = useState('');
@@ -33,7 +33,7 @@ const Modal_Add = ({ studentData, setStudentData }) => {
     const [Mathscore, setMathscore] = useState(null);
     const [Englishscore, setEnglishscore] = useState(null);
     const [Literaturescore, setLiteraturescore] = useState(null);
-    const [averageS,setAverageS] = useState(null)
+    const [averageS, setAverageS] = useState(null);
     const showModal = () => {
         setIsModalOpen(true);
     };
@@ -64,7 +64,16 @@ const Modal_Add = ({ studentData, setStudentData }) => {
             return 'SV001';
         }
     };
-    
+  
+    useEffect(() => {
+        const calculateAverage = () => {
+            if (Mathscore !== null && Englishscore !== null && Literaturescore !== null) {
+                const totalScore = Mathscore + Englishscore + Literaturescore;
+                setAverageS(totalScore.toFixed(1)); // Set the average score state
+            }
+        };
+        calculateAverage();
+    }, [Mathscore, Englishscore, Literaturescore]);
     const addStudent = async () => {
         try {
             const formattedDateOfBirth = dateOfBirth ? dateOfBirth.format('DD/MM/YYYY') : '';
@@ -207,6 +216,7 @@ const Modal_Add = ({ studentData, setStudentData }) => {
         setMathscore(null);
         setEnglishscore(null);
         setLiteraturescore(null);
+        setAverageS(null);
     };
     function validateEmailFormat(email) {
         return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(email);
@@ -621,16 +631,9 @@ const Modal_Add = ({ studentData, setStudentData }) => {
                             </Form.Item>
                         </Col>
                         <Col span={6}>
-                            <Form.Item
-                                    label="Average"
-                                    name="average"
-                                    style={{ fontWeight: 600 }}
-                                >
-                                    <InputNumber
-                                        disabled='true'
-                                        style={{ width: '50%' }}
-                                    />
-                                </Form.Item>
+                            <Form.Item label="Entrance Score" style={{ fontWeight: 600 }}>
+                                <Input readOnly style={{ width: '50%' }} value={averageS} />
+                            </Form.Item>
                         </Col>
                     </Row>
                 </Form>
@@ -639,4 +642,4 @@ const Modal_Add = ({ studentData, setStudentData }) => {
     );
 };
 
-export default Modal_Add;
+export default ModalAdd;

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import 'firebase/auth';
-import { child, get, getDatabase, ref, set, update } from 'firebase/database';
+import { child, get, getDatabase, ref, update } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import { Button } from 'antd';
 import { useHistory } from 'react-router-dom';
 import '../../../assets/css/register.css';

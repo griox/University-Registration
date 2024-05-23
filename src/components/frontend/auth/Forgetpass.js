@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 // import 'boxicons/css/boxicons.min.css';
 import 'firebase/auth';
-import { ref, child, getDatabase, get } from 'firebase/database';
-import { initializeApp } from 'firebase/app';
-import { toast } from 'react-toastify';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../../../assets/css/login.css';
 // import '../../../assets/js/login';
 export const Forgetpass = () => {

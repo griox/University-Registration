@@ -3,8 +3,8 @@ import 'firebase/auth';
 import { child, get, getDatabase, ref, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
-import { Link } from 'react-router-dom';
-import { Button, message } from 'antd';
+// import { Link } from 'react-router-dom';
+import { message } from 'antd';
 import { useHistory } from 'react-router-dom';
 import '../../../assets/css/register.css';
 
@@ -112,6 +112,7 @@ const Register = () => {
             eyeBtn2.removeEventListener('click', handleEyeBtn2);
         };
     }, []);
+
     const clear = () => {
         setFullName('');
         setEmail('');
@@ -215,13 +216,6 @@ const Register = () => {
                     <div className="col col-1">
                         <div className="image_layer">
                             <img src="assets/login/img/FPTnew.png" className="form_img_main" alt="" />
-                            {/* <img src="assets/login/img/white-outline.png" className="form_img_main" alt="" />
-                            <img src="assets/login/img/dots.png" className="form_img dots" alt="" />
-                            <img src="assets/login/img/coin.png" className="form_img coin" alt="" />
-                            <img src="assets/login/img/spring.png" className="form_img spring" alt="" />
-                            <img src="assets/login/img/rocket.png" className="form_img rocket" alt="" />
-                            <img src="assets/login/img/cloud.png" className="form_img cloud" alt="" />
-                            <img src="assets/login/img/stars.png" className="form_img stars" alt="" /> */}
                         </div>
 
                         <p className="featured">
@@ -251,7 +245,7 @@ const Register = () => {
                                             value={fullName}
                                             onChange={(e) => setFullName(e.target.value)}
                                         />
-                                        <i class="bx bx-user icon"></i>
+                                        <i className="bx bx-user icon"></i>
                                     </div>
                                     <div className="input-box">
                                         <input

@@ -43,7 +43,7 @@ export const Form_Detail = ({ university,loading,setLoading }) => {
             }
         };
         fetchData();
-    }, [student_regist, db]);
+    }, [student_regist, db,setLoading]);
     const cancel = () => {
         form.resetFields();
     };

@@ -249,21 +249,19 @@ const Chart = () => {
                                 </div>
                                 <div className="card-content">
                                     <div className="content-chart">
-                                        <ArrowUpOutlined style={{ fontSize: '30px', color: 'green' }} />
+                                        <ArrowUpOutlined className="content-chart-icon-green" />
                                         <div
-                                            className="number-below"
+                                            className="number-below-green"
                                             title={'Students scores more than 5: ' + stMoreThanF}
-                                            style={{ color: 'green' }}
                                         >
                                             {stMoreThanF}
                                         </div>
                                     </div>
                                     <div className="content-chart">
-                                        <ArrowDownOutlined style={{ fontSize: '30px', color: 'red' }} />
+                                        <ArrowDownOutlined className="content-chart-icon-red" />
                                         <div
-                                            className="number-below"
+                                            className="number-below-red"
                                             title={'Students scores less than 5: ' + stLessThanF}
-                                            style={{ color: 'red' }}
                                         >
                                             {stLessThanF}
                                         </div>
@@ -278,27 +276,25 @@ const Chart = () => {
                                 </div>
                                 <div className="card-content">
                                     <div className="content-chart">
-                                        <ArrowUpOutlined style={{ fontSize: '30px', color: 'green' }} />
+                                        <ArrowUpOutlined className="content-chart-icon-green" />
                                         <div
-                                            className="number-below"
+                                            className="number-below-green"
                                             title={
                                                 'Number of Universities has more than 50% registration: ' +
                                                 { listUniMoreRegister }
                                             }
-                                            style={{ color: 'green' }}
                                         >
                                             {listUniMoreRegister}
                                         </div>
                                     </div>
                                     <div className="content-chart">
-                                        <ArrowDownOutlined style={{ fontSize: '30px', color: 'red' }} />
+                                        <ArrowDownOutlined className="content-chart-icon-red" />
                                         <div
-                                            className="number-below"
+                                            className="number-below-red"
                                             title={
                                                 'Number of Universities has less than 50% registration: ' +
                                                 { listUniLessRegister }
                                             }
-                                            style={{ color: 'red' }}
                                         >
                                             {listUniLessRegister}
                                         </div>
@@ -317,7 +313,7 @@ const Chart = () => {
                             <h2>Average scores of subjects</h2>
                             <Column {...config} />
                         </div>
-                        <div className="charter" style={{ height: '700px' }}>
+                        <div className="charter">
                             <h2>The number of courses each student registers</h2>
                             <Pie {...con} />
                         </div>

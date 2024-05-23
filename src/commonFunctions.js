@@ -19,17 +19,14 @@ export function GetColumnSearchProps(props) {
     };
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-            <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+            <div onKeyDown={(e) => e.stopPropagation()} className="getColumnSearchProps">
                 <Input
                     ref={searchInput}
                     placeholder={`Search ${dataIndex}`}
                     value={selectedKeys[0]}
                     onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-                    style={{
-                        marginBottom: 8,
-                        display: 'block',
-                    }}
+                    className="getColumnSearchProps-Input"
                 />
                 <Space>
                     <Button
@@ -37,18 +34,14 @@ export function GetColumnSearchProps(props) {
                         onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                         icon={<SearchOutlined />}
                         size="small"
-                        style={{
-                            width: 90,
-                        }}
+                        className="getColumnSearchProps-Button"
                     >
                         Search
                     </Button>
                     <Button
                         onClick={() => clearFilters && handleReset(clearFilters)}
                         size="small"
-                        style={{
-                            width: 90,
-                        }}
+                        className="getColumnSearchProps-Button"
                     >
                         Reset
                     </Button>
@@ -72,11 +65,7 @@ export function GetColumnSearchProps(props) {
             </div>
         ),
         filterIcon: (filtered) => (
-            <SearchOutlined
-                style={{
-                    color: filtered ? '#1677ff' : undefined,
-                }}
-            />
+            <SearchOutlined className={filtered ? 'getColumnSearchProps-filterIcon' : undefined} />
         ),
         onFilter: (value, record) => record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
         onFilterDropdownOpenChange: (visible) => {

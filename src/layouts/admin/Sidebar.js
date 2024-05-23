@@ -10,6 +10,7 @@ import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
 import { useDispatch, useSelector } from 'react-redux';
+import TranslateComponent from '../../pages/Language';
 
 const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
     const theme = useTheme();
@@ -44,7 +45,6 @@ const Sidebar = () => {
     const isInitialMountSelected = useRef(true);
 
     useEffect(() => {
-
         if (isInitialMountCollapsed.current) {
             isInitialMountCollapsed.current = false;
         } else {

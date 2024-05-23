@@ -270,7 +270,7 @@ const Register = () => {
                                     </div>
                                     <div className="input-box">
                                         <div type="submit" className="input-submit" onClick={clear}>
-                                            <span style={{ fontSize: '17px' }}>Clear</span>
+                                            <span className="clear">Clear</span>
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </div>
                                     </div>

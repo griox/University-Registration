@@ -15,6 +15,21 @@ const initState = {
 
 const reducer = (state = initState, action) => {
     switch (action.type) {
+        case 'logout':
+            return {
+                name: '',
+                gender: '',
+                placeOBirth: '',
+                Address: '',
+                enthicity: '',
+                idenNum: '',
+                email: '',
+                EnglishScore: 0,
+                MathScore: 0,
+                LiteratureScore: 0,
+                uniCode: [],
+                img: '',
+            };
         case 'update':
             const { propertyName, newValue } = action.payload;
             return {

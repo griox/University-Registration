@@ -20,7 +20,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-const Modal_Add = ({studentData,setStudentData}) => {
+const Modal_Add = ({ studentData, setStudentData }) => {
     const [Fullname, setFullname] = useState('');
     const [Gender, setGender] = useState('Female');
     const [Email, setEmail] = useState('');
@@ -33,6 +33,7 @@ const Modal_Add = ({studentData,setStudentData}) => {
     const [Mathscore, setMathscore] = useState(null);
     const [Englishscore, setEnglishscore] = useState(null);
     const [Literaturescore, setLiteraturescore] = useState(null);
+    const [averageS,setAverageS] = useState(null)
     const showModal = () => {
         setIsModalOpen(true);
     };
@@ -63,6 +64,7 @@ const Modal_Add = ({studentData,setStudentData}) => {
             return 'SV001';
         }
     };
+    
     const addStudent = async () => {
         try {
             const formattedDateOfBirth = dateOfBirth ? dateOfBirth.format('DD/MM/YYYY') : '';
@@ -82,7 +84,7 @@ const Modal_Add = ({studentData,setStudentData}) => {
                 LiteratureScore: Literaturescore,
                 AverageScore: round(Mathscore + Englishscore + Literaturescore, 1),
                 Address: Address,
-                uniCode: [''],
+                uniCode: [],
                 isRegister: 'true',
             });
             const encodeEmail = encodeEmails(Email);
@@ -93,24 +95,24 @@ const Modal_Add = ({studentData,setStudentData}) => {
                 name: Fullname,
                 Role: 'user',
             });
-            const newData ={
-              id: newID, // Use the generated ID
-              email: Email,
-              name: Fullname,
-              enthicity: enthicity,
-              gender: Gender,
-              dateObirth: formattedDateOfBirth,
-              placeOBirth: placeOfBirth,
-              idenNum: Identify,
-              MathScore: Mathscore,
-              EnglishScore: Englishscore,
-              LiteratureScore: Literaturescore,
-              AverageScore: round(Mathscore + Englishscore + Literaturescore, 1),
-              Address: Address,
-              uniCode: [''],
-              isRegister: 'true',
-            }
-            setStudentData([...studentData,newData]);
+            const newData = {
+                id: newID, // Use the generated ID
+                email: Email,
+                name: Fullname,
+                enthicity: enthicity,
+                gender: Gender,
+                dateObirth: formattedDateOfBirth,
+                placeOBirth: placeOfBirth,
+                idenNum: Identify,
+                MathScore: Mathscore,
+                EnglishScore: Englishscore,
+                LiteratureScore: Literaturescore,
+                AverageScore: round(Mathscore + Englishscore + Literaturescore, 1),
+                Address: Address,
+                uniCode: [],
+                isRegister: 'true',
+            };
+            setStudentData([...studentData, newData]);
             toast.success('Added a new student');
             setIsModalOpen(false);
         } catch (error) {
@@ -190,7 +192,6 @@ const Modal_Add = ({studentData,setStudentData}) => {
             setEnglishscore(null);
             setLiteraturescore(null);
         }
-        
     };
 
     const handleCancel = () => {
@@ -421,6 +422,7 @@ const Modal_Add = ({studentData,setStudentData}) => {
                                 ]}
                             >
                                 <DatePicker
+                                    style={{ width: '318px' }}
                                     minDate={dayjs('01/01/2004', dateFormat)}
                                     maxDate={dayjs('31/12/2004', dateFormat)}
                                     format="DD/MM/YYYY"
@@ -624,12 +626,6 @@ const Modal_Add = ({studentData,setStudentData}) => {
                                     label="Average"
                                     name="average"
                                     style={{ fontWeight: 600 }}
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: 'Please input!',
-                                        },
-                                    ]}
                                 >
                                     <InputNumber
                                         disabled='true'

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { get, ref, child, getDatabase } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
-import { Divider, Table, Descriptions,Spin,Modal} from 'antd';
-const Modal_Detail = ({ visible, onClose, student,Loading,setLoading }) => {
+import { Divider, Table, Descriptions, Spin, Modal } from 'antd';
+const Modal_Detail = ({ visible, onClose, student, Loading, setLoading }) => {
     const [Fullname, setFullname] = useState('');
     const [Gender, setGender] = useState('');
     const [Email, setEmail] = useState('');
@@ -123,38 +123,44 @@ const Modal_Detail = ({ visible, onClose, student,Loading,setLoading }) => {
             children: student.Address,
         },
         {
-          key: '9 ',
-          label: 'Indentify Number',
-          children:student.idenNum,
-      },
+            key: '9 ',
+            label: 'Indentify Number',
+            children: student.idenNum,
+        },
     ];
     return (
-        <Modal open={visible} width={1000} title="Student's Information" onCancel={onClose} footer={null} style={{marginLeft: '380px'}}  >
-            <Descriptions  column={3}>
+        <Modal
+            open={visible}
+            width={1000}
+            title="Student's Information"
+            onCancel={onClose}
+            footer={null}
+            style={{ marginLeft: '25%' }}
+        >
+            <Descriptions column={3}>
                 {items.map((item) => (
                     <Descriptions.Item key={item.key} label={item.label}>
                         {item.children}
                     </Descriptions.Item>
                 ))}
             </Descriptions>
-            <Divider/>
+            <Divider />
             <h4>University Registered</h4>
             <Spin spinning={Loading}>
-            <Table
-                columns={columns}
-                dataSource={university}
-                pagination={{
-                    defaultPageSize: '10',
-                    pageSizeOptions: ['10', '20', '40', '100'],
-                    showSizeChanger: true,
-                    showQuickJumper: true,
-                    showTotal: (total) => `Total ${total} items`,
-                }}
-                scroll={{ x: false, y: 'calc(100vh - 350px)' }}
-                bordered
-            />
+                <Table
+                    columns={columns}
+                    dataSource={university}
+                    pagination={{
+                        defaultPageSize: '10',
+                        pageSizeOptions: ['10', '20', '40', '100'],
+                        showSizeChanger: true,
+                        showQuickJumper: true,
+                        showTotal: (total) => `Total ${total} items`,
+                    }}
+                    scroll={{ x: false, y: 'calc(100vh - 350px)' }}
+                    bordered
+                />
             </Spin>
-          
         </Modal>
     );
 };

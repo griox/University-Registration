@@ -1,10 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useContext } from 'react';
 import { Box, IconButton, useTheme } from '@mui/material';
 import { ColorModeContext, tokens } from '../../theme';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { Dropdown, Space, message } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
+import { MenuContext } from '../../pages/MenuContext';
+import { useDispatch } from 'react-redux';
 
 const items = [
     {
@@ -63,12 +65,21 @@ const Navbar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const colorMode = useContext(ColorModeContext);
+    const dispatch = useDispatch();
     const history = useHistory();
+    // const { selectedMenuItem } = useContext(MenuContext);
+    const { selectedMenuItem } = useContext(MenuContext);
 
     const handleLogout = () => {
         localStorage.setItem('Infor', JSON.stringify(''));
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('selectedMenuItem');
+        localStorage.setItem('Name', '');
+        localStorage.setItem('Email', JSON.stringify(''));
+        localStorage.setItem('Role', '');
+
+        dispatch({ type: 'logout' });
+
         history.push('/');
     };
 
@@ -107,7 +118,9 @@ const Navbar = () => {
             p={2}
         >
             {/* SEARCH BAR */}
-            <Box display="flex" alignItems="center"></Box>
+            <Box display="flex" alignItems="center">
+                <span style={{ color: colors.primary[500], fontSize: '1.5rem' }}>{selectedMenuItem}</span>
+            </Box>
 
             {/* ICONS */}
             <Box display="flex">

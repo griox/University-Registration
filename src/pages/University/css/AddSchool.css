@@ -1,0 +1,20 @@
+.form-editCell{
+    margin: 0;
+}
+.filter{
+    padding: 8px;
+}
+.search{
+    margin-bottom: 8px;
+    display: block;
+}
+/* button filter */
+.all-btn-filter{
+    width: 90px;
+}
+.ic-search{
+    color: '#1677ff'
+}
+.typolink{
+    margin-right: 8px;
+}

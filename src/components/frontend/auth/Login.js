@@ -124,6 +124,7 @@ export const Login = () => {
 
                                     setIsLoggedIn(true);
                                     localStorage.setItem('isLoggedIn', 'true');
+                                    <Link to="/admin/dashboard" />;
                                 } else {
                                     toast.error('Account not found. Please check your email and password again.');
                                 }

@@ -54,7 +54,7 @@ const AddSchool = () => {
                     setUniData(uniArray);
                 }
             } catch (error) {
-                console.errror('Cant now fetch University data', error);
+                console.error('Cant now fetch University data', error);
             }
         };
         fetchData();
@@ -362,7 +362,7 @@ const AddSchool = () => {
             dataIndex: 'uniCode',
             width: '13%',
             editable: true,
-            ...getColumnSearchProps('ucode'),
+            ...getColumnSearchProps('uniCode'),
             render: (text, record) => (
                 <Tooltip title={record.isRegistered === record.targer ? 'Can not regist' : ''}>
                     <span style={{ color: record.isRegistered === record.target ? 'green' : 'black' }}>{text}</span>

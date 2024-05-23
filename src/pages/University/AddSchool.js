@@ -1,44 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography } from 'antd';
+import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Button, Space, Modal } from 'antd';
 import {SearchOutlined, EditOutlined,DeleteOutlined,} from '@ant-design/icons';
 import { toast } from 'react-toastify';
-import { Button, Space, Modal } from 'antd';
 import Highlighter from 'react-highlight-words';
-import { get, ref, child, getDatabase, remove, update, push, set } from 'firebase/database';
-import { initializeApp } from 'firebase/app';
+import { get, ref, child, remove, update, set } from 'firebase/database';
 import FormDetail from './Modal_detail';
 import FormAdd from './formAddSchool';
-const firebaseConfig = {
-    apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
-    authDomain: 'mock-proeject-b.firebaseapp.com',
-    databaseURL: 'https://mock-proeject-b-default-rtdb.firebaseio.com',
-    projectId: 'mock-proeject-b',
-    storageBucket: 'mock-proeject-b.appspot.com',
-    messagingSenderId: '898832925665',
-    appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
-};
-
+import { database } from '../firebaseConfig.js';
+import './css/AddSchool.css';
 
 const AddSchool = () => {
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const [isModalVisible, setVisible] = useState(false);
-    const [isModalDetailVisible, setDetailVisible] = useState(false);
-    const [modalDetail, setModalDetail] = useState({});
-    const [selectedUniverse, setSelectedUniverse] = useState(null);
-    const [searchText, setSearchText] = useState('');
-    const [form] = Form.useForm();
-    const [editingKey, setEditingKey] = useState('');
-    const [UniData, setUniData] = useState([]);
-    const [searchedColumn, setSearchedColumn] = useState('');
-    const [pagination, setPagination] = useState({ current: 1, pageSize: 5 });
-    const [loading, setLoading] = useState(true);
-    const tableRef = useRef(null);
-    const searchInput = useRef(null);
-    
     useEffect(() => {
         const fetchData = async () => {
-            const uniRef = child(ref(db), 'University');
+            const uniRef = child(ref(database), 'University');
             try {
                 const snapshot = await get(uniRef);
                 if (snapshot.exists()) {
@@ -47,21 +21,34 @@ const AddSchool = () => {
                     setUniData(uniArray);
                 }
             } catch (error) {
-                console.error('Cant now fetch University data', error);
+                toast.error('An error occurred while fetchData');
             }
         };
         fetchData();
-    }, [db]);
+    }, []);
+
+    const [isModalDetailVisible, setDetailVisible] = useState(false);
+    const [selectedUniverse, setSelectedUniverse] = useState(null);
+    const [searchText, setSearchText] = useState('');
+    const [form] = Form.useForm();
+    const [editingKey, setEditingKey] = useState('');
+    const [UniData, setUniData] = useState([]);
+    const [searchedColumn, setSearchedColumn] = useState('');
+    const [, setPagination] = useState({ current: 1, pageSize: 5 });
+    const [loading, setLoading] = useState(true);
+    const tableRef = useRef(null);
+    const searchInput = useRef(null);
+
+    const isEditing = (record) => record.key === editingKey;
+
     const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
         const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
         return (
             <td {...restProps}>
                 {editing ? (
                     <Form.Item
+                        className='form-editCell'
                         name={dataIndex}
-                        style={{
-                            margin: 0,
-                        }}
                         rules={[
                             {
                                 required: true,
@@ -78,10 +65,8 @@ const AddSchool = () => {
         );
     };
     const handleSchoolDetail = (record) => {
-        // setModalDetail(record);
         setDetailVisible(true);
         setSelectedUniverse(record);
-        // console.log(record);
     };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -94,7 +79,6 @@ const AddSchool = () => {
         setSearchText('');
     };
 
-    const isEditing = (record) => record.key === editingKey;
     const edit = (record) => {
         form.setFieldsValue({
             nameU: '',
@@ -103,58 +87,52 @@ const AddSchool = () => {
             ...record,
         });
         setEditingKey(record.key);
-        console.log(editingKey);
     };
 
     const cancel = () => {
         setEditingKey('');
     };
+
     const handleDelete = async (key) => {
         try {
-            await remove(child(ref(db), `University/${key}`));
+            await remove(child(ref(database), `University/${key}`));
             const newUni = UniData.filter((item) => item.key !== key);
             setUniData(newUni);
         } catch (error) {
-            console.error('Error deleting data:', error);
+            toast.error('Error when deleting data');
         }
     };
-    // const showModal = () => {
-    //     setVisible(true);
-    // };
 
     const handleOk = () => {
-        setVisible(false);
         setDetailVisible(false);
     };
 
     const handleCancel = () => {
-        setVisible(false);
         setDetailVisible(false);
         setLoading(true);
     };
+
     const handleFieldChange = async (key, dataIndex, value) => {
         const newData = [...UniData];
         const index = newData.findIndex((item) => key === item.key);
         
         if (index > -1) {
             newData[index][dataIndex] = value;
-            setUniData(newData); // Update state
+            setUniData(newData);
 
             try {
-                // Await the update promise for Firebase
-                await update(ref(db, `University/${key}`), {
+                await update(ref(database, `University/${key}`), {
                     [dataIndex]: value,
                 });
-                console.log('Data updated in Firebase successfully');
             } catch (error) {
-                console.error('Error updating document:', error);
-                // Handle update error (optional: show notification to user)
+                toast.error('Error when update data');
             }
         }
     };
+
     const checkUniCodeExistence = async (newUniCode) => {
         try {
-            const snapshot = await get(child(ref(db), 'University'));
+            const snapshot = await get(child(ref(database), 'University'));
             if (snapshot.exists()) {
                 const universities = snapshot.val();
                 const uniCodeExists = Object.values(universities).some((uni) => uni.uniCode === newUniCode.toLowerCase());
@@ -162,13 +140,14 @@ const AddSchool = () => {
             }
             return false;
         } catch (error) {
-            console.error('Error checking uniCode existence:', error);
+            toast.error('Error checking uniCode existence');
             return false;
         }
     };
+
     const checkNameExistence = async (newName) => {
         try {
-            const snapshot = await get(child(ref(db), 'University'));
+            const snapshot = await get(child(ref(database), 'University'));
             if (snapshot.exists()) {
                 const universities = snapshot.val();
                 const uniNameExists = Object.values(universities).some((uni) => uni.nameU === newName.toLowerCase());
@@ -176,7 +155,7 @@ const AddSchool = () => {
             }
             return false;
         } catch (error) {
-            console.error('Error checking uniName existence:', error);
+            toast.error('Error checking uniName existence');
             return false;
         }
     };
@@ -197,7 +176,6 @@ const AddSchool = () => {
                     toast.error('Invalid Entrance Score Format')
                 }
                 if (row.uniCode !== item.uniCode) {
-                    console.log(row.uniCode,item.uniCode)
                     const uniCodeExists = await checkUniCodeExistence(row.uniCode);
                     if (uniCodeExists) {
                         toast.error('This uniCode already exists');
@@ -216,18 +194,16 @@ const AddSchool = () => {
                     ...row,
                 });
 
-                // Chuyển đổi giá trị từ chuỗi sang số
                 const updatedRow = {
                     ...newData[index],
                     target:parseInt(newData[index].target),
                 };
-                // Cập nhật dữ liệu trên state
+
                 newData[index] = updatedRow;
                 setUniData(newData);
                 setEditingKey('');
 
-                // Cập nhật dữ liệu trên Firebase
-                await update(ref(db, `University/${key}`), updatedRow);
+                await update(ref(database, `University/${key}`), updatedRow);
                 toast.success('Data updated successfully');
             } else {
                 newData.push(row);
@@ -235,14 +211,13 @@ const AddSchool = () => {
                 setEditingKey('');
                 handleFieldChange(key, Object.keys(row)[0], row[Object.keys(row)[0]]);
 
-                // Thêm dữ liệu mới vào Firebase
-                await set(ref(db, `University/${key}`), row); // Thêm dữ liệu mới
-                console.log('Data added to Firebase successfully');
+                await set(ref(database, `University/${key}`), row); 
             }
         } catch (errInfo) {
-            console.log('Validate Failed:', errInfo);
+            toast.error('Validate Failed');
         }
     };
+
     const onChange = (pagination, filters, sorter, extra) => {
         const totalRows = extra.total;
         if (totalRows <= 5 && pagination.current === 1) {
@@ -250,41 +225,30 @@ const AddSchool = () => {
         } else {
             setPagination(pagination);
         }
-        console.log('params', pagination, filters, sorter, extra);
     };
   
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-            <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
-                <Input
+            <div className='filter' onKeyDown={(e) => e.stopPropagation()}>
+                <Input className='search'
                     ref={searchInput}
                     placeholder={`Search ${dataIndex}`}
                     value={selectedKeys[0]}
                     onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-                    style={{
-                        marginBottom: 8,
-                        display: 'block',
-                    }}
                 />
                 <Space>
-                    <Button
+                    <Button className='all-btn-filter'
                         type="primary"
                         onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                         icon={<SearchOutlined />}
                         size="small"
-                        style={{
-                            width: 90,
-                        }}
                     >
                         Search
                     </Button>
-                    <Button
+                    <Button className='all-btn-filter'
                         onClick={() => clearFilters && handleReset(clearFilters)}
                         size="small"
-                        style={{
-                            width: 90,
-                        }}
                     >
                         Reset
                     </Button>
@@ -308,11 +272,7 @@ const AddSchool = () => {
             </div>
         ),
         filterIcon: (filtered) => (
-            <SearchOutlined
-                style={{
-                    color: filtered ? '#1677ff' : undefined,
-                }}
-            />
+            <SearchOutlined className='ic-search'/>
         ),
         onFilter: (value, record) => record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
         onFilterDropdownOpenChange: (visible) => {
@@ -396,11 +356,8 @@ const AddSchool = () => {
                 const editable = isEditing(record);
                 return editable ? (
                     <span>
-                        <Typography.Link
+                        <Typography.Link className='typolink'
                             onClick={() => save(record.key)}
-                            style={{
-                                marginRight: 8,
-                            }}
                         >
                             Edit
                         </Typography.Link>
@@ -409,12 +366,9 @@ const AddSchool = () => {
                     </span>
                 ) : (
                     <Space size={'middle'}>
-                        <Typography.Link
+                        <Typography.Link className='typolink'
                             disabled={editingKey !== ''}
                             onClick={() => edit(record)}
-                            style={{
-                                marginRight: 8,
-                            }}
                         >
                             <EditOutlined />
                         </Typography.Link>
@@ -428,6 +382,7 @@ const AddSchool = () => {
             },
         },
     ];
+
     const mergedColumns = columns.map((col) => {
         if (!col.editable) {
             return col;
@@ -449,16 +404,6 @@ const AddSchool = () => {
 
     return (
         <div>
-            <Modal
-                title="Edit the University"
-                visible={isModalVisible}
-                onOk={handleOk}
-                okText="Save"
-                onCancel={handleCancel}
-                style={{ top: '50px', left: '50px' }}
-            >
-                <AddSchool />
-            </Modal>
             <Form form={form} component={false}>
                 <Space direction="vertical">
                     <FormAdd />
@@ -487,12 +432,13 @@ const AddSchool = () => {
             <Modal
                 open={isModalDetailVisible}
                 onCancel={handleCancel}
+                onOk={handleOk}
                 width={800} 
                 height={600}
             >
                 <FormDetail  university={selectedUniverse}
-                        visible={isModalDetailVisible}
-                        setLoading={setLoading} // Pass down the setLoading function
+                        open={isModalDetailVisible}
+                        setLoading={setLoading}
                         loading={loading} />
             </Modal>
         </div>

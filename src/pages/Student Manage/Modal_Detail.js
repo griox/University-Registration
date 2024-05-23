@@ -129,7 +129,7 @@ const Modal_Detail = ({ visible, onClose, student,Loading,setLoading }) => {
       },
     ];
     return (
-        <Modal open={visible} width={1000} title="Student's Information" onCancel={onClose} footer={null}   >
+        <Modal open={visible} width={1000} title="Student's Information" onCancel={onClose} footer={null} style={{marginLeft: '380px'}}  >
             <Descriptions  column={3}>
                 {items.map((item) => (
                     <Descriptions.Item key={item.key} label={item.label}>

@@ -425,6 +425,7 @@ const Modal_Add = ({studentData,setStudentData}) => {
                                     maxDate={dayjs('31/12/2004', dateFormat)}
                                     format="DD/MM/YYYY"
                                     onChange={(value) => setDateOfBirth(value)}
+                                    style={{width: '318px'}}
                                 />
                             </Form.Item>
                         </Col>
@@ -542,7 +543,7 @@ const Modal_Add = ({studentData,setStudentData}) => {
                         </Col>
                     </Row>
                     <Row gutter={16}>
-                        <Col span={8}>
+                        <Col span={6}>
                             <Form.Item
                                 label="Math"
                                 style={{ fontWeight: 600 }}
@@ -563,7 +564,7 @@ const Modal_Add = ({studentData,setStudentData}) => {
                                 />
                             </Form.Item>
                         </Col>
-                        <Col span={8}>
+                        <Col span={6}>
                             <Form.Item
                                 label="English"
                                 name="english"
@@ -584,7 +585,7 @@ const Modal_Add = ({studentData,setStudentData}) => {
                                 />
                             </Form.Item>
                         </Col>
-                        <Col span={8}>
+                        <Col span={6}>
                             <Form.Item
                                 label="Literature"
                                 name="literature"
@@ -617,6 +618,24 @@ const Modal_Add = ({studentData,setStudentData}) => {
                                     onChange={(value) => setLiteraturescore(value)}
                                 />
                             </Form.Item>
+                        </Col>
+                        <Col span={6}>
+                            <Form.Item
+                                    label="Average"
+                                    name="average"
+                                    style={{ fontWeight: 600 }}
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Please input!',
+                                        },
+                                    ]}
+                                >
+                                    <InputNumber
+                                        disabled='true'
+                                        style={{ width: '50%' }}
+                                    />
+                                </Form.Item>
                         </Col>
                     </Row>
                 </Form>

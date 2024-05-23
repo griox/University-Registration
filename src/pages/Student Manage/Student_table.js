@@ -75,7 +75,7 @@ const StudentList = () => {
                     const data = snapshot.val();
                     const studentArray = Object.values(data).map((student) => ({ ...student, key: student.id }));
                     setStudentData(studentArray);
-                    setLoading(false);  
+                    setLoading(false);
                 }
             } catch (error) {
                 console.error(error);
@@ -361,6 +361,7 @@ const StudentList = () => {
                     {record.id}
                 </span>
             ),
+            key: 'id',
         },
 
         {
@@ -375,6 +376,7 @@ const StudentList = () => {
                 return (
                     <>
                         {renderNameWithGender(text, record)}
+                        {console.log(record.uniCode)}
                         <Tooltip title={record.uniCode.length === 5 ? 'can not register more' : ''}>
                             <span style={{ color: record.uniCode.length === 5 ? '#FF8C00' : 'black' }}>{text}</span>
                         </Tooltip>
@@ -394,20 +396,22 @@ const StudentList = () => {
                     <span style={{ color: record.isRegister ? 'green' : 'red' }}>{text}</span>
                 </Tooltip>
             ),
+            key: 'email',
         },
         {
             title: 'Math',
             dataIndex: 'MathScore',
             width: '10%',
             editable: true,
-
             sorter: (a, b) => a.MathScore - b.MathScore,
+            key:'MathScore',
         },
         {
             title: 'Literature',
             dataIndex: 'LiteratureScore',
             width: '11%',
             editable: true,
+            key:'LiteratureScore',
 
             sorter: (a, b) => a.LiteratureScore - b.LiteratureScore,
         },
@@ -416,13 +420,14 @@ const StudentList = () => {
             dataIndex: 'EnglishScore',
             width: '10%',
             editable: true,
-
+            key:'EnglishScore',
             sorter: (a, b) => a.EnglishScore - b.EnglishScore,
         },
         {
             title: 'Entrance Score',
             dataIndex: 'AverageScore',
             width: '10%',
+            key:'AverageScore',
             sorter: (a, b) => a.AverageScore - b.AverageScore,
         },
         {
@@ -438,6 +443,7 @@ const StudentList = () => {
                     return text;
                 }
             },
+            key:'uniCode'
         },
         {
             title: 'Manage',

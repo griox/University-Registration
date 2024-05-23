@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import { Button, Modal, Space, Select, InputNumber, DatePicker, Form } from 'antd';
 import { InfoCircleOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
 import { Input, Tooltip, Row, Col } from 'antd';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const firebaseConfig = {
     apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
@@ -20,7 +20,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-const Modal_Add = () => {
+const Modal_Add = ({studentData,setStudentData}) => {
     const [Fullname, setFullname] = useState('');
     const [Gender, setGender] = useState('Female');
     const [Email, setEmail] = useState('');
@@ -93,6 +93,24 @@ const Modal_Add = () => {
                 name: Fullname,
                 Role: 'user',
             });
+            const newData ={
+              id: newID, // Use the generated ID
+              email: Email,
+              name: Fullname,
+              enthicity: enthicity,
+              gender: Gender,
+              dateObirth: formattedDateOfBirth,
+              placeOBirth: placeOfBirth,
+              idenNum: Identify,
+              MathScore: Mathscore,
+              EnglishScore: Englishscore,
+              LiteratureScore: Literaturescore,
+              AverageScore: round(Mathscore + Englishscore + Literaturescore, 1),
+              Address: Address,
+              uniCode: [''],
+              isRegister: 'true',
+            }
+            setStudentData([...studentData,newData]);
             toast.success('Added a new student');
             setIsModalOpen(false);
         } catch (error) {
@@ -115,7 +133,7 @@ const Modal_Add = () => {
             Email === '' ||
             Identify === ''
         ) {
-          console.log(Fullname,Address,dateOfBirth,Mathscore,Englishscore,Literaturescore,Email,Identify)
+            console.log(Fullname, Address, dateOfBirth, Mathscore, Englishscore, Literaturescore, Email, Identify);
             toast.error('please fill in all information');
             hasError = true;
         } else if (!validateFullname(Fullname)) {
@@ -172,6 +190,7 @@ const Modal_Add = () => {
             setEnglishscore(null);
             setLiteraturescore(null);
         }
+        
     };
 
     const handleCancel = () => {
@@ -188,25 +207,6 @@ const Modal_Add = () => {
         setEnglishscore(null);
         setLiteraturescore(null);
     };
-
-    const validateDate = (_, value) => {
-        if (!value) {
-            return Promise.reject(new Error('Please select a date'));
-        }
-        const selectedYear = value.year();
-        const currentYear = moment().year();
-
-        if (selectedYear > currentYear) {
-            return Promise.reject(new Error('Year cannot be greater than the current year'));
-        }
-        if (selectedYear >= 2010) {
-            return Promise.reject(new Error('Year must be less than 2010'));
-        }
-        return Promise.resolve();
-    };
-    function validateScore(score) {
-        return /^([0-9]|10)(\.[02468])?$/.test(score);
-    }
     function validateEmailFormat(email) {
         return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(email);
     }
@@ -340,7 +340,7 @@ const Modal_Add = () => {
     ];
 
     const { TextArea } = Input;
-
+    const dateFormat = 'DD/MM/YYYY';
     return (
         <>
             <Button type="primary" onClick={showModal}>
@@ -420,21 +420,16 @@ const Modal_Add = () => {
                                     },
                                 ]}
                             >
-                                <DatePicker format="DD/MM/YYYY" onChange={(value) => setDateOfBirth(value)} />
+                                <DatePicker
+                                    minDate={dayjs('01/01/2004', dateFormat)}
+                                    maxDate={dayjs('31/12/2004', dateFormat)}
+                                    format="DD/MM/YYYY"
+                                    onChange={(value) => setDateOfBirth(value)}
+                                />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item
-                                label="Place of Birth"
-                                name="pob"
-                                style={{ fontWeight: 600 }}
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Please input!',
-                                    },
-                                ]}
-                            >
+                            <Form.Item label="Place of Birth" style={{ fontWeight: 600 }}>
                                 <Select
                                     defaultValue="Khánh Hòa"
                                     options={cities}

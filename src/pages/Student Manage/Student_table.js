@@ -12,7 +12,7 @@ import { toast } from 'react-toastify';
 import { Button, Space, Divider } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { WomanOutlined } from '@ant-design/icons';
-import { get, ref, child, getDatabase, remove, update, push, set } from 'firebase/database';
+import { get, ref, child, getDatabase, remove, update, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import Modal_Add from './Modal_add';
 import Modal_Detail from './Modal_Detail';
@@ -57,7 +57,7 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
     );
 };
 
-const Student_List = ({ data }) => {
+const Student_List = () => {
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState('');
     const [searchText, setSearchText] = useState('');
@@ -65,7 +65,7 @@ const Student_List = ({ data }) => {
     const [studentData, setStudentData] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState(null);
-    const [Loading,setLoading] = useState(true);
+    const [Loading, setLoading] = useState(true);
     const tableRef = useRef(null);
     useEffect(() => {
         const fetchData = async () => {
@@ -94,7 +94,7 @@ const Student_List = ({ data }) => {
         setSearchedColumn(dataIndex);
     };
     const handleProvideAccount = async (record) => {
-        const encodeEmail = encodeEmails(record.email)
+        const encodeEmail = encodeEmails(record.email);
         try {
             // Cập nhật giá trị isRegister của sinh viên
             await update(ref(db, `Detail/${record.key}`), {
@@ -119,8 +119,8 @@ const Student_List = ({ data }) => {
     };
     const handleDeleteAccount = async (record) => {
         try {
-            const encodeEmail = encodeEmails(record.email)
-            await remove(child(ref(db),`Account/${encodeEmail}`))
+            const encodeEmail = encodeEmails(record.email);
+            await remove(child(ref(db), `Account/${encodeEmail}`));
             const newData = studentData.map((item) =>
                 item.key === record.key ? { ...item, isRegister: false } : item,
             );
@@ -224,8 +224,8 @@ const Student_List = ({ data }) => {
         try {
             console.log(key);
             await remove(child(ref(db), `Detail/${key.id}`));
-            const emailhash = encodeEmails(key.email)
-            await remove(child(ref(db),`Account/${key.emailhash}`))
+            const emailhash = encodeEmails(key.email);
+            await remove(child(ref(db), `Account/${key.emailhash}`));
             const newData = studentData.filter((item) => item.id !== key.id);
             setStudentData(newData);
         } catch (error) {
@@ -267,6 +267,9 @@ const Student_List = ({ data }) => {
             }
         }
     };
+    function validateEmailFormat(email) {
+        return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(email);
+    }
     const save = async (key) => {
         try {
             const row = await form.validateFields();
@@ -275,8 +278,12 @@ const Student_List = ({ data }) => {
 
             if (index > -1) {
                 const item = newData[index];
-                if(row.MathScore>10||row.EnglishScore>10||row.LiteratureScore>10){
+                if (row.MathScore > 10 || row.EnglishScore > 10 || row.LiteratureScore > 10) {
                     toast.error('Score must not be less or equal to 10');
+                    return;
+                }
+                if (!validateEmailFormat(row.email)) {
+                    toast.error('Invalid Email Format');
                     return;
                 }
                 // Xử lý dữ liệu thay đổi
@@ -332,7 +339,6 @@ const Student_List = ({ data }) => {
                 ) : (
                     <WomanOutlined style={{ marginRight: 5 }} />
                 )}
-                {text}
             </span>
         );
     };
@@ -364,15 +370,18 @@ const Student_List = ({ data }) => {
             fixed: 'left',
             key: 'name',
             ...getColumnSearchProps('name'),
-            render: (text, record) => (
-                renderNameWithGender(text, record),
-                (
-                    <Tooltip title={record.uniCode.length === 5 ? 'can not register more' : ''}>
-                        <span style={{ color: record.uniCode.length === 5 ? '#FF8C00' : 'black' }}>{text}</span>
-                    </Tooltip>
-                )
-            ),
+            render: (text, record) => {
+                return (
+                    <>
+                        {renderNameWithGender(text, record)} {/* Corrected here */}
+                        <Tooltip title={record.uniCode.length === 5 ? 'can not register more' : ''}>
+                            <span style={{ color: record.uniCode.length === 5 ? '#FF8C00' : 'black' }}>{text}</span>
+                        </Tooltip>
+                    </>
+                );
+            },
         },
+
         {
             title: 'Email',
             dataIndex: 'email',
@@ -446,9 +455,7 @@ const Student_List = ({ data }) => {
                         >
                             Edit
                         </Typography.Link>
-                        <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
-                            <Typography.Link>Cancel</Typography.Link>
-                        </Popconfirm>
+                        <Typography.Link onClick={cancel}>Cancel</Typography.Link>
                     </span>
                 ) : (
                     <Space size={'middle'}>
@@ -504,13 +511,13 @@ const Student_List = ({ data }) => {
     return (
         <div style={{ justifyContent: 'center', alignItems: 'center' }}>
             <Space direction="vertical">
-                <Modal_Add />
+                <Modal_Add studentData={studentData} setStudentData={setStudentData} />
                 <Modal_Detail
                     visible={isModalVisible}
                     onClose={() => (setIsModalVisible(false), setLoading(true))}
                     student={selectedStudent}
-                    Loading = {Loading}
-                    setLoading ={setLoading}
+                    Loading={Loading}
+                    setLoading={setLoading}
                 />
                 <Form form={form} component={false}>
                     <Table

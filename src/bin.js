@@ -3,11 +3,6 @@ import { child, get, getDatabase, push, ref, remove, update } from 'firebase/dat
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 
-// import { Avatar } from '@mui/material';
-// import { initializeApp } from 'firebase/app';
-// import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
-// import { useState } from 'react';
-
 function Bin() {
     const [listUni, setListUni] = useState([]);
     const firebaseConfig = {
@@ -22,55 +17,51 @@ function Bin() {
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    const a = () => {
-        // get(child(ref(db), `University/`)).then((snapshot) => {
-        //     if (snapshot.exists()) {
-        //         const x = snapshot.val();
-        //         for (let i in x) {
-        // let size = Object.keys(x[i].registeration).length;
-        // const y = x[i].uniCode + '/' + 'Target';
-        // console.log(y);
-        // remove(ref(db, 'University/' + y));
-        //         }
-        //     }
-        // });
-        // get(child(ref(db), `Detail/`)).then((snapshot) => {
-        //     if (snapshot.exists()) {
-        //         const x = snapshot.val();
-        //         // setListUni(Object.values(x).map((user) => user.uniCode));
-        //         for (let i in x) {
-        //             update(ref(db, `Account/` + x[i].email.replace(/\./g, ',')), {
-        //                 name: x[i].name,
-        //             });
-        //         }
-        //     }
-        // });
-        // get(child(ref(db), `Detail/`)).then((snapshot) => {
-        //     if (snapshot.exists()) {
-        //         const x = snapshot.val();
-        //         for (let i in x) {
-        //             const name = x[i].email;
-        //             const id = x[i].id;
-        //             const a = x[i].uniCode;
-        //             if (a !== undefined) {
-        //                 a.forEach((element) => {
-        //                     if (listUni.includes(element)) {
-        //                         update(ref(db, `University/${element}/registeration/` + name.replace(/\./g, ',')), {
-        //                             id: id,
-        //                             email: name,
-        //                         });
-        //                     }
-        //                     // console.log('thành công');/
-        //                 });
-        //             }
-        //         }
-        //     } else {
-        //         console.log('No data available');
-        //     }
-        // });
-    };
-
-    a();
+    // get(child(ref(db), `University/`)).then((snapshot) => {
+    //     if (snapshot.exists()) {
+    //         const x = snapshot.val();
+    //         for (let i in x) {
+    // let size = Object.keys(x[i].registeration).length;
+    // const y = x[i].uniCode + '/' + 'Target';
+    // console.log(y);
+    // remove(ref(db, 'University/' + y));
+    //         }
+    //     }
+    // });
+    // get(child(ref(db), `Detail/`)).then((snapshot) => {
+    //     if (snapshot.exists()) {
+    //         const x = snapshot.val();
+    //         // setListUni(Object.values(x).map((user) => user.uniCode));
+    //         for (let i in x) {
+    //             update(ref(db, `Account/` + x[i].email.replace(/\./g, ',')), {
+    //                 name: x[i].name,
+    //             });
+    //         }
+    //     }
+    // });
+    get(child(ref(db), `Detail/`)).then((snapshot) => {
+        if (snapshot.exists()) {
+            const x = snapshot.val();
+            for (let i in x) {
+                const name = x[i].email;
+                const id = x[i].id;
+                const a = x[i].uniCode;
+                if (a !== undefined) {
+                    a.forEach((element) => {
+                        if (element === 'cantho') {
+                            update(ref(db, `University/${element}/registeration/` + name.replace(/\./g, ',')), {
+                                id: id,
+                                email: name,
+                            });
+                        }
+                        // console.log('thành công');/
+                    });
+                }
+            }
+        } else {
+            console.log('No data available');
+        }
+    });
 }
 export default Bin;
 // function Upload() {

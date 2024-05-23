@@ -2,18 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { get, ref, child, getDatabase } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { Divider, Table, Descriptions, Spin, Modal } from 'antd';
-const Modal_Detail = ({ visible, onClose, student, Loading, setLoading }) => {
-    const [Fullname, setFullname] = useState('');
-    const [Gender, setGender] = useState('');
-    const [Email, setEmail] = useState('');
-    const [Identify, setIdentify] = useState('');
-    const [Address, setAddress] = useState('');
-    const [enthicity, setEnthicity] = useState('');
-    const [dateOfBirth, setDateOfBirth] = useState(null);
-    const [placeOfBirth, setPlaceOfBirth] = useState('');
-    const [Mathscore, setMathscore] = useState(null);
-    const [Englishscore, setEnglishscore] = useState(null);
-    const [Literaturescore, setLiteraturescore] = useState(null);
+const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
     const [university, setUniversity] = useState([]);
     const firebaseConfig = {
         apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
@@ -48,7 +37,7 @@ const Modal_Detail = ({ visible, onClose, student, Loading, setLoading }) => {
             }
         };
         fetchData();
-    }, [visible, student, db]);
+    }, [visible, student, db, setLoading]);
     const columns = [
         {
             title: 'Name',
@@ -77,10 +66,6 @@ const Modal_Detail = ({ visible, onClose, student, Loading, setLoading }) => {
         },
     ];
     if (!visible) return null;
-    const genders = [
-        { value: 'Female', label: 'Female' },
-        { value: 'Male', label: 'Male' },
-    ];
     const items = [
         {
             key: '1',
@@ -165,4 +150,4 @@ const Modal_Detail = ({ visible, onClose, student, Loading, setLoading }) => {
     );
 };
 
-export default Modal_Detail;
+export default ModalDetail;

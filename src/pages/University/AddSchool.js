@@ -19,6 +19,7 @@ const AddSchool = () => {
                     const data = snapshot.val();
                     const uniArray = Object.values(data).map((uni) => ({ ...uni, key: uni.uniCode }));
                     setUniData(uniArray);
+                    setLoading(false);
                 }
             } catch (error) {
                 toast.error('An error occurred while fetchData');
@@ -109,13 +110,13 @@ const AddSchool = () => {
 
     const handleCancel = () => {
         setDetailVisible(false);
-        setLoading(true);
+        setLoading(false);
     };
 
     const handleFieldChange = async (key, dataIndex, value) => {
         const newData = [...UniData];
         const index = newData.findIndex((item) => key === item.key);
-        
+
         if (index > -1) {
             newData[index][dataIndex] = value;
             setUniData(newData);
@@ -135,7 +136,9 @@ const AddSchool = () => {
             const snapshot = await get(child(ref(database), 'University'));
             if (snapshot.exists()) {
                 const universities = snapshot.val();
-                const uniCodeExists = Object.values(universities).some((uni) => uni.uniCode === newUniCode.toLowerCase());
+                const uniCodeExists = Object.values(universities).some(
+                    (uni) => uni.uniCode === newUniCode.toLowerCase(),
+                );
                 return uniCodeExists;
             }
             return false;
@@ -159,7 +162,7 @@ const AddSchool = () => {
             return false;
         }
     };
-    
+
     const save = async (key) => {
         try {
             const row = await form.validateFields();
@@ -169,11 +172,11 @@ const AddSchool = () => {
             if (index > -1) {
                 const item = newData[index];
                 if (row.target < item.isRegistered) {
-                    toast.error("Targets must not be less than Number of registration");
-                    return; 
+                    toast.error('Targets must not be less than Number of registration');
+                    return;
                 }
-                if(row.averageS>30||row.averageS<0){
-                    toast.error('Invalid Entrance Score Format')
+                if (row.averageS > 30 || row.averageS < 0) {
+                    toast.error('Invalid Entrance Score Format');
                 }
                 if (row.uniCode !== item.uniCode) {
                     const uniCodeExists = await checkUniCodeExistence(row.uniCode);
@@ -196,7 +199,7 @@ const AddSchool = () => {
 
                 const updatedRow = {
                     ...newData[index],
-                    target:parseInt(newData[index].target),
+                    target: parseInt(newData[index].target),
                 };
 
                 newData[index] = updatedRow;
@@ -226,7 +229,7 @@ const AddSchool = () => {
             setPagination(pagination);
         }
     };
-  
+
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
             <div className='filter' onKeyDown={(e) => e.stopPropagation()}>
@@ -314,12 +317,11 @@ const AddSchool = () => {
             width: '13%',
             editable: true,
             ...getColumnSearchProps('uniCode'),
-            render: (text,record)=>(
-                <Tooltip title={record.isRegistered === record.targer ? 'Can not regist':''}>
-                    <span style={{color:record.isRegistered === record.target ? 'green':'black'}}>{text}</span>
+            render: (text, record) => (
+                <Tooltip title={record.isRegistered === record.targer ? 'Can not regist' : ''}>
+                    <span style={{ color: record.isRegistered === record.target ? 'green' : 'black' }}>{text}</span>
                 </Tooltip>
-                
-            )
+            ),
         },
         {
             title: 'Address',
@@ -362,7 +364,6 @@ const AddSchool = () => {
                             Edit
                         </Typography.Link>
                         <Typography.Link onClick={cancel}>Cancel</Typography.Link>
-                    
                     </span>
                 ) : (
                     <Space size={'middle'}>
@@ -407,26 +408,28 @@ const AddSchool = () => {
             <Form form={form} component={false}>
                 <Space direction="vertical">
                     <FormAdd />
-                    <Table
-                        columns={mergedColumns}
-                        dataSource={UniData}
-                        onChange={onChange}
-                        pagination={{
-                            defaultPageSize: 10,
-                            pageSizeOptions: ['10', '20', '40', '100'],
-                            showSizeChanger: true,
-                            showQuickJumper: true,
-                            showTotal: (total) => `Total ${total} items`,
-                        }}
-                        scroll={{ x: false, y: 'calc(100vh - 350px)' }}
-                        components={{
-                            body: {
-                                cell: EditableCell,
-                            },
-                        }}
-                        bordered
-                        ref={tableRef}
-                    />
+                    <Spin spinning={loading}>
+                        <Table
+                            columns={mergedColumns}
+                            dataSource={UniData}
+                            onChange={onChange}
+                            pagination={{
+                                defaultPageSize: 10,
+                                pageSizeOptions: ['10', '20', '40', '100'],
+                                showSizeChanger: true,
+                                showQuickJumper: true,
+                                showTotal: (total) => `Total ${total} items`,
+                            }}
+                            scroll={{ x: false, y: 'calc(100vh - 350px)' }}
+                            components={{
+                                body: {
+                                    cell: EditableCell,
+                                },
+                            }}
+                            bordered
+                            ref={tableRef}
+                        />
+                    </Spin>
                 </Space>
             </Form>
             <Modal

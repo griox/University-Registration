@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography } from 'antd';
+import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin } from 'antd';
 import {
     SearchOutlined,
     EditOutlined,
@@ -9,14 +9,13 @@ import {
     ManOutlined,
 } from '@ant-design/icons';
 import { toast } from 'react-toastify';
-import { Button, Space, Divider } from 'antd';
+import { Button, Space } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { WomanOutlined } from '@ant-design/icons';
 import { get, ref, child, getDatabase, remove, update, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
-import Modal_Add from './Modal_add';
-import Modal_Detail from './Modal_Detail';
-import { render } from '@testing-library/react';
+import ModalAdd from './Modal_add';
+import ModalDetail from './Modal_Detail';
 const firebaseConfig = {
     apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
     authDomain: 'mock-proeject-b.firebaseapp.com',
@@ -57,7 +56,7 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
     );
 };
 
-const Student_List = () => {
+const StudentList = () => {
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState('');
     const [searchText, setSearchText] = useState('');
@@ -76,6 +75,7 @@ const Student_List = () => {
                     const data = snapshot.val();
                     const studentArray = Object.values(data).map((student) => ({ ...student, key: student.id }));
                     setStudentData(studentArray);
+                    setLoading(false);  
                 }
             } catch (error) {
                 console.error(error);
@@ -331,7 +331,7 @@ const Student_List = () => {
             console.log('Validate Failed:', errInfo);
         }
     };
-    const renderNameWithGender = (text, record) => {
+    const renderNameWithGender = (record) => {
         return (
             <span>
                 {record.gender === 'Male' ? (
@@ -346,6 +346,7 @@ const Student_List = () => {
     const handleIdClick = (record) => {
         setSelectedStudent(record);
         setIsModalVisible(true);
+        setLoading(true);
     };
 
     const columns = [
@@ -373,7 +374,7 @@ const Student_List = () => {
             render: (text, record) => {
                 return (
                     <>
-                        {renderNameWithGender(text, record)} 
+                        {renderNameWithGender(text, record)}
                         <Tooltip title={record.uniCode.length === 5 ? 'can not register more' : ''}>
                             <span style={{ color: record.uniCode.length === 5 ? '#FF8C00' : 'black' }}>{text}</span>
                         </Tooltip>
@@ -419,7 +420,7 @@ const Student_List = () => {
             sorter: (a, b) => a.EnglishScore - b.EnglishScore,
         },
         {
-            title: 'Average',
+            title: 'Entrance Score',
             dataIndex: 'AverageScore',
             width: '10%',
             sorter: (a, b) => a.AverageScore - b.AverageScore,
@@ -511,44 +512,48 @@ const Student_List = () => {
     return (
         <div style={{ justifyContent: 'center', alignItems: 'center' }}>
             <Space direction="vertical">
-                <Modal_Add studentData={studentData} setStudentData={setStudentData} />
-                <Modal_Detail
+                <ModalAdd studentData={studentData} setStudentData={setStudentData} />
+                <ModalDetail
                     visible={isModalVisible}
-                    onClose={() => (setIsModalVisible(false), setLoading(true))}
+                    onClose={() => {
+                        setIsModalVisible(false);
+                    }}
                     student={selectedStudent}
                     Loading={Loading}
                     setLoading={setLoading}
                 />
                 <Form form={form} component={false}>
-                    <Table
-                        components={{
-                            body: {
-                                cell: EditableCell,
-                            },
-                        }}
-                        bordered
-                        dataSource={studentData}
-                        columns={mergedColumns}
-                        scroll={{
-                            x: 900,
-                            y: 'calc(100vh - 300px)',
-                        }}
-                        style={{ height: '100%', marginRight: '-20px' }}
-                        rowClassName="editable-row"
-                        showSorterTooltip={{
-                            target: 'sorter-icon',
-                        }}
-                        pagination={{
-                            onChange: cancel,
-                            showSizeChanger: true,
-                            showQuickJumper: true,
-                        }}
-                        ref={tableRef}
-                    />
+                    <Spin spinning={Loading}>
+                        <Table
+                            components={{
+                                body: {
+                                    cell: EditableCell,
+                                },
+                            }}
+                            bordered
+                            dataSource={studentData}
+                            columns={mergedColumns}
+                            scroll={{
+                                x: 900,
+                                y: 'calc(100vh - 300px)',
+                            }}
+                            style={{ height: '100%', marginRight: '-20px' }}
+                            rowClassName="editable-row"
+                            showSorterTooltip={{
+                                target: 'sorter-icon',
+                            }}
+                            pagination={{
+                                onChange: cancel,
+                                showSizeChanger: true,
+                                showQuickJumper: true,
+                            }}
+                            ref={tableRef}
+                        />
+                    </Spin>
                 </Form>
             </Space>
         </div>
     );
 };
 
-export default Student_List;
+export default StudentList;

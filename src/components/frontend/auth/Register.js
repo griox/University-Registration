@@ -3,47 +3,21 @@ import 'firebase/auth';
 import { child, get, getDatabase, ref, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
-import { Link } from 'react-router-dom';
-import { Button, message } from 'antd';
+import { message } from 'antd';
 import { useHistory } from 'react-router-dom';
 import '../../../assets/css/register.css';
+import { firebaseConfig } from '../../../constants/constants';
+import { encodePath, validateEmailFormat, validatePasswordFormat } from '../../../commonFunctions';
 
 const Register = () => {
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [againPassword, setAgainPassword] = useState('');
-    const firebaseConfig = {
-        apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
-        authDomain: 'mock-proeject-b.firebaseapp.com',
-        databaseURL: 'https://mock-proeject-b-default-rtdb.firebaseio.com',
-        projectId: 'mock-proeject-b',
-        storageBucket: 'mock-proeject-b.appspot.com',
-        messagingSenderId: '898832925665',
-        appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
-    };
-
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    function validateEmailFormat(val) {
-        return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(val) || /w+([-+.]w+)*@w+([-.]w+)*.w+([-.]w+)*/.test(val);
-    }
-    function validatePasswordFormat(password) {
-        if (password.length >= 8) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    const encodePath = (email) => {
-        if (email) return email.replace(/\./g, ',');
-        else return 0;
-    };
-
     const history = useHistory();
-    const [author, setAuthor] = useState(localStorage.getItem('Role') || '');
-
+    const author = useState(localStorage.getItem('Role') || '');
     useEffect(() => {
         const passwordInput1 = document.querySelector('.pass_login_1');
         const eyeBtn1 = document.querySelector('.eye1');
@@ -112,13 +86,14 @@ const Register = () => {
             eyeBtn2.removeEventListener('click', handleEyeBtn2);
         };
     }, []);
+
     const clear = () => {
         setFullName('');
         setEmail('');
         setPassword('');
         setAgainPassword('');
     };
-    function regist(props) {
+    const regist = (props) => {
         if (props.name === '') {
             toast.error('Please enter your name');
             return;
@@ -166,46 +141,6 @@ const Register = () => {
                 console.log('No data available');
             }
         });
-    }
-    const [loadings, setLoadings] = useState([]);
-    const enterLoading = (index) => {
-        setLoadings((prevLoadings) => {
-            const newLoadings = [...prevLoadings];
-            newLoadings[index] = true;
-            return newLoadings;
-        });
-        setTimeout(() => {
-            setLoadings((prevLoadings) => {
-                regist({
-                    name: fullName,
-                    email: email,
-                    password: password,
-                    againPassword: againPassword,
-                });
-                const newLoadings = [...prevLoadings];
-                newLoadings[index] = false;
-                return newLoadings;
-            });
-        }, 2000);
-    };
-    const span = { fontSize: '17px' };
-    const [isHovered, setIsHovered] = useState(false);
-    const buttonStyle = {
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: isHovered ? '15px' : '10px',
-        width: '100%',
-        height: '55px',
-        padding: '0 15px',
-        margin: '5px 0 0 0',
-        color: '#fff',
-        background: '#003865',
-        border: 'none',
-        borderRadius: '10px',
-        boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
-        cursor: 'pointer',
-        transition: '0.3s',
     };
 
     return (
@@ -215,13 +150,6 @@ const Register = () => {
                     <div className="col col-1">
                         <div className="image_layer">
                             <img src="assets/login/img/FPTnew.png" className="form_img_main" alt="" />
-                            {/* <img src="assets/login/img/white-outline.png" className="form_img_main" alt="" />
-                            <img src="assets/login/img/dots.png" className="form_img dots" alt="" />
-                            <img src="assets/login/img/coin.png" className="form_img coin" alt="" />
-                            <img src="assets/login/img/spring.png" className="form_img spring" alt="" />
-                            <img src="assets/login/img/rocket.png" className="form_img rocket" alt="" />
-                            <img src="assets/login/img/cloud.png" className="form_img cloud" alt="" />
-                            <img src="assets/login/img/stars.png" className="form_img stars" alt="" /> */}
                         </div>
 
                         <p className="featured">
@@ -236,7 +164,6 @@ const Register = () => {
 
                     <div className="col col-2">
                         <form action="">
-                            {/* Trang đăng nhập */}
                             <div className="login-form">
                                 <div className="form-title">
                                     <span>Register</span>
@@ -251,14 +178,13 @@ const Register = () => {
                                             value={fullName}
                                             onChange={(e) => setFullName(e.target.value)}
                                         />
-                                        <i class="bx bx-user icon"></i>
+                                        <i className="bx bx-user icon"></i>
                                     </div>
                                     <div className="input-box">
                                         <input
                                             type="text"
                                             className="input-field"
                                             placeholder="Email"
-                                            // required
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                         />
@@ -291,20 +217,6 @@ const Register = () => {
                                     </div>
 
                                     <div className="input-box">
-                                        {/* <div
-                                            type="submit"
-                                            className="input-submit"
-                                            onClick={() =>
-                                                regist({
-                                                    name: fullName,
-                                                    email: email,
-                                                    password: password,
-                                                    againPassword: againPassword,
-                                                })
-                                            }
-                                        >
-                                            <span>Regist</span>
-                                        </div> */}
                                         <div className="input-box">
                                             {author === 'admin' ? (
                                                 <div
@@ -355,35 +267,10 @@ const Register = () => {
                                                 </>
                                             )}
                                         </div>
-
-                                        {/* <Button
-                                            type="primary"
-                                            loading={loadings[0]}
-                                            onClick={() => enterLoading(0)}
-                                            className="input-submit"
-                                            style={buttonStyle}
-                                            onMouseEnter={() => setIsHovered(true)}
-                                            onMouseLeave={() => setIsHovered(false)}
-                                        >
-                                            <span style={span}>Regist</span>
-                                            <i className="bx bx-right-arrow-alt"></i>
-                                        </Button> */}
-                                        {/* <Button
-                                            type="primary"
-                                            loading={loadings[1]}
-                                            onClick={() => enterLoading(1)}
-                                            className="input-submit"
-                                            style={buttonStyle}
-                                            onMouseEnter={() => setIsHovered(true)}
-                                            onMouseLeave={() => setIsHovered(false)}
-                                        >
-                                            <span>Regist</span>
-                                            <i className="bx bx-right-arrow-alt"></i>
-                                        </Button> */}
                                     </div>
                                     <div className="input-box">
                                         <div type="submit" className="input-submit" onClick={clear}>
-                                            <span style={span}>Clear</span>
+                                            <span style={{ fontSize: '17px' }}>Clear</span>
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </div>
                                     </div>

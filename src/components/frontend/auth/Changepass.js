@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import 'firebase/auth';
-import { child, get, getDatabase, ref, set, update } from 'firebase/database';
+import { child, get, getDatabase, ref, update } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
-import { Link } from 'react-router-dom';
 import { Button } from 'antd';
 import { useHistory } from 'react-router-dom';
 import '../../../assets/css/register.css';
 import { useDispatch } from 'react-redux';
+import { firebaseConfig } from '../../../constants/constants';
+import { encodePath } from '../../../commonFunctions';
 
 const Changepass = () => {
     const history = useHistory();
-
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const [oldPass, setOldPass] = useState('');
+    const [newPass, setNewPass] = useState('');
+    const [reNewPass, setReNewPass] = useState('');
+    const dispatch = useDispatch();
     useEffect(() => {
         const passwordInput1 = document.querySelector('.old_pass');
         const eyeBtn1 = document.querySelector('.eye1');
@@ -111,31 +117,13 @@ const Changepass = () => {
             eyeBtn3.removeEventListener('click', handleEyeBtn3);
         };
     }, []);
-    const firebaseConfig = {
-        apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
-        authDomain: 'mock-proeject-b.firebaseapp.com',
-        databaseURL: 'https://mock-proeject-b-default-rtdb.firebaseio.com',
-        projectId: 'mock-proeject-b',
-        storageBucket: 'mock-proeject-b.appspot.com',
-        messagingSenderId: '898832925665',
-        appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
-    };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const [oldPass, setOldPass] = useState('');
-    const [newPass, setNewPass] = useState('');
-    const [reNewPass, setReNewPass] = useState('');
-    const dispatch = useDispatch();
     const clear = () => {
         setOldPass('');
         setNewPass('');
         setReNewPass('');
     };
-    const encodePath = (email) => {
-        if (email) return email.replace(/\./g, ',');
-        else return 0;
-    };
+
     const handleLogout = () => {
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('selectedMenuItem');
@@ -144,8 +132,6 @@ const Changepass = () => {
     };
     const changePassWord = () => {
         let temp = JSON.parse(localStorage.getItem('Email'));
-        // const temp='BuiThiHien@gmail.com'
-
         if (oldPass === '') {
             toast.error('Please enter your old password');
             return;
@@ -190,13 +176,6 @@ const Changepass = () => {
                     <div className="col col-1">
                         <div className="image_layer">
                             <img src="assets/login/img/FPTnew.png" className="form_img_main" alt="" />
-                            {/* <img src="assets/login/img/white-outline.png" className="form_img_main" alt="" />
-                            <img src="assets/login/img/dots.png" className="form_img dots" alt="" />
-                            <img src="assets/login/img/coin.png" className="form_img coin" alt="" />
-                            <img src="assets/login/img/spring.png" className="form_img spring" alt="" />
-                            <img src="assets/login/img/rocket.png" className="form_img rocket" alt="" />
-                            <img src="assets/login/img/cloud.png" className="form_img cloud" alt="" />
-                            <img src="assets/login/img/stars.png" className="form_img stars" alt="" /> */}
                         </div>
 
                         <p className="featured">
@@ -211,7 +190,6 @@ const Changepass = () => {
 
                     <div className="col col-2">
                         <form action="">
-                            {/* Trang đăng nhập */}
                             <div className="login-form">
                                 <br />
                                 <br />
@@ -258,41 +236,11 @@ const Changepass = () => {
                                         <i className="fa fa-eye eye3 icon"></i>
                                     </div>
                                     <div className="input-box">
-                                        {/* <div
-                                            type="submit"
-                                            className="input-submit"
-                                            onClick={() =>
-                                                regist({
-                                                    name: fullName,
-                                                    email: email,
-                                                    password: password,
-                                                    againPassword: againPassword,
-                                                })
-                                            }
-                                        >
-                                            <span>Regist</span>
-                                        </div> */}
                                         <br />
                                         <Button type="submit" className="input-submit" onClick={changePassWord}>
                                             <span>Change</span>
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </Button>
-                                        {/* <Button type="primary" className="input-submit" onClick={clear}>
-                                            <span>Clear</span>
-                                            <i className="bx bx-right-arrow-alt"></i>
-                                        </Button> */}
-                                        {/* <Button
-                                            type="primary"
-                                            loading={loadings[1]}
-                                            onClick={() => enterLoading(1)}
-                                            className="input-submit"
-                                            style={buttonStyle}
-                                            onMouseEnter={() => setIsHovered(true)}
-                                            onMouseLeave={() => setIsHovered(false)}
-                                        >
-                                        <span>Regist</span>
-                                        <i className="bx bx-right-arrow-alt"></i>
-                                        </Button> */}
                                     </div>
                                     <div className="input-box">
                                         <div type="submit" className="input-submit" onClick={clear}>

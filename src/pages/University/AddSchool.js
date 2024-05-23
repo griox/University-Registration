@@ -142,7 +142,7 @@ const AddSchool = () => {
     const handleFieldChange = async (key, dataIndex, value) => {
         const newData = [...UniData];
         const index = newData.findIndex((item) => key === item.key);
-        
+
         if (index > -1) {
             newData[index][dataIndex] = value;
             setUniData(newData); // Update state
@@ -164,7 +164,9 @@ const AddSchool = () => {
             const snapshot = await get(child(ref(db), 'University'));
             if (snapshot.exists()) {
                 const universities = snapshot.val();
-                const uniCodeExists = Object.values(universities).some((uni) => uni.uniCode === newUniCode.toLowerCase());
+                const uniCodeExists = Object.values(universities).some(
+                    (uni) => uni.uniCode === newUniCode.toLowerCase(),
+                );
                 return uniCodeExists;
             }
             return false;
@@ -187,7 +189,7 @@ const AddSchool = () => {
             return false;
         }
     };
-    
+
     const save = async (key) => {
         try {
             const row = await form.validateFields();
@@ -197,14 +199,14 @@ const AddSchool = () => {
             if (index > -1) {
                 const item = newData[index];
                 if (row.target < item.isRegistered) {
-                    toast.error("Targets must not be less than Number of registration");
-                    return; 
+                    toast.error('Targets must not be less than Number of registration');
+                    return;
                 }
-                if(row.averageS>30||row.averageS<0){
-                    toast.error('Invalid Entrance Score Format')
+                if (row.averageS > 30 || row.averageS < 0) {
+                    toast.error('Invalid Entrance Score Format');
                 }
                 if (row.uniCode !== item.uniCode) {
-                    console.log(row.uniCode,item.uniCode)
+                    console.log(row.uniCode, item.uniCode);
                     const uniCodeExists = await checkUniCodeExistence(row.uniCode);
                     if (uniCodeExists) {
                         toast.error('This uniCode already exists');
@@ -226,7 +228,7 @@ const AddSchool = () => {
                 // Chuyển đổi giá trị từ chuỗi sang số
                 const updatedRow = {
                     ...newData[index],
-                    target:parseInt(newData[index].target),
+                    target: parseInt(newData[index].target),
                 };
                 // Cập nhật dữ liệu trên state
                 newData[index] = updatedRow;
@@ -361,12 +363,11 @@ const AddSchool = () => {
             width: '13%',
             editable: true,
             ...getColumnSearchProps('ucode'),
-            render: (text,record)=>(
-                <Tooltip title={record.isRegistered === record.targer ? 'Can not regist':''}>
-                    <span style={{color:record.isRegistered === record.target ? 'green':'black'}}>{text}</span>
+            render: (text, record) => (
+                <Tooltip title={record.isRegistered === record.targer ? 'Can not regist' : ''}>
+                    <span style={{ color: record.isRegistered === record.target ? 'green' : 'black' }}>{text}</span>
                 </Tooltip>
-                
-            )
+            ),
         },
         {
             title: 'Address',
@@ -412,7 +413,6 @@ const AddSchool = () => {
                             Edit
                         </Typography.Link>
                         <Typography.Link onClick={cancel}>Cancel</Typography.Link>
-                    
                     </span>
                 ) : (
                     <Space size={'middle'}>
@@ -491,16 +491,13 @@ const AddSchool = () => {
                     />
                 </Space>
             </Form>
-            <Modal
-                open={isModalDetailVisible}
-                onCancel={handleCancel}
-                width={800} 
-                height={600}
-            >
-                <FormDetail  university={selectedUniverse}
-                        visible={isModalDetailVisible}
-                        setLoading={setLoading} // Pass down the setLoading function
-                        loading={loading} />
+            <Modal open={isModalDetailVisible} onCancel={handleCancel} width={800} height={600}>
+                <FormDetail
+                    university={selectedUniverse}
+                    visible={isModalDetailVisible}
+                    setLoading={setLoading} // Pass down the setLoading function
+                    loading={loading}
+                />
             </Modal>
         </div>
     );

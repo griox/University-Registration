@@ -45,7 +45,6 @@ const reducer = (state = initState, action) => {
                 uniCode: [...state.uniCode, action.newValue],
             };
         case 'user':
-            console.log('runhere');
             return {
                 ...state,
                 ...action.payload,
@@ -56,34 +55,3 @@ const reducer = (state = initState, action) => {
     }
 };
 export default reducer;
-
-// const initialState = {
-//   thap: 0,
-//   tb: 0,
-//   cao: 0,
-// };
-// const reducer = (state = initialState, action) => {
-//   switch (action.type) {
-//     case "thap":
-//       return {
-//         thap: state.thap + 1,
-//         tb: state.tb,
-//         cao: state.cao,
-//       };
-//     case "tb":
-//       return {
-//         thap: state.thap,
-//         tb: state.tb + 1,
-//         cao: state.cao,
-//       };
-//     case "cao":
-//       return {
-//         thap: state.thap,
-//         tb: state.tb,
-//         cao: state.cao + 1,
-//       };
-//     default:
-//       return state;
-//   }
-// };
-// export default reducer;

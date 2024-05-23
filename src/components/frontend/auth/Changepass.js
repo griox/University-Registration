@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { Button } from 'antd';
 import { useHistory } from 'react-router-dom';
 import '../../../assets/css/register.css';
+import { useDispatch } from 'react-redux';
 
 const Changepass = () => {
     const history = useHistory();
@@ -125,6 +126,7 @@ const Changepass = () => {
     const [oldPass, setOldPass] = useState('');
     const [newPass, setNewPass] = useState('');
     const [reNewPass, setReNewPass] = useState('');
+    const dispatch = useDispatch();
     const clear = () => {
         setOldPass('');
         setNewPass('');
@@ -137,6 +139,7 @@ const Changepass = () => {
     const handleLogout = () => {
         localStorage.removeItem('isLoggedIn');
         localStorage.removeItem('selectedMenuItem');
+        dispatch({ type: 'logout' });
         history.push('/Login');
     };
     const changePassWord = () => {
@@ -269,14 +272,15 @@ const Changepass = () => {
                                         >
                                             <span>Regist</span>
                                         </div> */}
-                                        <Button type="primary" className="input-submit" onClick={changePassWord}>
+                                        <br />
+                                        <Button type="submit" className="input-submit" onClick={changePassWord}>
                                             <span>Change</span>
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </Button>
-                                        <Button type="primary" className="input-submit" onClick={clear}>
+                                        {/* <Button type="primary" className="input-submit" onClick={clear}>
                                             <span>Clear</span>
                                             <i className="bx bx-right-arrow-alt"></i>
-                                        </Button>
+                                        </Button> */}
                                         {/* <Button
                                             type="primary"
                                             loading={loadings[1]}
@@ -290,12 +294,12 @@ const Changepass = () => {
                                         <i className="bx bx-right-arrow-alt"></i>
                                         </Button> */}
                                     </div>
-                                    {/* <div className="input-box">
-                                        <div type="submit" className="input-submit">
+                                    <div className="input-box">
+                                        <div type="submit" className="input-submit" onClick={clear}>
                                             <span>Clear</span>
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </div>
-                                    </div> */}
+                                    </div>
                                 </div>
                             </div>
                         </form>

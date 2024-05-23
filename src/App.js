@@ -12,24 +12,27 @@ import { ToastContainer } from 'react-toastify';
 import PrivateRoute from './PrivateRoute';
 import { useCreateInforRecordsOnMount } from './database/Student_details';
 import { useCreateUnitRecordsOnMount } from './database/University';
-import { useCreateAccountRecordsOnMount} from './database/Account';
+import { useCreateAccountRecordsOnMount } from './database/Account';
+import { MenuProvider } from './pages/MenuContext';
 function App() {
     return (
         <Provider store={store}>
-            <div className="App">
-                <Router>
-                    <Switch>
-                        <Route exact path="/" component={Home} />
-                        <Route path="/login" component={Login} />
-                        <Route path="/register" component={Register} />
-                        <Route path="/forgetpass" component={forgetpass} />
-                        <Route path="/changepass" component={changepass} />
-                        {/* <Route path="/admin" name="Admin" render={(props) => <Masterlayout {...props} />} /> */}
-                        <PrivateRoute path="/admin" component={Masterlayout} />
-                    </Switch>
-                </Router>
-            </div>
-            <ToastContainer />
+            <MenuProvider>
+                <div className="App">
+                    <Router>
+                        <Switch>
+                            <Route exact path="/" component={Home} />
+                            <Route path="/login" component={Login} />
+                            <Route path="/register" component={Register} />
+                            <Route path="/forgetpass" component={forgetpass} />
+                            <Route path="/changepass" component={changepass} />
+                            {/* <Route path="/admin" name="Admin" render={(props) => <Masterlayout {...props} />} /> */}
+                            <PrivateRoute path="/admin" component={Masterlayout} />
+                        </Switch>
+                    </Router>
+                </div>
+                <ToastContainer />
+            </MenuProvider>
         </Provider>
     );
 }

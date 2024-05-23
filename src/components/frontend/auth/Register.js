@@ -4,7 +4,7 @@ import { child, get, getDatabase, ref, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
 import { Link } from 'react-router-dom';
-import { Button } from 'antd';
+import { Button, message } from 'antd';
 import { useHistory } from 'react-router-dom';
 import '../../../assets/css/register.css';
 
@@ -42,6 +42,7 @@ const Register = () => {
     };
 
     const history = useHistory();
+    const [author, setAuthor] = useState(localStorage.getItem('Role') || '');
 
     useEffect(() => {
         const passwordInput1 = document.querySelector('.pass_login_1');
@@ -118,7 +119,7 @@ const Register = () => {
         setAgainPassword('');
     };
     function regist(props) {
-        if (props.fullName === '') {
+        if (props.name === '') {
             toast.error('Please enter your name');
             return;
         }
@@ -141,19 +142,22 @@ const Register = () => {
                 const x = snapshot.val();
                 const listItem = Object.values(x).map((user) => user);
                 const y = listItem.find((item) => item.email === email);
-                if (y !== null) {
+                console.log(listItem, y);
+                if (y === null || y === undefined) {
                     if (props.againPassword === props.password) {
                         const encodeEmail = encodePath(props.email);
-                        console.log(encodeEmail);
                         const ip = {
                             name: props.name,
                             email: props.email,
                             password: props.password,
-                            role: 'user',
+                            Role: props.role,
                         };
-                        set(ref(db, 'Account/' + encodeEmail), ip);
+                        try {
+                            set(ref(db, `Account/` + encodeEmail), ip).then(() => toast.success('Sign up sucessfully'));
+                        } catch (error) {
+                            console.log(error, message);
+                        }
                         clear();
-                        toast.success('Sign up sucessfully');
                     }
                 } else {
                     toast.error('Account already exists');
@@ -203,6 +207,7 @@ const Register = () => {
         cursor: 'pointer',
         transition: '0.3s',
     };
+
     return (
         <>
             <div className="background">
@@ -301,8 +306,54 @@ const Register = () => {
                                             <span>Regist</span>
                                         </div> */}
                                         <div className="input-box">
-                                            <button className="button-clear">User</button>
-                                            <button className="button-submit">Admin</button>
+                                            {author === 'admin' ? (
+                                                <div
+                                                    type="submit"
+                                                    className="input-submit"
+                                                    onClick={() =>
+                                                        regist({
+                                                            role: 'user',
+                                                            name: fullName,
+                                                            email: email,
+                                                            password: password,
+                                                            againPassword: againPassword,
+                                                        })
+                                                    }
+                                                >
+                                                    <span>Regist</span>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <div
+                                                        className="button-clear"
+                                                        onClick={() =>
+                                                            regist({
+                                                                role: 'user',
+                                                                name: fullName,
+                                                                email: email,
+                                                                password: password,
+                                                                againPassword: againPassword,
+                                                            })
+                                                        }
+                                                    >
+                                                        <span>User</span>
+                                                    </div>
+                                                    <div
+                                                        className="button-submit"
+                                                        onClick={() =>
+                                                            regist({
+                                                                role: 'admin',
+                                                                name: fullName,
+                                                                email: email,
+                                                                password: password,
+                                                                againPassword: againPassword,
+                                                            })
+                                                        }
+                                                    >
+                                                        <span>Admin</span>
+                                                    </div>
+                                                </>
+                                            )}
                                         </div>
 
                                         {/* <Button
@@ -326,8 +377,8 @@ const Register = () => {
                                             onMouseEnter={() => setIsHovered(true)}
                                             onMouseLeave={() => setIsHovered(false)}
                                         >
-                                        <span>Regist</span>
-                                        <i className="bx bx-right-arrow-alt"></i>
+                                            <span>Regist</span>
+                                            <i className="bx bx-right-arrow-alt"></i>
                                         </Button> */}
                                     </div>
                                     <div className="input-box">

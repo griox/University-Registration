@@ -81,6 +81,18 @@ export const Login = () => {
     const [role, setRole] = useState('');
     function saveOnLocal(role) {
         if (role === 'super_admin') {
+            get(child(ref(db), 'Super_Admin/')).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const x = snapshot.val();
+                    for (let item in x) {
+                        if (x[item].email === email) {
+                            localStorage.setItem('Infor', JSON.stringify(x[item]));
+                            localStorage.setItem('Email', JSON.stringify(email));
+                        }
+                    }
+                }
+            });
+        } else if (role === 'admin') {
             get(child(ref(db), 'Admin/')).then((snapshot) => {
                 if (snapshot.exists()) {
                     const x = snapshot.val();
@@ -125,10 +137,17 @@ export const Login = () => {
                                     (item) => decodePath(item.email) === email && item.password === password,
                                 );
                                 if (y.length !== 0) {
-                                    localStorage.setItem('Role', y[0].Role);
-                                    localStorage.setItem('Name', y[0].name);
-
-                                    saveOnLocal(y[0].Role);
+                                    console.log(y);
+                                    for (let i in y) {
+                                        if (y[i].name !== undefined && y[i].name !== null) {
+                                            localStorage.setItem('Role', y[i].Role);
+                                            localStorage.setItem('Name', y[i].name);
+                                            console.log(y[i].name);
+                                            saveOnLocal(y[i].Role);
+                                        } else {
+                                            saveOnLocal(y[i].Role);
+                                        }
+                                    }
 
                                     setIsLoggedIn(true);
                                     localStorage.setItem('isLoggedIn', 'true');
@@ -209,8 +228,8 @@ export const Login = () => {
                                         <div className="input-box">
                                             <input type="checkbox" />
                                             <span className="remembertxt_login"> Remember me</span>
+                                            <Link to="/forgetpass">Forgot password?</Link>
                                         </div>
-                                        <Link to="/forgetpass">Forgot password?</Link>
                                     </div>
 
                                     <div className="input-box" onClick={() => getdt(email, password)}>

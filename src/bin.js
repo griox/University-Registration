@@ -2,42 +2,21 @@ import { initializeApp } from 'firebase/app';
 import { child, get, getDatabase, push, ref, remove, update } from 'firebase/database';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import TranslateComponent from './pages/Language';
-
-// import { Avatar } from '@mui/material';
-// import { initializeApp } from 'firebase/app';
-// import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
-// import { useState } from 'react';
 
 function Bin() {
-    // const [listUni, setListUni] = useState([]);
-    // const firebaseConfig = {
-    //     apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
-    //     authDomain: 'mock-proeject-b.firebaseapp.com',
-    //     databaseURL: 'https://mock-proeject-b-default-rtdb.firebaseio.com',
-    //     projectId: 'mock-proeject-b',
-    //     storageBucket: 'mock-proeject-b.appspot.com',
-    //     messagingSenderId: '898832925665',
-    //     appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
-    // };
-    // const app = initializeApp(firebaseConfig);
-    // const db = getDatabase(app);
+    const [listUni, setListUni] = useState([]);
+    const firebaseConfig = {
+        apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
+        authDomain: 'mock-proeject-b.firebaseapp.com',
+        databaseURL: 'https://mock-proeject-b-default-rtdb.firebaseio.com',
+        projectId: 'mock-proeject-b',
+        storageBucket: 'mock-proeject-b.appspot.com',
+        messagingSenderId: '898832925665',
+        appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
-    return (
-        <div
-            style={{
-                width: '100vw',
-                height: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                flexDirection: 'column',
-                backgroundColor: 'green',
-            }}
-        >
-            <TranslateComponent />
-            <h1>Hello world</h1>
-        </div>
-    );
     // get(child(ref(db), `University/`)).then((snapshot) => {
     //     if (snapshot.exists()) {
     //         const x = snapshot.val();
@@ -60,29 +39,29 @@ function Bin() {
     //         }
     //     }
     // });
-    // get(child(ref(db), `Detail/`)).then((snapshot) => {
-    //     if (snapshot.exists()) {
-    //         const x = snapshot.val();
-    //         for (let i in x) {
-    //             const name = x[i].email;
-    //             const id = x[i].id;
-    //             const a = x[i].uniCode;
-    //             if (a !== undefined) {
-    //                 a.forEach((element) => {
-    //                     if (listUni.includes(element)) {
-    //                         update(ref(db, `University/${element}/registeration/` + name.replace(/\./g, ',')), {
-    //                             id: id,
-    //                             email: name,
-    //                         });
-    //                     }
-    //                     // console.log('thành công');/
-    //                 });
-    //             }
-    //         }
-    //     } else {
-    //         console.log('No data available');
-    //     }
-    // });
+    get(child(ref(db), `Detail/`)).then((snapshot) => {
+        if (snapshot.exists()) {
+            const x = snapshot.val();
+            for (let i in x) {
+                const name = x[i].email;
+                const id = x[i].id;
+                const a = x[i].uniCode;
+                if (a !== undefined) {
+                    a.forEach((element) => {
+                        if (element === 'cantho') {
+                            update(ref(db, `University/${element}/registeration/` + name.replace(/\./g, ',')), {
+                                id: id,
+                                email: name,
+                            });
+                        }
+                        // console.log('thành công');/
+                    });
+                }
+            }
+        } else {
+            console.log('No data available');
+        }
+    });
 }
 export default Bin;
 // function Upload() {

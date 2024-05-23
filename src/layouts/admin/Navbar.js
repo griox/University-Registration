@@ -6,7 +6,6 @@ import { Dropdown, Space, message } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import TranslateComponent from '../../pages/Language';
 
 const items = [
     {

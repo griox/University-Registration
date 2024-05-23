@@ -228,8 +228,8 @@ export const Login = () => {
                                         <div className="input-box">
                                             <input type="checkbox" />
                                             <span className="remembertxt_login"> Remember me</span>
+                                            <Link to="/forgetpass">Forgot password?</Link>
                                         </div>
-                                        <Link to="/forgetpass">Forgot password?</Link>
                                     </div>
 
                                     <div className="input-box" onClick={() => getdt(email, password)}>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { get, ref, child, getDatabase } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { Divider, Table, Descriptions,Spin,Modal} from 'antd';
+import { calc } from 'antd/es/theme/internal';
 const Modal_Detail = ({ visible, onClose, student,Loading,setLoading }) => {
     const [Fullname, setFullname] = useState('');
     const [Gender, setGender] = useState('');

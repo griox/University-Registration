@@ -225,7 +225,7 @@ const Student_List = () => {
             console.log(key);
             await remove(child(ref(db), `Detail/${key.id}`));
             const emailhash = encodeEmails(key.email);
-            await remove(child(ref(db), `Account/${key.emailhash}`));
+            await remove(child(ref(db), `Account/${emailhash}`));
             const newData = studentData.filter((item) => item.id !== key.id);
             setStudentData(newData);
         } catch (error) {
@@ -373,7 +373,7 @@ const Student_List = () => {
             render: (text, record) => {
                 return (
                     <>
-                        {renderNameWithGender(text, record)} {/* Corrected here */}
+                        {renderNameWithGender(text, record)} 
                         <Tooltip title={record.uniCode.length === 5 ? 'can not register more' : ''}>
                             <span style={{ color: record.uniCode.length === 5 ? '#FF8C00' : 'black' }}>{text}</span>
                         </Tooltip>

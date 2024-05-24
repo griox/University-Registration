@@ -222,7 +222,22 @@ const StudentList = () => {
     }
     const handleDelete = async (key) => {
         try {
-            console.log(key);
+            const studentToDelete = studentData.find((item) => item.id === key.id);
+            if (!studentToDelete) {
+                toast.error('Student not found');
+                return;
+            }
+            for (const uniCode of studentToDelete.uniCode) {
+                const universityRef = ref(db, `University/${uniCode}`);
+                const universitySnapshot = await get(universityRef);
+                if (universitySnapshot.exists()) {
+                    const universityData = universitySnapshot.val();
+                    const updatedIsRegistered = Math.max(0, universityData.isRegistered - 1);
+                    await update(universityRef, { isRegistered: updatedIsRegistered });
+                } else {
+                    console.error('University not found');
+                }
+            }
             await remove(child(ref(db), `Detail/${key.id}`));
             const emailhash = encodeEmails(key.email);
             await remove(child(ref(db), `Account/${emailhash}`));
@@ -247,7 +262,6 @@ const StudentList = () => {
         setEditingKey('');
     };
     const handleFieldChange = async (key, dataIndex, value) => {
-        console.log('ham da duoc goi');
         const newData = [...studentData];
         const index = newData.findIndex((item) => key === item.key);
 
@@ -260,7 +274,6 @@ const StudentList = () => {
                 await update(ref(db, `Detail/${key}`), {
                     [dataIndex]: value,
                 });
-                console.log('Data updated in Firebase successfully');
             } catch (error) {
                 console.error('Error updating document:', error);
                 // Handle update error (optional: show notification to user)
@@ -328,7 +341,7 @@ const StudentList = () => {
                 toast.success('Data added to Firebase successfully');
             }
         } catch (errInfo) {
-            console.log('Validate Failed:', errInfo);
+            console.error('Validate Failed:', errInfo);
         }
     };
     const renderNameWithGender = (record) => {
@@ -376,7 +389,6 @@ const StudentList = () => {
                 return (
                     <>
                         {renderNameWithGender(text, record)}
-                        {console.log(record.uniCode)}
                         <Tooltip title={record.uniCode.length === 5 ? 'can not register more' : ''}>
                             <span style={{ color: record.uniCode.length === 5 ? '#FF8C00' : 'black' }}>{text}</span>
                         </Tooltip>

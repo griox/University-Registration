@@ -68,6 +68,7 @@ const AddSchool = () => {
     const handleSchoolDetail = (record) => {
         setDetailVisible(true);
         setSelectedUniverse(record);
+        setLoading(true);
     };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -94,13 +95,14 @@ const AddSchool = () => {
         setEditingKey('');
     };
 
-    const handleDelete = async (key) => {
+    const handleDelete = async (record) => {
         try {
-            await remove(child(ref(database), `University/${key}`));
-            const newUni = UniData.filter((item) => item.key !== key);
+            
+            await remove(child(ref(database), `University/${record.id}`));
+            const newUni = UniData.filter((item) => item.id !== record.id);
             setUniData(newUni);
         } catch (error) {
-            toast.error('Error when deleting data');
+            console.error('Error when deleting data',error);
         }
     };
 
@@ -373,7 +375,7 @@ const AddSchool = () => {
                         >
                             <EditOutlined />
                         </Typography.Link>
-                        <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
+                        <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record)}>
                             <Typography.Link>
                                 <DeleteOutlined />
                             </Typography.Link>
@@ -407,7 +409,7 @@ const AddSchool = () => {
         <div>
             <Form form={form} component={false}>
                 <Space direction="vertical">
-                    <FormAdd />
+                    <FormAdd UniData={UniData} setUniData={setUniData} />
                     <Spin spinning={loading}>
                         <Table
                             columns={mergedColumns}

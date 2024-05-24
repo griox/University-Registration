@@ -24,8 +24,6 @@ export function writeUniRecord(uniCode,nameU,address,registration,target,average
    target:target,
    averageS:averageS,
    isRegistered:isRegistered,
-  }).then(() => {
-      console.log("Record for university with username " + uniCode+ " has been written successfully!");
   }).catch((error) => {
       console.error("Error writing record for student with ID " + uniCode + ": ", error);
   });
@@ -149,26 +147,6 @@ export function createUniRecords() {
 export function useCreateUnitRecordsOnMount() {
   useEffect(() => {
   createUniRecords()
-  }, []); // Thực hiện chỉ một lần khi component được mount
+  }, []); 
 }
-// const a = () => {
-//           get(child(ref(db), `Detail/`)).then((snapshot) => {
-//               if (snapshot.exists()) {
-//                   const x = snapshot.val();
-//                   for (let i in x) {
-//                       const id = x[i].id;
-//                       const a = x[i].uniCode;
-//                       if (a !== undefined) {
-//                           a.forEach((element) => {
-//                               update(ref(db, `University/${element}/registeration/`), {
-//                                   id: id,
-//                               });
-//                               console.log('thành công');
-//                           });
-//                       }
-//                   }
-//               } else {
-//                   console.log('No data available');
-//               }
-//           });
-//       };
+

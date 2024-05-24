@@ -177,13 +177,11 @@ const Emails = [];
 export async function createInforRecords() {
   if (!isInforCreated) {
     await fetchData();
-    console.log(names);
+   
     for (let i = 0; i < Emails.length; i++) {
       let id = generateUniqueID(); // Tạo id duy nhất
-      console.log(id);
       let email = Emails[i];
       let name = names[i];
-      console.log(name);
       let MathScore = parseFloat(mathScores[i])||0;
       let EnglishScore = parseFloat(EnglishScores[i])||0;
       let LiteratureScore = parseFloat(LiteratureScores[i])||0 ;
@@ -271,83 +269,11 @@ const updateUniCode = async (studentID, newUniCodes) => {
 
       // Update the student's uniCode field
       await update(studentRef, { uniCode: updatedUniCodes });
-      console.log('Updated uniCodes for student:', studentID);
-    } else {
-      console.error('Student not found');
-    }
+    } 
   } catch (error) {
     console.error('Error updating uniCodes:', error);
   }
 };
-
-// const updateUniCodesForAllStudents = async () => {
-//   try {
-//     const detailRef = ref(db, 'Detail');
-//     const snapshot = await get(detailRef);
-//     if (snapshot.exists()) {
-//       const studentData = snapshot.val();
-//       const existingStudentIDs = Object.keys(studentData);
-      
-//       // Số lượng sinh viên đã có
-//       const numExistingStudents = existingStudentIDs.length;
-//       const numNewStudents = 394 - numExistingStudents; // Số lượng sinh viên cần tạo
-
-//       // Tạo 150 sinh viên đăng ký 5 trường
-//       for (let i = 0; i < 150; i++) {
-//         const studentID = generateUniqueID();
-//         const newUniCodes = getRandomUniCodes(5);
-//         await updateUniCode(studentID, newUniCodes);
-//       }
-
-//       // Tạo 10 sinh viên đăng ký 1 trường
-//       for (let i = 0; i < 10; i++) {
-//         const studentID = generateUniqueID();
-//         const newUniCodes = getRandomUniCodes(1);
-//         await updateUniCode(studentID, newUniCodes);
-//       }
-
-//       // Tạo 20 sinh viên đăng ký 3 trường
-//       for (let i = 0; i < 20; i++) {
-//         const studentID = generateUniqueID();
-//         const newUniCodes = getRandomUniCodes(3);
-//         await updateUniCode(studentID, newUniCodes);
-//       }
-
-//       // Tạo 50 sinh viên đăng ký 2 trường
-//       for (let i = 0; i < 50; i++) {
-//         const studentID = generateUniqueID();
-//         const newUniCodes = getRandomUniCodes(2);
-//         await updateUniCode(studentID, newUniCodes);
-//       }
-
-//       // Số lượng sinh viên cần tạo cho việc đăng ký 4 trường
-//       const remainingStudents = numNewStudents - 150 - 10 - 20 - 50;
-
-//       // Tạo số lượng sinh viên cần cho việc đăng ký 4 trường
-//       for (let i = 0; i < remainingStudents; i++) {
-//         const studentID = generateUniqueID();
-//         const newUniCodes = getRandomUniCodes(4);
-//         await updateUniCode(studentID, newUniCodes);
-//       }
-
-//       console.log('Updated uniCodes for all students');
-//     } else {
-//       console.error('No student data available');
-//     }
-//   } catch (error) {
-//     console.error('Error updating uniCodes for all students:', error);
-//   }
-// };
-// const getRandomUniCodes = (numCodes) => {
-//   const newUniCodes = [];
-//   while (newUniCodes.length < numCodes) {
-//     const code = unicodes[Math.floor(Math.random() * unicodes.length)];
-//     if (!newUniCodes.includes(code)) {
-//       newUniCodes.push(code);
-//     }
-//   }
-//   return newUniCodes;
-// };
 const clearUniCodesForAllStudents = async () => {
   try {
     const detailRef = ref(db, 'Detail');
@@ -357,10 +283,7 @@ const clearUniCodesForAllStudents = async () => {
       for (const studentID in studentData) {
         await updateUniCode(studentID, []); // Gọi hàm updateUniCode với mảng rỗng
       }
-      console.log('Cleared uniCodes for all students');
-    } else {
-      console.error('No student data available');
-    }
+    } 
   } catch (error) {
     console.error('Error clearing uniCodes for all students:', error);
   }

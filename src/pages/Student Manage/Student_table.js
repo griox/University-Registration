@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin } from 'antd';
+import './css/table.css';
 import {
     SearchOutlined,
     EditOutlined,
@@ -36,10 +37,8 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
         <td {...restProps}>
             {editing ? (
                 <Form.Item
+                    className="edit-cell"
                     name={dataIndex}
-                    style={{
-                        margin: 0,
-                    }}
                     rules={[
                         {
                             required: true,
@@ -137,17 +136,13 @@ const StudentList = () => {
 
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-            <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+            <div className='search-column' onKeyDown={(e) => e.stopPropagation()}>
                 <Input
                     ref={searchInput}
                     placeholder={`Search ${dataIndex}`}
                     value={selectedKeys[0]}
                     onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-                    style={{
-                        marginBottom: 8,
-                        display: 'block',
-                    }}
                 />
                 <Space>
                     <Button
@@ -155,18 +150,14 @@ const StudentList = () => {
                         onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                         icon={<SearchOutlined />}
                         size="small"
-                        style={{
-                            width: 90,
-                        }}
+                       
                     >
                         Search
                     </Button>
                     <Button
                         onClick={() => clearFilters && handleReset(clearFilters)}
                         size="small"
-                        style={{
-                            width: 90,
-                        }}
+                       
                     >
                         Reset
                     </Button>
@@ -346,11 +337,11 @@ const StudentList = () => {
     };
     const renderNameWithGender = (record) => {
         return (
-            <span>
+            <span className='icon'>
                 {record.gender === 'Male' ? (
-                    <ManOutlined style={{ marginRight: 5 }} />
+                    <ManOutlined  />
                 ) : (
-                    <WomanOutlined style={{ marginRight: 5 }} />
+                    <WomanOutlined  />
                 )}
             </span>
         );
@@ -416,14 +407,14 @@ const StudentList = () => {
             width: '10%',
             editable: true,
             sorter: (a, b) => a.MathScore - b.MathScore,
-            key:'MathScore',
+            key: 'MathScore',
         },
         {
             title: 'Literature',
             dataIndex: 'LiteratureScore',
             width: '11%',
             editable: true,
-            key:'LiteratureScore',
+            key: 'LiteratureScore',
 
             sorter: (a, b) => a.LiteratureScore - b.LiteratureScore,
         },
@@ -432,14 +423,14 @@ const StudentList = () => {
             dataIndex: 'EnglishScore',
             width: '10%',
             editable: true,
-            key:'EnglishScore',
+            key: 'EnglishScore',
             sorter: (a, b) => a.EnglishScore - b.EnglishScore,
         },
         {
             title: 'Entrance Score',
             dataIndex: 'AverageScore',
             width: '10%',
-            key:'AverageScore',
+            key: 'AverageScore',
             sorter: (a, b) => a.AverageScore - b.AverageScore,
         },
         {
@@ -455,7 +446,7 @@ const StudentList = () => {
                     return text;
                 }
             },
-            key:'uniCode'
+            key: 'uniCode',
         },
         {
             title: 'Manage',
@@ -467,10 +458,9 @@ const StudentList = () => {
                 return editable ? (
                     <span>
                         <Typography.Link
+                        className='Typo_link'
                             onClick={() => save(record.key)}
-                            style={{
-                                marginRight: 8,
-                            }}
+                            
                         >
                             Edit
                         </Typography.Link>
@@ -481,9 +471,7 @@ const StudentList = () => {
                         <Typography.Link
                             disabled={editingKey !== ''}
                             onClick={() => edit(record)}
-                            style={{
-                                marginRight: 8,
-                            }}
+                            className='Typo_link'
                         >
                             <EditOutlined />
                         </Typography.Link>
@@ -528,7 +516,7 @@ const StudentList = () => {
     });
 
     return (
-        <div style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <div className='Layout' >
             <Space direction="vertical">
                 <ModalAdd studentData={studentData} setStudentData={setStudentData} />
                 <ModalDetail
@@ -555,7 +543,7 @@ const StudentList = () => {
                                 x: 900,
                                 y: 'calc(100vh - 300px)',
                             }}
-                            style={{ height: '100%', marginRight: '-20px' }}
+                           
                             rowClassName="editable-row"
                             showSorterTooltip={{
                                 target: 'sorter-icon',

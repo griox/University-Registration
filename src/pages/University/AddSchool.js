@@ -279,7 +279,7 @@ const AddSchool = () => {
                 </Space>
             </div>
         ),
-        filterIcon: (filtered) => <SearchOutlined className="ic-search" />,
+        filterIcon: () => <SearchOutlined className="ic-search" />,
         onFilter: (value, record) => record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
         onFilterDropdownOpenChange: (visible) => {
             if (visible) {

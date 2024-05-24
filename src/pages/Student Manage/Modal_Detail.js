@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { get, ref, child, getDatabase } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { Divider, Table, Descriptions, Spin, Modal } from 'antd';
+import './css/modal_detail.css'
 const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
     const [university, setUniversity] = useState([]);
     const firebaseConfig = {
@@ -115,12 +116,12 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
     ];
     return (
         <Modal
+            className="Modal"
             open={visible}
             width={1000}
             title="Student's Information"
             onCancel={onClose}
             footer={null}
-            style={{ marginLeft: '25%' }}
         >
             <Descriptions column={3}>
                 {items.map((item) => (

@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { Button, Modal, Select, InputNumber, DatePicker, Form } from 'antd';
 import { InfoCircleOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
 import { Input, Tooltip, Row, Col } from 'antd';
+import './css/modal_add.css';
 import dayjs from 'dayjs';
 
 const firebaseConfig = {
@@ -64,7 +65,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
             return 'SV001';
         }
     };
-  
+
     useEffect(() => {
         const calculateAverage = () => {
             if (Mathscore !== null && Englishscore !== null && Literaturescore !== null) {
@@ -125,7 +126,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
             toast.success('Added a new student');
             setIsModalOpen(false);
         } catch (error) {
-            console.error(error)
+            console.error(error);
             toast.error('An error occurred while adding student');
         }
     };
@@ -368,6 +369,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                     <Row gutter={16}>
                         <Col span={12}>
                             <Form.Item
+                                className="form-item"
                                 label="Name"
                                 name="name"
                                 validateStatus={!validateFullname(Fullname) && Fullname ? 'error' : ''}
@@ -376,7 +378,6 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                         ? 'University Name must contain only letters and spaces'
                                         : ''
                                 }
-                                style={{ fontWeight: 600 }}
                                 rules={[
                                     {
                                         required: true,
@@ -386,11 +387,11 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             >
                                 <Input
                                     placeholder="Enter Student's name"
-                                    prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
+                                    prefix={<UserOutlined className='icon' />}
                                     onChange={(e) => setFullname(e.target.value)}
                                     suffix={
                                         <Tooltip title="Name must contain letters and no space ">
-                                            <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+                                            <InfoCircleOutlined className='icon'  />
                                         </Tooltip>
                                     }
                                     allowClear
@@ -399,9 +400,9 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         </Col>
                         <Col span={12}>
                             <Form.Item
+                                className="form-item"
                                 label="Gender"
                                 name="gender"
-                                style={{ fontWeight: 600 }}
                                 rules={[
                                     {
                                         required: true,
@@ -420,9 +421,9 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                     <Row gutter={16}>
                         <Col span={12}>
                             <Form.Item
+                                className="form-item"
                                 label="Date of Birth"
                                 name="dob"
-                                style={{ fontWeight: 600 }}
                                 rules={[
                                     {
                                         required: true,
@@ -430,8 +431,8 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     },
                                 ]}
                             >
-                                <DatePicker
-                                    style={{ width: '318px' }}
+                                <DatePicker className='Date'
+                                  
                                     minDate={dayjs('01/01/2004', dateFormat)}
                                     maxDate={dayjs('31/12/2004', dateFormat)}
                                     format="DD/MM/YYYY"
@@ -440,7 +441,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item label="Place of Birth" style={{ fontWeight: 600 }}>
+                            <Form.Item label="Place of Birth" className="form-item">
                                 <Select
                                     defaultValue="Khánh Hòa"
                                     options={cities}
@@ -453,7 +454,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                     <Form.Item
                         label="Email"
                         name="email"
-                        style={{ fontWeight: 600 }}
+                        className="form-item"
                         validateStatus={!validateEmailFormat(Email) && Email ? 'error' : ''}
                         help={validateEmailFormat(Email) && Email ? ' ' : ''}
                         rules={[
@@ -465,10 +466,10 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                     >
                         <Input
                             placeholder="Enter Student's email"
-                            prefix={<MailOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
+                            prefix={<MailOutlined className='icon' />}
                             suffix={
                                 <Tooltip title="Email must contain @example">
-                                    <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
+                                    <InfoCircleOutlined className='icon'  />
                                 </Tooltip>
                             }
                             onChange={(e) => setEmail(e.target.value)}
@@ -480,7 +481,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             <Form.Item
                                 label="Identify Number"
                                 name="identify"
-                                style={{ fontWeight: 600 }}
+                                className="form-item"
                                 validateStatus={!validateIdenNumber(Identify) && Identify ? 'error' : ''}
                                 help={
                                     !validateIdenNumber(Identify) && Identify
@@ -499,11 +500,6 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     showCount
                                     maxLength={12}
                                     value={Identify}
-                                    // suffix={
-                                    //   <Tooltip title="Identify number must have 12 digits">
-                                    //     <InfoCircleOutlined style={{ color: 'rgba(0,0,0,.45)' }} />
-                                    //   </Tooltip>
-                                    // }
                                 />
                             </Form.Item>
                         </Col>
@@ -511,7 +507,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             <Form.Item
                                 label="Ethnicity"
                                 name="ethnicity"
-                                style={{ fontWeight: 600 }}
+                                className="form-item"
                                 rules={[
                                     {
                                         required: true,
@@ -533,7 +529,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             <Form.Item
                                 label="Address"
                                 name="address"
-                                style={{ fontWeight: 600 }}
+                                className="form-item"
                                 rules={[
                                     {
                                         required: true,
@@ -556,7 +552,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         <Col span={6}>
                             <Form.Item
                                 label="Math"
-                                style={{ fontWeight: 600 }}
+                                className="form-item"
                                 name="math"
                                 rules={[
                                     {
@@ -566,10 +562,10 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 ]}
                             >
                                 <InputNumber
+                                    className="input-num"
                                     min={0}
                                     max={10}
                                     step={0.2}
-                                    style={{ width: '50%' }}
                                     onChange={(value) => setMathscore(value)}
                                 />
                             </Form.Item>
@@ -578,7 +574,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             <Form.Item
                                 label="English"
                                 name="english"
-                                style={{ fontWeight: 600 }}
+                                className="form-item"
                                 rules={[
                                     {
                                         required: true,
@@ -590,7 +586,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     min={0}
                                     max={10}
                                     step={0.2}
-                                    style={{ width: '50%' }}
+                                    className="input-num"
                                     onChange={(value) => setEnglishscore(value)}
                                 />
                             </Form.Item>
@@ -599,7 +595,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             <Form.Item
                                 label="Literature"
                                 name="literature"
-                                style={{ fontWeight: 600 }}
+                                className="form-item"
                                 validateStatus={
                                     (!validateNumber(Literaturescore) && Literaturescore) ||
                                     (Literaturescore && parseFloat(Literaturescore) > 10)
@@ -624,14 +620,14 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     min={0}
                                     max={10}
                                     step={0.2}
-                                    style={{ width: '50%' }}
+                                    className="input-num"
                                     onChange={(value) => setLiteraturescore(value)}
                                 />
                             </Form.Item>
                         </Col>
                         <Col span={6}>
-                            <Form.Item label="Entrance Score" style={{ fontWeight: 600 }}>
-                                <Input readOnly style={{ width: '50%' }} value={averageS} />
+                            <Form.Item label="Entrance Score" className="form-item">
+                                <Input readOnly className="input-num" value={averageS} />
                             </Form.Item>
                         </Col>
                     </Row>

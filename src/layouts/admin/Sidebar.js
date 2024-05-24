@@ -9,7 +9,6 @@ import { SignatureOutlined, SolutionOutlined } from '@ant-design/icons';
 import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
-import { useDispatch, useSelector } from 'react-redux';
 import { MenuContext } from '../../pages/MenuContext';
 
 const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
@@ -36,8 +35,8 @@ const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
 const Sidebar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    const [role, setRole] = useState(localStorage.getItem('Role') || '');
-    const [username, setUsername] = useState(localStorage.getItem('Name') || '');
+    const role = useState(localStorage.getItem('Role') || '');
+    const username = useState(localStorage.getItem('Name') || '');
 
     const [isCollapsed, setIsCollapsed] = useState(() => JSON.parse(localStorage.getItem('sidebarCollapsed')) || false);
 

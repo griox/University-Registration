@@ -116,7 +116,8 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
     return (
         <Modal
             open={visible}
-            width={1000}
+            width={970}
+            height={400}
             title="Student's Information"
             onCancel={onClose}
             footer={null}

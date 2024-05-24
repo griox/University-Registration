@@ -437,7 +437,6 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     maxDate={dayjs('31/12/2004', dateFormat)}
                                     format="DD/MM/YYYY"
                                     onChange={(value) => setDateOfBirth(value)}
-                                    style={{width: '318px'}}
                                 />
                             </Form.Item>
                         </Col>

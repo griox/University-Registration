@@ -66,6 +66,7 @@ const AddSchool = () => {
         );
     };
     const handleSchoolDetail = (record) => {
+        setLoading(true);
         setDetailVisible(true);
         setSelectedUniverse(record);
     };
@@ -436,8 +437,9 @@ const AddSchool = () => {
                 open={isModalDetailVisible}
                 onCancel={handleCancel}
                 onOk={handleOk}
-                width={800} 
+                width={1000} 
                 height={600}
+                style={{marginLeft: '20%'}}
             >
                 <FormDetail  university={selectedUniverse}
                         open={isModalDetailVisible}

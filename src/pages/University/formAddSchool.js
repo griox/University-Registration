@@ -112,7 +112,7 @@ const FormAdd = () => {
     }
     return (
         <>
-            <Button className='btn-addUni' type="primary" onClick={showModal}>
+            <Button className="btn-addUni" type="primary" onClick={showModal}>
                 Add University
             </Button>
             <Modal
@@ -126,7 +126,8 @@ const FormAdd = () => {
             >
                 <Space direction="vertical">
                     <Form>
-                        <Form.Item className='form-item'
+                        <Form.Item
+                            className="form-item"
                             label="University Name"
                             validateStatus={!validateNameUni(uniName) && uniName ? 'error' : ''}
                             name="Input"
@@ -137,21 +138,23 @@ const FormAdd = () => {
                                 },
                             ]}
                         >
-                            <Input className='ip-UniName'
+                            <Input
+                                className="ip-UniName"
                                 placeholder="Enter University's name"
-                                prefix={<BankOutlined className='ic-bank'/>}
+                                prefix={<BankOutlined className="ic-bank" />}
                                 onChange={(e) => setUniName(e.target.value)}
                                 value={uniName}
                                 allowClear
                                 suffix={
                                     <Tooltip title="Name just only contain letters and no numbers">
-                                        <InfoCircleOutlined className='ic-info' />
+                                        <InfoCircleOutlined className="ic-info" />
                                     </Tooltip>
                                 }
                             />
                         </Form.Item>
 
-                        <Form.Item className='form-item'
+                        <Form.Item
+                            className="form-item"
                             label="University Code"
                             validateStatus={!validateName(uniCode) && uniCode ? 'error' : ''}
                             name="InputCode"
@@ -162,21 +165,23 @@ const FormAdd = () => {
                                 },
                             ]}
                         >
-                            <Input className='ip-UniCode'
+                            <Input
+                                className="ip-UniCode"
                                 placeholder="Uni's Code"
                                 allowClear
                                 onChange={(e) => setUniCode(e.target.value)}
                                 maxLength={6}
                                 suffix={
                                     <Tooltip title="uniCode just contain only letters ">
-                                        <InfoCircleOutlined className='ic-info' />
+                                        <InfoCircleOutlined className="ic-info" />
                                     </Tooltip>
                                 }
                                 value={uniCode}
                             />
                         </Form.Item>
 
-                        <Form.Item className='form-item'
+                        <Form.Item
+                            className="form-item"
                             label="Address"
                             name="TextArea"
                             rules={[
@@ -186,7 +191,8 @@ const FormAdd = () => {
                                 },
                             ]}
                         >
-                            <Input.TextArea className='ip-textArea'
+                            <Input.TextArea
+                                className="ip-textArea"
                                 placeholder="Uni's address"
                                 allowClear
                                 onChange={(e) => setAddress(e.target.value)}
@@ -194,8 +200,9 @@ const FormAdd = () => {
                             />
                         </Form.Item>
 
-                        <div className='div'>
-                            <Form.Item className='form-item'
+                        <div className="div">
+                            <Form.Item
+                                className="form-item"
                                 label="Entrance Score"
                                 name="Entrance"
                                 rules={[
@@ -205,7 +212,8 @@ const FormAdd = () => {
                                     },
                                 ]}
                             >
-                                <InputNumber className='ip-number1'
+                                <InputNumber
+                                    className="ip-number1"
                                     maxLength={2}
                                     value={averageScore}
                                     onChange={(value) => setAverageScore(value)}
@@ -215,7 +223,8 @@ const FormAdd = () => {
                                 />
                             </Form.Item>
 
-                            <Form.Item className='form-item'
+                            <Form.Item
+                                className="form-item"
                                 label="Targets"
                                 name="Target"
                                 rules={[
@@ -225,9 +234,9 @@ const FormAdd = () => {
                                     },
                                 ]}
                             >
-                                <InputNumber className='ip-number2'
+                                <InputNumber
+                                    className="ip-number2"
                                     maxLength={5}
-                                    
                                     value={targetScore}
                                     onChange={(value) => setTargetScore(value)}
                                     max={500}
@@ -236,7 +245,6 @@ const FormAdd = () => {
                                 />
                             </Form.Item>
                         </div>
-                        
                     </Form>
                 </Space>
             </Modal>

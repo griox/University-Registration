@@ -114,10 +114,10 @@ const Home = () => {
                                         height="450px"
                                         src="https://www.youtube.com/embed/SdtTU7UPCC0?autoplay=1&amp;showinfo=0&amp;autohide=1?vq=hd1080&amp;mute=1"
                                         title="Giới thiệu tổng quan các ngành học tại Đại học FPT 2023"
-                                        frameborder="0"
+                                        frameBorder="0"
                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                        referrerpolicy="strict-origin-when-cross-origin"
-                                        allowfullscreen
+                                        referrerPolicy="strict-origin-when-cross-origin"
+                                        allowFullScreen
                                     ></iframe>
                                 </div>
                             </div>
@@ -157,7 +157,7 @@ const Home = () => {
                             <div className="col-lg-4 col-sm-6" data-aos="fade-down" data-aos-delay="150">
                                 <div
                                     className="service theme-shadow p-lg-5 p-4"
-                                    onclick="openLink('https://fptsoftware.com/newsroom/news-and-press-releases/press-release/fpt-to-shape-the-future-of-ai-and-cloud-on-a-global-scale-in-collaboration-with-nvidia')"
+                                    onClick="openLink('https://fptsoftware.com/newsroom/news-and-press-releases/press-release/fpt-to-shape-the-future-of-ai-and-cloud-on-a-global-scale-in-collaboration-with-nvidia')"
                                 >
                                     <div className="iconbox">
                                         <img src="../assets/images/b1.png" alt="" />
@@ -173,7 +173,7 @@ const Home = () => {
                             <div className="col-lg-4 col-sm-6" data-aos="fade-down" data-aos-delay="150">
                                 <div
                                     className="service theme-shadow p-lg-5 p-4"
-                                    onclick="openLink('https://fptsoftware.com/newsroom/news-and-press-releases/news/fpt-software-bolsters-digital-transformation-capabilities-with-double-recognitions-in-microsoft-azure-advanced-specialisation')"
+                                    onClick="openLink('https://fptsoftware.com/newsroom/news-and-press-releases/news/fpt-software-bolsters-digital-transformation-capabilities-with-double-recognitions-in-microsoft-azure-advanced-specialisation')"
                                 >
                                     <div className="iconbox">
                                         <img src="../assets/images/b2.png" alt="" />
@@ -189,7 +189,7 @@ const Home = () => {
                             <div className="col-lg-4 col-sm-6" data-aos="fade-down" data-aos-delay="150">
                                 <div
                                     className="service theme-shadow p-lg-5 p-4"
-                                    onclick="openLink('https://fptsoftware.com/newsroom/news-and-press-releases/press-release/fpt-cooperates-with-usaid-to-promote-clean-energy-deployment-reduce-greenhouse-gas-emissions-and-accelerate-net-zero-transition')"
+                                    onClick="openLink('https://fptsoftware.com/newsroom/news-and-press-releases/press-release/fpt-cooperates-with-usaid-to-promote-clean-energy-deployment-reduce-greenhouse-gas-emissions-and-accelerate-net-zero-transition')"
                                 >
                                     <div className="iconbox">
                                         <img src="../assets/images/b3.png" alt="" />
@@ -205,7 +205,7 @@ const Home = () => {
                             <div className="col-lg-4 col-sm-6" data-aos="fade-down" data-aos-delay="150">
                                 <div
                                     className="service theme-shadow p-lg-5 p-4"
-                                    onclick="openLink('https://fptsoftware.com/newsroom/news-and-press-releases/news/fpt-software-japan-becomes-outsystems-premier-partner')"
+                                    onClick="openLink('https://fptsoftware.com/newsroom/news-and-press-releases/news/fpt-software-japan-becomes-outsystems-premier-partner')"
                                 >
                                     <div className="iconbox">
                                         <img src="../assets/images/b4.png" alt="" />
@@ -221,7 +221,7 @@ const Home = () => {
                             <div className="col-lg-4 col-sm-6" data-aos="fade-down" data-aos-delay="150">
                                 <div
                                     className="service theme-shadow p-lg-5 p-4"
-                                    onclick="openLink('https://fptsoftware.com/newsroom/news-and-press-releases/news/fpt-automotive-and-vinai-partner-to-amplify-comprehensive-offerings-to-oems')"
+                                    onClick="openLink('https://fptsoftware.com/newsroom/news-and-press-releases/news/fpt-automotive-and-vinai-partner-to-amplify-comprehensive-offerings-to-oems')"
                                 >
                                     <div className="iconbox">
                                         <img src="../assets/images/b5.png" alt="" />
@@ -234,7 +234,7 @@ const Home = () => {
                             <div className="col-lg-4 col-sm-6" data-aos="fade-down" data-aos-delay="150">
                                 <div
                                     className="service theme-shadow p-lg-5 p-4"
-                                    onclick="openLink('https://fptsoftware.com/newsroom/news-and-press-releases/news/fpt-korea-seizing-korean-automotive-potentials-with-reach-global-leverage-local-approach')"
+                                    onClick="openLink('https://fptsoftware.com/newsroom/news-and-press-releases/news/fpt-korea-seizing-korean-automotive-potentials-with-reach-global-leverage-local-approach')"
                                 >
                                     <div className="iconbox">
                                         <img src="../assets/images/b6.png" alt="" />

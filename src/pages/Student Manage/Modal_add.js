@@ -125,7 +125,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
             toast.success('Added a new student');
             setIsModalOpen(false);
         } catch (error) {
-            console.error('Error adding student:', error);
+            console.error(error);
             toast.error('An error occurred while adding student');
         }
     };
@@ -432,7 +432,6 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     maxDate={dayjs('31/12/2004', dateFormat)}
                                     format="DD/MM/YYYY"
                                     onChange={(value) => setDateOfBirth(value)}
-                                    style={{ width: '318px' }}
                                 />
                             </Form.Item>
                         </Col>

@@ -7,14 +7,14 @@ import { BankOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { database } from '../firebaseConfig.js';
 import './css/formAddSchool.css';
 
-const FormAdd = () => {
+const FormAdd = ({UniData,setUniData}) => {
     const [isModalVisible, setVisible] = useState(false);
     const [uniName, setUniName] = useState('');
     const [uniCode, setUniCode] = useState('');
     const [address, setAddress] = useState('');
     const [averageScore, setAverageScore] = useState(null);
     const [targetScore, setTargetScore] = useState(null);
-    const [registeredNumber, setRegisteredNumber] = useState(null);
+   
 
     const showModal = () => {
         setVisible(true);
@@ -26,9 +26,8 @@ const FormAdd = () => {
             uniName === '' ||
             address === '' ||
             averageScore === null ||
-            registeredNumber === null ||
             targetScore === null ||
-            uniCode === null
+            uniCode === ''
         ) {
             toast.error('Please fill in all information');
             hasError = true;
@@ -60,7 +59,7 @@ const FormAdd = () => {
                     }
                 }
             }
-        } else if (!validateName(uniName)) {
+        } else if (!validateUniName(uniName)) {
             toast.error('Invalid name');
             hasError = true;
         }
@@ -72,7 +71,6 @@ const FormAdd = () => {
                 setUniCode('');
                 setAddress('');
                 setAverageScore(null);
-                setRegisteredNumber(null);
                 setTargetScore(null);
                 setVisible(false);
             } catch (error) {
@@ -86,7 +84,6 @@ const FormAdd = () => {
         setUniCode('');
         setAddress('');
         setAverageScore(null);
-        setRegisteredNumber(null);
         setTargetScore(null);
         setVisible(false);
     };
@@ -101,15 +98,26 @@ const FormAdd = () => {
             isRegistered: 0,
             target: targetScore,
         });
+        const newUni ={
+            nameU: uniName,
+            uniCode: uniCode,
+            address: address,
+            averageS: averageScore,
+            isRegistered: 0,
+            target: targetScore,
+        }
+        setUniData=([...UniData,newUni]);
         toast.success('Added a university');
     };
 
     function validateName(uniName) {
         return /^[A-Za-zÀ-ÿ]+$/.test(uniName);
     }
-    function validateNameUni(uniName) {
-        return /^[A-Za-zÀ-ÿ\s]+$/.test(uniName);
+    function validateUniName(uniName) {
+        return /^\D+$/u.test(uniName);
     }
+    
+    
     return (
         <>
             <Button className="btn-addUni" type="primary" onClick={showModal}>
@@ -129,7 +137,7 @@ const FormAdd = () => {
                         <Form.Item
                             className="form-item"
                             label="University Name"
-                            validateStatus={!validateNameUni(uniName) && uniName ? 'error' : ''}
+                            validateStatus={!validateUniName(uniName) && uniName ? 'error' : ''}
                             name="Input"
                             rules={[
                                 {

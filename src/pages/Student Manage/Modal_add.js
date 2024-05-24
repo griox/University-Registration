@@ -64,7 +64,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
             return 'SV001';
         }
     };
-  
+
     useEffect(() => {
         const calculateAverage = () => {
             if (Mathscore !== null && Englishscore !== null && Literaturescore !== null) {
@@ -125,7 +125,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
             toast.success('Added a new student');
             setIsModalOpen(false);
         } catch (error) {
-            console.error(error)
+            console.error(error);
             toast.error('An error occurred while adding student');
         }
     };
@@ -409,11 +409,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     },
                                 ]}
                             >
-                                <Select
-                                    defaultValue="Female"
-                                    options={genders}
-                                    onChange={(value) => setGender(value)}
-                                />
+                                <Select options={genders} onChange={(value) => setGender(value)} />
                             </Form.Item>
                         </Col>
                     </Row>
@@ -441,12 +437,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         </Col>
                         <Col span={12}>
                             <Form.Item label="Place of Birth" style={{ fontWeight: 600 }}>
-                                <Select
-                                    defaultValue="Khánh Hòa"
-                                    options={cities}
-                                    showSearch
-                                    onChange={(value) => setPlaceOfBirth(value)}
-                                />
+                                <Select options={cities} showSearch onChange={(value) => setPlaceOfBirth(value)} />
                             </Form.Item>
                         </Col>
                     </Row>
@@ -519,12 +510,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     },
                                 ]}
                             >
-                                <Select
-                                    defaultValue="Kinh"
-                                    options={enthicities}
-                                    onChange={(value) => setEnthicity(value)}
-                                    showSearch
-                                />
+                                <Select options={enthicities} onChange={(value) => setEnthicity(value)} showSearch />
                             </Form.Item>
                         </Col>
                     </Row>

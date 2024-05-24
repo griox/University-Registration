@@ -27,8 +27,6 @@ function writeStudentRecord(id, name, email, mathScore, literatureScore, english
       isRegister: isRegister,
       uniCodes: uniCodes,
       Role: Role
-  }).then(() => {
-      console.log("Record for student with ID " + id + " has been written successfully!");
   }).catch((error) => {
       console.error("Error writing record for student with ID " + id + ": ", error);
   });
@@ -101,7 +99,6 @@ async function updateUniCodes() {
           }
           // Update giá trị uniCodes cho sinh viên
           await update(ref(studentsRef.child(studentId)), { uniCodes: randomUniCodes });
-          console.log(`Updated uniCodes for student ${studentId}`);
         }
       }
     }
@@ -121,7 +118,6 @@ async function updateStudentGender() {
           const gender = Math.random() < 0.5 ? 'male' : 'female'; // Chọn giới tính ngẫu nhiên
           // Update giá trị gender cho sinh viên
           await update(ref(studentsRef.child(studentId)), { gender: gender });
-          console.log(`Updated gender for student ${studentId}`);
         }
       }
     }

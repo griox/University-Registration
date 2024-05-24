@@ -136,7 +136,7 @@ const StudentList = () => {
 
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-            <div className='search-column' onKeyDown={(e) => e.stopPropagation()}>
+            <div className="search-column" onKeyDown={(e) => e.stopPropagation()}>
                 <Input
                     ref={searchInput}
                     placeholder={`Search ${dataIndex}`}
@@ -150,15 +150,10 @@ const StudentList = () => {
                         onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                         icon={<SearchOutlined />}
                         size="small"
-                       
                     >
                         Search
                     </Button>
-                    <Button
-                        onClick={() => clearFilters && handleReset(clearFilters)}
-                        size="small"
-                       
-                    >
+                    <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small">
                         Reset
                     </Button>
                     <Button
@@ -211,28 +206,32 @@ const StudentList = () => {
     function encodeEmails(email) {
         return email.replace('.', ',');
     }
-    const handleDelete = async (key) => {
+    const handleDelete = async (record) => {
         try {
-            const studentToDelete = studentData.find((item) => item.id === key.id);
+            const studentToDelete = studentData.find((item) => item.id === record.id);
             if (!studentToDelete) {
                 toast.error('Student not found');
                 return;
             }
-            for (const uniCode of studentToDelete.uniCode) {
-                const universityRef = ref(db, `University/${uniCode}`);
-                const universitySnapshot = await get(universityRef);
-                if (universitySnapshot.exists()) {
-                    const universityData = universitySnapshot.val();
-                    const updatedIsRegistered = Math.max(0, universityData.isRegistered - 1);
-                    await update(universityRef, { isRegistered: updatedIsRegistered });
-                } else {
-                    console.error('University not found');
+            console.log(record);
+            if (record.uniCode !== undefined) {
+                for (const uniCode of studentToDelete.uniCode) {
+                    const universityRef = ref(db, `University/${uniCode}`);
+                    const universitySnapshot = await get(universityRef);
+                    if (universitySnapshot.exists()) {
+                        const universityData = universitySnapshot.val();
+                        const updatedIsRegistered = Math.max(0, universityData.isRegistered - 1);
+                        await update(universityRef, { isRegistered: updatedIsRegistered });
+                    } else {
+                        console.error('University not found');
+                    }
                 }
             }
-            await remove(child(ref(db), `Detail/${key.id}`));
-            const emailhash = encodeEmails(key.email);
+
+            await remove(child(ref(db), `Detail/${record.id}`));
+            const emailhash = encodeEmails(record.email);
             await remove(child(ref(db), `Account/${emailhash}`));
-            const newData = studentData.filter((item) => item.id !== key.id);
+            const newData = studentData.filter((item) => item.id !== record.id);
             setStudentData(newData);
         } catch (error) {
             console.error('Error deleting data:', error);
@@ -308,7 +307,7 @@ const StudentList = () => {
                 const mathScore = updatedRow['MathScore'] || 0;
                 const literatureScore = updatedRow['LiteratureScore'] || 0;
                 const englishScore = updatedRow['EnglishScore'] || 0;
-                const averageScore = (mathScore + literatureScore + englishScore);
+                const averageScore = mathScore + literatureScore + englishScore;
 
                 // Làm tròn averageScore đến 1 chữ số thập phân
                 updatedRow['AverageScore'] = Math.round(averageScore * 10) / 10;
@@ -336,15 +335,7 @@ const StudentList = () => {
         }
     };
     const renderNameWithGender = (record) => {
-        return (
-            <span className='icon'>
-                {record.gender === 'Male' ? (
-                    <ManOutlined  />
-                ) : (
-                    <WomanOutlined  />
-                )}
-            </span>
-        );
+        return <span className="icon">{record.gender === 'Male' ? <ManOutlined /> : <WomanOutlined />}</span>;
     };
 
     const handleIdClick = (record) => {
@@ -352,7 +343,17 @@ const StudentList = () => {
         setIsModalVisible(true);
         setLoading(true);
     };
-
+    const t = (x) => {
+        if (x === null || x === undefined) {
+            return false;
+        } else {
+            if (x.length === 5) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    };
     const columns = [
         {
             title: 'ID',
@@ -380,8 +381,8 @@ const StudentList = () => {
                 return (
                     <>
                         {renderNameWithGender(text, record)}
-                        <Tooltip title={record.uniCode.length === 5 ? 'can not register more' : ''}>
-                            <span style={{ color: record.uniCode.length === 5 ? '#FF8C00' : 'black' }}>{text}</span>
+                        <Tooltip title={t(record.uniCode) ? 'can not register more' : ''}>
+                            <span style={{ color: t(record.uniCode) ? '#FF8C00' : 'black' }}>{text}</span>
                         </Tooltip>
                     </>
                 );
@@ -439,9 +440,9 @@ const StudentList = () => {
             width: '13%',
             render: (text) => {
                 if (typeof text === 'string') {
-                    return text.split(', ').join(', ');
+                    return text?.split(', ').join(', ');
                 } else if (Array.isArray(text)) {
-                    return text.join(', ');
+                    return text?.join(', ');
                 } else {
                     return text;
                 }
@@ -457,11 +458,7 @@ const StudentList = () => {
                 const editable = isEditing(record);
                 return editable ? (
                     <span>
-                        <Typography.Link
-                        className='Typo_link'
-                            onClick={() => save(record.key)}
-                            
-                        >
+                        <Typography.Link className="Typo_link" onClick={() => save(record.key)}>
                             Edit
                         </Typography.Link>
                         <Typography.Link onClick={cancel}>Cancel</Typography.Link>
@@ -471,7 +468,7 @@ const StudentList = () => {
                         <Typography.Link
                             disabled={editingKey !== ''}
                             onClick={() => edit(record)}
-                            className='Typo_link'
+                            className="Typo_link"
                         >
                             <EditOutlined />
                         </Typography.Link>
@@ -516,7 +513,7 @@ const StudentList = () => {
     });
 
     return (
-        <div className='Layout' >
+        <div className="Layout">
             <Space direction="vertical">
                 <ModalAdd studentData={studentData} setStudentData={setStudentData} />
                 <ModalDetail
@@ -543,7 +540,6 @@ const StudentList = () => {
                                 x: 900,
                                 y: 'calc(100vh - 300px)',
                             }}
-                           
                             rowClassName="editable-row"
                             showSorterTooltip={{
                                 target: 'sorter-icon',

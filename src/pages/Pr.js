@@ -12,9 +12,10 @@ import { storage } from './firebaseConfig';
 import { getDownloadURL, uploadBytes, ref as storageRef } from 'firebase/storage';
 import { ethnicities, firebaseConfig, gender, provinces } from '../constants/constants';
 import { GetColumnSearchProps } from '../commonFunctions';
-
+import { useTranslation } from 'react-i18next';
 const MAX_COUNT = 5;
 function Pr() {
+    const { t } = useTranslation();
     const [suitableSchoolList, setSuitableSchoolList] = useState([]);
 
     const app = initializeApp(firebaseConfig);
@@ -25,7 +26,8 @@ function Pr() {
     const [loading, setLoading] = useState(true);
     const [loadingSave, setLoadingSave] = useState(false);
     const [loadingTable, setLoadingTable] = useState(true);
-    const size = useState('middle');
+    const size = 'middle';
+    const [image, setImage] = useState(null);
 
     const columns = [
         {
@@ -70,7 +72,6 @@ function Pr() {
             ),
         },
     ];
-    const [image, setImage] = useState(null);
     useEffect(() => {
         const personal = JSON.parse(localStorage.getItem('Infor'));
 
@@ -163,7 +164,6 @@ function Pr() {
 
                 handleSelect(downLoadUrl, 'img');
 
-                // setUrl(downLoadUrl);
                 setImage(null);
             })
             .catch((error) => {
@@ -279,7 +279,7 @@ function Pr() {
                                 <Space.Compact size="large">
                                     <Input
                                         className="g-s size-input"
-                                        value={detail.name}
+                                        value={t('aside filter.all categories')}
                                         onChange={(e) => handleChange(e, 'name')}
                                     />
                                 </Space.Compact>

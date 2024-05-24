@@ -14,6 +14,7 @@ import PrivateRoute from './PrivateRoute';
 // import { useCreateUnitRecordsOnMount } from './database/University';
 // import { useCreateAccountRecordsOnMount } from './database/Account';
 import { MenuProvider } from './pages/MenuContext';
+import './translation/i18n';
 function App() {
     return (
         <Provider store={store}>

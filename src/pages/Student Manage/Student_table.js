@@ -317,7 +317,7 @@ const StudentList = () => {
                 const mathScore = updatedRow['MathScore'] || 0;
                 const literatureScore = updatedRow['LiteratureScore'] || 0;
                 const englishScore = updatedRow['EnglishScore'] || 0;
-                const averageScore = (mathScore + literatureScore + englishScore) / 3;
+                const averageScore = mathScore + literatureScore + englishScore;
 
                 // Làm tròn averageScore đến 1 chữ số thập phân
                 updatedRow['AverageScore'] = Math.round(averageScore * 10) / 10;
@@ -416,14 +416,14 @@ const StudentList = () => {
             width: '10%',
             editable: true,
             sorter: (a, b) => a.MathScore - b.MathScore,
-            key:'MathScore',
+            key: 'MathScore',
         },
         {
             title: 'Literature',
             dataIndex: 'LiteratureScore',
             width: '11%',
             editable: true,
-            key:'LiteratureScore',
+            key: 'LiteratureScore',
 
             sorter: (a, b) => a.LiteratureScore - b.LiteratureScore,
         },
@@ -432,14 +432,14 @@ const StudentList = () => {
             dataIndex: 'EnglishScore',
             width: '10%',
             editable: true,
-            key:'EnglishScore',
+            key: 'EnglishScore',
             sorter: (a, b) => a.EnglishScore - b.EnglishScore,
         },
         {
             title: 'Entrance Score',
             dataIndex: 'AverageScore',
             width: '10%',
-            key:'AverageScore',
+            key: 'AverageScore',
             sorter: (a, b) => a.AverageScore - b.AverageScore,
         },
         {
@@ -455,7 +455,7 @@ const StudentList = () => {
                     return text;
                 }
             },
-            key:'uniCode'
+            key: 'uniCode',
         },
         {
             title: 'Manage',

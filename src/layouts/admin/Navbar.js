@@ -7,6 +7,8 @@ import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import { MenuContext } from '../../pages/MenuContext';
 import { useDispatch } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+// import { locales } from '../../translation/i18n';
 
 const items = [
     {
@@ -57,13 +59,16 @@ const items = [
 ];
 
 const Navbar = () => {
+    const { i18n } = useTranslation();
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const dispatch = useDispatch();
     const history = useHistory();
-
+    // const currentLanguage = locales[i18n.language];
     const { selectedMenuItem } = useContext(MenuContext);
-
+    const handleLanguage = (lng) => {
+        i18n.changeLanguage(lng);
+    };
     const handleLogout = () => {
         const confirm = window.confirm('Are you sure want to log out?');
         if (confirm) {
@@ -112,7 +117,10 @@ const Navbar = () => {
             <Box display="flex" alignItems="center">
                 <span style={{ color: colors.primary[500], fontSize: '1.5rem' }}>{selectedMenuItem}</span>
             </Box>
-
+            <Box>
+                <button onClick={() => handleLanguage('vi')}>Tiếng việt</button>
+                <button onClick={() => handleLanguage('en')}>Tiếng Anh</button>
+            </Box>
             <Box display="flex">
                 <Space wrap>
                     <Dropdown menu={menuProps}>

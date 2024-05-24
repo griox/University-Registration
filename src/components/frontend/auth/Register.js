@@ -17,7 +17,7 @@ const Register = () => {
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const history = useHistory();
-    const author = useState(localStorage.getItem('Role') || '');
+
     useEffect(() => {
         const passwordInput1 = document.querySelector('.pass_login_1');
         const eyeBtn1 = document.querySelector('.eye1');
@@ -218,7 +218,7 @@ const Register = () => {
 
                                     <div className="input-box">
                                         <div className="input-box">
-                                            {author === 'admin' ? (
+                                            {localStorage.getItem('Role') === 'admin' ? (
                                                 <div
                                                     type="submit"
                                                     className="input-submit"

@@ -7,7 +7,6 @@ import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import { MenuContext } from '../../pages/MenuContext';
 import { useDispatch } from 'react-redux';
-import confirm from 'antd/es/modal/confirm';
 
 const items = [
     {

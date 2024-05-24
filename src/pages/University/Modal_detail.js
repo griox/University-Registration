@@ -116,8 +116,6 @@ export const Form_Detail = ({ university,loading,setLoading }) => {
                 }
                 setLoading(false);
                 setStudents(studentsData);
-            } else {
-                toast.error('Student_regist is not a valid object')
             }
         };
         fetchData();

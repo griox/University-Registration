@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { ColorModeContext, useMode } from './../../theme';
 import '../../assets/css/style.css';
 import { CssBaseline, ThemeProvider } from '@mui/material';

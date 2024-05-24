@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Button, Space, Modal, Spin} from 'antd';
-import {SearchOutlined, EditOutlined,DeleteOutlined,} from '@ant-design/icons';
+import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Button, Space, Modal, Spin } from 'antd';
+import { SearchOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { toast } from 'react-toastify';
 import Highlighter from 'react-highlight-words';
 import { get, ref, child, remove, update, set } from 'firebase/database';
@@ -48,7 +48,7 @@ const AddSchool = () => {
             <td {...restProps}>
                 {editing ? (
                     <Form.Item
-                        className='form-editCell'
+                        className="form-editCell"
                         name={dataIndex}
                         rules={[
                             {
@@ -69,6 +69,7 @@ const AddSchool = () => {
         setLoading(true);
         setDetailVisible(true);
         setSelectedUniverse(record);
+        setLoading(true);
     };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -95,13 +96,22 @@ const AddSchool = () => {
         setEditingKey('');
     };
 
-    const handleDelete = async (key) => {
+    const handleDelete = async (record) => {
         try {
-            await remove(child(ref(database), `University/${key}`));
-            const newUni = UniData.filter((item) => item.key !== key);
+            for(const student in record.registeration){
+               const studentRef = ref(database,`Detail/${record.registeration[student].id}`)
+               const snapshot = await get(studentRef);
+               if(snapshot.exists()){
+                const studentData = snapshot.val();
+                const newArray = studentData.uniCode.filter(item=>item !==record.uniCode);
+                await update(studentRef,{uniCode:newArray});
+               }
+            }
+            await remove(child(ref(database), `University/${record.id}`));
+            const newUni = UniData.filter((item) => item.id !== record.id);
             setUniData(newUni);
         } catch (error) {
-            toast.error('Error when deleting data');
+            console.error('Error when deleting data',error);
         }
     };
 
@@ -215,7 +225,7 @@ const AddSchool = () => {
                 setEditingKey('');
                 handleFieldChange(key, Object.keys(row)[0], row[Object.keys(row)[0]]);
 
-                await set(ref(database, `University/${key}`), row); 
+                await set(ref(database, `University/${key}`), row);
             }
         } catch (errInfo) {
             toast.error('Validate Failed');
@@ -233,8 +243,9 @@ const AddSchool = () => {
 
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-            <div className='filter' onKeyDown={(e) => e.stopPropagation()}>
-                <Input className='search'
+            <div className="filter" onKeyDown={(e) => e.stopPropagation()}>
+                <Input
+                    className="search"
                     ref={searchInput}
                     placeholder={`Search ${dataIndex}`}
                     value={selectedKeys[0]}
@@ -242,7 +253,8 @@ const AddSchool = () => {
                     onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
                 />
                 <Space>
-                    <Button className='all-btn-filter'
+                    <Button
+                        className="all-btn-filter"
                         type="primary"
                         onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                         icon={<SearchOutlined />}
@@ -250,7 +262,8 @@ const AddSchool = () => {
                     >
                         Search
                     </Button>
-                    <Button className='all-btn-filter'
+                    <Button
+                        className="all-btn-filter"
                         onClick={() => clearFilters && handleReset(clearFilters)}
                         size="small"
                     >
@@ -275,9 +288,7 @@ const AddSchool = () => {
                 </Space>
             </div>
         ),
-        filterIcon: (filtered) => (
-            <SearchOutlined className='ic-search'/>
-        ),
+        filterIcon: () => <SearchOutlined className="ic-search" />,
         onFilter: (value, record) => record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
         onFilterDropdownOpenChange: (visible) => {
             if (visible) {
@@ -304,7 +315,7 @@ const AddSchool = () => {
         {
             title: 'Name',
             dataIndex: 'nameU',
-            key: 'name',
+            key: 'nameU',
             width: '30%',
             editable: true,
             ...getColumnSearchProps('nameU'),
@@ -323,6 +334,7 @@ const AddSchool = () => {
                     <span style={{ color: record.isRegistered === record.target ? 'green' : 'black' }}>{text}</span>
                 </Tooltip>
             ),
+            key:'uniCode'
         },
         {
             title: 'Address',
@@ -330,6 +342,7 @@ const AddSchool = () => {
             filterSearch: true,
             editable: true,
             width: '20%',
+            key:'address'
         },
         {
             title: 'Entrance score',
@@ -337,11 +350,13 @@ const AddSchool = () => {
             width: '15%',
             editable: true,
             sorter: (a, b) => a.averageS - b.averageS,
+            key:'averageS'
         },
         {
             title: 'Number of registration',
             dataIndex: 'isRegistered',
             width: '13%',
+            key:'isRegistered'
         },
         {
             title: 'Targets',
@@ -349,6 +364,7 @@ const AddSchool = () => {
             width: '10%',
             editable: true,
             sorter: (a, b) => a.targets - b.targets,
+            key:'target'
         },
         {
             title: 'Manage',
@@ -359,22 +375,17 @@ const AddSchool = () => {
                 const editable = isEditing(record);
                 return editable ? (
                     <span>
-                        <Typography.Link className='typolink'
-                            onClick={() => save(record.key)}
-                        >
+                        <Typography.Link className="typolink" onClick={() => save(record.key)}>
                             Edit
                         </Typography.Link>
                         <Typography.Link onClick={cancel}>Cancel</Typography.Link>
                     </span>
                 ) : (
                     <Space size={'middle'}>
-                        <Typography.Link className='typolink'
-                            disabled={editingKey !== ''}
-                            onClick={() => edit(record)}
-                        >
+                        <Typography.Link className="typolink" disabled={editingKey !== ''} onClick={() => edit(record)}>
                             <EditOutlined />
                         </Typography.Link>
-                        <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record.key)}>
+                        <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record)}>
                             <Typography.Link>
                                 <DeleteOutlined />
                             </Typography.Link>
@@ -408,7 +419,7 @@ const AddSchool = () => {
         <div>
             <Form form={form} component={false}>
                 <Space direction="vertical">
-                    <FormAdd />
+                    <FormAdd UniData={UniData} setUniData={setUniData} />
                     <Spin spinning={loading}>
                         <Table
                             columns={mergedColumns}
@@ -433,18 +444,13 @@ const AddSchool = () => {
                     </Spin>
                 </Space>
             </Form>
-            <Modal
-                open={isModalDetailVisible}
-                onCancel={handleCancel}
-                onOk={handleOk}
-                width={1000} 
-                height={600}
-                style={{marginLeft: '20%'}}
-            >
-                <FormDetail  university={selectedUniverse}
-                        open={isModalDetailVisible}
-                        setLoading={setLoading}
-                        loading={loading} />
+            <Modal open={isModalDetailVisible} onCancel={handleCancel} onOk={handleOk} width={800} height={600}>
+                <FormDetail
+                    university={selectedUniverse}
+                    open={isModalDetailVisible}
+                    setLoading={setLoading}
+                    loading={loading}
+                />
             </Modal>
         </div>
     );

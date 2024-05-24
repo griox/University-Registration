@@ -116,6 +116,8 @@ export const Form_Detail = ({ university,loading,setLoading }) => {
                 }
                 setLoading(false);
                 setStudents(studentsData);
+            } else {
+                toast.error('There are not any students in this school')
             }
         };
         fetchData();

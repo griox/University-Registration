@@ -1,13 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import { Box, IconButton, useTheme } from '@mui/material';
-import { ColorModeContext, tokens } from '../../theme';
+import { tokens } from '../../theme';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import { Dropdown, Space, message } from 'antd';
+import { Dropdown, Space } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import { MenuContext } from '../../pages/MenuContext';
 import { useDispatch } from 'react-redux';
-import confirm from 'antd/es/modal/confirm';
 
 const items = [
     {
@@ -40,11 +39,6 @@ const items = [
                     </svg>
                 ),
             },
-            // {
-            //   label: 'Theme',
-            //   key: '2.3',
-            //   icon: <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 48 48"><path fill="none" stroke="black" stroke-linejoin="round" stroke-width="4" d="M18 6a6 6 0 0 0 12 0h5.455L42 15.818l-5.727 4.91V42H11.727V20.727L6 15.818L12.546 6z"/></svg>,
-            // },
         ],
     },
     {
@@ -65,10 +59,9 @@ const items = [
 const Navbar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    const colorMode = useContext(ColorModeContext);
     const dispatch = useDispatch();
     const history = useHistory();
-    // const { selectedMenuItem } = useContext(MenuContext);
+
     const { selectedMenuItem } = useContext(MenuContext);
 
     const handleLogout = () => {
@@ -91,14 +84,10 @@ const Navbar = () => {
 
     const handleMenuClick = (e) => {
         if (e.key === '1.1') {
-            // Nếu là mục "Change password"
-            // message.info('Redirecting to change password page...');
-            history.push('/changepass'); // Điều hướng tới trang thay đổi mật khẩu
+            history.push('/changepass');
         } else if (e.key === 'logout') {
-            // message.success('You have logged out successfully!');
             handleLogout();
         } else {
-            // message.info('Click on menu item.');
             console.log('click', e);
         }
     };
@@ -117,22 +106,14 @@ const Navbar = () => {
             top="0"
             left="0"
             justifyContent="space-between"
-            boxShadow=" 0 7px 25px 0 rgba(0, 0, 0, 0.1);
-
-
-"
+            boxShadow=" 0 7px 25px 0 rgba(0, 0, 0, 0.1)"
             p={2}
         >
-            {/* SEARCH BAR */}
             <Box display="flex" alignItems="center">
                 <span style={{ color: colors.primary[500], fontSize: '1.5rem' }}>{selectedMenuItem}</span>
             </Box>
 
-            {/* ICONS */}
             <Box display="flex">
-                {/* <IconButton onClick={colorMode.toggleColorMode}>
-                    {theme.palette.mode === 'dark' ? <DarkModeOutlinedIcon /> : <LightModeOutlinedIcon />}
-                </IconButton> */}
                 <Space wrap>
                     <Dropdown menu={menuProps}>
                         <IconButton>

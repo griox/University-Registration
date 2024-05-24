@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin } from 'antd';
+import './css/table.css';
 import {
     SearchOutlined,
     EditOutlined,
@@ -36,10 +37,8 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
         <td {...restProps}>
             {editing ? (
                 <Form.Item
+                    className="edit-cell"
                     name={dataIndex}
-                    style={{
-                        margin: 0,
-                    }}
                     rules={[
                         {
                             required: true,
@@ -75,7 +74,7 @@ const StudentList = () => {
                     const data = snapshot.val();
                     const studentArray = Object.values(data).map((student) => ({ ...student, key: student.id }));
                     setStudentData(studentArray);
-                    setLoading(false);  
+                    setLoading(false);
                 }
             } catch (error) {
                 console.error(error);
@@ -137,17 +136,13 @@ const StudentList = () => {
 
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-            <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+            <div className='search-column' onKeyDown={(e) => e.stopPropagation()}>
                 <Input
                     ref={searchInput}
                     placeholder={`Search ${dataIndex}`}
                     value={selectedKeys[0]}
                     onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-                    style={{
-                        marginBottom: 8,
-                        display: 'block',
-                    }}
                 />
                 <Space>
                     <Button
@@ -155,18 +150,14 @@ const StudentList = () => {
                         onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                         icon={<SearchOutlined />}
                         size="small"
-                        style={{
-                            width: 90,
-                        }}
+                       
                     >
                         Search
                     </Button>
                     <Button
                         onClick={() => clearFilters && handleReset(clearFilters)}
                         size="small"
-                        style={{
-                            width: 90,
-                        }}
+                       
                     >
                         Reset
                     </Button>
@@ -222,7 +213,22 @@ const StudentList = () => {
     }
     const handleDelete = async (key) => {
         try {
-            console.log(key);
+            const studentToDelete = studentData.find((item) => item.id === key.id);
+            if (!studentToDelete) {
+                toast.error('Student not found');
+                return;
+            }
+            for (const uniCode of studentToDelete.uniCode) {
+                const universityRef = ref(db, `University/${uniCode}`);
+                const universitySnapshot = await get(universityRef);
+                if (universitySnapshot.exists()) {
+                    const universityData = universitySnapshot.val();
+                    const updatedIsRegistered = Math.max(0, universityData.isRegistered - 1);
+                    await update(universityRef, { isRegistered: updatedIsRegistered });
+                } else {
+                    console.error('University not found');
+                }
+            }
             await remove(child(ref(db), `Detail/${key.id}`));
             const emailhash = encodeEmails(key.email);
             await remove(child(ref(db), `Account/${emailhash}`));
@@ -247,7 +253,6 @@ const StudentList = () => {
         setEditingKey('');
     };
     const handleFieldChange = async (key, dataIndex, value) => {
-        console.log('ham da duoc goi');
         const newData = [...studentData];
         const index = newData.findIndex((item) => key === item.key);
 
@@ -260,7 +265,6 @@ const StudentList = () => {
                 await update(ref(db, `Detail/${key}`), {
                     [dataIndex]: value,
                 });
-                console.log('Data updated in Firebase successfully');
             } catch (error) {
                 console.error('Error updating document:', error);
                 // Handle update error (optional: show notification to user)
@@ -304,7 +308,7 @@ const StudentList = () => {
                 const mathScore = updatedRow['MathScore'] || 0;
                 const literatureScore = updatedRow['LiteratureScore'] || 0;
                 const englishScore = updatedRow['EnglishScore'] || 0;
-                const averageScore = (mathScore + literatureScore + englishScore) / 3;
+                const averageScore = (mathScore + literatureScore + englishScore);
 
                 // Làm tròn averageScore đến 1 chữ số thập phân
                 updatedRow['AverageScore'] = Math.round(averageScore * 10) / 10;
@@ -328,16 +332,16 @@ const StudentList = () => {
                 toast.success('Data added to Firebase successfully');
             }
         } catch (errInfo) {
-            console.log('Validate Failed:', errInfo);
+            console.error('Validate Failed:', errInfo);
         }
     };
     const renderNameWithGender = (record) => {
         return (
-            <span>
+            <span className='icon'>
                 {record.gender === 'Male' ? (
-                    <ManOutlined style={{ marginRight: 5 }} />
+                    <ManOutlined  />
                 ) : (
-                    <WomanOutlined style={{ marginRight: 5 }} />
+                    <WomanOutlined  />
                 )}
             </span>
         );
@@ -361,6 +365,7 @@ const StudentList = () => {
                     {record.id}
                 </span>
             ),
+            key: 'id',
         },
 
         {
@@ -394,20 +399,22 @@ const StudentList = () => {
                     <span style={{ color: record.isRegister ? 'green' : 'red' }}>{text}</span>
                 </Tooltip>
             ),
+            key: 'email',
         },
         {
             title: 'Math',
             dataIndex: 'MathScore',
             width: '10%',
             editable: true,
-
             sorter: (a, b) => a.MathScore - b.MathScore,
+            key: 'MathScore',
         },
         {
             title: 'Literature',
             dataIndex: 'LiteratureScore',
             width: '11%',
             editable: true,
+            key: 'LiteratureScore',
 
             sorter: (a, b) => a.LiteratureScore - b.LiteratureScore,
         },
@@ -416,13 +423,14 @@ const StudentList = () => {
             dataIndex: 'EnglishScore',
             width: '10%',
             editable: true,
-
+            key: 'EnglishScore',
             sorter: (a, b) => a.EnglishScore - b.EnglishScore,
         },
         {
             title: 'Entrance Score',
             dataIndex: 'AverageScore',
             width: '10%',
+            key: 'AverageScore',
             sorter: (a, b) => a.AverageScore - b.AverageScore,
         },
         {
@@ -438,6 +446,7 @@ const StudentList = () => {
                     return text;
                 }
             },
+            key: 'uniCode',
         },
         {
             title: 'Manage',
@@ -449,10 +458,9 @@ const StudentList = () => {
                 return editable ? (
                     <span>
                         <Typography.Link
+                        className='Typo_link'
                             onClick={() => save(record.key)}
-                            style={{
-                                marginRight: 8,
-                            }}
+                            
                         >
                             Edit
                         </Typography.Link>
@@ -463,9 +471,7 @@ const StudentList = () => {
                         <Typography.Link
                             disabled={editingKey !== ''}
                             onClick={() => edit(record)}
-                            style={{
-                                marginRight: 8,
-                            }}
+                            className='Typo_link'
                         >
                             <EditOutlined />
                         </Typography.Link>
@@ -510,7 +516,7 @@ const StudentList = () => {
     });
 
     return (
-        <div style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <div className='Layout' >
             <Space direction="vertical">
                 <ModalAdd studentData={studentData} setStudentData={setStudentData} />
                 <ModalDetail
@@ -537,7 +543,7 @@ const StudentList = () => {
                                 x: 900,
                                 y: 'calc(100vh - 300px)',
                             }}
-                            style={{ height: '100%', marginRight: '-20px' }}
+                           
                             rowClassName="editable-row"
                             showSorterTooltip={{
                                 target: 'sorter-icon',

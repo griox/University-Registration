@@ -9,7 +9,6 @@ import { SignatureOutlined, SolutionOutlined } from '@ant-design/icons';
 import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
-import { useDispatch, useSelector } from 'react-redux';
 import { MenuContext } from '../../pages/MenuContext';
 
 const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
@@ -19,12 +18,10 @@ const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
     return (
         <Tooltip title={tooltip} placement="right" arrow>
             <MenuItem
-                // active={selected === title}
                 active={selectedMenuItem === title}
                 style={{
                     color: colors.grey[100],
                 }}
-                // onClick={() => setSelected(title)}
                 onClick={() => setSelectedMenuItem(title)}
                 icon={icon}
             >
@@ -38,11 +35,9 @@ const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
 const Sidebar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    const [role, setRole] = useState(localStorage.getItem('Role') || '');
-    const [username, setUsername] = useState(localStorage.getItem('Name') || '');
+    const role = useState(localStorage.getItem('Role') || '');
 
     const [isCollapsed, setIsCollapsed] = useState(() => JSON.parse(localStorage.getItem('sidebarCollapsed')) || false);
-    const { selectedMenuItem, setSelectedMenuItem } = useContext(MenuContext);
 
     const isInitialMountCollapsed = useRef(true);
 
@@ -53,14 +48,6 @@ const Sidebar = () => {
             localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
         }
     }, [isCollapsed]);
-
-    // useEffect(() => {
-    //     if (isInitialMountSelected.current) {
-    //         isInitialMountSelected.current = false;
-    //     } else {
-    //         localStorage.setItem('selectedMenuItem', selected);
-    //     }
-    // }, [selected]);
 
     function stringToColor(string) {
         let hash = 0;
@@ -79,7 +66,7 @@ const Sidebar = () => {
         if (name === '') {
             name = 'nothing';
         }
-        let words = name.split(' ');
+        let words = name[0].split(' ');
         let firstChar = '';
         let lastChar = '';
         if (words.length === 1) {
@@ -90,13 +77,14 @@ const Sidebar = () => {
         }
         return {
             sx: {
-                bgcolor: stringToColor(name),
+                bgcolor: stringToColor(name[0]),
             },
             children: `${firstChar}${lastChar}`,
         };
     }
 
-    const isAdminOrSuperAdmin = role === 'admin' || role === 'super_admin';
+    const isAdminOrSuperAdmin =
+        localStorage.getItem('Role') || '' === 'admin' || localStorage.getItem('Role') || '' === 'super_admin';
 
     return (
         <Box
@@ -149,11 +137,10 @@ const Sidebar = () => {
                     </MenuItem>
                     {!isCollapsed && (
                         <Box mb="25px">
-                            {/* {console.log(username.name)} */}
                             <Box display="flex" justifyContent="center" alignItems="center">
                                 <Avatar
                                     alt="Remy Sharp"
-                                    {...stringAvatar(username)}
+                                    {...stringAvatar(localStorage.getItem('Name') || '')}
                                     sx={{ fontSize: 50, width: 120, height: 120 }}
                                 />
                             </Box>
@@ -164,8 +151,7 @@ const Sidebar = () => {
                                     fontWeight="bold"
                                     sx={{ m: '10px 0 0 0' }}
                                 >
-                                    {username}
-                                    {console.log(username)}
+                                    {localStorage.getItem('Name') || ''}
                                 </Typography>
                                 <Typography variant="h5" color={colors.greenAccent[500]}>
                                     {role}
@@ -174,50 +160,35 @@ const Sidebar = () => {
                         </Box>
                     )}
                     <Box paddingLeft={isCollapsed ? undefined : '1%'}>
-                        <Item
-                            title="Dashboard"
-                            to="/admin/dashboard"
-                            icon={<HomeOutlinedIcon />}
-                            // selected={selected}
-                            // setSelected={setSelected}
-                            tooltip="Dashboard"
-                        />
+                        <Item title="Dashboard" to="/admin/dashboard" icon={<HomeOutlinedIcon />} tooltip="Dashboard" />
                         {isAdminOrSuperAdmin && (
                             <>
                                 <Item
                                     title="University Managerment"
                                     to="/admin/university"
                                     icon={<SchoolIcon />}
-                                    // selected={selected}
-                                    // setSelected={setSelected}
                                     tooltip="University Managerment"
                                 />
                                 <Item
                                     title="Student Managerment"
                                     to="/admin/student"
                                     icon={<SolutionOutlined />}
-                                    // selected={selected}
-                                    // setSelected={setSelected}
                                     tooltip="Student Managerment"
                                 />
                                 <Item
                                     title="Register Account"
                                     to="/register"
                                     icon={<SignatureOutlined />}
-                                    // selected={selected}
-                                    // setSelected={setSelected}
                                     tooltip="Register Account"
                                 />
                             </>
                         )}
-                        {role === 'user' && (
+                        {(localStorage.getItem('Role') || '') === 'user' && (
                             <>
                                 <Item
                                     title="Profile"
                                     to="/admin/profile"
                                     icon={<ContactsOutlinedIcon />}
-                                    // selected={selected}
-                                    // setSelected={setSelected}
                                     tooltip="Profile"
                                 />
                             </>

@@ -43,13 +43,14 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
         {
             title: 'Name',
             dataIndex: 'nameU',
-            key: 'name',
+            key: 'nameU',
             width: '30%',
         },
         {
             title: 'UniCode',
             dataIndex: 'uniCode',
             width: '13%',
+            key:'uniCode'
         },
         {
             title: 'Address',
@@ -57,6 +58,7 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
             filterSearch: true,
             editable: true,
             width: '20%',
+            key:'address'
         },
         {
             title: 'Entrance score',
@@ -64,6 +66,7 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
             width: '15%',
             editable: true,
             sorter: (a, b) => a.averageS - b.averageS,
+            key:'averageS'
         },
     ];
     if (!visible) return null;
@@ -94,7 +97,7 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
             children: student.placeOBirth,
         },
         {
-            key: '6 ',
+            key: '6',
             label: 'Email',
             children: student.email,
         },
@@ -104,12 +107,12 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
             children: student.enthicity,
         },
         {
-            key: '8 ',
+            key: '8',
             label: 'Address',
             children: student.Address,
         },
         {
-            key: '9 ',
+            key: '9',
             label: 'Indentify Number',
             children: student.idenNum,
         },

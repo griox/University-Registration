@@ -308,7 +308,7 @@ const StudentList = () => {
                 const mathScore = updatedRow['MathScore'] || 0;
                 const literatureScore = updatedRow['LiteratureScore'] || 0;
                 const englishScore = updatedRow['EnglishScore'] || 0;
-                const averageScore = (mathScore + literatureScore + englishScore) / 3;
+                const averageScore = (mathScore + literatureScore + englishScore);
 
                 // Làm tròn averageScore đến 1 chữ số thập phân
                 updatedRow['AverageScore'] = Math.round(averageScore * 10) / 10;

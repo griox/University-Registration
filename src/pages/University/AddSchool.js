@@ -97,7 +97,15 @@ const AddSchool = () => {
 
     const handleDelete = async (record) => {
         try {
-            
+            for(const student in record.registeration){
+               const studentRef = ref(database,`Detail/${record.registeration[student].id}`)
+               const snapshot = await get(studentRef);
+               if(snapshot.exists()){
+                const studentData = snapshot.val();
+                const newArray = studentData.uniCode.filter(item=>item !==record.uniCode);
+                await update(studentRef,{uniCode:newArray});
+               }
+            }
             await remove(child(ref(database), `University/${record.id}`));
             const newUni = UniData.filter((item) => item.id !== record.id);
             setUniData(newUni);
@@ -306,7 +314,7 @@ const AddSchool = () => {
         {
             title: 'Name',
             dataIndex: 'nameU',
-            key: 'name',
+            key: 'nameU',
             width: '30%',
             editable: true,
             ...getColumnSearchProps('nameU'),
@@ -325,6 +333,7 @@ const AddSchool = () => {
                     <span style={{ color: record.isRegistered === record.target ? 'green' : 'black' }}>{text}</span>
                 </Tooltip>
             ),
+            key:'uniCode'
         },
         {
             title: 'Address',
@@ -332,6 +341,7 @@ const AddSchool = () => {
             filterSearch: true,
             editable: true,
             width: '20%',
+            key:'address'
         },
         {
             title: 'Entrance score',
@@ -339,11 +349,13 @@ const AddSchool = () => {
             width: '15%',
             editable: true,
             sorter: (a, b) => a.averageS - b.averageS,
+            key:'averageS'
         },
         {
             title: 'Number of registration',
             dataIndex: 'isRegistered',
             width: '13%',
+            key:'isRegistered'
         },
         {
             title: 'Targets',
@@ -351,6 +363,7 @@ const AddSchool = () => {
             width: '10%',
             editable: true,
             sorter: (a, b) => a.targets - b.targets,
+            key:'target'
         },
         {
             title: 'Manage',

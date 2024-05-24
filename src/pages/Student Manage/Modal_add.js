@@ -411,7 +411,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 ]}
                             >
                                 <Select
-                                    defaultValue="Female"
+                                    initialvalues="Female"
                                     options={genders}
                                     onChange={(value) => setGender(value)}
                                 />
@@ -443,7 +443,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         <Col span={12}>
                             <Form.Item label="Place of Birth" className="form-item">
                                 <Select
-                                    defaultValue="Khánh Hòa"
+                                    initialvalues="Khánh Hòa"
                                     options={cities}
                                     showSearch
                                     onChange={(value) => setPlaceOfBirth(value)}
@@ -516,7 +516,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 ]}
                             >
                                 <Select
-                                    defaultValue="Kinh"
+                                    initialvalues="Kinh"
                                     options={enthicities}
                                     onChange={(value) => setEnthicity(value)}
                                     showSearch

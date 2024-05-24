@@ -9,7 +9,6 @@ import { SignatureOutlined, SolutionOutlined } from '@ant-design/icons';
 import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
-import { useDispatch, useSelector } from 'react-redux';
 import { MenuContext } from '../../pages/MenuContext';
 
 const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
@@ -36,8 +35,7 @@ const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
 const Sidebar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    const [role, setRole] = useState(localStorage.getItem('Role') || '');
-    const [username, setUsername] = useState(localStorage.getItem('Name') || '');
+    const role = useState(localStorage.getItem('Role') || '');
 
     const [isCollapsed, setIsCollapsed] = useState(() => JSON.parse(localStorage.getItem('sidebarCollapsed')) || false);
 
@@ -68,7 +66,7 @@ const Sidebar = () => {
         if (name === '') {
             name = 'nothing';
         }
-        let words = name.split(' ');
+        let words = name[0].split(' ');
         let firstChar = '';
         let lastChar = '';
         if (words.length === 1) {
@@ -79,13 +77,14 @@ const Sidebar = () => {
         }
         return {
             sx: {
-                bgcolor: stringToColor(name),
+                bgcolor: stringToColor(name[0]),
             },
             children: `${firstChar}${lastChar}`,
         };
     }
 
-    const isAdminOrSuperAdmin = role === 'admin' || role === 'super_admin';
+    const isAdminOrSuperAdmin =
+        localStorage.getItem('Role') || '' === 'admin' || localStorage.getItem('Role') || '' === 'super_admin';
 
     return (
         <Box
@@ -141,7 +140,7 @@ const Sidebar = () => {
                             <Box display="flex" justifyContent="center" alignItems="center">
                                 <Avatar
                                     alt="Remy Sharp"
-                                    {...stringAvatar(username)}
+                                    {...stringAvatar(localStorage.getItem('Name') || '')}
                                     sx={{ fontSize: 50, width: 120, height: 120 }}
                                 />
                             </Box>
@@ -152,7 +151,7 @@ const Sidebar = () => {
                                     fontWeight="bold"
                                     sx={{ m: '10px 0 0 0' }}
                                 >
-                                    {username}
+                                    {localStorage.getItem('Name') || ''}
                                 </Typography>
                                 <Typography variant="h5" color={colors.greenAccent[500]}>
                                     {role}
@@ -184,7 +183,7 @@ const Sidebar = () => {
                                 />
                             </>
                         )}
-                        {role === 'user' && (
+                        {(localStorage.getItem('Role') || '') === 'user' && (
                             <>
                                 <Item
                                     title="Profile"

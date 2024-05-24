@@ -66,6 +66,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
         }
     };
 
+
     useEffect(() => {
         const calculateAverage = () => {
             if (Mathscore !== null && Englishscore !== null && Literaturescore !== null) {
@@ -126,6 +127,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
             toast.success('Added a new student');
             setIsModalOpen(false);
         } catch (error) {
+            console.error(error);
             console.error(error);
             toast.error('An error occurred while adding student');
         }

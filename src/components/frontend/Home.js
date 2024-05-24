@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
-// import '../../assets/css/style.css';
-import { Helmet } from 'react-helmet';
+import React, { useEffect } from 'react';
+import '../../assets/frontend/css/header.css';
 import { Link, useHistory } from 'react-router-dom';
 import AOS from 'aos';
 
@@ -19,32 +18,9 @@ const Home = () => {
 
     const history = useHistory();
 
-    const [scrollValue, setScrollValue] = useState(0);
-    const [isVisible, setIsVisible] = useState(false);
-
-    const calcScrollValue = () => {
-        const pos = document.documentElement.scrollTop;
-        const calcHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const newScrollValue = Math.round((pos * 100) / calcHeight);
-        setScrollValue(newScrollValue);
-        setIsVisible(pos > 100);
-        const scrollProgress = document.getElementById('progress');
-        scrollProgress.style.background = `conic-gradient(#03cc65 ${newScrollValue}%, #d7d7d7 ${newScrollValue}%)`;
-    };
-
     return (
         <>
-            <Helmet>
-                <meta charset="utf-8" />
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
-                <title>HOME | Trang Chủ</title>
-                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" />
-                <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet" />
-                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.css" />
-                <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-                <link rel="stylesheet" href="assets/css/style.css" />
-            </Helmet>
-            <body data-bs-spy="scroll" data-bs-target=".navbar">
+            <div data-bs-spy="scroll" data-bs-target=".navbar">
                 <section id="hero" className="min-vh-100 d-flex flex-column align-items-center">
                     <nav className="navbar navbar-expand-lg bg-white sticky-top fixnavbar">
                         <div className="container">
@@ -82,7 +58,7 @@ const Home = () => {
                                 </ul>
                                 <button
                                     onClick={() => history.push('/Login')}
-                                    className="btn btn-brand ms-lg-3 logincss"
+                                    className="btn btn-brand btnfix ms-lg-3 logincss"
                                 >
                                     Đăng Nhập
                                 </button>
@@ -114,10 +90,7 @@ const Home = () => {
                                         height="450px"
                                         src="https://www.youtube.com/embed/SdtTU7UPCC0?autoplay=1&amp;showinfo=0&amp;autohide=1?vq=hd1080&amp;mute=1"
                                         title="Giới thiệu tổng quan các ngành học tại Đại học FPT 2023"
-                                        frameborder="0"
                                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                        referrerpolicy="strict-origin-when-cross-origin"
-                                        allowfullscreen
                                     ></iframe>
                                 </div>
                             </div>
@@ -155,10 +128,7 @@ const Home = () => {
                         </div>
                         <div className="row g-4 text-center">
                             <div className="col-lg-4 col-sm-6" data-aos="fade-down" data-aos-delay="150">
-                                <div
-                                    className="service theme-shadow p-lg-5 p-4"
-                                    onclick="openLink('https://fptsoftware.com/newsroom/news-and-press-releases/press-release/fpt-to-shape-the-future-of-ai-and-cloud-on-a-global-scale-in-collaboration-with-nvidia')"
-                                >
+                                <div className="service theme-shadow p-lg-5 p-4">
                                     <div className="iconbox">
                                         <img src="../assets/images/b1.png" alt="" />
                                     </div>
@@ -171,10 +141,7 @@ const Home = () => {
                             </div>
 
                             <div className="col-lg-4 col-sm-6" data-aos="fade-down" data-aos-delay="150">
-                                <div
-                                    className="service theme-shadow p-lg-5 p-4"
-                                    onclick="openLink('https://fptsoftware.com/newsroom/news-and-press-releases/news/fpt-software-bolsters-digital-transformation-capabilities-with-double-recognitions-in-microsoft-azure-advanced-specialisation')"
-                                >
+                                <div className="service theme-shadow p-lg-5 p-4">
                                     <div className="iconbox">
                                         <img src="../assets/images/b2.png" alt="" />
                                     </div>
@@ -187,10 +154,7 @@ const Home = () => {
                             </div>
 
                             <div className="col-lg-4 col-sm-6" data-aos="fade-down" data-aos-delay="150">
-                                <div
-                                    className="service theme-shadow p-lg-5 p-4"
-                                    onclick="openLink('https://fptsoftware.com/newsroom/news-and-press-releases/press-release/fpt-cooperates-with-usaid-to-promote-clean-energy-deployment-reduce-greenhouse-gas-emissions-and-accelerate-net-zero-transition')"
-                                >
+                                <div className="service theme-shadow p-lg-5 p-4">
                                     <div className="iconbox">
                                         <img src="../assets/images/b3.png" alt="" />
                                     </div>
@@ -203,10 +167,7 @@ const Home = () => {
                             </div>
 
                             <div className="col-lg-4 col-sm-6" data-aos="fade-down" data-aos-delay="150">
-                                <div
-                                    className="service theme-shadow p-lg-5 p-4"
-                                    onclick="openLink('https://fptsoftware.com/newsroom/news-and-press-releases/news/fpt-software-japan-becomes-outsystems-premier-partner')"
-                                >
+                                <div className="service theme-shadow p-lg-5 p-4">
                                     <div className="iconbox">
                                         <img src="../assets/images/b4.png" alt="" />
                                     </div>
@@ -219,10 +180,7 @@ const Home = () => {
                             </div>
 
                             <div className="col-lg-4 col-sm-6" data-aos="fade-down" data-aos-delay="150">
-                                <div
-                                    className="service theme-shadow p-lg-5 p-4"
-                                    onclick="openLink('https://fptsoftware.com/newsroom/news-and-press-releases/news/fpt-automotive-and-vinai-partner-to-amplify-comprehensive-offerings-to-oems')"
-                                >
+                                <div className="service theme-shadow p-lg-5 p-4">
                                     <div className="iconbox">
                                         <img src="../assets/images/b5.png" alt="" />
                                     </div>
@@ -232,10 +190,7 @@ const Home = () => {
                             </div>
 
                             <div className="col-lg-4 col-sm-6" data-aos="fade-down" data-aos-delay="150">
-                                <div
-                                    className="service theme-shadow p-lg-5 p-4"
-                                    onclick="openLink('https://fptsoftware.com/newsroom/news-and-press-releases/news/fpt-korea-seizing-korean-automotive-potentials-with-reach-global-leverage-local-approach')"
-                                >
+                                <div className="service theme-shadow p-lg-5 p-4">
                                     <div className="iconbox">
                                         <img src="../assets/images/b6.png" alt="" />
                                     </div>
@@ -404,12 +359,7 @@ const Home = () => {
                         </div>
                     </div>
                 </footer>
-
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
-                <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-                <script src="./assets/js/main.js"></script>
-            </body>
+            </div>
         </>
     );
 };

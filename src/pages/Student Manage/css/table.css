@@ -1,0 +1,27 @@
+.edit-cell{
+  margin: 0;
+}
+.search-column{
+  padding: 8;
+}
+.search-column Input {
+  margin-bottom: 8;
+  display: block;
+}
+.search-column Button {
+  width: 90;
+}
+.icon{
+  margin-right: 5;
+}
+.Typo_link{
+  margin-right:8px;
+}
+.Layout{
+  justify-content: center;
+  align-items: center;
+}
+.Layout Table{
+  height: 100%;
+  margin-right: -20px;
+}

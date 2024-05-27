@@ -198,7 +198,6 @@ function Pr() {
 
                                     let m = x.registeration;
                                     m[detail.email.replace(/\./g, ',')] = { email: detail.email, id: detail.id };
-                                    console.log(m);
                                     update(ref(db, 'University/' + item), {
                                         isRegistered: x.isRegistered + 1,
                                         registeration: m,

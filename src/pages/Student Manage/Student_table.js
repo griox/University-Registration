@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin } from 'antd';
+import './css/table.css';
 import {
     SearchOutlined,
     EditOutlined,
@@ -36,10 +37,8 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
         <td {...restProps}>
             {editing ? (
                 <Form.Item
+                    className="edit-cell"
                     name={dataIndex}
-                    style={{
-                        margin: 0,
-                    }}
                     rules={[
                         {
                             required: true,
@@ -137,17 +136,13 @@ const StudentList = () => {
 
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-            <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+            <div className="search-column" onKeyDown={(e) => e.stopPropagation()}>
                 <Input
                     ref={searchInput}
                     placeholder={`Search ${dataIndex}`}
                     value={selectedKeys[0]}
                     onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-                    style={{
-                        marginBottom: 8,
-                        display: 'block',
-                    }}
                 />
                 <Space>
                     <Button
@@ -155,19 +150,10 @@ const StudentList = () => {
                         onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                         icon={<SearchOutlined />}
                         size="small"
-                        style={{
-                            width: 90,
-                        }}
                     >
                         Search
                     </Button>
-                    <Button
-                        onClick={() => clearFilters && handleReset(clearFilters)}
-                        size="small"
-                        style={{
-                            width: 90,
-                        }}
-                    >
+                    <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small">
                         Reset
                     </Button>
                     <Button
@@ -220,28 +206,32 @@ const StudentList = () => {
     function encodeEmails(email) {
         return email.replace('.', ',');
     }
-    const handleDelete = async (key) => {
+    const handleDelete = async (record) => {
         try {
-            const studentToDelete = studentData.find((item) => item.id === key.id);
+            const studentToDelete = studentData.find((item) => item.id === record.id);
             if (!studentToDelete) {
                 toast.error('Student not found');
                 return;
             }
-            for (const uniCode of studentToDelete.uniCode) {
-                const universityRef = ref(db, `University/${uniCode}`);
-                const universitySnapshot = await get(universityRef);
-                if (universitySnapshot.exists()) {
-                    const universityData = universitySnapshot.val();
-                    const updatedIsRegistered = Math.max(0, universityData.isRegistered - 1);
-                    await update(universityRef, { isRegistered: updatedIsRegistered });
-                } else {
-                    console.error('University not found');
+            console.log(record);
+            if (record.uniCode !== undefined) {
+                for (const uniCode of studentToDelete.uniCode) {
+                    const universityRef = ref(db, `University/${uniCode}`);
+                    const universitySnapshot = await get(universityRef);
+                    if (universitySnapshot.exists()) {
+                        const universityData = universitySnapshot.val();
+                        const updatedIsRegistered = Math.max(0, universityData.isRegistered - 1);
+                        await update(universityRef, { isRegistered: updatedIsRegistered });
+                    } else {
+                        console.error('University not found');
+                    }
                 }
             }
-            await remove(child(ref(db), `Detail/${key.id}`));
-            const emailhash = encodeEmails(key.email);
+
+            await remove(child(ref(db), `Detail/${record.id}`));
+            const emailhash = encodeEmails(record.email);
             await remove(child(ref(db), `Account/${emailhash}`));
-            const newData = studentData.filter((item) => item.id !== key.id);
+            const newData = studentData.filter((item) => item.id !== record.id);
             setStudentData(newData);
         } catch (error) {
             console.error('Error deleting data:', error);
@@ -345,15 +335,7 @@ const StudentList = () => {
         }
     };
     const renderNameWithGender = (record) => {
-        return (
-            <span>
-                {record.gender === 'Male' ? (
-                    <ManOutlined style={{ marginRight: 5 }} />
-                ) : (
-                    <WomanOutlined style={{ marginRight: 5 }} />
-                )}
-            </span>
-        );
+        return <span className="icon">{record.gender === 'Male' ? <ManOutlined /> : <WomanOutlined />}</span>;
     };
 
     const handleIdClick = (record) => {
@@ -361,7 +343,17 @@ const StudentList = () => {
         setIsModalVisible(true);
         setLoading(true);
     };
-
+    const t = (x) => {
+        if (x === null || x === undefined) {
+            return false;
+        } else {
+            if (x.length === 5) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    };
     const columns = [
         {
             title: 'ID',
@@ -389,8 +381,8 @@ const StudentList = () => {
                 return (
                     <>
                         {renderNameWithGender(text, record)}
-                        <Tooltip title={record.uniCode.length === 5 ? 'can not register more' : ''}>
-                            <span style={{ color: record.uniCode.length === 5 ? '#FF8C00' : 'black' }}>{text}</span>
+                        <Tooltip title={t(record.uniCode) ? 'can not register more' : ''}>
+                            <span style={{ color: t(record.uniCode) ? '#FF8C00' : 'black' }}>{text}</span>
                         </Tooltip>
                     </>
                 );
@@ -448,9 +440,9 @@ const StudentList = () => {
             width: '13%',
             render: (text) => {
                 if (typeof text === 'string') {
-                    return text.split(', ').join(', ');
+                    return text?.split(', ').join(', ');
                 } else if (Array.isArray(text)) {
-                    return text.join(', ');
+                    return text?.join(', ');
                 } else {
                     return text;
                 }
@@ -466,12 +458,7 @@ const StudentList = () => {
                 const editable = isEditing(record);
                 return editable ? (
                     <span>
-                        <Typography.Link
-                            onClick={() => save(record.key)}
-                            style={{
-                                marginRight: 8,
-                            }}
-                        >
+                        <Typography.Link className="Typo_link" onClick={() => save(record.key)}>
                             Edit
                         </Typography.Link>
                         <Typography.Link onClick={cancel}>Cancel</Typography.Link>
@@ -481,9 +468,7 @@ const StudentList = () => {
                         <Typography.Link
                             disabled={editingKey !== ''}
                             onClick={() => edit(record)}
-                            style={{
-                                marginRight: 8,
-                            }}
+                            className="Typo_link"
                         >
                             <EditOutlined />
                         </Typography.Link>
@@ -528,7 +513,7 @@ const StudentList = () => {
     });
 
     return (
-        <div style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <div className="Layout">
             <Space direction="vertical">
                 <ModalAdd studentData={studentData} setStudentData={setStudentData} />
                 <ModalDetail
@@ -555,7 +540,6 @@ const StudentList = () => {
                                 x: 900,
                                 y: 'calc(100vh - 300px)',
                             }}
-                            style={{ height: '100%', marginRight: '-20px' }}
                             rowClassName="editable-row"
                             showSorterTooltip={{
                                 target: 'sorter-icon',

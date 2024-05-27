@@ -7,13 +7,12 @@ import { toast } from 'react-toastify';
 import { Link, Redirect } from 'react-router-dom';
 import '../../../assets/css/login.css';
 import { firebaseConfig } from '../../../constants/constants';
-import { decodePath, validateEmailFormat } from '../../../commonFunctions';
+import { validateEmailFormat } from '../../../commonFunctions';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
 import bcrypt from 'bcryptjs';
 export const Login = () => {
     const { t, i18n } = useTranslation('login');
-    const salt = bcrypt.genSaltSync(10);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);

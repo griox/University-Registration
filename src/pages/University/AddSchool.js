@@ -69,7 +69,6 @@ const AddSchool = () => {
         setLoading(true);
         setDetailVisible(true);
         setSelectedUniverse(record);
-        setLoading(true);
     };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {

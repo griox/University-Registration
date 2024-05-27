@@ -17,15 +17,25 @@ import PrivateRoute from './PrivateRoute';
 // import { useCreateAccountRecordsOnMount } from './database/Account';
 import { MenuProvider } from './pages/MenuContext';
 import './translation/i18n';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 function App() {
+    const email = localStorage.getItem('userToken');
+
+    const history = useHistory();
+
     return (
         <Provider store={store}>
             <MenuProvider>
                 <div className="App">
                     <Router>
                         <Switch>
-                            <Route exact path="/" component={Home} />
+                            <Route
+                                exact
+                                path="/"
+                                component={email === null || email === 'null' ? Home : history.push('/admin/dashboard')}
+                            />
                             <Route path="/login" component={Login} />
+
                             <Route path="/register" component={Register} />
                             <Route path="/forgetpass" component={forgetpass} />
                             <Route path="/changepass" component={changepass} />

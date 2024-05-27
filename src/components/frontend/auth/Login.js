@@ -10,13 +10,17 @@ import { firebaseConfig } from '../../../constants/constants';
 import { decodePath, validateEmailFormat } from '../../../commonFunctions';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
+import bcrypt from 'bcryptjs';
 export const Login = () => {
     const { t, i18n } = useTranslation('login');
+    const salt = bcrypt.genSaltSync(10);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+
     useEffect(() => {
         const passwordInput = document.querySelector('.pass_login');
         const eyeBtn = document.querySelector('.eye');
@@ -114,13 +118,18 @@ export const Login = () => {
                                 const x = snapshot.val();
                                 const listItem = Object.values(x).map((user) => user);
                                 const y = listItem.filter(
-                                    (item) => decodePath(item.email) === email && item.password === password,
+                                    (item) =>
+                                        item.email === email && bcrypt.compareSync(password, item.password) === true,
                                 );
                                 if (y.length !== 0) {
                                     for (let i in y) {
                                         if (y[i].name !== undefined && y[i].name !== null) {
                                             localStorage.setItem('Role', y[i].Role);
                                             localStorage.setItem('Name', y[i].name);
+                                            if (rememberMe === true) {
+                                                localStorage.setItem('userToken', y[i].email);
+                                            }
+
                                             saveOnLocal(y[i].Role);
                                         } else {
                                             saveOnLocal(y[i].Role);
@@ -208,7 +217,11 @@ export const Login = () => {
 
                                     <div className="forget-pass">
                                         <div className="input-box">
-                                            <input type="checkbox" />
+                                            <input
+                                                type="checkbox"
+                                                checked={rememberMe}
+                                                onChange={() => setRememberMe(!rememberMe)}
+                                            />
                                             <span className="remembertxt_login">{t('title.remember me')}</span>
                                             <Link to="/forgetpass">{t('title.forgot password')}</Link>
                                         </div>

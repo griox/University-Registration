@@ -215,7 +215,6 @@ const StudentList = () => {
                 toast.error('Student not found');
                 return;
             }
-            console.log(record);
             if (record.uniCode !== undefined) {
                 for (const uniCode of studentToDelete.uniCode) {
                     const universityRef = ref(db, `University/${uniCode}`);

@@ -138,7 +138,7 @@ export const Login = () => {
                             }
                         })
                         .catch((error) => {
-                            console.error(error);
+                            toast.error('Error');
                         });
                 } else {
                     toast.error('Please enter your password');

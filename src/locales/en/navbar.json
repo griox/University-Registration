@@ -1,0 +1,9 @@
+{
+    "title": {
+        "setting": "Setting"
+    },
+    "button": {
+        "log out": "Log out",
+        "change password": "Change password"
+    }
+}

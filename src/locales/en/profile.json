@@ -1,0 +1,27 @@
+{
+    "title": {
+        "name": "Student name",
+        "Gender": "Gender",
+        "Place of birth": "Place of birth",
+        "Address": "Address",
+        "Ethnicity": "Ethnicity",
+        "CCCD": "CCCD",
+        "Email": "Email",
+        "MathScore": "MathScore",
+        "EnglishScore": "EnglishScore",
+        "LiteratureScore": "LiteratureScore",
+        "University": "University"
+    },
+    "table": {
+        "Code": "Code",
+        "Name": "Name",
+        "Entrance Score": "Etrance Score",
+        "Target": "Target",
+        "Number of students registered": "Number of students registered",
+        "Action": "Action"
+    },
+    "button": {
+        "Save": "Save",
+        "Add": "Add"
+    }
+}

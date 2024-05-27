@@ -6,15 +6,16 @@ import { toast } from 'react-toastify';
 import { BankOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { database } from '../firebaseConfig.js';
 import './css/formAddSchool.css';
+import { useTranslation } from 'react-i18next';
 
-const FormAdd = ({UniData,setUniData}) => {
+const FormAdd = ({ UniData, setUniData }) => {
     const [isModalVisible, setVisible] = useState(false);
     const [uniName, setUniName] = useState('');
     const [uniCode, setUniCode] = useState('');
     const [address, setAddress] = useState('');
     const [averageScore, setAverageScore] = useState(null);
     const [targetScore, setTargetScore] = useState(null);
-   
+    const { t } = useTranslation('university');
 
     const showModal = () => {
         setVisible(true);
@@ -22,13 +23,7 @@ const FormAdd = ({UniData,setUniData}) => {
 
     const handleOk = async () => {
         let hasError = false;
-        if (
-            uniName === '' ||
-            address === '' ||
-            averageScore === null ||
-            targetScore === null ||
-            uniCode === ''
-        ) {
+        if (uniName === '' || address === '' || averageScore === null || targetScore === null || uniCode === '') {
             toast.error('Please fill in all information');
             hasError = true;
             if (uniName !== '') {
@@ -98,15 +93,15 @@ const FormAdd = ({UniData,setUniData}) => {
             isRegistered: 0,
             target: targetScore,
         });
-        const newUni ={
+        const newUni = {
             nameU: uniName,
             uniCode: uniCode,
             address: address,
             averageS: averageScore,
             isRegistered: 0,
             target: targetScore,
-        }
-        setUniData=([...UniData,newUni]);
+        };
+        setUniData = [...UniData, newUni];
         toast.success('Added a university');
     };
 
@@ -116,12 +111,11 @@ const FormAdd = ({UniData,setUniData}) => {
     function validateUniName(uniName) {
         return /^\D+$/u.test(uniName);
     }
-    
-    
+
     return (
         <>
             <Button className="btn-addUni" type="primary" onClick={showModal}>
-                Add University
+                {t('button.Add')}
             </Button>
             <Modal
                 title="Add a university"

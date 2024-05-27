@@ -1,0 +1,18 @@
+{
+    "header": "ĐĂNG NHẬP",
+    "title": {
+        "name": "Họ và tên",
+        "email": "Email",
+        "password": "Mật khẩu",
+        "re-password": "Nhập lại mật khẩu",
+        "inform register": "Vui lòng ĐĂNG KÍ để tiếp tục",
+        "or": "hoặc"
+    },
+    "button": {
+        "user": "Người dùng",
+        "admin": "Quản lý",
+        "clear": "Xóa",
+        "get back": "Quay lại",
+        "regist": "Đăng kí"
+    }
+}

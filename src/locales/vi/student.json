@@ -1,0 +1,16 @@
+{
+    "table": {
+        "ID": "ID",
+        "Name": "Tên học sinh",
+        "Email": "Email",
+        "Math": "Điểm toán",
+        "Literature": "Điểm văn",
+        "English": "Điểm anh",
+        "Total Score": "Tổng điểm",
+        "UniCode": "Trường đã đăng kí",
+        "Action": "Hành động"
+    },
+    "button": {
+        "Add": "Thêm mới "
+    }
+}

@@ -6,6 +6,8 @@ import Login from './components/frontend/auth/Login';
 import Register from './components/frontend/auth/Register';
 import forgetpass from './components/frontend/auth/Forgetpass';
 import changepass from './components/frontend/auth/Changepass';
+import resetpass from './components/frontend/auth/Resetpass';
+
 import { Provider } from 'react-redux';
 import store from './pages/store';
 import { ToastContainer } from 'react-toastify';
@@ -27,6 +29,8 @@ function App() {
                             <Route path="/register" component={Register} />
                             <Route path="/forgetpass" component={forgetpass} />
                             <Route path="/changepass" component={changepass} />
+                            <Route path="/resetpass" component={resetpass} />
+
                             {/* <Route path="/admin" name="Admin" render={(props) => <Masterlayout {...props} />} /> */}
                             <PrivateRoute path="/admin" component={Masterlayout} />
                         </Switch>

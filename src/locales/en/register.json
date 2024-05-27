@@ -1,0 +1,18 @@
+{
+    "header": "REGISTER",
+    "title": {
+        "name": "Full name",
+        "email": "Email",
+        "password": "Password",
+        "re-password": "Re-Password",
+        "inform register": "Please REGISTER to continue",
+        "or": "or"
+    },
+    "button": {
+        "user": "User",
+        "admin": "Admin",
+        "clear": "Clear",
+        "get back": "Get back",
+        "regist": "Regist"
+    }
+}

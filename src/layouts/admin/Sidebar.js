@@ -11,7 +11,7 @@ import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
 import { MenuContext } from '../../pages/MenuContext';
 
-const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
+const Item = ({ title, to, icon, tooltip }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const { selectedMenuItem, setSelectedMenuItem } = useContext(MenuContext);

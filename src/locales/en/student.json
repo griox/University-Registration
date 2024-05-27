@@ -1,0 +1,16 @@
+{
+    "table": {
+        "ID": "ID",
+        "Name": "Name",
+        "Email": "Email",
+        "Math": "Math Score",
+        "Literature": "Literature Score",
+        "English": "English Score",
+        "Total Score": "Total Score",
+        "UniCode": "Registed Universities",
+        "Action": "Action"
+    },
+    "button": {
+        "Add": "Add a new student "
+    }
+}

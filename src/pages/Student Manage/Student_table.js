@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin } from 'antd';
+import './css/table.css';
 import {
     SearchOutlined,
     EditOutlined,
@@ -16,6 +17,7 @@ import { get, ref, child, getDatabase, remove, update, set } from 'firebase/data
 import { initializeApp } from 'firebase/app';
 import ModalAdd from './Modal_add';
 import ModalDetail from './Modal_Detail';
+import { useTranslation } from 'react-i18next';
 const firebaseConfig = {
     apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
     authDomain: 'mock-proeject-b.firebaseapp.com',
@@ -31,15 +33,12 @@ const db = getDatabase(app);
 
 const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
     const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
-
     return (
         <td {...restProps}>
             {editing ? (
                 <Form.Item
+                    className="edit-cell"
                     name={dataIndex}
-                    style={{
-                        margin: 0,
-                    }}
                     rules={[
                         {
                             required: true,
@@ -57,6 +56,8 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
 };
 
 const StudentList = () => {
+    const { t } = useTranslation('student');
+
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState('');
     const [searchText, setSearchText] = useState('');
@@ -137,17 +138,13 @@ const StudentList = () => {
 
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-            <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+            <div className="search-column" onKeyDown={(e) => e.stopPropagation()}>
                 <Input
                     ref={searchInput}
                     placeholder={`Search ${dataIndex}`}
                     value={selectedKeys[0]}
                     onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
-                    style={{
-                        marginBottom: 8,
-                        display: 'block',
-                    }}
                 />
                 <Space>
                     <Button
@@ -155,19 +152,10 @@ const StudentList = () => {
                         onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                         icon={<SearchOutlined />}
                         size="small"
-                        style={{
-                            width: 90,
-                        }}
                     >
                         Search
                     </Button>
-                    <Button
-                        onClick={() => clearFilters && handleReset(clearFilters)}
-                        size="small"
-                        style={{
-                            width: 90,
-                        }}
-                    >
+                    <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small">
                         Reset
                     </Button>
                     <Button
@@ -345,15 +333,7 @@ const StudentList = () => {
         }
     };
     const renderNameWithGender = (record) => {
-        return (
-            <span>
-                {record.gender === 'Male' ? (
-                    <ManOutlined style={{ marginRight: 5 }} />
-                ) : (
-                    <WomanOutlined style={{ marginRight: 5 }} />
-                )}
-            </span>
-        );
+        return <span className="icon">{record.gender === 'Male' ? <ManOutlined /> : <WomanOutlined />}</span>;
     };
 
     const handleIdClick = (record) => {
@@ -361,10 +341,21 @@ const StudentList = () => {
         setIsModalVisible(true);
         setLoading(true);
     };
-
+    const temp = (x) => {
+        if (x === null || x === undefined) {
+            console.log(x);
+            return false;
+        } else {
+            if (x.length === 5) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    };
     const columns = [
         {
-            title: 'ID',
+            title: t('table.ID'),
             dataIndex: 'id',
             width: '10%',
             fixed: 'left',
@@ -378,7 +369,7 @@ const StudentList = () => {
         },
 
         {
-            title: 'Name',
+            title: t('table.Name'),
             dataIndex: 'name',
             width: '19%',
             editable: true,
@@ -389,8 +380,14 @@ const StudentList = () => {
                 return (
                     <>
                         {renderNameWithGender(text, record)}
-                        <Tooltip title={record.uniCode.length === 5 ? 'can not register more' : ''}>
-                            <span style={{ color: record.uniCode.length === 5 ? '#FF8C00' : 'black' }}>{text}</span>
+                        <Tooltip title={temp(record.uniCode) ? 'can not register more' : ''}>
+                            <span
+                                style={{
+                                    color: temp(record.uniCode) ? '#FF8C00' : 'black',
+                                }}
+                            >
+                                {text}
+                            </span>
                         </Tooltip>
                     </>
                 );
@@ -398,7 +395,7 @@ const StudentList = () => {
         },
 
         {
-            title: 'Email',
+            title: t('table.Email'),
             dataIndex: 'email',
             width: '15%',
             editable: true,
@@ -411,7 +408,7 @@ const StudentList = () => {
             key: 'email',
         },
         {
-            title: 'Math',
+            title: t('table.Math'),
             dataIndex: 'MathScore',
             width: '10%',
             editable: true,
@@ -419,7 +416,7 @@ const StudentList = () => {
             key: 'MathScore',
         },
         {
-            title: 'Literature',
+            title: t('table.Literature'),
             dataIndex: 'LiteratureScore',
             width: '11%',
             editable: true,
@@ -428,7 +425,7 @@ const StudentList = () => {
             sorter: (a, b) => a.LiteratureScore - b.LiteratureScore,
         },
         {
-            title: 'EngLish',
+            title: t('table.English'),
             dataIndex: 'EnglishScore',
             width: '10%',
             editable: true,
@@ -436,14 +433,14 @@ const StudentList = () => {
             sorter: (a, b) => a.EnglishScore - b.EnglishScore,
         },
         {
-            title: 'Entrance Score',
+            title: t('table.Total Score'),
             dataIndex: 'AverageScore',
             width: '10%',
             key: 'AverageScore',
             sorter: (a, b) => a.AverageScore - b.AverageScore,
         },
         {
-            title: 'Unicode',
+            title: t('table.UniCode'),
             dataIndex: 'uniCode',
             width: '13%',
             render: (text) => {
@@ -458,7 +455,7 @@ const StudentList = () => {
             key: 'uniCode',
         },
         {
-            title: 'Manage',
+            title: t('table.Action'),
             dataIndex: 'operation',
             width: '15%',
             fixed: 'right',
@@ -466,12 +463,7 @@ const StudentList = () => {
                 const editable = isEditing(record);
                 return editable ? (
                     <span>
-                        <Typography.Link
-                            onClick={() => save(record.key)}
-                            style={{
-                                marginRight: 8,
-                            }}
-                        >
+                        <Typography.Link className="Typo_link" onClick={() => save(record.key)}>
                             Edit
                         </Typography.Link>
                         <Typography.Link onClick={cancel}>Cancel</Typography.Link>
@@ -481,9 +473,7 @@ const StudentList = () => {
                         <Typography.Link
                             disabled={editingKey !== ''}
                             onClick={() => edit(record)}
-                            style={{
-                                marginRight: 8,
-                            }}
+                            className="Typo_link"
                         >
                             <EditOutlined />
                         </Typography.Link>
@@ -528,7 +518,7 @@ const StudentList = () => {
     });
 
     return (
-        <div style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <div className="Layout">
             <Space direction="vertical">
                 <ModalAdd studentData={studentData} setStudentData={setStudentData} />
                 <ModalDetail
@@ -555,7 +545,6 @@ const StudentList = () => {
                                 x: 900,
                                 y: 'calc(100vh - 300px)',
                             }}
-                            style={{ height: '100%', marginRight: '-20px' }}
                             rowClassName="editable-row"
                             showSorterTooltip={{
                                 target: 'sorter-icon',

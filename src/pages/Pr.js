@@ -15,7 +15,7 @@ import { GetColumnSearchProps } from '../commonFunctions';
 import { useTranslation } from 'react-i18next';
 const MAX_COUNT = 5;
 function Pr() {
-    const { t } = useTranslation();
+    const { t } = useTranslation('profile');
     const [suitableSchoolList, setSuitableSchoolList] = useState([]);
 
     const app = initializeApp(firebaseConfig);
@@ -31,43 +31,43 @@ function Pr() {
 
     const columns = [
         {
-            title: 'Code',
+            title: t('table.Code'),
             dataIndex: 'code',
             key: 'code',
             ...GetColumnSearchProps('code'),
         },
         {
-            title: 'Name',
+            title: t('table.Name'),
             dataIndex: 'name',
             key: 'name',
             ...GetColumnSearchProps('name'),
         },
         {
-            title: 'Entrance Score',
+            title: t('table.Entrance Score'),
             dataIndex: 'score',
             key: 'score',
             ...GetColumnSearchProps('score'),
         },
         {
-            title: 'Target',
+            title: t('table.Target'),
             dataIndex: 'capacity',
             key: 'capacity',
             ...GetColumnSearchProps('capacity'),
         },
         {
-            title: 'Number of students registered',
+            title: t('table.Number of students registered'),
             dataIndex: 'isRegistered',
             key: 'isRegistered',
         },
         {
-            title: 'Action',
+            title: t('table.Action'),
             key: 'action',
             render: (text, record) => (
                 <Button
                     onClick={() => addUniversity(record.code)}
                     disabled={detail.uniCode.includes(record.code) || detail.uniCode.length === 5}
                 >
-                    Add
+                    {t('button.Add')}
                 </Button>
             ),
         },
@@ -97,7 +97,7 @@ function Pr() {
                     });
                 setLoadingTable(false);
             } else {
-                console.log('No data available');
+                toast.error('No data available');
             }
         });
         dispatch({ type: 'user', payload: personal });
@@ -158,7 +158,7 @@ function Pr() {
                         localStorage.setItem('Infor', JSON.stringify(x));
                         dispatch({ type: 'user', payload: x });
                     } else {
-                        console.log('No data available');
+                        toast.error('No data available');
                     }
                 });
 
@@ -167,10 +167,10 @@ function Pr() {
                 setImage(null);
             })
             .catch((error) => {
-                console.log(error.message, 'Error');
+                toast.error(error.message, 'Error');
             })
             .catch((error) => {
-                console.log(error.message, 'Error');
+                toast.error(error.message, 'Error');
             });
     };
     const save = () => {
@@ -196,23 +196,27 @@ function Pr() {
                                 if (snapshot.exists()) {
                                     const x = snapshot.val();
 
-                                    let m = x.registeration;
-                                    m[detail.email.replace(/\./g, ',')] = { email: detail.email, id: detail.id };
+                                    var m = x.registeration === undefined ? [] : x.registeration;
+                                    const n = detail.email.replace(/\./g, ',');
                                     console.log(m);
                                     update(ref(db, 'University/' + item), {
                                         isRegistered: x.isRegistered + 1,
-                                        registeration: m,
+                                    });
+                                    update(ref(db, `University/${item}/registeration`), {
+                                        [n]: { email: detail.email, id: detail.id },
                                     });
                                 }
                             });
                         }
                     });
-                    per.uniCode.forEach((item) => {
+
+                    (per.uniCode === undefined ? [] : per.uniCode).forEach((item) => {
                         if (detail.uniCode.includes(item) === false) {
                             get(child(ref(db), `University/` + item)).then((snapshot) => {
                                 if (snapshot.exists()) {
                                     const x = snapshot.val();
-                                    for (let k in x.registeration) {
+
+                                    for (let k in x.registeration === undefined ? [] : x.registeration) {
                                         if (x.registeration[k].email === detail.email) {
                                             delete x.registeration[k];
                                         }
@@ -235,12 +239,13 @@ function Pr() {
                         localStorage.setItem('Infor', JSON.stringify(x));
                         dispatch({ type: 'user', payload: x });
                     } else {
-                        console.log('No data available');
+                        toast.error('No data available');
                     }
                 })
                 .then(() => setLoadingSave(false));
-
+            console.log('thành công');
             toast.success('Updated sucessfully');
+            console.log('');
         } else {
             return;
         }
@@ -275,17 +280,17 @@ function Pr() {
 
                         <div className="input">
                             <div className="detail-item">
-                                <h1>Student Name: </h1>
+                                <h1>{t('title.name')}: </h1>
                                 <Space.Compact size="large">
                                     <Input
                                         className="g-s size-input"
-                                        value={t('aside filter.all categories')}
+                                        value={detail.name}
                                         onChange={(e) => handleChange(e, 'name')}
                                     />
                                 </Space.Compact>
                             </div>
                             <div className="detail-item">
-                                <h1>Gender: </h1>
+                                <h1>{t('title.Gender')}: </h1>
                                 <Space.Compact size="large">
                                     <Space.Compact>
                                         <Select
@@ -301,7 +306,7 @@ function Pr() {
                             </div>
 
                             <div className="detail-item">
-                                <h1>Place of birth: </h1>
+                                <h1>{t('title.Place of birth')}: </h1>
 
                                 <Space.Compact size="large">
                                     <Select
@@ -315,7 +320,7 @@ function Pr() {
                                 </Space.Compact>
                             </div>
                             <div className="detail-item">
-                                <h1>Address: </h1>
+                                <h1>{t('title.Address')}: </h1>
 
                                 <Space.Compact size="large">
                                     <Input
@@ -326,7 +331,7 @@ function Pr() {
                                 </Space.Compact>
                             </div>
                             <div className="detail-item">
-                                <h1>Ethnicity: </h1>
+                                <h1>{t('title.Ethnicity')}: </h1>
                                 <Select
                                     defaultValue="Kinh"
                                     options={ethnicities}
@@ -348,7 +353,8 @@ function Pr() {
                             </div>
 
                             <div className="detail-item">
-                                <h1>Email: </h1>
+                                <h1>{t('title.Email')}: </h1>
+                                {console.log(detail.email)}
                                 <Space.Compact size="large">
                                     <Input
                                         className="g-s size-input"
@@ -363,7 +369,7 @@ function Pr() {
                                 </Space.Compact>
                             </div>
                             <div className="detail-item">
-                                <h1>MathScore: </h1>
+                                <h1>{t('title.MathScore')}: </h1>
                                 <Space.Compact size="large">
                                     <Input
                                         className="g-s size-input"
@@ -374,7 +380,7 @@ function Pr() {
                                 </Space.Compact>
                             </div>
                             <div className="detail-item">
-                                <h1>EnglishScore: </h1>
+                                <h1>{t('title.EnglishScore')}: </h1>
                                 <Space.Compact size="large">
                                     <Input
                                         className="g-s size-input"
@@ -385,7 +391,7 @@ function Pr() {
                                 </Space.Compact>
                             </div>
                             <div className="detail-item">
-                                <h1>LiteratureScore: </h1>
+                                <h1>{t('title.LiteratureScore')}: </h1>
                                 <Space.Compact size="large">
                                     <Input
                                         className="g-s size-input"
@@ -398,7 +404,7 @@ function Pr() {
                         </div>
                     </div>
                     <div className="detail-item">
-                        <h1>University: </h1>
+                        <h1>{t('title.University')}: </h1>
                         <Space size="large">
                             <Select
                                 mode="multiple"
@@ -414,7 +420,7 @@ function Pr() {
                         </Space>
                         <Spin spinning={loadingSave}>
                             <Button type="primary" onClick={() => save()} className="btn-save">
-                                {'Save'}
+                                {t('button.Save')}
                             </Button>
                         </Spin>
                     </div>

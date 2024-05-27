@@ -147,7 +147,7 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
                         showQuickJumper: true,
                         showTotal: (total) => `Total ${total} items`,
                     }}
-                    scroll={{ x: false, y: 'calc(100vh - 350px)' }}
+                    scroll={{ x: false, y: 'calc(100vh - 580px)' }}
                     bordered
                 />
             </Spin>

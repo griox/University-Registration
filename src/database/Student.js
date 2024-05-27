@@ -2,6 +2,7 @@ import 'firebase/auth';
 import { ref,  getDatabase, set,get,update } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { useEffect } from 'react';
+import { toast } from 'react-toastify';
 const firebaseConfig = {
     apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
     authDomain: 'mock-proeject-b.firebaseapp.com',
@@ -28,7 +29,7 @@ function writeStudentRecord(id, name, email, mathScore, literatureScore, english
       uniCodes: uniCodes,
       Role: Role
   }).catch((error) => {
-      console.error("Error writing record for student with ID " + id + ": ", error);
+      toast.error("Error writing record for student with ID " + id + ": ", error);
   });
 }
 

@@ -7,7 +7,14 @@ html,
     width: 100%;
     font-family: 'Source Sans Pro', sans-serif;
 }
-
+:root {
+    --body_background: white;
+    --body_color:#333;
+}
+[data-theme="dark"] {
+    --body_background:#2C3A47;
+    --body_color: white;
+}
 .app {
     display: flex;
     position: relative;
@@ -35,5 +42,5 @@ html,
 }
 
 .App {
-    color: #333;
+
 }

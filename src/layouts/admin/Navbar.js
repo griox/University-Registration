@@ -7,7 +7,7 @@ import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import { MenuContext } from '../../pages/MenuContext';
 import { useDispatch } from 'react-redux';
-
+import {DarkMode} from '../../components/Darkmode/Darkmode'
 const items = [
     {
         label: 'Setting',
@@ -115,6 +115,7 @@ const Navbar = () => {
 
             <Box display="flex">
                 <Space wrap>
+                    <DarkMode/>
                     <Dropdown menu={menuProps}>
                         <IconButton>
                             <Space>

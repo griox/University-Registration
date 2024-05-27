@@ -20,8 +20,9 @@
 .Layout{
   justify-content: center;
   align-items: center;
+ 
 }
-.Layout Table{
-  height: 100%;
-  margin-right: -20px;
+.ant-table-container{
+background-color: var(--body_background);
+color:var(--body_color)
 }

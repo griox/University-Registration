@@ -3,6 +3,7 @@ import { get, ref, child, getDatabase } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { Divider, Table, Descriptions, Spin, Modal } from 'antd';
 import './css/modal_detail.css'
+import { toast } from 'react-toastify';
 const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
     const [university, setUniversity] = useState([]);
     const firebaseConfig = {
@@ -30,7 +31,7 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
                             uniDatas.push({ uniCode: uniId, ...uniData });
                         }
                     } catch (error) {
-                        console.error('Cannot fetch data');
+                        toast.error('Cannot fetch data');
                     }
                 }
                 setLoading(false);

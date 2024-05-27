@@ -97,20 +97,22 @@ const AddSchool = () => {
 
     const handleDelete = async (record) => {
         try {
-            for(const student in record.registeration){
-               const studentRef = ref(database,`Detail/${record.registeration[student].id}`)
-               const snapshot = await get(studentRef);
-               if(snapshot.exists()){
-                const studentData = snapshot.val();
-                const newArray = studentData.uniCode.filter(item=>item !==record.uniCode);
-                await update(studentRef,{uniCode:newArray});
-               }
+            if(record.registeration!==undefined){
+                for(const student in record.registeration){
+                    const studentRef = ref(database,`Detail/${record.registeration[student].id}`)
+                    const snapshot = await get(studentRef);
+                    if(snapshot.exists()){
+                     const studentData = snapshot.val();
+                     const newArray = studentData.uniCode.filter(item=>item !==record.uniCode);
+                     await update(studentRef,{uniCode:newArray});
+                    }
+                 }
             }
-            await remove(child(ref(database), `University/${record.id}`));
-            const newUni = UniData.filter((item) => item.id !== record.id);
+            await remove(child(ref(database), `University/${record.uniCode}`));
+            const newUni = UniData.filter((item) => item.uniCode !== record.uniCode);
             setUniData(newUni);
         } catch (error) {
-            console.error('Error when deleting data',error);
+            toast.error('Error when deleting data',error);
         }
     };
 

@@ -77,7 +77,7 @@ const StudentList = () => {
                     setLoading(false);
                 }
             } catch (error) {
-                console.error(error);
+                toast.error(error);
             }
         };
 
@@ -113,7 +113,7 @@ const StudentList = () => {
             const newData = studentData.map((item) => (item.key === record.key ? { ...item, isRegister: true } : item));
             setStudentData(newData);
         } catch (error) {
-            console.error('Error provide account student:', error);
+            toast.error('Error provide account student:', error);
         }
     };
     const handleDeleteAccount = async (record) => {
@@ -125,7 +125,7 @@ const StudentList = () => {
             );
             setStudentData(newData);
         } catch (error) {
-            console.error('Error deleting account', error);
+            toast.error('Error deleting account', error);
         }
     };
 
@@ -213,7 +213,6 @@ const StudentList = () => {
                 toast.error('Student not found');
                 return;
             }
-            console.log(record);
             if (record.uniCode !== undefined) {
                 for (const uniCode of studentToDelete.uniCode) {
                     const universityRef = ref(db, `University/${uniCode}`);
@@ -223,7 +222,7 @@ const StudentList = () => {
                         const updatedIsRegistered = Math.max(0, universityData.isRegistered - 1);
                         await update(universityRef, { isRegistered: updatedIsRegistered });
                     } else {
-                        console.error('University not found');
+                        toast.error('University not found');
                     }
                 }
             }
@@ -234,7 +233,7 @@ const StudentList = () => {
             const newData = studentData.filter((item) => item.id !== record.id);
             setStudentData(newData);
         } catch (error) {
-            console.error('Error deleting data:', error);
+            toast.error('Error deleting data:', error);
         }
     };
 
@@ -265,7 +264,7 @@ const StudentList = () => {
                     [dataIndex]: value,
                 });
             } catch (error) {
-                console.error('Error updating document:', error);
+                toast.error('Error updating document:', error);
                 // Handle update error (optional: show notification to user)
             }
         }
@@ -331,7 +330,7 @@ const StudentList = () => {
                 toast.success('Data added to Firebase successfully');
             }
         } catch (errInfo) {
-            console.error('Validate Failed:', errInfo);
+            toast.error('Validate Failed:', errInfo);
         }
     };
     const renderNameWithGender = (record) => {

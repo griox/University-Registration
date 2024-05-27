@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import { ref, getDatabase, set, get, child, update } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { useEffect } from 'react';
+import { toast } from 'react-toastify';
 const firebaseConfig = {
   apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
   authDomain: 'mock-proeject-b.firebaseapp.com',
@@ -35,7 +36,7 @@ function writeInforRecord(name, gender, email, enthicity, dateObirth, placeOBirt
     isRegister:isRegister
   }).then(() => {
   }).catch((error) => {
-    console.error( error);
+    toast.error( error);
   });
 }
 const getRandomDateOfBirth = async () => {
@@ -242,7 +243,7 @@ const fetchData = async () => {
       });
     }
   } catch (error) {
-    console.error(error);
+    toast.error(error);
     return []; // Trả về mảng rỗng nếu có lỗi
   }
 };
@@ -271,7 +272,7 @@ const updateUniCode = async (studentID, newUniCodes) => {
       await update(studentRef, { uniCode: updatedUniCodes });
     } 
   } catch (error) {
-    console.error('Error updating uniCodes:', error);
+    toast.error('Error updating uniCodes:', error);
   }
 };
 const clearUniCodesForAllStudents = async () => {
@@ -285,7 +286,7 @@ const clearUniCodesForAllStudents = async () => {
       }
     } 
   } catch (error) {
-    console.error('Error clearing uniCodes for all students:', error);
+    toast.error('Error clearing uniCodes for all students:', error);
   }
 };
 

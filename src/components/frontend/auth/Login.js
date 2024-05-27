@@ -8,7 +8,10 @@ import { Link, Redirect } from 'react-router-dom';
 import '../../../assets/css/login.css';
 import { firebaseConfig } from '../../../constants/constants';
 import { decodePath, validateEmailFormat } from '../../../commonFunctions';
+import { useTranslation } from 'react-i18next';
+import { Box } from '@mui/material';
 export const Login = () => {
+    const { t, i18n } = useTranslation('login');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -96,7 +99,9 @@ export const Login = () => {
             });
         }
     };
-
+    const handleLanguage = (lng) => {
+        i18n.changeLanguage(lng);
+    };
     const getdt = (email, password) => {
         if (email !== '') {
             if (validateEmailFormat(email) !== true) {
@@ -129,7 +134,7 @@ export const Login = () => {
                                     toast.error('Account not found. Please check your email and password again.');
                                 }
                             } else {
-                                console.log('No data available');
+                                toast.error('No data available');
                             }
                         })
                         .catch((error) => {
@@ -149,6 +154,10 @@ export const Login = () => {
     return (
         <>
             <div className="background">
+                <Box className="language">
+                    <button onClick={() => handleLanguage('vi')}>Tiếng việt</button>
+                    <button onClick={() => handleLanguage('en')}>Tiếng Anh</button>
+                </Box>
                 <div className="form-container">
                     <div className="col col-1">
                         <div className="image_layer">
@@ -156,10 +165,10 @@ export const Login = () => {
                         </div>
 
                         <p className="featured">
-                            Please LOGIN to continue <br /> or <br /> <br />
+                            {t('title.inform login')} <br /> {t('title.or')} <br /> <br />
                             <span>
                                 <Link className="btn-getback" to="/">
-                                    Get back
+                                    {t('button.get back')}
                                 </Link>
                             </span>
                         </p>
@@ -169,7 +178,7 @@ export const Login = () => {
                         <form action="">
                             <div className="login-form">
                                 <div className="form-title">
-                                    <span>LOGIN</span>
+                                    <span>{t('header')}</span>
                                 </div>
                                 <div className="form-inputs">
                                     <div className="input-box">
@@ -178,7 +187,7 @@ export const Login = () => {
                                             className="input-field"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
-                                            placeholder="Email"
+                                            placeholder={t('title.email')}
                                             required
                                         />
                                         <i className="bx bx-envelope icon"></i>
@@ -189,7 +198,7 @@ export const Login = () => {
                                             className="input-field pass_login"
                                             onChange={(e) => setPassword(e.target.value)}
                                             value={password}
-                                            placeholder="Password"
+                                            placeholder={t('title.password')}
                                             required
                                         />
 
@@ -200,14 +209,14 @@ export const Login = () => {
                                     <div className="forget-pass">
                                         <div className="input-box">
                                             <input type="checkbox" />
-                                            <span className="remembertxt_login"> Remember me</span>
-                                            <Link to="/forgetpass">Forgot password?</Link>
+                                            <span className="remembertxt_login">{t('title.remember me')}</span>
+                                            <Link to="/forgetpass">{t('title.forgot password')}</Link>
                                         </div>
                                     </div>
 
                                     <div className="input-box" onClick={() => getdt(email, password)}>
                                         <div className="input-submit">
-                                            <span>Log in</span>
+                                            <span>{t('button.log in')}</span>
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </div>
                                     </div>

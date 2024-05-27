@@ -6,8 +6,10 @@ import '../assets/admin/css/chart.css';
 import { child, get, getDatabase, ref } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../constants/constants';
+import { useTranslation } from 'react-i18next';
 
 const Chart = () => {
+    const { t } = useTranslation('dashboard');
     const [studentTotal, setStudentTotal] = useState(0);
     const [stMoreThanF, setStMoreThanF] = useState(0);
     const [stLessThanF, setStLessThanF] = useState(0);
@@ -243,7 +245,7 @@ const Chart = () => {
                     <div className="mainer">
                         <div className="cards">
                             <div className="carder">
-                                <div className="card-name">All students </div>
+                                <div className="card-name">{t('title.all students')} </div>
                                 <div className="number" title={'Total students: ' + studentTotal}>
                                     {studentTotal}
                                 </div>
@@ -270,7 +272,7 @@ const Chart = () => {
                             </div>
 
                             <div className="carder">
-                                <div className="card-name">All university </div>
+                                <div className="card-name">{t('title.all universities')} </div>
                                 <div className="number" title={'Total universities' + allUni}>
                                     {allUni}
                                 </div>
@@ -303,18 +305,18 @@ const Chart = () => {
                             </div>
 
                             <div className="carder">
-                                <div className="card-name">Gender </div>
+                                <div className="card-name">{t('title.gender')} </div>
                                 <Pie {...gen} />
                             </div>
                         </div>
                     </div>
                     <div className="charts">
                         <div className="charter">
-                            <h2>Average scores of subjects</h2>
+                            <h2>{t('title.average scores of subjects')}</h2>
                             <Column {...config} />
                         </div>
                         <div className="charter">
-                            <h2>The number of courses each student registers</h2>
+                            <h2>{t('title.the number of courses each student registers')}</h2>
                             <Pie {...con} />
                         </div>
                     </div>

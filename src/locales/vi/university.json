@@ -1,0 +1,15 @@
+{
+    "table": {
+        "ID": "ID",
+        "Name": "Tên trường",
+        "UniCode": "Mã trường",
+        "Address": "Địa chỉ",
+        "Entrance Score": "Điểm đầu vào",
+        "Number of registration": "Số lượng đăng kí",
+        "Target": "Chỉ tiêu",
+        "Action": "Hành động"
+    },
+    "button": {
+        "Add": "Thêm mới "
+    }
+}

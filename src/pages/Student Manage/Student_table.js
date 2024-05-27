@@ -208,28 +208,32 @@ const StudentList = () => {
     function encodeEmails(email) {
         return email.replace('.', ',');
     }
-    const handleDelete = async (key) => {
+    const handleDelete = async (record) => {
         try {
-            const studentToDelete = studentData.find((item) => item.id === key.id);
+            const studentToDelete = studentData.find((item) => item.id === record.id);
             if (!studentToDelete) {
                 toast.error('Student not found');
                 return;
             }
-            for (const uniCode of studentToDelete.uniCode) {
-                const universityRef = ref(db, `University/${uniCode}`);
-                const universitySnapshot = await get(universityRef);
-                if (universitySnapshot.exists()) {
-                    const universityData = universitySnapshot.val();
-                    const updatedIsRegistered = Math.max(0, universityData.isRegistered - 1);
-                    await update(universityRef, { isRegistered: updatedIsRegistered });
-                } else {
-                    console.error('University not found');
+            console.log(record);
+            if (record.uniCode !== undefined) {
+                for (const uniCode of studentToDelete.uniCode) {
+                    const universityRef = ref(db, `University/${uniCode}`);
+                    const universitySnapshot = await get(universityRef);
+                    if (universitySnapshot.exists()) {
+                        const universityData = universitySnapshot.val();
+                        const updatedIsRegistered = Math.max(0, universityData.isRegistered - 1);
+                        await update(universityRef, { isRegistered: updatedIsRegistered });
+                    } else {
+                        console.error('University not found');
+                    }
                 }
             }
-            await remove(child(ref(db), `Detail/${key.id}`));
-            const emailhash = encodeEmails(key.email);
+
+            await remove(child(ref(db), `Detail/${record.id}`));
+            const emailhash = encodeEmails(record.email);
             await remove(child(ref(db), `Account/${emailhash}`));
-            const newData = studentData.filter((item) => item.id !== key.id);
+            const newData = studentData.filter((item) => item.id !== record.id);
             setStudentData(newData);
         } catch (error) {
             console.error('Error deleting data:', error);
@@ -343,7 +347,6 @@ const StudentList = () => {
     };
     const temp = (x) => {
         if (x === null || x === undefined) {
-            console.log(x);
             return false;
         } else {
             if (x.length === 5) {
@@ -445,9 +448,9 @@ const StudentList = () => {
             width: '13%',
             render: (text) => {
                 if (typeof text === 'string') {
-                    return text.split(', ').join(', ');
+                    return text?.split(', ').join(', ');
                 } else if (Array.isArray(text)) {
-                    return text.join(', ');
+                    return text?.join(', ');
                 } else {
                     return text;
                 }

@@ -198,7 +198,6 @@ function Pr() {
 
                                     var m = x.registeration === undefined ? [] : x.registeration;
                                     const n = detail.email.replace(/\./g, ',');
-                                    console.log(m);
                                     update(ref(db, 'University/' + item), {
                                         isRegistered: x.isRegistered + 1,
                                     });
@@ -243,9 +242,8 @@ function Pr() {
                     }
                 })
                 .then(() => setLoadingSave(false));
-            console.log('thành công');
+
             toast.success('Updated sucessfully');
-            console.log('');
         } else {
             return;
         }
@@ -354,7 +352,6 @@ function Pr() {
 
                             <div className="detail-item">
                                 <h1>{t('title.Email')}: </h1>
-                                {console.log(detail.email)}
                                 <Space.Compact size="large">
                                     <Input
                                         className="g-s size-input"

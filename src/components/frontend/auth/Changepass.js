@@ -9,8 +9,11 @@ import '../../../assets/css/register.css';
 import { useDispatch } from 'react-redux';
 import { firebaseConfig } from '../../../constants/constants';
 import { encodePath } from '../../../commonFunctions';
-
+import { useTranslation } from 'react-i18next';
+import { Box } from '@mui/material';
+import bcrypt from 'bcryptjs';
 const Changepass = () => {
+    const { t, i18n } = useTranslation('changePassword');
     const history = useHistory();
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
@@ -18,6 +21,7 @@ const Changepass = () => {
     const [newPass, setNewPass] = useState('');
     const [reNewPass, setReNewPass] = useState('');
     const dispatch = useDispatch();
+    const salt = bcrypt.genSaltSync(10);
     useEffect(() => {
         const passwordInput1 = document.querySelector('.old_pass');
         const eyeBtn1 = document.querySelector('.eye1');
@@ -125,10 +129,17 @@ const Changepass = () => {
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('isLoggedIn');
-        localStorage.removeItem('selectedMenuItem');
+        localStorage.setItem('Infor', JSON.stringify(''));
+        localStorage.setItem('Name', '');
+        localStorage.setItem('Email', JSON.stringify(''));
+        localStorage.setItem('Role', '');
+        localStorage.removeItem('userToken');
+
         dispatch({ type: 'logout' });
         history.push('/Login');
+    };
+    const handleLanguage = (lng) => {
+        i18n.changeLanguage(lng);
     };
     const changePassWord = () => {
         let temp = JSON.parse(localStorage.getItem('Email'));
@@ -152,9 +163,11 @@ const Changepass = () => {
         get(child(ref(db), `Account/` + temp)).then((snapshot) => {
             if (snapshot.exists()) {
                 const x = snapshot.val();
-                if (x.password === oldPass) {
+                var hash = bcrypt.hashSync(oldPass, salt);
+                if (bcrypt.compareSync(x.password, hash) === true) {
+                    var newHash = bcrypt.hashSync(newPass, salt);
                     update(ref(db, 'Account/' + temp), {
-                        password: newPass,
+                        password: newHash,
                     })
                         .then(() => {
                             handleLogout();
@@ -165,13 +178,17 @@ const Changepass = () => {
                         });
                 }
             } else {
-                console.log('No data available');
+                toast.error('Data is not available');
             }
         });
     };
     return (
         <>
             <div className="background">
+                <Box className="language">
+                    <button onClick={() => handleLanguage('vi')}>Tiếng việt</button>
+                    <button onClick={() => handleLanguage('en')}>Tiếng Anh</button>
+                </Box>
                 <div className="form-container">
                     <div className="col col-1">
                         <div className="image_layer">
@@ -179,10 +196,10 @@ const Changepass = () => {
                         </div>
 
                         <p className="featured">
-                            Please REGISTER to continue <br /> or <br /> <br />
+                            {t('title.inform changepassword')} <br /> {t('title.or')} <br /> <br />
                             <span>
                                 <button onClick={() => history.goBack()} className="btn-getback">
-                                    Get back
+                                    {t('button.get back')}
                                 </button>
                             </span>
                         </p>
@@ -194,14 +211,14 @@ const Changepass = () => {
                                 <br />
                                 <br />
                                 <div className="form-title">
-                                    <span>Change PassWord</span>
+                                    <span>{t('header')}</span>
                                 </div>
                                 <div className="form-inputs">
                                     <div className="input-box">
                                         <input
                                             type="password"
                                             className="input-field old_pass"
-                                            placeholder="Enter Old Password"
+                                            placeholder={t('title.old password')}
                                             required
                                             value={oldPass}
                                             onChange={(e) => setOldPass(e.target.value)}
@@ -214,7 +231,7 @@ const Changepass = () => {
                                         <input
                                             type="password"
                                             className="input-field new_pass"
-                                            placeholder="Enter New Password"
+                                            placeholder={t('title.new password')}
                                             required
                                             value={newPass}
                                             onChange={(e) => setNewPass(e.target.value)}
@@ -227,7 +244,7 @@ const Changepass = () => {
                                         <input
                                             type="password"
                                             className="input-field con_pass"
-                                            placeholder="Confirm New Password"
+                                            placeholder={t('title.re-new password')}
                                             required
                                             value={reNewPass}
                                             onChange={(e) => setReNewPass(e.target.value)}
@@ -238,13 +255,13 @@ const Changepass = () => {
                                     <div className="input-box">
                                         <br />
                                         <Button type="submit" className="input-submit" onClick={changePassWord}>
-                                            <span>Change</span>
+                                            <span>{t('button.change')}</span>
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </Button>
                                     </div>
                                     <div className="input-box">
                                         <div type="submit" className="input-submit" onClick={clear}>
-                                            <span>Clear</span>
+                                            <span>{t('button.clear')}</span>
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </div>
                                     </div>

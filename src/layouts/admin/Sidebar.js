@@ -11,7 +11,7 @@ import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
 import { MenuContext } from '../../pages/MenuContext';
 
-const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
+const Item = ({ title, to, icon, tooltip }) => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const { selectedMenuItem, setSelectedMenuItem } = useContext(MenuContext);
@@ -35,7 +35,6 @@ const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
 const Sidebar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-    const role = useState(localStorage.getItem('Role') || '');
 
     const [isCollapsed, setIsCollapsed] = useState(() => JSON.parse(localStorage.getItem('sidebarCollapsed')) || false);
 
@@ -84,7 +83,7 @@ const Sidebar = () => {
     }
 
     const isAdminOrSuperAdmin =
-        localStorage.getItem('Role') || '' === 'admin' || localStorage.getItem('Role') || '' === 'super_admin';
+        localStorage.getItem('Role') === 'admin' || localStorage.getItem('Role') === 'super_admin';
 
     return (
         <Box
@@ -154,7 +153,7 @@ const Sidebar = () => {
                                     {localStorage.getItem('Name') || ''}
                                 </Typography>
                                 <Typography variant="h5" color={colors.greenAccent[500]}>
-                                    {role}
+                                    {localStorage.getItem('Role')}
                                 </Typography>
                             </Box>
                         </Box>
@@ -183,7 +182,7 @@ const Sidebar = () => {
                                 />
                             </>
                         )}
-                        {(localStorage.getItem('Role') || '') === 'user' && (
+                        {localStorage.getItem('Role') === 'user' && (
                             <>
                                 <Item
                                     title="Profile"

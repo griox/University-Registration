@@ -1,11 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 // import 'boxicons/css/boxicons.min.css';
 import 'firebase/auth';
 import { Link } from 'react-router-dom';
 import '../../../assets/css/login.css';
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
+import { initializeApp } from 'firebase/app';
+import { firebaseConfig } from '../../../constants/constants';
 // import '../../../assets/js/login';
+
 export const Forgetpass = () => {
+    const app = initializeApp(firebaseConfig);
+    const db = getAuth(app);
+    const [email, setEmail] = useState('');
+    const handleEmail = async () => {
+        localStorage.setItem('Email', email);
+        sendPasswordResetEmail(db, 'minhquang20042110@gmail.com')
+            .then((data) => {
+                alert('Check your email');
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.error('Error:', errorCode, errorMessage);
+            });
+    };
     return (
         <>
             <div className="background">
@@ -38,12 +57,19 @@ export const Forgetpass = () => {
                                 </div>
                                 <div className="form-inputs">
                                     <div className="input-box">
-                                        <input type="email" className="input-field" placeholder="Email" required />
+                                        <input
+                                            type="email"
+                                            className="input-field"
+                                            placeholder="Email"
+                                            required
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            value={email === '' ? '' : email}
+                                        />
                                         <i className="bx bx-envelope icon"></i>
                                     </div>
 
                                     <div className="input-box">
-                                        <div className="input-submit">
+                                        <div className="input-submit" onClick={() => handleEmail()}>
                                             <span>Continue</span>
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </div>

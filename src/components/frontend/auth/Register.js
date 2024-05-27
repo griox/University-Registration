@@ -3,12 +3,13 @@ import 'firebase/auth';
 import { child, get, getDatabase, ref, set } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
-import { message } from 'antd';
 import { useHistory } from 'react-router-dom';
 import '../../../assets/css/register.css';
 import { firebaseConfig } from '../../../constants/constants';
 import { encodePath, validateEmailFormat, validatePasswordFormat } from '../../../commonFunctions';
-
+import { Box } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+import bcrypt from 'bcryptjs';
 const Register = () => {
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
@@ -17,7 +18,9 @@ const Register = () => {
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const history = useHistory();
-    const author = useState(localStorage.getItem('Role') || '');
+    const { t, i18n } = useTranslation('register');
+    const salt = bcrypt.genSaltSync(10);
+
     useEffect(() => {
         const passwordInput1 = document.querySelector('.pass_login_1');
         const eyeBtn1 = document.querySelector('.eye1');
@@ -86,7 +89,9 @@ const Register = () => {
             eyeBtn2.removeEventListener('click', handleEyeBtn2);
         };
     }, []);
-
+    const handleLanguage = (lng) => {
+        i18n.changeLanguage(lng);
+    };
     const clear = () => {
         setFullName('');
         setEmail('');
@@ -117,20 +122,20 @@ const Register = () => {
                 const x = snapshot.val();
                 const listItem = Object.values(x).map((user) => user);
                 const y = listItem.find((item) => item.email === email);
-                console.log(listItem, y);
                 if (y === null || y === undefined) {
                     if (props.againPassword === props.password) {
+                        var hash = bcrypt.hashSync(props.password, salt);
                         const encodeEmail = encodePath(props.email);
                         const ip = {
                             name: props.name,
                             email: props.email,
-                            password: props.password,
+                            password: hash,
                             Role: props.role,
                         };
                         try {
                             set(ref(db, `Account/` + encodeEmail), ip).then(() => toast.success('Sign up sucessfully'));
                         } catch (error) {
-                            console.log(error, message);
+                            toast.error('Your request is failed');
                         }
                         clear();
                     }
@@ -138,7 +143,7 @@ const Register = () => {
                     toast.error('Account already exists');
                 }
             } else {
-                console.log('No data available');
+                toast.error('No data available');
             }
         });
     };
@@ -146,6 +151,10 @@ const Register = () => {
     return (
         <>
             <div className="background">
+                <Box className="language">
+                    <button onClick={() => handleLanguage('vi')}>Tiếng việt</button>
+                    <button onClick={() => handleLanguage('en')}>Tiếng Anh</button>
+                </Box>
                 <div className="form-container">
                     <div className="col col-1">
                         <div className="image_layer">
@@ -153,10 +162,11 @@ const Register = () => {
                         </div>
 
                         <p className="featured">
-                            Please REGISTER to continue <br /> or <br /> <br />
+                            {t('title.inform register')}
+                            <br /> {t('title.or')} <br /> <br />
                             <span>
                                 <button className="btn-getback" onClick={() => history.goBack()}>
-                                    Get back
+                                    {t('button.get back')}
                                 </button>
                             </span>
                         </p>
@@ -166,14 +176,14 @@ const Register = () => {
                         <form action="">
                             <div className="login-form">
                                 <div className="form-title">
-                                    <span>Register</span>
+                                    <span>{t('header')}</span>
                                 </div>
                                 <div className="form-inputs">
                                     <div className="input-box">
                                         <input
                                             type="text"
                                             className="input-field"
-                                            placeholder="First and Last name"
+                                            placeholder={t('title.name')}
                                             required
                                             value={fullName}
                                             onChange={(e) => setFullName(e.target.value)}
@@ -184,7 +194,7 @@ const Register = () => {
                                         <input
                                             type="text"
                                             className="input-field"
-                                            placeholder="Email"
+                                            placeholder={t('title.email')}
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                         />
@@ -194,7 +204,7 @@ const Register = () => {
                                         <input
                                             type="password"
                                             className="input-field pass_login_1"
-                                            placeholder="Password"
+                                            placeholder={t('title.password')}
                                             required
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
@@ -207,7 +217,7 @@ const Register = () => {
                                         <input
                                             type="password"
                                             className="input-field con_pass_login"
-                                            placeholder="Re-Password"
+                                            placeholder={t('title.re-password')}
                                             required
                                             value={againPassword}
                                             onChange={(e) => setAgainPassword(e.target.value)}
@@ -218,7 +228,7 @@ const Register = () => {
 
                                     <div className="input-box">
                                         <div className="input-box">
-                                            {author === 'admin' ? (
+                                            {localStorage.getItem('Role') === 'admin' ? (
                                                 <div
                                                     type="submit"
                                                     className="input-submit"
@@ -232,7 +242,7 @@ const Register = () => {
                                                         })
                                                     }
                                                 >
-                                                    <span>Regist</span>
+                                                    <span>{t('button.regist')}</span>
                                                 </div>
                                             ) : (
                                                 <>
@@ -248,7 +258,7 @@ const Register = () => {
                                                             })
                                                         }
                                                     >
-                                                        <span>User</span>
+                                                        <span>{t('button.user')}</span>
                                                     </div>
                                                     <div
                                                         className="button-submit"
@@ -262,7 +272,7 @@ const Register = () => {
                                                             })
                                                         }
                                                     >
-                                                        <span>Admin</span>
+                                                        <span>{t('button.admin')}</span>
                                                     </div>
                                                 </>
                                             )}
@@ -270,7 +280,7 @@ const Register = () => {
                                     </div>
                                     <div className="input-box">
                                         <div type="submit" className="input-submit" onClick={clear}>
-                                            <span className="clear">Clear</span>
+                                            <span className="clear">{t('button.clear')}</span>
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </div>
                                     </div>

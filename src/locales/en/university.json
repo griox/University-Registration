@@ -1,0 +1,16 @@
+{
+    "table": {
+        "ID": "ID",
+
+        "Name": "Name",
+        "UniCode": "UniCode",
+        "Address": "Address",
+        "Entrance Score": "Entrance score",
+        "Number of registration": "Number of registration",
+        "Target": "Target",
+        "Action": "Action"
+    },
+    "button": {
+        "Add": "Add University"
+    }
+}

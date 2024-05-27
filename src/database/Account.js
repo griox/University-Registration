@@ -76,7 +76,7 @@ const fetchData = async () => {
             });
         }
     } catch (error) {
-        console.error('can not fetch data for Account');
+        toast.error('can not fetch data for Account');
     }
 };
 export function useCreateAccountRecordsOnMount() {

@@ -161,7 +161,7 @@ const Register = () => {
 
                         <p className="featured">
                             {t('title.inform register')}
-                            <br /> {t('or')} <br /> <br />
+                            <br /> {t('title.or')} <br /> <br />
                             <span>
                                 <button className="btn-getback" onClick={() => history.goBack()}>
                                     {t('button.get back')}

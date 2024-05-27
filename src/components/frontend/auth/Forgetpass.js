@@ -7,6 +7,7 @@ import '../../../assets/css/login.css';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../../../constants/constants';
+import { toast } from 'react-toastify';
 // import '../../../assets/js/login';
 
 export const Forgetpass = () => {
@@ -21,7 +22,7 @@ export const Forgetpass = () => {
                 <Link to="/resetpass"></Link>;
             })
             .catch((error) => {
-                console.log(error);
+                toast.error('Error');
             });
     };
     return (

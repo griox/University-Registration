@@ -7,7 +7,6 @@ import '../../../assets/css/login.css';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../../../constants/constants';
-import { toast } from 'react-toastify';
 // import '../../../assets/js/login';
 
 export const Forgetpass = () => {
@@ -16,13 +15,14 @@ export const Forgetpass = () => {
     const [email, setEmail] = useState('');
     const handleEmail = async () => {
         localStorage.setItem('Email', email);
-        sendPasswordResetEmail(db, 'quang.nm.64cntt@ntu.edu.vn')
+        sendPasswordResetEmail(db, 'minhquang20042110@gmail.com')
             .then((data) => {
                 alert('Check your email');
-                <Link to="/resetpass"></Link>;
             })
             .catch((error) => {
-                toast.error('Error');
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.error('Error:', errorCode, errorMessage);
             });
     };
     return (

@@ -196,7 +196,6 @@ function Pr() {
                                 if (snapshot.exists()) {
                                     const x = snapshot.val();
 
-                                    var m = x.registeration === undefined ? [] : x.registeration;
                                     const n = detail.email.replace(/\./g, ',');
                                     update(ref(db, 'University/' + item), {
                                         isRegistered: x.isRegistered + 1,

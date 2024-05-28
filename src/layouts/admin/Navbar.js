@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Box, IconButton, useTheme } from '@mui/material';
-import { tokens } from '../../theme';
+import { tokens, ColorModeContext } from '../../theme';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { Dropdown, Space } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
@@ -10,6 +10,8 @@ import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { locales } from '../../translation/i18n';
+import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
+import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 // import { locales } from '../../translation/i18n';
 
 const Navbar = () => {
@@ -17,6 +19,7 @@ const Navbar = () => {
     const currentLanguage = locales[i18n.language === 'vi' ? 'vi' : 'en'];
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    const colorMode = useContext(ColorModeContext);
     const dispatch = useDispatch();
     const history = useHistory();
     // const currentLanguage = locales[i18n.language];
@@ -149,7 +152,7 @@ const Navbar = () => {
         <Box
             display="flex"
             position="sticky"
-            bgcolor="#fff"
+            backgroundColor={colors.primary[400]}
             width="100%"
             zIndex={1000}
             top="0"
@@ -159,11 +162,14 @@ const Navbar = () => {
             p={2}
         >
             <Box display="flex" alignItems="center">
-                <span style={{ color: colors.primary[500], fontSize: '1.5rem' }}>{selectedMenuItem}</span>
+                <span style={{ color: colors.grey[100], fontSize: '1.5rem' }}>{selectedMenuItem}</span>
             </Box>
 
             <Box display="flex">
                 <Space wrap>
+                    <IconButton onClick={colorMode.toggleColorMode}>
+                        {theme.palette.mode === 'dark' ? <DarkModeOutlinedIcon /> : <LightModeOutlinedIcon />}
+                    </IconButton>
                     <Dropdown menu={menuProps}>
                         <IconButton>
                             <Space>

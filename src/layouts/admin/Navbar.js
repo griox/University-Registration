@@ -10,7 +10,6 @@ import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { locales } from '../../translation/i18n';
-// import { locales } from '../../translation/i18n';
 
 const Navbar = () => {
     const { t, i18n } = useTranslation('navbar');
@@ -19,7 +18,6 @@ const Navbar = () => {
     const colors = tokens(theme.palette.mode);
     const dispatch = useDispatch();
     const history = useHistory();
-    // const currentLanguage = locales[i18n.language];
     const { selectedMenuItem } = useContext(MenuContext);
     const handleLanguage = (lng) => {
         i18n.changeLanguage(lng);
@@ -94,7 +92,7 @@ const Navbar = () => {
     ];
 
     const handleLogout = () => {
-        const confirm = window.confirm('Are you sure want to log out?');
+        const confirm = window.confirm(t('title.confirm'));
         if (confirm) {
             localStorage.setItem('Infor', JSON.stringify(''));
             localStorage.removeItem('isLoggedIn');
@@ -143,16 +141,8 @@ const Navbar = () => {
             p={2}
         >
             <Box display="flex" alignItems="center">
-                <span style={{ color: colors.primary[500], fontSize: '1.5rem' }}>{selectedMenuItem}</span>
+                <span style={{ color: colors.primary[500], fontSize: '1.2rem', fontWeight: 'bold' }}>{selectedMenuItem}</span>
             </Box>
-            {/* <Box>
-                <button onClick={() => handleLanguage('vi')}>
-                    {currentLanguage === 'Tiếng việt' ? 'Tiếng việt' : 'Vietnamese'}
-                </button>
-                <button onClick={() => handleLanguage('en')}>
-                    {currentLanguage === 'Tiếng việt' ? 'Tiếng anh' : 'Egnlish'}
-                </button>
-            </Box> */}
             <Box display="flex">
                 <Space wrap>
                     <Dropdown menu={menuProps}>

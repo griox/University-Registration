@@ -9,6 +9,7 @@ import { firebaseConfig } from '../../../constants/constants';
 import { DownOutlined } from '@ant-design/icons';
 import { Dropdown, Space, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
 
 export const Forgetpass = () => {
     const { t, i18n } = useTranslation('fogetpassword');
@@ -24,7 +25,7 @@ export const Forgetpass = () => {
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                console.error('Error:', errorCode, errorMessage);
+                toast.error(`Error ${errorCode}: ${errorMessage}`)
             });
     };
     const handleLanguage = (lng) => {

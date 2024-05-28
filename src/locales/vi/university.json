@@ -10,6 +10,16 @@
         "Action": "Hành động"
     },
     "button": {
-        "Add": "Thêm mới "
+        "Add": "Thêm mới ",
+        "search": "Tìm kiếm",
+        "reset": "Đặt lại",
+        "filter": "Bộ lọc",
+        "close": "Đóng"
+    },
+    "title": {
+        "edit": "Sửa",
+        "cancel": "Hủy",
+        "total": "Tổng",
+        "delete": "Chắc chắn xóa ?"
     }
 }

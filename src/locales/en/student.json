@@ -11,6 +11,18 @@
         "Action": "Action"
     },
     "button": {
-        "Add": "Add a new student "
+        "Add": "Add a new student ",
+        "edit": "Edit",
+        "cancel": "Cancel",
+        "search": "Search",
+        "reset": "Reset",
+        "filter": "Filter",
+        "close": "Close"
+    },
+    "title": {
+        "delete": "Sure to delete ?",
+        "provide": "Provide Account ?",
+        "deleteacc": "Delete Account ?",
+        "total": "Total"
     }
 }

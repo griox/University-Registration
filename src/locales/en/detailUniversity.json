@@ -1,0 +1,21 @@
+{
+    "label": {
+        "unicode": "University Code",
+        "entrance": "Entrance score",
+        "regis": "Number of Registration",
+        "target": "Target",
+        "address": "Address",
+        "uniname": "Name"
+    },
+    "title": {
+        "id": "ID",
+        "name": "Name",
+        "email": "Email",
+        "math": "Math Score",
+        "literature": "Literature Score",
+        "english": "English Score",
+        "average": "Average Score",
+        "uniinf": "University Infomation",
+        "list": "List Of Student Registered"
+    }
+}

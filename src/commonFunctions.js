@@ -97,7 +97,7 @@ export const encodePath = (email) => {
 };
 
 export const decodePath = (email) => {
-    if (email) return email.replace(/%2E/g, '.');
+    if (email) return email.replace(/,/g, '.');
     else return 0;
 };
 

@@ -11,7 +11,7 @@ import { firebaseConfig } from '../../../constants/constants';
 import { encodePath } from '../../../commonFunctions';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/material';
-
+import bcrypt from 'bcryptjs';
 const Changepass = () => {
     const { t, i18n } = useTranslation('changePassword');
     const history = useHistory();
@@ -21,6 +21,7 @@ const Changepass = () => {
     const [newPass, setNewPass] = useState('');
     const [reNewPass, setReNewPass] = useState('');
     const dispatch = useDispatch();
+    const salt = bcrypt.genSaltSync(10);
     useEffect(() => {
         const passwordInput1 = document.querySelector('.old_pass');
         const eyeBtn1 = document.querySelector('.eye1');
@@ -128,8 +129,12 @@ const Changepass = () => {
     };
 
     const handleLogout = () => {
-        localStorage.removeItem('isLoggedIn');
-        localStorage.removeItem('selectedMenuItem');
+        localStorage.setItem('Infor', JSON.stringify(''));
+        localStorage.setItem('Name', '');
+        localStorage.setItem('Email', JSON.stringify(''));
+        localStorage.setItem('Role', '');
+        localStorage.removeItem('userToken');
+
         dispatch({ type: 'logout' });
         history.push('/Login');
     };
@@ -158,9 +163,11 @@ const Changepass = () => {
         get(child(ref(db), `Account/` + temp)).then((snapshot) => {
             if (snapshot.exists()) {
                 const x = snapshot.val();
-                if (x.password === oldPass) {
+                var hash = bcrypt.hashSync(oldPass, salt);
+                if (bcrypt.compareSync(x.password, hash) === true) {
+                    var newHash = bcrypt.hashSync(newPass, salt);
                     update(ref(db, 'Account/' + temp), {
-                        password: newPass,
+                        password: newHash,
                     })
                         .then(() => {
                             handleLogout();

@@ -9,7 +9,7 @@ import { firebaseConfig } from '../../../constants/constants';
 import { encodePath, validateEmailFormat, validatePasswordFormat } from '../../../commonFunctions';
 import { Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-
+import bcrypt from 'bcryptjs';
 const Register = () => {
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
@@ -19,6 +19,7 @@ const Register = () => {
     const db = getDatabase(app);
     const history = useHistory();
     const { t, i18n } = useTranslation('register');
+    const salt = bcrypt.genSaltSync(10);
 
     useEffect(() => {
         const passwordInput1 = document.querySelector('.pass_login_1');
@@ -123,11 +124,12 @@ const Register = () => {
                 const y = listItem.find((item) => item.email === email);
                 if (y === null || y === undefined) {
                     if (props.againPassword === props.password) {
+                        var hash = bcrypt.hashSync(props.password, salt);
                         const encodeEmail = encodePath(props.email);
                         const ip = {
                             name: props.name,
                             email: props.email,
-                            password: props.password,
+                            password: hash,
                             Role: props.role,
                         };
                         try {

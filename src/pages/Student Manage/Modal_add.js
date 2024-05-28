@@ -8,6 +8,7 @@ import { InfoCircleOutlined, UserOutlined, MailOutlined } from '@ant-design/icon
 import { Input, Tooltip, Row, Col } from 'antd';
 import './css/modal_add.css';
 import dayjs from 'dayjs';
+import { useTranslation } from 'react-i18next';
 
 const firebaseConfig = {
     apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
@@ -35,6 +36,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     const [Englishscore, setEnglishscore] = useState(null);
     const [Literaturescore, setLiteraturescore] = useState(null);
     const [averageS, setAverageS] = useState(null);
+    const { t } = useTranslation('student');
     const showModal = () => {
         setIsModalOpen(true);
     };
@@ -65,7 +67,6 @@ const ModalAdd = ({ studentData, setStudentData }) => {
             return 'SV001';
         }
     };
-
 
     useEffect(() => {
         const calculateAverage = () => {
@@ -357,7 +358,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     return (
         <>
             <Button type="primary" onClick={showModal}>
-                Add a new student
+                {t('button.Add')}
             </Button>
             <Modal
                 title="Register for Student"
@@ -389,11 +390,11 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             >
                                 <Input
                                     placeholder="Enter Student's name"
-                                    prefix={<UserOutlined className='icon' />}
+                                    prefix={<UserOutlined className="icon" />}
                                     onChange={(e) => setFullname(e.target.value)}
                                     suffix={
                                         <Tooltip title="Name must contain letters and no space ">
-                                            <InfoCircleOutlined className='icon'  />
+                                            <InfoCircleOutlined className="icon" />
                                         </Tooltip>
                                     }
                                     allowClear
@@ -433,8 +434,8 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     },
                                 ]}
                             >
-                                <DatePicker className='Date'
-                                  
+                                <DatePicker
+                                    className="Date"
                                     minDate={dayjs('01/01/2004', dateFormat)}
                                     maxDate={dayjs('31/12/2004', dateFormat)}
                                     format="DD/MM/YYYY"
@@ -468,10 +469,10 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                     >
                         <Input
                             placeholder="Enter Student's email"
-                            prefix={<MailOutlined className='icon' />}
+                            prefix={<MailOutlined className="icon" />}
                             suffix={
                                 <Tooltip title="Email must contain @example">
-                                    <InfoCircleOutlined className='icon'  />
+                                    <InfoCircleOutlined className="icon" />
                                 </Tooltip>
                             }
                             onChange={(e) => setEmail(e.target.value)}

@@ -1,3 +1,4 @@
+
 .edit-cell{
   margin: 0;
 }
@@ -14,15 +15,51 @@
 .icon{
   margin-right: 5;
 }
-.Typo_link{
+.ant-typography{
   margin-right:8px;
+  color: var(--id-color);
 }
 .Layout{
   justify-content: center;
   align-items: center;
+
  
 }
-.ant-table-container{
-background-color: var(--body_background);
-color:var(--body_color)
+.ant-table-cell{
+  background-color: var(--body_background);
+  color:var(--body_color);
+  border-bottom: var(--border-color);
+}
+.Registered{
+  color: var(--registered-color);
+}
+.UnRegistered{
+  color:var(--unregistered-color);
+}
+.Can_Regist{
+  color: var(--name-colorY);
+}
+.Not_Regist{
+  color: var(--name-colorN);
+
+}
+.idOnClick{
+  color:var(--id-color);
+  cursor: pointer;
+  background-color: var(--body--background);
+  text-decoration: underline;
+}
+.control{
+  color:var(--id-color)
+}
+.male{
+  color:var(--male-color);
+}
+.female{
+  color:var(--female-color);
+}
+.ant-table-wrapper .ant-table-thead > tr > th,
+.ant-table-wrapper .ant-table-thead > tr > td {
+  background: var(--header-color) ;
+  color: var(--body_color) ;
 }

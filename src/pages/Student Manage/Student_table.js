@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin } from 'antd';
 import './css/table.css';
+import  'antd/dist/reset.css';
 import {
     SearchOutlined,
     EditOutlined,
@@ -17,6 +18,7 @@ import { get, ref, child, getDatabase, remove, update, set } from 'firebase/data
 import { initializeApp } from 'firebase/app';
 import ModalAdd from './Modal_add';
 import ModalDetail from './Modal_Detail';
+import { useTranslation } from 'react-i18next';
 const firebaseConfig = {
     apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
     authDomain: 'mock-proeject-b.firebaseapp.com',
@@ -32,7 +34,6 @@ const db = getDatabase(app);
 
 const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
     const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
-
     return (
         <td {...restProps}>
             {editing ? (
@@ -56,6 +57,8 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
 };
 
 const StudentList = () => {
+    const { t } = useTranslation('student');
+
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState('');
     const [searchText, setSearchText] = useState('');
@@ -333,8 +336,12 @@ const StudentList = () => {
             toast.error('Validate Failed:', errInfo);
         }
     };
-    const renderNameWithGender = (record) => {
-        return <span className="icon">{record.gender === 'Male' ? <ManOutlined /> : <WomanOutlined />}</span>;
+    const renderNameWithGender = (y) => {
+        return (
+            <span className="icon">
+                {y === 'Male' ? <ManOutlined className="male" /> : <WomanOutlined className="female" />}
+            </span>
+        );
     };
 
     const handleIdClick = (record) => {
@@ -342,7 +349,7 @@ const StudentList = () => {
         setIsModalVisible(true);
         setLoading(true);
     };
-    const t = (x) => {
+    const temp = (x) => {
         if (x === null || x === undefined) {
             return false;
         } else {
@@ -355,13 +362,12 @@ const StudentList = () => {
     };
     const columns = [
         {
-            title: 'ID',
+            title: t('table.ID'),
             dataIndex: 'id',
             width: '10%',
-            fixed: 'left',
             ...getColumnSearchProps('id'),
             render: (_, record) => (
-                <span onClick={() => handleIdClick(record)} style={{ color: 'blue', cursor: 'pointer' }}>
+                <span onClick={() => handleIdClick(record)} className="idOnClick">
                     {record.id}
                 </span>
             ),
@@ -369,19 +375,18 @@ const StudentList = () => {
         },
 
         {
-            title: 'Name',
+            title: t('table.Name'),
             dataIndex: 'name',
             width: '19%',
             editable: true,
-            fixed: 'left',
             key: 'name',
             ...getColumnSearchProps('name'),
             render: (text, record) => {
                 return (
                     <>
-                        {renderNameWithGender(text, record)}
-                        <Tooltip title={t(record.uniCode) ? 'can not register more' : ''}>
-                            <span style={{ color: t(record.uniCode) ? '#FF8C00' : 'black' }}>{text}</span>
+                        {renderNameWithGender(record.gender)}
+                        <Tooltip title={temp(record.uniCode) ? 'can not register more' : ''}>
+                            <span className={temp(record.uniCode) ? 'Can_Regist' : 'NoRegist'}>{text}</span>
                         </Tooltip>
                     </>
                 );
@@ -389,20 +394,20 @@ const StudentList = () => {
         },
 
         {
-            title: 'Email',
+            title: t('table.Email'),
             dataIndex: 'email',
             width: '15%',
             editable: true,
             ...getColumnSearchProps('email'),
             render: (text, record) => (
                 <Tooltip title={record.isRegister ? 'had account' : 'account not exists'}>
-                    <span style={{ color: record.isRegister ? 'green' : 'red' }}>{text}</span>
+                    <span className={record.isRegister ? 'Registered' : 'UnRegistered'}>{text}</span>
                 </Tooltip>
             ),
             key: 'email',
         },
         {
-            title: 'Math',
+            title: t('table.Math'),
             dataIndex: 'MathScore',
             width: '10%',
             editable: true,
@@ -410,7 +415,7 @@ const StudentList = () => {
             key: 'MathScore',
         },
         {
-            title: 'Literature',
+            title: t('table.Literature'),
             dataIndex: 'LiteratureScore',
             width: '11%',
             editable: true,
@@ -419,7 +424,7 @@ const StudentList = () => {
             sorter: (a, b) => a.LiteratureScore - b.LiteratureScore,
         },
         {
-            title: 'EngLish',
+            title: t('table.English'),
             dataIndex: 'EnglishScore',
             width: '10%',
             editable: true,
@@ -427,14 +432,14 @@ const StudentList = () => {
             sorter: (a, b) => a.EnglishScore - b.EnglishScore,
         },
         {
-            title: 'Entrance Score',
+            title: t('table.Total Score'),
             dataIndex: 'AverageScore',
             width: '10%',
             key: 'AverageScore',
             sorter: (a, b) => a.AverageScore - b.AverageScore,
         },
         {
-            title: 'Unicode',
+            title: t('table.UniCode'),
             dataIndex: 'uniCode',
             width: '13%',
             render: (text) => {
@@ -449,10 +454,9 @@ const StudentList = () => {
             key: 'uniCode',
         },
         {
-            title: 'Manage',
+            title: t('table.Action'),
             dataIndex: 'operation',
             width: '15%',
-            fixed: 'right',
             render: (_, record) => {
                 const editable = isEditing(record);
                 return editable ? (
@@ -460,7 +464,7 @@ const StudentList = () => {
                         <Typography.Link className="Typo_link" onClick={() => save(record.key)}>
                             Edit
                         </Typography.Link>
-                        <Typography.Link onClick={cancel}>Cancel</Typography.Link>
+                        <Typography.Link className="Typo_link" onClick={cancel}>Cancel</Typography.Link>
                     </span>
                 ) : (
                     <Space size={'middle'}>
@@ -469,23 +473,23 @@ const StudentList = () => {
                             onClick={() => edit(record)}
                             className="Typo_link"
                         >
-                            <EditOutlined />
+                            <EditOutlined className="control" />
                         </Typography.Link>
                         <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record)}>
                             <Typography.Link>
-                                <DeleteOutlined />
+                                <DeleteOutlined className="control" />
                             </Typography.Link>
                         </Popconfirm>
                         {!record.isRegister ? (
                             <Popconfirm title="Provide Account?" onConfirm={() => handleProvideAccount(record)}>
                                 <Typography.Link>
-                                    <PlusCircleOutlined />
+                                    <PlusCircleOutlined className="control" />
                                 </Typography.Link>
                             </Popconfirm>
                         ) : (
                             <Popconfirm title="Delete Account?" onConfirm={() => handleDeleteAccount(record)}>
                                 <Typography.Link>
-                                    <MinusCircleOutlined />
+                                    <MinusCircleOutlined className="control" />
                                 </Typography.Link>
                             </Popconfirm>
                         )}
@@ -532,7 +536,6 @@ const StudentList = () => {
                                     cell: EditableCell,
                                 },
                             }}
-                            bordered
                             dataSource={studentData}
                             columns={mergedColumns}
                             scroll={{
@@ -548,6 +551,7 @@ const StudentList = () => {
                                 showSizeChanger: true,
                                 showQuickJumper: true,
                             }}
+                            rowHoverable={false}
                             ref={tableRef}
                         />
                     </Spin>

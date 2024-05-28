@@ -9,11 +9,29 @@ html,
 }
 :root {
     --body_background: white;
+    --header-background:#ccc;
     --body_color:#333;
+    --registered-color:green;
+    --unregistered-color:red;
+    --border-color:#dfe4ea;
+    --name-colorY:#FF8C00 ;
+    --name-colorN:black;
+    --id-color:blue;
+    --male-color:rgb(6, 26, 205);
+    --female-color:rgb(239, 73, 101);
 }
 [data-theme="dark"] {
-    --body_background:#2C3A47;
+    --body_background:#3d3d3d;
+    --header-background:#1e272e;
     --body_color: white;
+    --registered-color:greenyellow;
+    --unregistered-color:#ff4757;
+    --border-color:#ced6e0;
+    --name-colorY:#ffd32a;
+    --name-colorN:#fff;
+    --id-color:#33d9b2;
+    --male-color:#25CCF7;
+    --female-color:#FDA7DF;
 }
 .app {
     display: flex;

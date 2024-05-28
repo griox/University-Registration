@@ -1,7 +1,7 @@
 import React from 'react'
 import  { Switch } from 'antd';
 import { SunOutlined, MoonOutlined } from '@ant-design/icons';
-export const DarkMode = () => {
+ const DarkMode = () => {
   const setDarkMode =()=>{
     document.querySelector("body").setAttribute("data-theme","dark");
   };
@@ -24,3 +24,4 @@ export const DarkMode = () => {
     </>
   )
 }
+export default DarkMode;

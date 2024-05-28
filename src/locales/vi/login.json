@@ -1,0 +1,15 @@
+{
+    "header": "ĐĂNG NHẬP",
+    "title": {
+        "email": "Email",
+        "password": "Mật khẩu",
+        "remember me": "Lưu đăng nhập",
+        "forgot password": "Quên mật khẩu?",
+        "inform login": "Vui lòng ĐĂNG KÍ để tiếp tục",
+        "or": "hoặc"
+    },
+    "button": {
+        "log in": "Đăng nhập",
+        "get back": "Quay lại"
+    }
+}

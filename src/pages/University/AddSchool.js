@@ -8,6 +8,7 @@ import FormDetail from './Modal_detail';
 import FormAdd from './formAddSchool';
 import { database } from '../firebaseConfig.js';
 import './css/AddSchool.css';
+import { useTranslation } from 'react-i18next';
 
 const AddSchool = () => {
     useEffect(() => {
@@ -27,7 +28,7 @@ const AddSchool = () => {
         };
         fetchData();
     }, []);
-
+    const { t } = useTranslation('university');
     const [isModalDetailVisible, setDetailVisible] = useState(false);
     const [selectedUniverse, setSelectedUniverse] = useState(null);
     const [searchText, setSearchText] = useState('');
@@ -314,7 +315,7 @@ const AddSchool = () => {
 
     const columns = [
         {
-            title: 'Name',
+            title: t('table.Name'),
             dataIndex: 'nameU',
             key: 'nameU',
             width: '30%',
@@ -325,7 +326,7 @@ const AddSchool = () => {
             ),
         },
         {
-            title: 'UniCode',
+            title: t('table.UniCode'),
             dataIndex: 'uniCode',
             width: '13%',
             editable: true,
@@ -335,40 +336,40 @@ const AddSchool = () => {
                     <span style={{ color: record.isRegistered === record.target ? 'green' : 'black' }}>{text}</span>
                 </Tooltip>
             ),
-            key:'uniCode'
+            key: 'uniCode',
         },
         {
-            title: 'Address',
+            title: t('table.Address'),
             dataIndex: 'address',
             filterSearch: true,
             editable: true,
             width: '20%',
-            key:'address'
+            key: 'address',
         },
         {
-            title: 'Entrance score',
+            title: t('table.Entrance Score'),
             dataIndex: 'averageS',
             width: '15%',
             editable: true,
             sorter: (a, b) => a.averageS - b.averageS,
-            key:'averageS'
+            key: 'averageS',
         },
         {
-            title: 'Number of registration',
+            title: t('table.Number of registration'),
             dataIndex: 'isRegistered',
             width: '13%',
-            key:'isRegistered'
+            key: 'isRegistered',
         },
         {
-            title: 'Targets',
+            title: t('table.Target'),
             dataIndex: 'target',
             width: '10%',
             editable: true,
             sorter: (a, b) => a.targets - b.targets,
-            key:'target'
+            key: 'target',
         },
         {
-            title: 'Manage',
+            title: t('table.Action'),
             dataIndex: 'operation',
             width: '13%',
             fixed: 'right',

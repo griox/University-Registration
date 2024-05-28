@@ -145,14 +145,7 @@ const Navbar = () => {
             <Box display="flex" alignItems="center">
                 <span style={{ color: colors.primary[500], fontSize: '1.5rem' }}>{selectedMenuItem}</span>
             </Box>
-            {/* <Box>
-                <button onClick={() => handleLanguage('vi')}>
-                    {currentLanguage === 'Tiếng việt' ? 'Tiếng việt' : 'Vietnamese'}
-                </button>
-                <button onClick={() => handleLanguage('en')}>
-                    {currentLanguage === 'Tiếng việt' ? 'Tiếng anh' : 'Egnlish'}
-                </button>
-            </Box> */}
+
             <Box display="flex">
                 <Space wrap>
                     <Dropdown menu={menuProps}>

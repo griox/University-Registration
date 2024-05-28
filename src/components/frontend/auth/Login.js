@@ -19,7 +19,23 @@ export const Login = () => {
     const [rememberMe, setRememberMe] = useState(false);
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-
+    const salt = bcrypt.genSaltSync(10);
+    // useEffect(() => {
+    //     const keyDownHandler = (event) => {
+    //         if (email !== '' && password !== '') {
+    //             if (event.key === 'Enter') {
+    //             }
+    //             getdt(email, password);
+    //         }
+    //     };
+    //     document.addEventListener('keydown', function (event) {
+    //         if (email !== '' && password !== '') {
+    //             if (event.key === 'Enter') {
+    //             }
+    //             getdt(email, password);
+    //         }
+    //     });
+    // }, [email, password]);
     useEffect(() => {
         const passwordInput = document.querySelector('.pass_login');
         const eyeBtn = document.querySelector('.eye');
@@ -120,6 +136,7 @@ export const Login = () => {
                                     (item) =>
                                         item.email === email && bcrypt.compareSync(password, item.password) === true,
                                 );
+                                console.log(bcrypt.hashSync(password, salt));
                                 if (y.length !== 0) {
                                     for (let i in y) {
                                         if (y[i].name !== undefined && y[i].name !== null) {
@@ -159,6 +176,22 @@ export const Login = () => {
         <Link to="/admin/dashboard" />;
     };
 
+    // const KeyDownHandler = (event) => {
+    //     const keyDownHandler = (event) => {
+    //         if (event.key === 'Enter') {
+    //             getdt(email, password);
+    //         }
+    //     };
+    //     document.addEventListener('keydown', keyDownHandler);
+    //     return () => {
+    //         document.removeEventListener('keydown', keyDownHandler);
+    //     };
+    // };
+    const handleEnterKey = (e) => {
+        if (e.key === 'Enter') {
+            getdt(email, password);
+        }
+    };
     return (
         <>
             <div className="background">
@@ -197,6 +230,7 @@ export const Login = () => {
                                             onChange={(e) => setEmail(e.target.value)}
                                             placeholder={t('title.email')}
                                             required
+                                            onKeyDown={handleEnterKey}
                                         />
                                         <i className="bx bx-envelope icon"></i>
                                     </div>
@@ -208,6 +242,7 @@ export const Login = () => {
                                             value={password}
                                             placeholder={t('title.password')}
                                             required
+                                            onKeyDown={handleEnterKey}
                                         />
 
                                         <i className="bx bx-lock-alt icon"></i>

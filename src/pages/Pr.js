@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button, Input, Select, Space, Table, Skeleton, Spin, Tooltip } from 'antd';
 import '../assets/admin/css/profile.css';
 import 'firebase/auth';
@@ -6,18 +6,105 @@ import { ref, child, getDatabase, get, update } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { CameraOutlined, DownOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { CameraOutlined, DownOutlined, InfoCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { Avatar } from '@mui/material';
 import { storage } from './firebaseConfig';
 import { getDownloadURL, uploadBytes, ref as storageRef } from 'firebase/storage';
 import { ethnicities, firebaseConfig, gender, provinces } from '../constants/constants';
-import { GetColumnSearchProps } from '../commonFunctions';
 import { useTranslation } from 'react-i18next';
+import Highlighter from 'react-highlight-words';
+import { GetColumnSearchProps } from '../commonFunctions';
 const MAX_COUNT = 5;
+
+const handleSearch = (selectedKeys, confirm, dataIndex, setSearchText, setSearchedColumn) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+};
+const handleReset = (clearFilters, setSearchText) => {
+    clearFilters();
+    setSearchText('');
+};
+const getColumnSearchProps = (props) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+        <div onKeyDown={(e) => e.stopPropagation()} className="getColumnSearchProps">
+            <Input
+                ref={props.searchInput}
+                placeholder={`Search ${props.dataIndex}`}
+                value={selectedKeys[0]}
+                onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                onPressEnter={() => handleSearch(selectedKeys, confirm, props.dataIndex)}
+                className="getColumnSearchProps-Input"
+            />
+            <Space>
+                <Button
+                    type="primary"
+                    onClick={() =>
+                        handleSearch(selectedKeys, confirm, props.dataIndex, {
+                            setSearchText: props.setSearchText,
+                            setSearchedColumn: props.setSearchedColumn,
+                        })
+                    }
+                    icon={<SearchOutlined />}
+                    size="small"
+                    className="getColumnSearchProps-Button"
+                >
+                    Search
+                </Button>
+                <Button
+                    onClick={() => clearFilters && handleReset(clearFilters, { setSearchText: props.setSearchText })}
+                    size="small"
+                    className="getColumnSearchProps-Button"
+                >
+                    Reset
+                </Button>
+                <Button
+                    type="link"
+                    size="small"
+                    onClick={() => {
+                        confirm({
+                            closeDropdown: false,
+                        });
+                        props.setSearchText(selectedKeys[0]);
+                        props.setSearchedColumn(props.dataIndex);
+                    }}
+                >
+                    Filter
+                </Button>
+                <Button type="link" size="small" onClick={() => close()}>
+                    Close
+                </Button>
+            </Space>
+        </div>
+    ),
+    filterIcon: (filtered) => <SearchOutlined className={filtered ? 'getColumnSearchProps-filterIcon' : undefined} />,
+    onFilter: (value, record) => record[props.dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+        if (visible) {
+            setTimeout(() => props.searchInput.current?.select(), 100);
+        }
+    },
+    render: (text) =>
+        props.searchedColumn === props.dataIndex ? (
+            <Highlighter
+                highlightStyle={{
+                    backgroundColor: '#ffc069',
+                    padding: 0,
+                }}
+                searchWords={[props.searchText]}
+                autoEscape
+                textToHighlight={text ? text.toString() : ''}
+            />
+        ) : (
+            text
+        ),
+});
 function Pr() {
     const { t } = useTranslation('profile');
     const [suitableSchoolList, setSuitableSchoolList] = useState([]);
-
+    const searchInput = useRef(null);
+    const [searchText, setSearchText] = useState('');
+    const [searchedColumn, setSearchedColumn] = useState('');
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const [arr, setArr] = useState([]);
@@ -34,30 +121,45 @@ function Pr() {
             title: t('table.Code'),
             dataIndex: 'code',
             key: 'code',
-            ...GetColumnSearchProps('code'),
+            ...getColumnSearchProps({
+                dataIndex: 'code',
+                searchInput: searchInput,
+                searchText: searchText,
+                searchedColumn: searchedColumn,
+                setSearchText: setSearchText,
+                setSearchedColumn: setSearchedColumn,
+            }),
         },
         {
             title: t('table.Name'),
             dataIndex: 'name',
             key: 'name',
-            ...GetColumnSearchProps('name'),
+            ...getColumnSearchProps({
+                dataIndex: 'code',
+                searchInput: searchInput,
+                searchText: searchText,
+                searchedColumn: searchedColumn,
+                setSearchText: setSearchText,
+                setSearchedColumn: setSearchedColumn,
+            }),
         },
         {
             title: t('table.Entrance Score'),
             dataIndex: 'score',
             key: 'score',
-            ...GetColumnSearchProps('score'),
+            sorter: (a, b) => a.score - b.score,
         },
         {
             title: t('table.Target'),
             dataIndex: 'capacity',
             key: 'capacity',
-            ...GetColumnSearchProps('capacity'),
+            sorter: (a, b) => a.capacity - b.capacity,
         },
         {
             title: t('table.Number of students registered'),
             dataIndex: 'isRegistered',
             key: 'isRegistered',
+            sorter: (a, b) => a.isRegistered - b.isRegistered,
         },
         {
             title: t('table.Action'),

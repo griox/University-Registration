@@ -3,11 +3,11 @@ import './bin.css'; // Make sure to adjust the path according to your file struc
 import { child, get, getDatabase, ref, update } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from './constants/constants';
-import bcrypt from 'bcryptjs';
+// import bcrypt from 'bcryptjs';
 import { encodePath } from './commonFunctions';
 
 const MyComponent = () => {
-    const salt = bcrypt.genSaltSync(10);
+    // const salt = bcrypt.genSaltSync(10);
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
@@ -19,9 +19,9 @@ const MyComponent = () => {
                     const listItem = Object.values(x).map((user) => user);
                     listItem.forEach((item) => {
                         const temp = encodePath(item.email);
-                        var hash = bcrypt.hashSync(item.password, salt);
+                        // var hash = bcrypt.hashSync(item.password, salt);
                         update(ref(db, 'Account/' + temp), {
-                            password: hash,
+                            // password: hash,
                         });
                     });
                 } else {

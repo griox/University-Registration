@@ -29,11 +29,7 @@ function App() {
                 <div className="App">
                     <Router>
                         <Switch>
-                            <Route
-                                exact
-                                path="/"
-                                component={email === null || email === 'null' ? Home : history.push('/admin/dashboard')}
-                            />
+                            <Route exact path="/" component={Home} />
                             <Route path="/login" component={Login} />
 
                             <Route path="/register" component={Register} />

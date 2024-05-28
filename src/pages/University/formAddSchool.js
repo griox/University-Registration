@@ -5,7 +5,7 @@ import { ref, child, get, set } from 'firebase/database';
 import { toast } from 'react-toastify';
 import { BankOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { database } from '../firebaseConfig.js';
-import './css/formAddSchool.css';
+import '../University/css/formAddSchool.css';
 import { useTranslation } from 'react-i18next';
 
 const FormAdd = ({ UniData, setUniData }) => {
@@ -102,7 +102,7 @@ const FormAdd = ({ UniData, setUniData }) => {
             target: targetScore,
         };
         setUniData = [...UniData, newUni];
-        toast.success('Added a university');
+        toast.success(t('toast.addsuccess'));
     };
 
     function validateName(uniName) {
@@ -121,34 +121,37 @@ const FormAdd = ({ UniData, setUniData }) => {
                 title="Add a university"
                 open={isModalVisible}
                 onOk={handleOk}
+                okText={t('title.ok')}
                 onCancel={handleCancel}
+                cancelText={t('title.cancel')}
                 width={700}
-                okText="Add"
                 destroyOnClose
             >
                 <Space direction="vertical">
                     <Form>
                         <Form.Item
-                            className="form-item"
+                            className="form-item2"
                             label={t('label.uniname')}
+                            labelCol={{ span: 22 }}
+                            wrapperCol={{ span: 12 }}
                             validateStatus={!validateUniName(uniName) && uniName ? 'error' : ''}
                             name="Input"
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Please input!',
+                                    message: t('warning.input'),
                                 },
                             ]}
                         >
                             <Input
                                 className="ip-UniName"
-                                placeholder="Enter University's name"
+                                placeholder= {t('placeholder.name')}
                                 prefix={<BankOutlined className="ic-bank" />}
                                 onChange={(e) => setUniName(e.target.value)}
                                 value={uniName}
                                 allowClear
                                 suffix={
-                                    <Tooltip title="Name just only contain letters and no numbers">
+                                    <Tooltip title= {t('tooltip.name')}>
                                         <InfoCircleOutlined className="ic-info" />
                                     </Tooltip>
                                 }
@@ -156,25 +159,27 @@ const FormAdd = ({ UniData, setUniData }) => {
                         </Form.Item>
 
                         <Form.Item
-                            className="form-item"
+                            className="form-item2"
                             label={t('label.unicode')}
+                            labelCol={{ span: 22 }}
+                            wrapperCol={{ span: 12 }}
                             validateStatus={!validateName(uniCode) && uniCode ? 'error' : ''}
                             name="InputCode"
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Please input!',
+                                    message: t('warning.input'),
                                 },
                             ]}
                         >
                             <Input
                                 className="ip-UniCode"
-                                placeholder="Uni's Code"
+                                placeholder= {t('placeholder.code')}
                                 allowClear
                                 onChange={(e) => setUniCode(e.target.value)}
                                 maxLength={6}
                                 suffix={
-                                    <Tooltip title="uniCode just contain only letters ">
+                                    <Tooltip title= {t('tooltip.code')}>
                                         <InfoCircleOutlined className="ic-info" />
                                     </Tooltip>
                                 }
@@ -182,40 +187,22 @@ const FormAdd = ({ UniData, setUniData }) => {
                             />
                         </Form.Item>
 
-                        <Form.Item
-                            className="form-item"
-                            label={t('label.address')}
-                            name="TextArea"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: 'Please input!',
-                                },
-                            ]}
-                        >
-                            <Input.TextArea
-                                className="ip-textArea"
-                                placeholder="Uni's address"
-                                allowClear
-                                onChange={(e) => setAddress(e.target.value)}
-                                value={address}
-                            />
-                        </Form.Item>
-
-                        <div className="div">
                             <Form.Item
-                                className="form-item"
+                                className="form-item2"
                                 label={t('label.entrance')}
+                                labelCol={{ span: 22 }}
+                                wrapperCol={{ span: 12 }}
                                 name="Entrance"
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Please input!',
+                                        message: t('warning.input'),
                                     },
                                 ]}
                             >
                                 <InputNumber
                                     className="ip-number1"
+                                    placeholder= {t('placeholder.entrance')}
                                     maxLength={2}
                                     value={averageScore}
                                     onChange={(value) => setAverageScore(value)}
@@ -224,20 +211,22 @@ const FormAdd = ({ UniData, setUniData }) => {
                                     step={0.2}
                                 />
                             </Form.Item>
-
                             <Form.Item
-                                className="form-item"
+                                className="form-item2"
                                 label={t('label.target')}
+                                labelCol={{ span: 22 }}
+                                wrapperCol={{ span: 12 }}
                                 name="Target"
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Please input!',
+                                        message: t('warning.input'),
                                     },
                                 ]}
                             >
                                 <InputNumber
                                     className="ip-number2"
+                                    placeholder= {t('placeholder.target')}
                                     maxLength={5}
                                     value={targetScore}
                                     onChange={(value) => setTargetScore(value)}
@@ -246,7 +235,28 @@ const FormAdd = ({ UniData, setUniData }) => {
                                     step={100}
                                 />
                             </Form.Item>
-                        </div>
+
+                            <Form.Item
+                            className="form-item2"
+                            label={t('label.address')}
+                            labelCol={{ span: 22 }}
+                            wrapperCol={{ span: 12 }}
+                            name="TextArea"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: t('warning.input'),
+                                },
+                            ]}
+                        >
+                            <Input.TextArea
+                                className="ip-textArea"
+                                placeholder= {t('placeholder.address')}
+                                allowClear
+                                onChange={(e) => setAddress(e.target.value)}
+                                value={address}
+                            />
+                        </Form.Item>
                     </Form>
                 </Space>
             </Modal>

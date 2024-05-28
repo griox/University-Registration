@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { Button, Modal, Select, InputNumber, DatePicker, Form } from 'antd';
 import { InfoCircleOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
 import { Input, Tooltip, Row, Col } from 'antd';
-import './css/modal_add.css';
+import '../Student Manage/css/modal_add.css';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { database } from '../firebaseConfig.js';
@@ -347,7 +347,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                     <Row gutter={16}>
                         <Col span={12}>
                             <Form.Item
-                                className="form-item"
+                                className="form-item1"
                                 label={t('label.name')}
                                 name="name"
                                 validateStatus={!validateFullname(Fullname) && Fullname ? 'error' : ''}
@@ -378,7 +378,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         </Col>
                         <Col span={12}>
                             <Form.Item
-                                className="form-item"
+                                className="form-item1"
                                 label={t('label.gender')}
                                 name="gender"
                                 rules={[
@@ -399,7 +399,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                     <Row gutter={16}>
                         <Col span={12}>
                             <Form.Item
-                                className="form-item"
+                                className="form-item1"
                                 label={t('label.dofb')}
                                 name="dob"
                                 rules={[
@@ -419,7 +419,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item label={t('label.pofb')} className="form-item">
+                            <Form.Item label={t('label.pofb')} className="form-item1">
                                 <Select
                                     initialvalues="Khánh Hòa"
                                     options={cities}
@@ -432,7 +432,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                     <Form.Item
                           label={t('label.email')}
                         name="email"
-                        className="form-item"
+                        className="form-item1"
                         validateStatus={!validateEmailFormat(Email) && Email ? 'error' : ''}
                         help={validateEmailFormat(Email) && Email ? ' ' : ''}
                         rules={[
@@ -459,7 +459,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             <Form.Item
                                   label={t('label.identify')}
                                 name="identify"
-                                className="form-item"
+                                className="form-item1"
                                 validateStatus={!validateIdenNumber(Identify) && Identify ? 'error' : ''}
                                 help={
                                     !validateIdenNumber(Identify) && Identify
@@ -485,7 +485,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             <Form.Item
                                label={t('label.ethnicity')}
                                 name="ethnicity"
-                                className="form-item"
+                                className="form-item1"
                                 rules={[
                                     {
                                         required: true,
@@ -507,7 +507,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             <Form.Item
                                 label={t('label.address')}
                                 name="address"
-                                className="form-item"
+                                className="form-item1"
                                 rules={[
                                     {
                                         required: true,
@@ -530,7 +530,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         <Col span={6}>
                             <Form.Item
                                 label={t('label.math')}
-                                className="form-item"
+                                className="form-item1"
                                 name="math"
                                 rules={[
                                     {
@@ -552,7 +552,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             <Form.Item
                                 label={t('label.english')}
                                 name="english"
-                                className="form-item"
+                                className="form-item1"
                                 rules={[
                                     {
                                         required: true,
@@ -573,7 +573,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             <Form.Item
                                 label={t('label.literature')}
                                 name="literature"
-                                className="form-item"
+                                className="form-item1"
                                 validateStatus={
                                     (!validateNumber(Literaturescore) && Literaturescore) ||
                                     (Literaturescore && parseFloat(Literaturescore) > 10)
@@ -604,7 +604,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             </Form.Item>
                         </Col>
                         <Col span={6}>
-                            <Form.Item  label={t('label.entrance')} className="form-item">
+                            <Form.Item  label={t('label.entrance')} className="form-item1">
                                 <Input readOnly className="input-num" value={averageS} />
                             </Form.Item>
                         </Col>

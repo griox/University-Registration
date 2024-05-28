@@ -67,7 +67,7 @@ const Navbar = () => {
                         },
                         {
                             key: '1.2.2',
-                            label: currentLanguage === 'Tiếng việt' ? 'Tiếng anh' : 'Egnlish',
+                            label: currentLanguage === 'Tiếng việt' ? 'Tiếng anh' : 'English',
                             icon: (
                                 <img width="20" height="20" src="https://img.icons8.com/color/48/usa.png" alt="usa" />
                             ),

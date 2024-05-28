@@ -7,9 +7,11 @@ import { useHistory } from 'react-router-dom';
 import '../../../assets/css/register.css';
 import { firebaseConfig } from '../../../constants/constants';
 import { encodePath, validateEmailFormat, validatePasswordFormat } from '../../../commonFunctions';
-import { Box } from '@mui/material';
+import { DownOutlined } from '@ant-design/icons';
+import { Dropdown, Space, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import bcrypt from 'bcryptjs';
+
 const Register = () => {
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
@@ -92,6 +94,18 @@ const Register = () => {
     const handleLanguage = (lng) => {
         i18n.changeLanguage(lng);
     };
+    const items = [
+        {
+          key: '1',
+          label: 'English',
+          onClick: () => handleLanguage('en')
+        },
+        {
+          key: '2',
+          label: 'Tiếng Việt',
+          onClick: () => handleLanguage('vi')
+        },
+    ];
     const clear = () => {
         setFullName('');
         setEmail('');
@@ -151,10 +165,6 @@ const Register = () => {
     return (
         <>
             <div className="background">
-                <Box className="language">
-                    <button onClick={() => handleLanguage('vi')}>Tiếng việt</button>
-                    <button onClick={() => handleLanguage('en')}>Tiếng Anh</button>
-                </Box>
                 <div className="form-container">
                     <div className="col col-1">
                         <div className="image_layer">
@@ -284,6 +294,24 @@ const Register = () => {
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </div>
                                     </div>
+
+                                    <div>
+                                    <Dropdown className='drop-menu'
+                                            menu={{
+                                            items,
+                                            selectable: true,
+                                            defaultSelectedKeys: ['1'],
+                                            }}
+                                        >
+                                            <Typography.Link>
+                                            <Space className='title-drop'>
+                                                {t('title.language')}
+                                                <DownOutlined />
+                                            </Space>
+                                            </Typography.Link>
+                                        </Dropdown>
+                                    </div>
+
                                 </div>
                             </div>
                         </form>

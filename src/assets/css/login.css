@@ -367,6 +367,9 @@
     color: #fff;
     cursor: pointer;
 }
+.drop-menu .title-drop{
+    color: white;
+}
 @media (max-width: 892px) {
     .form-container {
         width: 400px;

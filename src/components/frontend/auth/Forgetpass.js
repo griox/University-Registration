@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
-// import 'boxicons/css/boxicons.min.css';
 import 'firebase/auth';
 import { Link } from 'react-router-dom';
 import '../../../assets/css/login.css';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../../../constants/constants';
-// import '../../../assets/js/login';
+import { DownOutlined } from '@ant-design/icons';
+import { Dropdown, Space, Typography } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 export const Forgetpass = () => {
+    const { t, i18n } = useTranslation('fogetpassword');
     const app = initializeApp(firebaseConfig);
     const db = getAuth(app);
     const [email, setEmail] = useState('');
@@ -25,6 +27,21 @@ export const Forgetpass = () => {
                 console.error('Error:', errorCode, errorMessage);
             });
     };
+    const handleLanguage = (lng) => {
+        i18n.changeLanguage(lng);
+    };
+    const items = [
+        {
+          key: '1',
+          label: 'English',
+          onClick: () => handleLanguage('en')
+        },
+        {
+          key: '2',
+          label: 'Tiếng Việt',
+          onClick: () => handleLanguage('vi')
+        },
+    ];
     return (
         <>
             <div className="background">
@@ -35,10 +52,10 @@ export const Forgetpass = () => {
                         </div>
 
                         <p className="featured">
-                            Please enter EMAIL to continue <br /> or <br /> <br />
+                        {t('title.inform forget')} <br /> {t('title.or')} <br /> <br />
                             <span>
                                 <Link className="btn-getback" to="/login">
-                                    Get back
+                                {t('button.get back')}
                                 </Link>
                             </span>
                         </p>
@@ -53,7 +70,7 @@ export const Forgetpass = () => {
                                 <br />
                                 <br />
                                 <div className="form-title">
-                                    <span>FORGET PASSWORD</span>
+                                    <span>{t('header')}</span>
                                 </div>
                                 <div className="form-inputs">
                                     <div className="input-box">
@@ -70,10 +87,28 @@ export const Forgetpass = () => {
 
                                     <div className="input-box">
                                         <div className="input-submit" onClick={() => handleEmail()}>
-                                            <span>Continue</span>
+                                            <span>{t('button.continue')}</span>
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </div>
                                     </div>
+
+                                    <div>
+                                    <Dropdown className='drop-menu'
+                                            menu={{
+                                            items,
+                                            selectable: true,
+                                            defaultSelectedKeys: ['1'],
+                                            }}
+                                        >
+                                            <Typography.Link>
+                                            <Space className='title-drop'>
+                                                {t('title.language')}
+                                                <DownOutlined />
+                                            </Space>
+                                            </Typography.Link>
+                                        </Dropdown>
+                                    </div>
+
                                 </div>
                             </div>
                         </form>

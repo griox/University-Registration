@@ -1,0 +1,21 @@
+{
+    "title": {
+        "nameuni": "Tên Trường",
+        "unicode": "Mã Trường",
+        "address": "Địa chỉ",
+        "entrance": "Điểm sàn",
+        "modal": "Thông tin sinh viên",
+        "list": "Danh sách các trường đã đăng ký"
+    },
+    "label": {
+        "id": "Mã số",
+        "name": "Họ và tên",
+        "gender": "Giới tính",
+        "dofb": "Ngày sinh",
+        "pofb": "Nơi sinh",
+        "email": "Email",
+        "identify": "CMND/CCCD",
+        "enthicity": "Dân tộc",
+        "addressuni": "Địa chỉ"
+    }
+}

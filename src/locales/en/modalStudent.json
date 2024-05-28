@@ -1,0 +1,22 @@
+{
+    "button": {
+        "Add": "Add Student"
+    },
+    "label": {
+        "name": "Name",
+        "gender": "Gender",
+        "dofb": "Date of birth",
+        "pofb": "Place of birth",
+        "email": "Email",
+        "identify": "Identify Number",
+        "ethnicity": "Ethinicity",
+        "address": "Address",
+        "math": "Math Score",
+        "english": "English Score",
+        "literature": "Literature Score",
+        "entrance": "Entrance Score"
+    },
+    "title": {
+        "modal": "Register for Student"
+    }
+}

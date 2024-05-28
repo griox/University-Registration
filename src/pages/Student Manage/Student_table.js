@@ -13,23 +13,11 @@ import { toast } from 'react-toastify';
 import { Button, Space } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { WomanOutlined } from '@ant-design/icons';
-import { get, ref, child, getDatabase, remove, update, set } from 'firebase/database';
-import { initializeApp } from 'firebase/app';
+import { get, ref, child, remove, update, set } from 'firebase/database';
 import ModalAdd from './Modal_add';
 import ModalDetail from './Modal_Detail';
 import { useTranslation } from 'react-i18next';
-const firebaseConfig = {
-    apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
-    authDomain: 'mock-proeject-b.firebaseapp.com',
-    databaseURL: 'https://mock-proeject-b-default-rtdb.firebaseio.com',
-    projectId: 'mock-proeject-b',
-    storageBucket: 'mock-proeject-b.appspot.com',
-    messagingSenderId: '898832925665',
-    appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+import { database } from '../firebaseConfig.js';
 
 const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
     const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
@@ -57,7 +45,6 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
 
 const StudentList = () => {
     const { t } = useTranslation('student');
-
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState('');
     const [searchText, setSearchText] = useState('');
@@ -69,7 +56,7 @@ const StudentList = () => {
     const tableRef = useRef(null);
     useEffect(() => {
         const fetchData = async () => {
-            const studentRef = child(ref(db), 'Detail');
+            const studentRef = child(ref(database), 'Detail');
             try {
                 const snapshot = await get(studentRef);
                 if (snapshot.exists()) {
@@ -79,7 +66,7 @@ const StudentList = () => {
                     setLoading(false);
                 }
             } catch (error) {
-                console.error(error);
+                toast.error('Error when fetch data');
             }
         };
 
@@ -97,13 +84,11 @@ const StudentList = () => {
     const handleProvideAccount = async (record) => {
         const encodeEmail = encodeEmails(record.email);
         try {
-            // Cập nhật giá trị isRegister của sinh viên
-            await update(ref(db, `Detail/${record.key}`), {
+            await update(ref(database, `Detail/${record.key}`), {
                 isRegister: true,
             });
 
-            // Thêm dữ liệu vào bảng account
-            const accountRef = ref(db, `Account/${encodeEmail}`);
+            const accountRef = ref(database, `Account/${encodeEmail}`);
             await set(accountRef, {
                 email: record.email,
                 password: 'Tvx1234@',
@@ -111,23 +96,22 @@ const StudentList = () => {
                 Role: 'user',
             });
 
-            // Cập nhật state
             const newData = studentData.map((item) => (item.key === record.key ? { ...item, isRegister: true } : item));
             setStudentData(newData);
         } catch (error) {
-            console.error('Error provide account student:', error);
+            toast.error('Error provide account student');
         }
     };
     const handleDeleteAccount = async (record) => {
         try {
             const encodeEmail = encodeEmails(record.email);
-            await remove(child(ref(db), `Account/${encodeEmail}`));
+            await remove(child(ref(database), `Account/${encodeEmail}`));
             const newData = studentData.map((item) =>
                 item.key === record.key ? { ...item, isRegister: false } : item,
             );
             setStudentData(newData);
         } catch (error) {
-            console.error('Error deleting account', error);
+            toast.error('Error deleting account');
         }
     };
 
@@ -153,10 +137,10 @@ const StudentList = () => {
                         icon={<SearchOutlined />}
                         size="small"
                     >
-                        Search
+                        {t('button.search')}
                     </Button>
                     <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small">
-                        Reset
+                        {t('button.reset')}
                     </Button>
                     <Button
                         type="link"
@@ -169,10 +153,10 @@ const StudentList = () => {
                             setSearchedColumn(dataIndex);
                         }}
                     >
-                        Filter
+                       {t('button.filter')}
                     </Button>
                     <Button type="link" size="small" onClick={() => close()}>
-                        Close
+                        {t('button.close')}
                     </Button>
                 </Space>
             </div>
@@ -217,25 +201,25 @@ const StudentList = () => {
             }
             if (record.uniCode !== undefined) {
                 for (const uniCode of studentToDelete.uniCode) {
-                    const universityRef = ref(db, `University/${uniCode}`);
+                    const universityRef = ref(database, `University/${uniCode}`);
                     const universitySnapshot = await get(universityRef);
                     if (universitySnapshot.exists()) {
                         const universityData = universitySnapshot.val();
                         const updatedIsRegistered = Math.max(0, universityData.isRegistered - 1);
                         await update(universityRef, { isRegistered: updatedIsRegistered });
                     } else {
-                        console.error('University not found');
+                        toast.error('University not found');
                     }
                 }
             }
 
-            await remove(child(ref(db), `Detail/${record.id}`));
+            await remove(child(ref(database), `Detail/${record.id}`));
             const emailhash = encodeEmails(record.email);
-            await remove(child(ref(db), `Account/${emailhash}`));
+            await remove(child(ref(database), `Account/${emailhash}`));
             const newData = studentData.filter((item) => item.id !== record.id);
             setStudentData(newData);
         } catch (error) {
-            console.error('Error deleting data:', error);
+            toast.error('Error deleting data');
         }
     };
 
@@ -258,16 +242,13 @@ const StudentList = () => {
 
         if (index > -1) {
             newData[index][dataIndex] = value;
-            setStudentData(newData); // Update state
-
+            setStudentData(newData); 
             try {
-                // Await the update promise for Firebase
-                await update(ref(db, `Detail/${key}`), {
+                await update(ref(database, `Detail/${key}`), {
                     [dataIndex]: value,
                 });
             } catch (error) {
-                console.error('Error updating document:', error);
-                // Handle update error (optional: show notification to user)
+                toast.error('Error updating document');
             }
         }
     };
@@ -290,13 +271,11 @@ const StudentList = () => {
                     toast.error('Invalid Email Format');
                     return;
                 }
-                // Xử lý dữ liệu thay đổi
                 newData.splice(index, 1, {
                     ...item,
                     ...row,
                 });
 
-                // Chuyển đổi giá trị từ chuỗi sang số
                 const updatedRow = {
                     ...newData[index],
                     MathScore: parseFloat(newData[index].MathScore),
@@ -304,22 +283,18 @@ const StudentList = () => {
                     EnglishScore: parseFloat(newData[index].EnglishScore),
                 };
 
-                // Tính lại averageScore
                 const mathScore = updatedRow['MathScore'] || 0;
                 const literatureScore = updatedRow['LiteratureScore'] || 0;
                 const englishScore = updatedRow['EnglishScore'] || 0;
                 const averageScore = mathScore + literatureScore + englishScore;
 
-                // Làm tròn averageScore đến 1 chữ số thập phân
                 updatedRow['AverageScore'] = Math.round(averageScore * 10) / 10;
 
-                // Cập nhật dữ liệu trên state
                 newData[index] = updatedRow;
                 setStudentData(newData);
                 setEditingKey('');
 
-                // Cập nhật dữ liệu trên Firebase
-                await update(ref(db, `Detail/${key}`), updatedRow);
+                await update(ref(database, `Detail/${key}`), updatedRow);
                 toast.success('Data updated successfully');
             } else {
                 newData.push(row);
@@ -327,12 +302,11 @@ const StudentList = () => {
                 setEditingKey('');
                 handleFieldChange(key, Object.keys(row)[0], row[Object.keys(row)[0]]);
 
-                // Thêm dữ liệu mới vào Firebase
-                await set(ref(db, `Detail/${key}`), row); // Thêm dữ liệu mới
+                await set(ref(database, `Detail/${key}`), row); 
                 toast.success('Data added to Firebase successfully');
             }
         } catch (errInfo) {
-            console.error('Validate Failed:', errInfo);
+            toast.error('Validate Failed');
         }
     };
     const renderNameWithGender = (record) => {
@@ -466,9 +440,9 @@ const StudentList = () => {
                 return editable ? (
                     <span>
                         <Typography.Link className="Typo_link" onClick={() => save(record.key)}>
-                            Edit
+                            {t('button.edit')}
                         </Typography.Link>
-                        <Typography.Link onClick={cancel}>Cancel</Typography.Link>
+                        <Typography.Link onClick={cancel}>{t('button.cancel')}</Typography.Link>
                     </span>
                 ) : (
                     <Space size={'middle'}>
@@ -479,19 +453,19 @@ const StudentList = () => {
                         >
                             <EditOutlined />
                         </Typography.Link>
-                        <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record)}>
+                        <Popconfirm title={t('title.delete')} onConfirm={() => handleDelete(record)}>
                             <Typography.Link>
                                 <DeleteOutlined />
                             </Typography.Link>
                         </Popconfirm>
                         {!record.isRegister ? (
-                            <Popconfirm title="Provide Account?" onConfirm={() => handleProvideAccount(record)}>
+                            <Popconfirm title={t('title.provide')} onConfirm={() => handleProvideAccount(record)}>
                                 <Typography.Link>
                                     <PlusCircleOutlined />
                                 </Typography.Link>
                             </Popconfirm>
                         ) : (
-                            <Popconfirm title="Delete Account?" onConfirm={() => handleDeleteAccount(record)}>
+                            <Popconfirm title={t('title.deleteacc')} onConfirm={() => handleDeleteAccount(record)}>
                                 <Typography.Link>
                                     <MinusCircleOutlined />
                                 </Typography.Link>
@@ -555,6 +529,7 @@ const StudentList = () => {
                                 onChange: cancel,
                                 showSizeChanger: true,
                                 showQuickJumper: true,
+                                showTotal: (total) => `${t('title.total')} ${total}`
                             }}
                             ref={tableRef}
                         />

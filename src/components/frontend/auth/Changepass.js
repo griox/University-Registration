@@ -10,7 +10,8 @@ import { useDispatch } from 'react-redux';
 import { firebaseConfig } from '../../../constants/constants';
 import { encodePath } from '../../../commonFunctions';
 import { useTranslation } from 'react-i18next';
-import { Box } from '@mui/material';
+import { DownOutlined } from '@ant-design/icons';
+import { Dropdown, Space, Typography } from 'antd';
 import bcrypt from 'bcryptjs';
 const Changepass = () => {
     const { t, i18n } = useTranslation('changePassword');
@@ -141,6 +142,19 @@ const Changepass = () => {
     const handleLanguage = (lng) => {
         i18n.changeLanguage(lng);
     };
+    const items = [
+        {
+          key: '1',
+          label: 'English',
+          onClick: () => handleLanguage('en')
+        },
+        {
+          key: '2',
+          label: 'Tiếng Việt',
+          onClick: () => handleLanguage('vi')
+        },
+    ];
+
     const changePassWord = () => {
         let temp = JSON.parse(localStorage.getItem('Email'));
         if (oldPass === '') {
@@ -185,10 +199,6 @@ const Changepass = () => {
     return (
         <>
             <div className="background">
-                <Box className="language">
-                    <button onClick={() => handleLanguage('vi')}>Tiếng việt</button>
-                    <button onClick={() => handleLanguage('en')}>Tiếng Anh</button>
-                </Box>
                 <div className="form-container">
                     <div className="col col-1">
                         <div className="image_layer">
@@ -265,6 +275,24 @@ const Changepass = () => {
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </div>
                                     </div>
+
+                                    <div>
+                                    <Dropdown className='drop-menu'
+                                            menu={{
+                                            items,
+                                            selectable: true,
+                                            defaultSelectedKeys: ['1'],
+                                            }}
+                                        >
+                                            <Typography.Link>
+                                            <Space className='title-drop'>
+                                                {t('title.language')}
+                                                <DownOutlined />
+                                            </Space>
+                                            </Typography.Link>
+                                        </Dropdown>
+                                    </div>
+
                                 </div>
                             </div>
                         </form>

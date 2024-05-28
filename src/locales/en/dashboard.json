@@ -5,5 +5,23 @@
         "gender": "Gender",
         "average scores of subjects": "Average total score of subjects and students",
         "the number of courses each student registers": "Number of schools per student registered"
+    },
+    "data": {
+        "None": "None",
+        "One": "One",
+        "Two": "Two",
+        "Three": "Three",
+        "Four": "Four",
+        "Five": "Five"
+    },
+    "subj": {
+        "Math": "Math",
+        "English": "English",
+        "Literature": "Literature",
+        "Total Students": "Total Students"
+    },
+    "gen": {
+        "Male": "Male",
+        "Female": "Female"
     }
 }

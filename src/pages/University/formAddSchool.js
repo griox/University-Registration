@@ -15,7 +15,7 @@ const FormAdd = ({ UniData, setUniData }) => {
     const [address, setAddress] = useState('');
     const [averageScore, setAverageScore] = useState(null);
     const [targetScore, setTargetScore] = useState(null);
-    const { t } = useTranslation('university');
+    const { t } = useTranslation('modalUni');
 
     const showModal = () => {
         setVisible(true);
@@ -130,7 +130,7 @@ const FormAdd = ({ UniData, setUniData }) => {
                     <Form>
                         <Form.Item
                             className="form-item"
-                            label="University Name"
+                            label={t('label.uniname')}
                             validateStatus={!validateUniName(uniName) && uniName ? 'error' : ''}
                             name="Input"
                             rules={[
@@ -157,7 +157,7 @@ const FormAdd = ({ UniData, setUniData }) => {
 
                         <Form.Item
                             className="form-item"
-                            label="University Code"
+                            label={t('label.unicode')}
                             validateStatus={!validateName(uniCode) && uniCode ? 'error' : ''}
                             name="InputCode"
                             rules={[
@@ -184,7 +184,7 @@ const FormAdd = ({ UniData, setUniData }) => {
 
                         <Form.Item
                             className="form-item"
-                            label="Address"
+                            label={t('label.address')}
                             name="TextArea"
                             rules={[
                                 {
@@ -205,7 +205,7 @@ const FormAdd = ({ UniData, setUniData }) => {
                         <div className="div">
                             <Form.Item
                                 className="form-item"
-                                label="Entrance Score"
+                                label={t('label.entrance')}
                                 name="Entrance"
                                 rules={[
                                     {
@@ -227,7 +227,7 @@ const FormAdd = ({ UniData, setUniData }) => {
 
                             <Form.Item
                                 className="form-item"
-                                label="Targets"
+                                label={t('label.target')}
                                 name="Target"
                                 rules={[
                                     {

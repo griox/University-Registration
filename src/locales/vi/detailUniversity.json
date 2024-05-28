@@ -1,0 +1,21 @@
+{
+    "label": {
+        "unicode": "Mã Trường",
+        "entrance": "Điểm sàn",
+        "regis": "Số lượng sinh viên đã đăng kí",
+        "target": "Chỉ tiêu",
+        "address": "Địa chỉ",
+        "uniname": "Tên Trường"
+    },
+    "title": {
+        "id": "Mã số",
+        "name": "Tên Trường",
+        "email": "Email",
+        "math": "Điểm Toán",
+        "literature": "Điểm Văn",
+        "english": "Điểm Anh",
+        "average": "Điểm trung bình",
+        "uniinf": "Thông tin trường đại học",
+        "list": "Danh sách sinh viên đã đăng ký"
+    }
+}

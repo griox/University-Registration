@@ -1,28 +1,17 @@
 import 'firebase/auth';
-import { ref, getDatabase, set, child, get } from 'firebase/database';
-import { initializeApp } from 'firebase/app';
+import { ref, set, child, get } from 'firebase/database';
 import { useEffect } from 'react';
 import { toast } from 'react-toastify';
-const firebaseConfig = {
-    apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
-    authDomain: 'mock-proeject-b.firebaseapp.com',
-    databaseURL: 'https://mock-proeject-b-default-rtdb.firebaseio.com',
-    projectId: 'mock-proeject-b',
-    storageBucket: 'mock-proeject-b.appspot.com',
-    messagingSenderId: '898832925665',
-    appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
-};
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-let isAccountCreated = false; // Biến để đánh dấu xem hàm createStudentRecords đã được gọi hay chưa
+import { database } from '../firebaseConfig.js';
+
+let isAccountCreated = false;
 function encodeEmail(email) {
     return email.replace('.', ',');
 }
 function writeAccountRecord(email, password, Role, name) {
     const emailEncoded = encodeEmail(email);
-    const accountRef = ref(db, `Account/${emailEncoded}`); // Tạo reference đến đường dẫn của sinh viên trong database
+    const accountRef = ref(database, `Account/${emailEncoded}`);
     set(accountRef, {
-        // Sử dụng set để ghi dữ liệu lên đường dẫn đó
         email: email,
         password: password,
         Role: Role,
@@ -40,7 +29,6 @@ const Name = ['PhamVanLinh', 'NgoQuangHuy', 'NguyenMinhQuang', 'DoXuanTruong'];
 const Email = ['PhamVanLinh@gmail.com', 'NgoQuangHuy@gmail.com', 'NguyenMinhQuang@gmail.com', 'DoXuanTruong@gmail.com'];
 export async function createAccountRecords() {
     if (!isAccountCreated) {
-        // Chỉ gọi hàm nếu biến isRecordsCreated là false
         await fetchData();
         for (let i = 0; i < Name.length; i++) {
             let email = Email[i];
@@ -58,11 +46,11 @@ export async function createAccountRecords() {
 
             writeAccountRecord(email, password, Role, name);
         }
-        isAccountCreated = true; // Đánh dấu rằng hàm đã được gọi
+        isAccountCreated = true;
     }
 }
 const fetchData = async () => {
-    const accountRef = child(ref(db), `Detail/`);
+    const accountRef = child(ref(database), `Detail/`);
     try {
         const snapshot = await get(accountRef);
         if (snapshot.exists()) {
@@ -82,5 +70,5 @@ const fetchData = async () => {
 export function useCreateAccountRecordsOnMount() {
     useEffect(() => {
         createAccountRecords();
-    }, []); // Thực hiện chỉ một lần khi component được mount
+    }, []);
 }

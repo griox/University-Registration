@@ -1,28 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { get, ref, child, getDatabase } from 'firebase/database';
-import { initializeApp } from 'firebase/app';
+import { get, ref, child } from 'firebase/database';
 import { Divider, Table, Descriptions, Spin, Modal } from 'antd';
 import './css/modal_detail.css'
+import { database } from '../firebaseConfig.js';
+import { useTranslation } from 'react-i18next';
+import { toast } from 'react-toastify';
+
 const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
     const [university, setUniversity] = useState([]);
-    const firebaseConfig = {
-        apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
-        authDomain: 'mock-proeject-b.firebaseapp.com',
-        databaseURL: 'https://mock-proeject-b-default-rtdb.firebaseio.com',
-        projectId: 'mock-proeject-b',
-        storageBucket: 'mock-proeject-b.appspot.com',
-        messagingSenderId: '898832925665',
-        appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
-    };
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    const { t } = useTranslation('detailstudent');
     useEffect(() => {
         const fetchData = async () => {
             if (visible && student && student.uniCode) {
                 const uniRegist = student.uniCode;
                 const uniDatas = [];
                 for (const uniId of uniRegist) {
-                    const uniRef = child(ref(db), `University/${uniId}`);
+                    const uniRef = child(ref(database), `University/${uniId}`);
                     try {
                         const snapshot = await get(uniRef);
                         if (snapshot.exists()) {
@@ -30,7 +23,7 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
                             uniDatas.push({ uniCode: uniId, ...uniData });
                         }
                     } catch (error) {
-                        console.error('Cannot fetch data');
+                        toast.error('Cannot fetch data');
                     }
                 }
                 setLoading(false);
@@ -38,22 +31,22 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
             }
         };
         fetchData();
-    }, [visible, student, db, setLoading]);
+    }, [visible, student, setLoading]);
     const columns = [
         {
-            title: 'Name',
+            title: t('title.nameuni'),
             dataIndex: 'nameU',
             key: 'nameU',
             width: '30%',
         },
         {
-            title: 'UniCode',
+            title: t('title.unicode'),
             dataIndex: 'uniCode',
             width: '13%',
             key:'uniCode'
         },
         {
-            title: 'Address',
+            title: t('title.address'),
             dataIndex: 'address',
             filterSearch: true,
             editable: true,
@@ -61,7 +54,7 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
             key:'address'
         },
         {
-            title: 'Entrance score',
+            title: t('title.entrance'),
             dataIndex: 'averageS',
             width: '15%',
             editable: true,
@@ -73,47 +66,47 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
     const items = [
         {
             key: '1',
-            label: 'ID',
+            label: t('label.id'),
             children: student.id,
         },
         {
             key: '2',
-            label: 'Name',
+            label: t('label.name'),
             children: student.name,
         },
         {
             key: '3',
-            label: 'Gender',
+            label: t('label.gender'),
             children: student.gender,
         },
         {
             key: '4',
-            label: 'Date of Birth',
+            label: t('label.dofb'),
             children: student.dateObirth,
         },
         {
             key: '5',
-            label: 'Place Of Birth',
+            label: t('label.pofb'),
             children: student.placeOBirth,
         },
         {
             key: '6',
-            label: 'Email',
+            label: t('label.email'),
             children: student.email,
         },
         {
             key: '7',
-            label: 'Enthicity',
+            label: t('label.enthicity'),
             children: student.enthicity,
         },
         {
             key: '8',
-            label: 'Address',
+            label: t('label.addressuni'),
             children: student.Address,
         },
         {
             key: '9',
-            label: 'Indentify Number',
+            label: t('label.identify'),
             children: student.idenNum,
         },
     ];
@@ -121,8 +114,9 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
         <Modal
             className="Modal"
             open={visible}
-            width={1000}
-            title="Student's Information"
+            width={970}
+            height={400}
+            title= {t('title.modal')}
             onCancel={onClose}
             footer={null}
         >
@@ -134,7 +128,7 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
                 ))}
             </Descriptions>
             <Divider />
-            <h4>University Registered</h4>
+            <h4>{t('title.list')}</h4>
             <Spin spinning={Loading}>
                 <Table
                     columns={columns}

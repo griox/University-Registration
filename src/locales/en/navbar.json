@@ -1,6 +1,7 @@
 {
     "title": {
-        "setting": "Setting"
+        "setting": "Setting",
+        "confirm": "Are you sure want to log out?"
     },
     "button": {
         "log out": "Log out",

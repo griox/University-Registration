@@ -6,7 +6,8 @@
         "password": "Mật khẩu",
         "re-password": "Nhập lại mật khẩu",
         "inform register": "Vui lòng ĐĂNG KÍ để tiếp tục",
-        "or": "hoặc"
+        "or": "hoặc",
+        "language": "Ngôn ngữ"
     },
     "button": {
         "user": "Người dùng",

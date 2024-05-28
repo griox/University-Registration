@@ -11,6 +11,16 @@
         "Action": "Action"
     },
     "button": {
-        "Add": "Add University"
+        "Add": "Add University",
+        "search": "Search",
+        "reset": "Reset",
+        "filter": "Filter",
+        "close": "Close"
+    },
+    "title": {
+        "edit": "Edit",
+        "cancel": "Cancel",
+        "delete": "Sure to delete?",
+        "total": "Total"
     }
 }

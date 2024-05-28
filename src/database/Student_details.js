@@ -1,22 +1,13 @@
 import 'firebase/auth';
 import { format } from 'date-fns';
-import { ref, getDatabase, set, get, child, update } from 'firebase/database';
-import { initializeApp } from 'firebase/app';
+import { ref, set, get, child, update } from 'firebase/database';
 import { useEffect } from 'react';
-const firebaseConfig = {
-  apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
-  authDomain: 'mock-proeject-b.firebaseapp.com',
-  databaseURL: 'https://mock-proeject-b-default-rtdb.firebaseio.com',
-  projectId: 'mock-proeject-b',
-  storageBucket: 'mock-proeject-b.appspot.com',
-  messagingSenderId: '898832925665',
-  appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
-};
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-let isInforCreated = false; // Biến để đánh dấu xem hàm createStudentRecords đã được gọi hay chưa
+import { database } from '../firebaseConfig.js';
+import { toast } from 'react-toastify';
+
+let isInforCreated = false;
 function writeInforRecord(name, gender, email, enthicity, dateObirth, placeOBirth, idenNum, MathScore, EnglishScore, LiteratureScore, Address, uniCode, id,AverageScore,isRegister) {
-  const DetailRef = ref(db, `Detail/${id}`);
+  const DetailRef = ref(database, `Detail/${id}`);
   set(DetailRef, {
     id: id,
     email: email,
@@ -35,16 +26,16 @@ function writeInforRecord(name, gender, email, enthicity, dateObirth, placeOBirt
     isRegister:isRegister
   }).then(() => {
   }).catch((error) => {
-    console.error( error);
+    toast.error('Error')
   });
 }
 const getRandomDateOfBirth = async () => {
-  const randomYear = 2004; // Năm sinh từ 1990 đến 2003
-  const randomMonth = Math.floor(Math.random() * 12) + 1; // Tháng sinh từ 1 đến 12
-  const randomDay = Math.floor(Math.random() * 29) + 1; // Ngày sinh từ 1 đến 28 (tạm thời)
-  const dateOfBirth = new Date(randomYear, randomMonth - 1, randomDay); // Tạo đối tượng Date
+  const randomYear = 2004; 
+  const randomMonth = Math.floor(Math.random() * 12) + 1; 
+  const randomDay = Math.floor(Math.random() * 29) + 1; 
+  const dateOfBirth = new Date(randomYear, randomMonth - 1, randomDay); 
 
-  return format(dateOfBirth, 'dd/MM/yyyy'); // Định dạng ngày và trả về dưới dạng dd/mm/yy
+  return format(dateOfBirth, 'dd/MM/yyyy'); 
 };
 const cities = [
   'An Giang',
@@ -179,7 +170,7 @@ export async function createInforRecords() {
     await fetchData();
    
     for (let i = 0; i < Emails.length; i++) {
-      let id = generateUniqueID(); // Tạo id duy nhất
+      let id = generateUniqueID(); 
       let email = Emails[i];
       let name = names[i];
       let MathScore = parseFloat(mathScores[i])||0;
@@ -215,7 +206,7 @@ export async function createInforRecords() {
         Address,
         uniCode,
         id,
-        AverageScore, // Truyền id vào hàm
+        AverageScore, 
         isRegister, 
       );
     }
@@ -223,14 +214,13 @@ export async function createInforRecords() {
   }
 }
 const fetchData = async () => {
-  const studentRef = child(ref(db), 'SinhVien/');
+  const studentRef = child(ref(database), 'SinhVien/');
   try {
     const snapshot = await get(studentRef);
     if (snapshot.exists()) {
       const allData = snapshot.val();
       const filteredData = Object.values(allData);
 
-      // Lặp qua từng sinh viên và gán các giá trị vào các mảng tương ứng
       filteredData.forEach(student => {
         names.push(student.name);
         mathScores.push(student.mathScore);
@@ -242,50 +232,47 @@ const fetchData = async () => {
       });
     }
   } catch (error) {
-    console.error(error);
-    return []; // Trả về mảng rỗng nếu có lỗi
+    toast.error('Error')
+    return []; 
   }
 };
 
 export async function useCreateInforRecordsOnMount() {
   useEffect(() => {
-    clearUniCodesForAllStudents(); // Tạo bản ghi tài khoản
-  }, []); // Thực hiện chỉ một lần khi component được mount
+    clearUniCodesForAllStudents(); 
+  }, []); 
 }
 
 const updateUniCode = async (studentID, newUniCodes) => {
   try {
-    const studentRef = ref(db, `Detail/${studentID}`);
+    const studentRef = ref(database, `Detail/${studentID}`);
     const studentSnapshot = await get(studentRef);
     if (studentSnapshot.exists()) {
       const studentData = studentSnapshot.val();
       const currentUniCodes = studentData.uniCode || [];
       
-      // Merge newUniCodes with currentUniCodes, remove duplicates
       const mergedUniCodes = Array.from(new Set([...currentUniCodes, ...newUniCodes]));
 
-      // Ensure that the number of uniCodes does not exceed 5
       const updatedUniCodes = mergedUniCodes.slice(0, 5);
 
-      // Update the student's uniCode field
       await update(studentRef, { uniCode: updatedUniCodes });
     } 
   } catch (error) {
-    console.error('Error updating uniCodes:', error);
+    toast.error('Error updating uniCodes')
   }
 };
 const clearUniCodesForAllStudents = async () => {
   try {
-    const detailRef = ref(db, 'Detail');
+    const detailRef = ref(database, 'Detail');
     const snapshot = await get(detailRef);
     if (snapshot.exists()) {
       const studentData = snapshot.val();
       for (const studentID in studentData) {
-        await updateUniCode(studentID, []); // Gọi hàm updateUniCode với mảng rỗng
+        await updateUniCode(studentID, []); 
       }
     } 
   } catch (error) {
-    console.error('Error clearing uniCodes for all students:', error);
+    toast.error('Error clearing uniCodes for all students')
   }
 };
 

@@ -6,7 +6,8 @@
         "remember me": "Remember me",
         "forgot password": "Forgot password?",
         "inform login": "Please LOGIN to continue",
-        "or": "or"
+        "or": "or",
+        "language": "Language"
     },
     "button": {
         "log in": "Log in",

@@ -8,7 +8,7 @@
         "dofb": "Ngày sinh",
         "pofb": "Nơi sinh",
         "email": "Email",
-        "identify": "CMND/CCCD",
+        "identify": "Mã số định danh",
         "ethnicity": "Dân tộc",
         "address": "Địa chỉ",
         "math": "Điểm Toán",
@@ -17,6 +17,22 @@
         "entrance": "Điểm sàn"
     },
     "title": {
-        "modal": "Đăng kí sinh viên"
+        "modal": "Đăng kí sinh viên",
+        "ok": "Thêm",
+        "cancel": "Hủy"
+    },
+    "placeholder": {
+        "name": "Nhập tên sinh viên",
+        "email": "Nhập email",
+        "address": "Nhập địa chỉ"
+    },
+    "warning": {
+        "name": "Tên trường chỉ được chứa các chữ cái và dấu cách",
+        "input": "Vui lòng nhập !",
+        "identify": "Mã số định danh phải có 12 chữ số và chỉ chứa số"
+    },
+    "tooltip": {
+        "name": "Tên phải chứa các chữ cái và không có khoảng trắng",
+        "email": "Email phải chứa @example"
     }
 }

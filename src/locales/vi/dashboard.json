@@ -5,5 +5,23 @@
         "gender": "Giới tính",
         "average scores of subjects": "Tổng điểm trung bình các môn học và học sinh",
         "the number of courses each student registers": "Số trường mỗi học sinh đăng kí"
+    },
+    "data": {
+        "None": "Không",
+        "One": "Một",
+        "Two": "Hai",
+        "Three": "Ba",
+        "Four": "Bốn",
+        "Five": "Năm"
+    },
+    "subj": {
+        "Math": "Toán",
+        "English": "Tiếng Anh",
+        "Literature": "Ngữ Văn",
+        "Total Students": "Điểm trung bình"
+    },
+    "gen": {
+        "Male": "Nam",
+        "Female": "Nữ"
     }
 }

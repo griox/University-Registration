@@ -104,7 +104,7 @@ const Navbar = () => {
 
             dispatch({ type: 'logout' });
 
-            history.push('/');
+            history.push('/Login');
         } else {
             return;
         }

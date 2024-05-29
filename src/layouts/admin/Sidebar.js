@@ -75,7 +75,7 @@ const Sidebar = () => {
         if (name === '') {
             name = 'nothing';
         }
-        let words = name[0].split(' ');
+        let words = name.split(' ');
         let firstChar = '';
         let lastChar = '';
         if (words.length === 1) {
@@ -154,14 +154,18 @@ const Sidebar = () => {
                                 />
                             </Box>
                             <Box textAlign="center">
-                                <Typography
-                                    variant="h2"
-                                    color={colors.grey[100]}
-                                    fontWeight="bold"
-                                    sx={{ m: '10px 0 0 0' }}
-                                >
-                                    {localStorage.getItem('Name') || ''}
-                                </Typography>
+                                <div>
+                                    <Typography
+                                        variant="h2"
+                                        color={colors.grey[100]}
+                                        fontWeight="bold"
+                                        sx={{ m: '10px 0 0 0' }}
+                                        className="username"
+                                        title={localStorage.getItem('Name') || ''}
+                                    >
+                                        {localStorage.getItem('Name') || ''}
+                                    </Typography>
+                                </div>
                                 <Typography variant="h5" color={colors.greenAccent[500]}>
                                     {localStorage.getItem('Role')}
                                 </Typography>

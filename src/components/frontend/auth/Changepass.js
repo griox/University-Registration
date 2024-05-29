@@ -174,16 +174,18 @@ const Changepass = () => {
             return;
         }
         temp = encodePath(temp);
+
         get(child(ref(db), `Account/` + temp)).then((snapshot) => {
             if (snapshot.exists()) {
                 const x = snapshot.val();
-                var hash = bcrypt.hashSync(oldPass, salt);
-                if (bcrypt.compareSync(x.password, hash) === true) {
+
+                if (bcrypt.compareSync(oldPass, x.password) === true) {
                     var newHash = bcrypt.hashSync(newPass, salt);
                     update(ref(db, 'Account/' + temp), {
                         password: newHash,
                     })
                         .then(() => {
+                            console.log(newHash);
                             handleLogout();
                             toast.success('Updated sucessfully');
                         })

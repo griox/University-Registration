@@ -14,7 +14,7 @@ const AddUniversity = () => {
             {/* <Header title="UNIVERSITY MANAGERMENT" /> */}
 
             <div>
-                    <AddSchool></AddSchool>
+                <AddSchool></AddSchool>
             </div>
         </Box>
     );

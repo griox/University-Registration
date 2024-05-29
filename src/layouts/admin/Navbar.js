@@ -5,7 +5,6 @@ import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { Dropdown, Space } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
-import { MenuContext } from '../../pages/MenuContext';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
@@ -23,7 +22,6 @@ const Navbar = () => {
     const dispatch = useDispatch();
     const history = useHistory();
     // const currentLanguage = locales[i18n.language];
-    const { selectedMenuItem } = useContext(MenuContext);
     const handleLanguage = (lng) => {
         i18n.changeLanguage(lng);
     };
@@ -144,11 +142,8 @@ const Navbar = () => {
             justifyContent="space-between"
             boxShadow=" 0 7px 25px 0 rgba(0, 0, 0, 0.1)"
             p={2}
-            className="navbar"
         >
-            <Box display="flex" alignItems="center">
-                <span style={{ color: colors.grey[100], fontSize: '1.5rem' }}>{selectedMenuItem}</span>
-            </Box>
+            <Box display="flex" alignItems="center"></Box>
             {/* <Box>
                 <button onClick={() => handleLanguage('vi')}>
                     {currentLanguage === 'Tiếng việt' ? 'Tiếng việt' : 'Vietnamese'}

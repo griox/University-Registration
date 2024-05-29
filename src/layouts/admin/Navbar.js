@@ -22,6 +22,7 @@ const Navbar = () => {
     const dispatch = useDispatch();
     const history = useHistory();
     // const currentLanguage = locales[i18n.language];
+    const { selectedMenuItem } = useContext(MenuContext);
     const handleLanguage = (lng) => {
         i18n.changeLanguage(lng);
     };
@@ -95,7 +96,7 @@ const Navbar = () => {
     ];
 
     const handleLogout = () => {
-        const confirm = window.confirm('Are you sure want to log out?');
+        const confirm = window.confirm(t('title.confirm'));
         if (confirm) {
             localStorage.setItem('Infor', JSON.stringify(''));
             localStorage.removeItem('isLoggedIn');
@@ -152,11 +153,13 @@ const Navbar = () => {
                     {currentLanguage === 'Tiếng việt' ? 'Tiếng anh' : 'Egnlish'}
                 </button>
             </Box> */}
+            <Box display="flex" alignItems="center">
+                <span style={{ color: colors.primary[500], fontSize: '1.2rem', fontWeight: 'bold' }}>
+                    {selectedMenuItem}
+                </span>
+            </Box>
             <Box display="flex">
                 <Space wrap>
-                    {/* <IconButton onClick={colorMode.toggleColorMode}>
-                        {theme.palette.mode === 'dark' ? <DarkModeOutlinedIcon /> : <LightModeOutlinedIcon />}
-                    </IconButton> */}
                     <Dropdown menu={menuProps}>
                         <IconButton>
                             <Space>

@@ -67,9 +67,9 @@ const AddSchool = () => {
         );
     };
     const handleSchoolDetail = (record) => {
+        setLoading(true);
         setDetailVisible(true);
         setSelectedUniverse(record);
-        setLoading(true);
     };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -111,7 +111,7 @@ const AddSchool = () => {
             const newUni = UniData.filter((item) => item.id !== record.id);
             setUniData(newUni);
         } catch (error) {
-            console.error('Error when deleting data', error);
+            toast.error(`Error when deleting data ${error}`);
         }
     };
 
@@ -260,14 +260,14 @@ const AddSchool = () => {
                         icon={<SearchOutlined />}
                         size="small"
                     >
-                        Search
+                        {t('button.search')}
                     </Button>
                     <Button
                         className="all-btn-filter"
                         onClick={() => clearFilters && handleReset(clearFilters)}
                         size="small"
                     >
-                        Reset
+                        {t('button.reset')}
                     </Button>
                     <Button
                         type="link"
@@ -280,10 +280,10 @@ const AddSchool = () => {
                             setSearchedColumn(dataIndex);
                         }}
                     >
-                        Filter
+                         {t('button.filter')}
                     </Button>
                     <Button type="link" size="small" onClick={() => close()}>
-                        Close
+                        {t('button.close')}
                     </Button>
                 </Space>
             </div>
@@ -376,16 +376,16 @@ const AddSchool = () => {
                 return editable ? (
                     <span>
                         <Typography.Link className="typolink" onClick={() => save(record.key)}>
-                            Edit
+                            {t('title.edit')}
                         </Typography.Link>
-                        <Typography.Link onClick={cancel}>Cancel</Typography.Link>
+                        <Typography.Link onClick={cancel}>{t('title.cancel')}</Typography.Link>
                     </span>
                 ) : (
                     <Space size={'middle'}>
                         <Typography.Link className="typolink" disabled={editingKey !== ''} onClick={() => edit(record)}>
                             <EditOutlined />
                         </Typography.Link>
-                        <Popconfirm title="Sure to delete?" onConfirm={() => handleDelete(record)}>
+                        <Popconfirm title= {t('title.delete')} onConfirm={() => handleDelete(record)}>
                             <Typography.Link>
                                 <DeleteOutlined />
                             </Typography.Link>
@@ -430,7 +430,7 @@ const AddSchool = () => {
                                 pageSizeOptions: ['10', '20', '40', '100'],
                                 showSizeChanger: true,
                                 showQuickJumper: true,
-                                showTotal: (total) => `Total ${total} items`,
+                                showTotal: (total) => `${t('title.total')} ${total}`
                             }}
                             scroll={{ x: false, y: 'calc(100vh - 350px)' }}
                             components={{
@@ -444,7 +444,7 @@ const AddSchool = () => {
                     </Spin>
                 </Space>
             </Form>
-            <Modal open={isModalDetailVisible} onCancel={handleCancel} onOk={handleOk} width={800} height={600}>
+            <Modal open={isModalDetailVisible} onCancel={handleCancel} onOk={handleOk} width={1000} height={500}>
                 <FormDetail
                     university={selectedUniverse}
                     open={isModalDetailVisible}

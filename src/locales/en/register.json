@@ -6,7 +6,8 @@
         "password": "Password",
         "re-password": "Re-Password",
         "inform register": "Please REGISTER to continue",
-        "or": "or"
+        "or": "or",
+        "language": "Language"
     },
     "button": {
         "user": "User",

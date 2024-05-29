@@ -38,10 +38,10 @@ const Chart = () => {
     const db = getDatabase(app);
     const config = {
         data: [
-            { subject: 'Math', score: mathAS },
-            { subject: 'Enghlish', score: englishAS },
-            { subject: 'Literature', score: literatureAS },
-            { subject: 'Total Students', score: average },
+            { subject: t('subj.Math'), score: mathAS },
+            { subject: t('subj.English'), score: englishAS },
+            { subject: t('subj.Literature'), score: literatureAS },
+            { subject: t('subj.Total Students'), score: average },
         ],
         width: 1000,
         height: 400,
@@ -65,12 +65,12 @@ const Chart = () => {
 
     const con = {
         data: [
-            { type: 'None', value: registZero },
-            { type: 'One', value: registOne },
-            { type: 'Two', value: registTwo },
-            { type: 'Three', value: registThree },
-            { type: 'Four', value: registFour },
-            { type: 'Five', value: registFive },
+            { type: t('data.None'), value: registZero },
+            { type: t('data.One'), value: registOne },
+            { type: t('data.Two'), value: registTwo },
+            { type: t('data.Three'), value: registThree },
+            { type: t('data.Four'), value: registFour },
+            { type: t('data.Five'), value: registFive },
         ],
         angleField: 'value',
         colorField: 'type',
@@ -97,8 +97,8 @@ const Chart = () => {
 
     const gen = {
         data: [
-            { gender: 'Male', value: male },
-            { gender: 'Female', value: female },
+            { gender: t('gen.Male'), value: male },
+            { gender: t('gen.Female'), value: female },
         ],
         angleField: 'value',
         colorField: 'gender',

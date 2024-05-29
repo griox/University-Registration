@@ -1,22 +1,14 @@
 import 'firebase/auth';
-import { ref,  getDatabase, set } from 'firebase/database';
-import { initializeApp } from 'firebase/app';
+import { ref, set } from 'firebase/database';
 import { useEffect } from 'react';
-const firebaseConfig = {
-    apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
-    authDomain: 'mock-proeject-b.firebaseapp.com',
-    databaseURL: 'https://mock-proeject-b-default-rtdb.firebaseio.com',
-    projectId: 'mock-proeject-b',
-    storageBucket: 'mock-proeject-b.appspot.com',
-    messagingSenderId: '898832925665',
-    appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
-};
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-let isUniCreated = false; // Biến để đánh dấu xem hàm createStudentRecords đã được gọi hay chưa
+import { database } from '../firebaseConfig.js';
+import { toast } from 'react-toastify';
+
+
+let isUniCreated = false; 
 export function writeUniRecord(uniCode,nameU,address,registration,target,averageS,isRegistered) {
-  const univerRef = ref(db,`University/${uniCode}` ); // Tạo reference đến đường dẫn của sinh viên trong database
-  set(univerRef, { // Sử dụng set để ghi dữ liệu lên đường dẫn đó
+  const univerRef = ref(database,`University/${uniCode}` ); 
+  set(univerRef, { 
    uniCode:uniCode,
    nameU:nameU,
    address:address,
@@ -25,7 +17,7 @@ export function writeUniRecord(uniCode,nameU,address,registration,target,average
    averageS:averageS,
    isRegistered:isRegistered,
   }).catch((error) => {
-      console.error("Error writing record for student with ID " + uniCode + ": ", error);
+      toast.error(`Error writing record for student with ID ${uniCode}: ${error}`)
   });
 }
 
@@ -88,7 +80,6 @@ const nameUs = [
   "Đại học Đà Nẵng - Phân hiệu Đà Nẵng",
   "Đại học sư phạm Kỹ thuật TP.HCM - Phân hiệu Đà Nẵng",
 
-  // Add more university names here...
 ];
 const addresses = [
   "26 Nguyễn Đình Chiểu, Nha Trang, Khánh Hòa",
@@ -129,7 +120,7 @@ function getRandomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 export function createUniRecords() {
-  if (!isUniCreated) { // Chỉ gọi hàm nếu biến isRecordsCreated là false
+  if (!isUniCreated) { 
       for (let i = 0; i<addresses.length ; i++) {
         let uniCode = uniCodes[i];
         let nameU =  nameUs[i];
@@ -141,7 +132,7 @@ export function createUniRecords() {
 
        writeUniRecord(uniCode,nameU,address,registration,target,averageS,isRegistered)
       }
-      isUniCreated = true; // Đánh dấu rằng hàm đã được gọi
+      isUniCreated = true; 
   }
 }
 export function useCreateUnitRecordsOnMount() {

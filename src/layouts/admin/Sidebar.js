@@ -9,9 +9,11 @@ import { SignatureOutlined, SolutionOutlined } from '@ant-design/icons';
 import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
+import { useTranslation } from 'react-i18next';
 
 const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
     const theme = useTheme();
+    const { t } = useTranslation('sidebar');
     const colors = tokens(theme.palette.mode);
     return (
         <Tooltip title={tooltip} placement="right" arrow>
@@ -23,7 +25,7 @@ const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
                 onClick={() => setSelected(title)}
                 icon={icon}
             >
-                <Typography>{title}</Typography>
+                <Typography>{t(title)}</Typography>
                 <Link to={to} />
             </MenuItem>
         </Tooltip>
@@ -33,7 +35,7 @@ const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
 const Sidebar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-
+    const { t } = useTranslation('sidebar');
     const [isCollapsed, setIsCollapsed] = useState(() => JSON.parse(localStorage.getItem('sidebarCollapsed')) || false);
     const [selected, setSelected] = useState(() => localStorage.getItem('selectedMenuItem') || 'Dashboard');
 
@@ -175,10 +177,16 @@ const Sidebar = () => {
                             setSelected={setSelected}
                             tooltip="Dashboard"
                         />
+                        <Item
+                            title={t('title.dashboard')}
+                            to="/admin/dashboard"
+                            icon={<HomeOutlinedIcon />}
+                            tooltip="Dashboard"
+                        />
                         {isAdminOrSuperAdmin && (
                             <>
                                 <Item
-                                    title="University Managerment"
+                                    title={t('title.university')}
                                     to="/admin/university"
                                     icon={<SchoolIcon />}
                                     selected={selected}
@@ -186,7 +194,7 @@ const Sidebar = () => {
                                     tooltip="University Managerment"
                                 />
                                 <Item
-                                    title="Student Managerment"
+                                    title={t('title.student')}
                                     to="/admin/student"
                                     icon={<SolutionOutlined />}
                                     selected={selected}
@@ -194,7 +202,7 @@ const Sidebar = () => {
                                     tooltip="Student Managerment"
                                 />
                                 <Item
-                                    title="Register Account"
+                                    title={t('title.register')}
                                     to="/register"
                                     icon={<SignatureOutlined />}
                                     selected={selected}

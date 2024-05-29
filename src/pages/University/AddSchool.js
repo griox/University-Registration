@@ -416,7 +416,7 @@ const AddSchool = () => {
     });
 
     return (
-        <div>
+        <div className='Layout'>
             <Form form={form} component={false}>
                 <Space direction="vertical">
                     <FormAdd UniData={UniData} setUniData={setUniData} />

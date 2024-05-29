@@ -24,5 +24,8 @@
         "provide": "Provide Account ?",
         "deleteacc": "Delete Account ?",
         "total": "Total"
+    },
+    "placeholder": {
+        "search": "Search"
     }
 }

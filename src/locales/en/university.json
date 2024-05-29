@@ -22,5 +22,8 @@
         "cancel": "Cancel",
         "delete": "Sure to delete?",
         "total": "Total"
+    },
+    "placeholder": {
+        "search": "Search"
     }
 }

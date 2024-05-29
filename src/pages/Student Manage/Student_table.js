@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin } from 'antd';
 import './css/table.css';
+import  'antd/dist/reset.css';
 import {
     SearchOutlined,
     EditOutlined,
@@ -66,7 +67,7 @@ const StudentList = () => {
                     setLoading(false);
                 }
             } catch (error) {
-                toast.error('Error when fetch data');
+                toast.error(error);
             }
         };
 
@@ -99,7 +100,7 @@ const StudentList = () => {
             const newData = studentData.map((item) => (item.key === record.key ? { ...item, isRegister: true } : item));
             setStudentData(newData);
         } catch (error) {
-            toast.error('Error provide account student');
+            toast.error('Error provide account student:', error);
         }
     };
     const handleDeleteAccount = async (record) => {
@@ -111,7 +112,7 @@ const StudentList = () => {
             );
             setStudentData(newData);
         } catch (error) {
-            toast.error('Error deleting account');
+            toast.error('Error deleting account', error);
         }
     };
 
@@ -209,6 +210,7 @@ const StudentList = () => {
                         await update(universityRef, { isRegistered: updatedIsRegistered });
                     } else {
                         toast.error('University not found');
+                        toast.error('University not found');
                     }
                 }
             }
@@ -219,7 +221,7 @@ const StudentList = () => {
             const newData = studentData.filter((item) => item.id !== record.id);
             setStudentData(newData);
         } catch (error) {
-            toast.error('Error deleting data');
+            toast.error('Error deleting data:', error);
         }
     };
 
@@ -248,7 +250,8 @@ const StudentList = () => {
                     [dataIndex]: value,
                 });
             } catch (error) {
-                toast.error('Error updating document');
+                toast.error('Error updating document:', error);
+                // Handle update error (optional: show notification to user)
             }
         }
     };
@@ -306,11 +309,15 @@ const StudentList = () => {
                 toast.success('Data added to Firebase successfully');
             }
         } catch (errInfo) {
-            toast.error('Validate Failed');
+            toast.error('Validate Failed:', errInfo);
         }
     };
-    const renderNameWithGender = (record) => {
-        return <span className="icon">{record.gender === 'Male' ? <ManOutlined /> : <WomanOutlined />}</span>;
+    const renderNameWithGender = (y) => {
+        return (
+            <span className="icon">
+                {y === 'Male' ? <ManOutlined className="male" /> : <WomanOutlined className="female" />}
+            </span>
+        );
     };
 
     const handleIdClick = (record) => {
@@ -334,10 +341,9 @@ const StudentList = () => {
             title: t('table.ID'),
             dataIndex: 'id',
             width: '10%',
-            fixed: 'left',
             ...getColumnSearchProps('id'),
             render: (_, record) => (
-                <span onClick={() => handleIdClick(record)} style={{ color: 'blue', cursor: 'pointer' }}>
+                <span onClick={() => handleIdClick(record)} className="idOnClick">
                     {record.id}
                 </span>
             ),
@@ -349,21 +355,14 @@ const StudentList = () => {
             dataIndex: 'name',
             width: '19%',
             editable: true,
-            fixed: 'left',
             key: 'name',
             ...getColumnSearchProps('name'),
             render: (text, record) => {
                 return (
                     <>
-                        {renderNameWithGender(text, record)}
+                        {renderNameWithGender(record.gender)}
                         <Tooltip title={temp(record.uniCode) ? 'can not register more' : ''}>
-                            <span
-                                style={{
-                                    color: temp(record.uniCode) ? '#FF8C00' : 'black',
-                                }}
-                            >
-                                {text}
-                            </span>
+                            <span className={temp(record.uniCode) ? 'Can_Regist' : 'NoRegist'}>{text}</span>
                         </Tooltip>
                     </>
                 );
@@ -378,7 +377,7 @@ const StudentList = () => {
             ...getColumnSearchProps('email'),
             render: (text, record) => (
                 <Tooltip title={record.isRegister ? 'had account' : 'account not exists'}>
-                    <span style={{ color: record.isRegister ? 'green' : 'red' }}>{text}</span>
+                    <span className={record.isRegister ? 'Registered' : 'UnRegistered'}>{text}</span>
                 </Tooltip>
             ),
             key: 'email',
@@ -434,7 +433,6 @@ const StudentList = () => {
             title: t('table.Action'),
             dataIndex: 'operation',
             width: '15%',
-            fixed: 'right',
             render: (_, record) => {
                 const editable = isEditing(record);
                 return editable ? (
@@ -442,7 +440,7 @@ const StudentList = () => {
                         <Typography.Link className="Typo_link" onClick={() => save(record.key)}>
                             {t('button.edit')}
                         </Typography.Link>
-                        <Typography.Link onClick={cancel}>{t('button.cancel')}</Typography.Link>
+                        <Typography.Link className="Typo_link" onClick={cancel}>Cancel</Typography.Link>
                     </span>
                 ) : (
                     <Space size={'middle'}>
@@ -451,23 +449,23 @@ const StudentList = () => {
                             onClick={() => edit(record)}
                             className="Typo_link"
                         >
-                            <EditOutlined />
+                            <EditOutlined className="control" />
                         </Typography.Link>
                         <Popconfirm title={t('title.delete')} onConfirm={() => handleDelete(record)}>
                             <Typography.Link>
-                                <DeleteOutlined />
+                                <DeleteOutlined className="control" />
                             </Typography.Link>
                         </Popconfirm>
                         {!record.isRegister ? (
                             <Popconfirm title={t('title.provide')} onConfirm={() => handleProvideAccount(record)}>
                                 <Typography.Link>
-                                    <PlusCircleOutlined />
+                                    <PlusCircleOutlined className="control" />
                                 </Typography.Link>
                             </Popconfirm>
                         ) : (
                             <Popconfirm title={t('title.deleteacc')} onConfirm={() => handleDeleteAccount(record)}>
                                 <Typography.Link>
-                                    <MinusCircleOutlined />
+                                    <MinusCircleOutlined className="control" />
                                 </Typography.Link>
                             </Popconfirm>
                         )}
@@ -514,7 +512,6 @@ const StudentList = () => {
                                     cell: EditableCell,
                                 },
                             }}
-                            bordered
                             dataSource={studentData}
                             columns={mergedColumns}
                             scroll={{
@@ -531,6 +528,7 @@ const StudentList = () => {
                                 showQuickJumper: true,
                                 showTotal: (total) => `${t('title.total')} ${total}`
                             }}
+                            rowHoverable={false}
                             ref={tableRef}
                         />
                     </Spin>

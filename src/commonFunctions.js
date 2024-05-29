@@ -3,7 +3,7 @@ import { Button, Input, Space } from 'antd';
 import { useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 
-export function GetColumnSearchProps(props) {
+export const GetColumnSearchProps = (dataIndex) => {
     const searchInput = useRef(null);
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
@@ -88,8 +88,8 @@ export function GetColumnSearchProps(props) {
                 text
             ),
     });
-    getColumnSearchProps(props);
-}
+    getColumnSearchProps(dataIndex);
+};
 
 export const encodePath = (email) => {
     if (email) return email.replace(/\./g, ',');

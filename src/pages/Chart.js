@@ -7,8 +7,12 @@ import { child, get, getDatabase, ref } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../constants/constants';
 import { useTranslation } from 'react-i18next';
+import { tokens } from '../theme';
+import { useTheme } from '@mui/material';
 
 const Chart = () => {
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
     const { t } = useTranslation('dashboard');
     const [studentTotal, setStudentTotal] = useState(0);
     const [stMoreThanF, setStMoreThanF] = useState(0);

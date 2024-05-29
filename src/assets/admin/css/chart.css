@@ -19,7 +19,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    background-color: #fff;
+    /* background-color: #fff; */
     border-radius: 10px;
     box-shadow: 0 7px 25px 0 rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
@@ -42,7 +42,7 @@
 
 .cards .carder {
     padding: 35px 35px 35px 35px;
-    background-color: #fff;
+    /* background-color: #fff; */
     border-radius: 10px;
     box-shadow: 0 7px 25px 0 rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;

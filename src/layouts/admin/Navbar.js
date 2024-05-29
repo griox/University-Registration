@@ -1,24 +1,25 @@
 import React, { useContext } from 'react';
 import { Box, IconButton, useTheme } from '@mui/material';
-import { tokens } from '../../theme';
+import { tokens, ColorModeContext } from '../../theme';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { Dropdown, Space } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
-import { MenuContext } from '../../pages/MenuContext';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { locales } from '../../translation/i18n';
+import DarkMode from '../../components/Darkmode/Darkmode';
 
 const Navbar = () => {
     const { t, i18n } = useTranslation('navbar');
     const currentLanguage = locales[i18n.language === 'vi' ? 'vi' : 'en'];
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    const colorMode = useContext(ColorModeContext);
     const dispatch = useDispatch();
     const history = useHistory();
-    const { selectedMenuItem } = useContext(MenuContext);
+    // const currentLanguage = locales[i18n.language];
     const handleLanguage = (lng) => {
         i18n.changeLanguage(lng);
     };
@@ -32,7 +33,7 @@ const Navbar = () => {
                     key: '1.1',
                     label: t('button.change password'),
                     icon: (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 32 32">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 32 32" bgcolor='var(--body_background)' >
                             <path
                                 fill="currentColor"
                                 d="M21 2a8.998 8.998 0 0 0-8.612 11.612L2 24v6h6l10.388-10.388A9 9 0 1 0 21 2m0 16a7 7 0 0 1-2.032-.302l-1.147-.348l-.847.847l-3.181 3.181L12.414 20L11 21.414l1.379 1.379l-1.586 1.586L9.414 23L8 24.414l1.379 1.379L7.172 28H4v-3.172l9.802-9.802l.848-.847l-.348-1.147A7 7 0 1 1 21 18"
@@ -103,7 +104,7 @@ const Navbar = () => {
 
             dispatch({ type: 'logout' });
 
-            history.push('/');
+            history.push('/Login');
         } else {
             return;
         }
@@ -131,7 +132,7 @@ const Navbar = () => {
         <Box
             display="flex"
             position="sticky"
-            bgcolor="#fff"
+            bgcolor="var(--navbar-color)"
             width="100%"
             zIndex={1000}
             top="0"
@@ -139,16 +140,27 @@ const Navbar = () => {
             justifyContent="space-between"
             boxShadow=" 0 7px 25px 0 rgba(0, 0, 0, 0.1)"
             p={2}
+            color= "var(--body_color)"
         >
             <Box display="flex" alignItems="center">
-                <span style={{ color: colors.primary[500], fontSize: '1.2rem', fontWeight: 'bold' }}>{selectedMenuItem}</span>
+                <span style={{ color: 'var(--body-color)', fontSize: '1.5rem' }}>{selectedMenuItem}</span>
             </Box>
+            {/* <Box>
+                <button onClick={() => handleLanguage('vi')}>
+                    {currentLanguage === 'Tiếng việt' ? 'Tiếng việt' : 'Vietnamese'}
+                </button>
+                <button onClick={() => handleLanguage('en')}>
+                    {currentLanguage === 'Tiếng việt' ? 'Tiếng anh' : 'Egnlish'}
+                </button>
+            </Box> */}
+            <Box display="flex" alignItems="center"></Box>
             <Box display="flex">
                 <Space wrap>
+                    <DarkMode/>
                     <Dropdown menu={menuProps}>
                         <IconButton>
                             <Space>
-                                <UserOutlined />
+                                <UserOutlined style={{color:'var(--body_color)'}} />
                             </Space>
                         </IconButton>
                     </Dropdown>

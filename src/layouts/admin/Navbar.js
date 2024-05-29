@@ -9,8 +9,6 @@ import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { locales } from '../../translation/i18n';
-import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
-import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 // import { locales } from '../../translation/i18n';
 
 const Navbar = () => {
@@ -22,7 +20,6 @@ const Navbar = () => {
     const dispatch = useDispatch();
     const history = useHistory();
     // const currentLanguage = locales[i18n.language];
-    const { selectedMenuItem } = useContext(MenuContext);
     const handleLanguage = (lng) => {
         i18n.changeLanguage(lng);
     };
@@ -153,11 +150,7 @@ const Navbar = () => {
                     {currentLanguage === 'Tiếng việt' ? 'Tiếng anh' : 'Egnlish'}
                 </button>
             </Box> */}
-            <Box display="flex" alignItems="center">
-                <span style={{ color: colors.primary[500], fontSize: '1.2rem', fontWeight: 'bold' }}>
-                    {selectedMenuItem}
-                </span>
-            </Box>
+            <Box display="flex" alignItems="center"></Box>
             <Box display="flex">
                 <Space wrap>
                     <Dropdown menu={menuProps}>

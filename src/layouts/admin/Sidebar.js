@@ -177,12 +177,6 @@ const Sidebar = () => {
                             setSelected={setSelected}
                             tooltip="Dashboard"
                         />
-                        <Item
-                            title={t('title.dashboard')}
-                            to="/admin/dashboard"
-                            icon={<HomeOutlinedIcon />}
-                            tooltip="Dashboard"
-                        />
                         {isAdminOrSuperAdmin && (
                             <>
                                 <Item

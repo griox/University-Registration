@@ -1,0 +1,12 @@
+{
+    "button": {
+        "Add": "Add University"
+    },
+    "label": {
+        "uniname" : "University name",
+        "unicode" : "University code",
+        "address" : "Address",
+        "entrance": "Entrance score",
+        "target": "Target"
+    }
+}

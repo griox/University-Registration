@@ -1,0 +1,21 @@
+{
+    "title": {
+        "nameuni": "Name",
+        "unicode": "University code",
+        "address": "Address",
+        "entrance": "Entrance Score",
+        "modal": "Student's Infomation",
+        "list": "List University Registered"
+    },
+    "label": {
+        "id": "ID",
+        "name": "Student name",
+        "gender": "Gender",
+        "dofb": "Date of birth",
+        "pofb": "Place of birth",
+        "email": "Email",
+        "identify": "Identify Number",
+        "enthicity": "Ethinicity",
+        "addressuni": "Address"
+    }
+}

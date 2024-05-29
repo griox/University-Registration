@@ -4,56 +4,59 @@ import { toast } from 'react-toastify';
 import { Descriptions, Divider, Table, Form,Spin } from 'antd';
 import { database } from '../firebaseConfig.js';
 import './css/Modal_detail.css';
+import { useTranslation } from 'react-i18next';
 
 export const Form_Detail = ({ university,loading,setLoading }) => {
     const [student, setStudents] = useState([]);
     const [form] = Form.useForm();
     const student_regist = university.registeration;
+    const { t } = useTranslation('detailuniversity');
+
     const cancel = () => {
         form.resetFields();
     };
     const items = [
         {
             key: '1',
-            label: 'Unicode',
+            label: t('label.unicode'),
             children: university.uniCode,
         },
         {
             key: '2',
-            label: 'Entrance Score',
+            label: t('label.entrance'),
             children: university.averageS,
         },
         {
             key: '3',
-            label: 'Number of Registration',
+            label: t('label.regis'),
             children: university.isRegistered,
         },
         {
             key: '4',
-            label: 'Target',
+            label: t('label.target'),
             children: university.target,
         },
         {
             key: '5',
-            label: 'Address',
+            label: t('label.address'),
             children: university.address,
         },
         {
             key: '6 ',
-            label: 'Name',
+            label: t('label.uniname'),
             children: university.nameU,
         },
     ];
     const colums = [
         {
-            title: 'ID',
+            title: t('title.id'),
             dataIndex: 'id',
             width: '10%',
             fixed: 'left',
         },
 
         {
-            title: 'Name',
+            title: t('title.name'),
             dataIndex: 'name',
             width: '19%',
             editable: true,
@@ -61,12 +64,12 @@ export const Form_Detail = ({ university,loading,setLoading }) => {
             key: 'name',
         },
         {
-            title: 'Email',
+            title: t('title.email'),
             dataIndex: 'email',
             width: '15%',
         },
         {
-            title: 'Math',
+            title: t('title.math'),
             dataIndex: 'MathScore',
             width: '10%',
             editable: true,
@@ -74,7 +77,7 @@ export const Form_Detail = ({ university,loading,setLoading }) => {
             sorter: (a, b) => a.MathScore - b.MathScore,
         },
         {
-            title: 'Literature',
+            title: t('title.literature'),
             dataIndex: 'LiteratureScore',
             width: '11%',
             editable: true,
@@ -82,7 +85,7 @@ export const Form_Detail = ({ university,loading,setLoading }) => {
             sorter: (a, b) => a.LiteratureScore - b.LiteratureScore,
         },
         {
-            title: 'EngLish',
+            title: t('title.english'),
             dataIndex: 'EnglishScore',
             width: '10%',
             editable: true,
@@ -90,7 +93,7 @@ export const Form_Detail = ({ university,loading,setLoading }) => {
             sorter: (a, b) => a.EnglishScore - b.EnglishScore,
         },
         {
-            title: 'Average',
+            title: t('title.average'),
             dataIndex: 'AverageScore',
             width: '10%',
             sorter: (a, b) => a.AverageScore - b.AverageScore,
@@ -125,7 +128,7 @@ export const Form_Detail = ({ university,loading,setLoading }) => {
     
     return (
         <>
-            <Descriptions title="University Infomation" column={2}>
+            <Descriptions title={t('title.uniinf')} column={2}>
                 {items.map((item) => (
                     <Descriptions.Item key={item.key} label={item.label}>
                         {item.children}
@@ -133,7 +136,7 @@ export const Form_Detail = ({ university,loading,setLoading }) => {
                 ))}
             </Descriptions>
             <Divider />
-            <h4>List Of Student</h4>
+            <h4>{t('title.list')}</h4>
             <Form form={form} component={false}>
                 <Spin spinning={loading} >
                 <Table className='table'

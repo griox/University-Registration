@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ProSidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import { Box, IconButton, Typography, useTheme, Tooltip, Avatar } from '@mui/material';
 import { Link } from 'react-router-dom';
@@ -9,23 +9,23 @@ import { SignatureOutlined, SolutionOutlined } from '@ant-design/icons';
 import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
-import { MenuContext } from '../../pages/MenuContext';
+import { useTranslation } from 'react-i18next';
 
-const Item = ({ title, to, icon, tooltip }) => {
+const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
     const theme = useTheme();
+    const { t } = useTranslation('sidebar');
     const colors = tokens(theme.palette.mode);
-    const { selectedMenuItem, setSelectedMenuItem } = useContext(MenuContext);
     return (
         <Tooltip title={tooltip} placement="right" arrow>
             <MenuItem
-                active={selectedMenuItem === title}
+                active={selected === title}
                 style={{
                     color: colors.grey[100],
                 }}
-                onClick={() => setSelectedMenuItem(title)}
+                onClick={() => setSelected(title)}
                 icon={icon}
             >
-                <Typography>{title}</Typography>
+                <Typography>{t(title)}</Typography>
                 <Link to={to} />
             </MenuItem>
         </Tooltip>
@@ -35,10 +35,12 @@ const Item = ({ title, to, icon, tooltip }) => {
 const Sidebar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-
+    const { t } = useTranslation('sidebar');
     const [isCollapsed, setIsCollapsed] = useState(() => JSON.parse(localStorage.getItem('sidebarCollapsed')) || false);
+    const [selected, setSelected] = useState(() => localStorage.getItem('selectedMenuItem') || 'Dashboard');
 
     const isInitialMountCollapsed = useRef(true);
+    const isInitialMountSelected = useRef(true);
 
     useEffect(() => {
         if (isInitialMountCollapsed.current) {
@@ -47,6 +49,14 @@ const Sidebar = () => {
             localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
         }
     }, [isCollapsed]);
+
+    useEffect(() => {
+        if (isInitialMountSelected.current) {
+            isInitialMountSelected.current = false;
+        } else {
+            localStorage.setItem('selectedMenuItem', selected);
+        }
+    }, [selected]);
 
     function stringToColor(string) {
         let hash = 0;
@@ -65,7 +75,7 @@ const Sidebar = () => {
         if (name === '') {
             name = 'nothing';
         }
-        let words = name[0].split(' ');
+        let words = name.split(' ');
         let firstChar = '';
         let lastChar = '';
         if (words.length === 1) {
@@ -145,14 +155,18 @@ const Sidebar = () => {
                                 />
                             </Box>
                             <Box textAlign="center">
-                                <Typography
-                                    variant="h2"
-                                    color={colors.grey[100]}
-                                    fontWeight="bold"
-                                    sx={{ m: '10px 0 0 0' }}
-                                >
-                                    {localStorage.getItem('Name') || ''}
-                                </Typography>
+                                <div>
+                                    <Typography
+                                        variant="h2"
+                                        color={colors.grey[100]}
+                                        fontWeight="bold"
+                                        sx={{ m: '10px 0 0 0' }}
+                                        className="username"
+                                        title={localStorage.getItem('Name') || ''}
+                                    >
+                                        {localStorage.getItem('Name') || ''}
+                                    </Typography>
+                                </div>
                                 <Typography variant="h5" color={colors.greenAccent[500]}>
                                     {localStorage.getItem('Role')}
                                 </Typography>
@@ -160,25 +174,38 @@ const Sidebar = () => {
                         </Box>
                     )}
                     <Box paddingLeft={isCollapsed ? undefined : '1%'}>
-                        <Item title="Dashboard" to="/admin/dashboard" icon={<HomeOutlinedIcon />} tooltip="Dashboard" />
+                        <Item
+                            title="Dashboard"
+                            to="/admin/dashboard"
+                            icon={<HomeOutlinedIcon />}
+                            selected={selected}
+                            setSelected={setSelected}
+                            tooltip="Dashboard"
+                        />
                         {isAdminOrSuperAdmin && (
                             <>
                                 <Item
-                                    title="University Managerment"
+                                    title={t('title.university')}
                                     to="/admin/university"
                                     icon={<SchoolIcon />}
+                                    selected={selected}
+                                    setSelected={setSelected}
                                     tooltip="University Managerment"
                                 />
                                 <Item
-                                    title="Student Managerment"
+                                    title={t('title.student')}
                                     to="/admin/student"
                                     icon={<SolutionOutlined />}
+                                    selected={selected}
+                                    setSelected={setSelected}
                                     tooltip="Student Managerment"
                                 />
                                 <Item
-                                    title="Register Account"
+                                    title={t('title.register')}
                                     to="/register"
                                     icon={<SignatureOutlined />}
+                                    selected={selected}
+                                    setSelected={setSelected}
                                     tooltip="Register Account"
                                 />
                             </>
@@ -189,6 +216,8 @@ const Sidebar = () => {
                                     title="Profile"
                                     to="/admin/profile"
                                     icon={<ContactsOutlinedIcon />}
+                                    selected={selected}
+                                    setSelected={setSelected}
                                     tooltip="Profile"
                                 />
                             </>

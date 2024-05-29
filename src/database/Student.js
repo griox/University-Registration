@@ -1,23 +1,13 @@
 import 'firebase/auth';
-import { ref,  getDatabase, set,get,update } from 'firebase/database';
-import { initializeApp } from 'firebase/app';
+import { ref, set,get,update } from 'firebase/database';
 import { useEffect } from 'react';
+import { database } from '../firebaseConfig.js';
 import { toast } from 'react-toastify';
-const firebaseConfig = {
-    apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
-    authDomain: 'mock-proeject-b.firebaseapp.com',
-    databaseURL: 'https://mock-proeject-b-default-rtdb.firebaseio.com',
-    projectId: 'mock-proeject-b',
-    storageBucket: 'mock-proeject-b.appspot.com',
-    messagingSenderId: '898832925665',
-    appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
-};
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-let isRecordsCreated = false; // Biến để đánh dấu xem hàm createStudentRecords đã được gọi hay chưa
+
+let isRecordsCreated = false;
 function writeStudentRecord(id, name, email, mathScore, literatureScore, englishScore, averageScore, isRegister, uniCodes, Role) {
-  const studentRef = ref(db, 'SinhVien/'+id); // Tạo reference đến đường dẫn của sinh viên trong database
-  set(studentRef, { // Sử dụng set để ghi dữ liệu lên đường dẫn đó
+  const studentRef = ref(database, 'SinhVien/'+id);
+  set(studentRef, { 
       id: id,
       name: name,
       email: email,
@@ -29,15 +19,14 @@ function writeStudentRecord(id, name, email, mathScore, literatureScore, english
       uniCodes: uniCodes,
       Role: Role
   }).catch((error) => {
-      toast.error("Error writing record for student with ID " + id + ": ", error);
+      toast.error(`Error writing record for student with ID ${id}: ${error}`);
   });
 }
 
 
 const userNames = ["HoangVanThang","NguyenVanG","NguyenVanSon","PhamVanD","TranThiI","TranVanB","TranVanNam"];
 const userEmails = ["HoangVanThang@gmai.com","NguyenVanG@gmail.com","NguyenVanSon@gmail.com","PhamVanD@gmail.com","TranThiI@gmail.com","TranVanB@gmail.com","TranVanNam@gmail.com"];
-let idCounter = 0; // Biến số liệu để đảm bảo tính duy nhất của ID
-// Tạo hàm ngẫu nhiên từ min đến max
+let idCounter = 0; 
 function getRandomNumber(min, max) {
   return round(Math.random() * (max - min + 1) + min,1);
 }
@@ -52,7 +41,7 @@ function generateUniqueID() {
     return uniqueId;
 }
 export function createStudentRecords() {
-  if (!isRecordsCreated) { // Chỉ gọi hàm nếu biến isRecordsCreated là false
+  if (!isRecordsCreated) {
       for (let i = 0; i < 7; i++) {
           let id = generateUniqueID();
           let name = userNames[i];
@@ -68,7 +57,7 @@ export function createStudentRecords() {
           writeStudentRecord(id, name, email, mathScore, literatureScore, englishScore, averageScore, isRegister, uniCode, Role);
       }
      
-      isRecordsCreated = true; // Đánh dấu rằng hàm đã được gọi
+      isRecordsCreated = true;
      
   }
 }
@@ -84,7 +73,7 @@ const unicodes = [
   "usshdanang", "utedanang", "dutdanang", "tdtudanang", "pteudana"
 ];
 async function updateUniCodes() {
-  const studentsRef = ref(db, 'SinhVien');
+  const studentsRef = ref(database, 'SinhVien');
   try {
     const snapshot = await get(studentsRef);
     if (snapshot.exists()) {
@@ -92,23 +81,21 @@ async function updateUniCodes() {
       for (const studentId in studentsData) {
         if (Object.hasOwnProperty.call(studentsData, studentId)) {
           const student = studentsData[studentId];
-          const numberOfUniCodes = getRandomNumber(1, 5); // Số lượng uniCodes ngẫu nhiên từ 1 đến 5
+          const numberOfUniCodes = getRandomNumber(1, 5);
           const randomUniCodes = [];
-          // Tạo một mảng chứa các uniCode ngẫu nhiên
           for (let i = 0; i < numberOfUniCodes; i++) {
             randomUniCodes.push(unicodes[Math.floor(Math.random() * unicodes.length)]);
           }
-          // Update giá trị uniCodes cho sinh viên
           await update(ref(studentsRef.child(studentId)), { uniCodes: randomUniCodes });
         }
       }
     }
   } catch (error) {
-    console.error('Error updating uniCodes:', error);
+    toast.error('Error updating uniCodes')
   }
 }
 async function updateStudentGender() {
-  const studentsRef = ref(db, 'SinhVien');
+  const studentsRef = ref(database, 'SinhVien');
   try {
     const snapshot = await get(studentsRef);
     if (snapshot.exists()) {
@@ -116,20 +103,19 @@ async function updateStudentGender() {
       for (const studentId in studentsData) {
         if (Object.hasOwnProperty.call(studentsData, studentId)) {
           const student = studentsData[studentId];
-          const gender = Math.random() < 0.5 ? 'male' : 'female'; // Chọn giới tính ngẫu nhiên
-          // Update giá trị gender cho sinh viên
+          const gender = Math.random() < 0.5 ? 'male' : 'female';
           await update(ref(studentsRef.child(studentId)), { gender: gender });
         }
       }
     }
   } catch (error) {
-    console.error('Error updating gender:', error);
+    toast.error('Error updating gender')
   }
 }
 export function useCreateStudentRecordsOnMount() {
   useEffect(() => {
     updateStudentGender()
-  }, []); // Thực hiện chỉ một lần khi component được mount
+  }, []);
 }
 
 

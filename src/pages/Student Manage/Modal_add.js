@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import 'firebase/auth';
-import { getDatabase, ref, child, get, set } from 'firebase/database';
-import { initializeApp } from 'firebase/app';
+import { ref, child, get, set } from 'firebase/database';
 import { toast } from 'react-toastify';
 import { Button, Modal, Select, InputNumber, DatePicker, Form } from 'antd';
 import { InfoCircleOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
@@ -9,18 +8,7 @@ import { Input, Tooltip, Row, Col } from 'antd';
 import './css/modal_add.css';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
-
-const firebaseConfig = {
-    apiKey: 'AIzaSyD2_evQ7Wje0Nza4txsg5BE_dDSNgmqF3o',
-    authDomain: 'mock-proeject-b.firebaseapp.com',
-    databaseURL: 'https://mock-proeject-b-default-rtdb.firebaseio.com',
-    projectId: 'mock-proeject-b',
-    storageBucket: 'mock-proeject-b.appspot.com',
-    messagingSenderId: '898832925665',
-    appId: '1:898832925665:web:bb28598e7c70a0d73188a0',
-};
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+import { database } from '../firebaseConfig.js';
 
 const ModalAdd = ({ studentData, setStudentData }) => {
     const [Fullname, setFullname] = useState('');
@@ -36,7 +24,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     const [Englishscore, setEnglishscore] = useState(null);
     const [Literaturescore, setLiteraturescore] = useState(null);
     const [averageS, setAverageS] = useState(null);
-    const { t } = useTranslation('student');
+    const { t } = useTranslation('modalStudent');
     const showModal = () => {
         setIsModalOpen(true);
     };
@@ -48,22 +36,16 @@ const ModalAdd = ({ studentData, setStudentData }) => {
         return Math.round((number || 0) * factor) / factor;
     }
     const generateID = async () => {
-        const snapshot = await get(child(ref(db), 'Detail'));
+        const snapshot = await get(child(ref(database), 'Detail'));
         if (snapshot.exists()) {
-            // lấy ra từng sinh viên
             const students = snapshot.val();
-            // Lấy ra danh sách ID của tất cả sinh viên
             const studentIDs = Object.keys(students);
-            // Lấy ID của sinh viên cuối cùng trong danh sách
             const lastStudentID = studentIDs[studentIDs.length - 1];
-            // Lay ra so cuoi cua Id
             const lastIDNumber = parseInt(lastStudentID.slice(2));
-            // Tạo ID mới bằng cách tăng ID của sinh viên cuối cùng lên 1
             const newIDNumber = lastIDNumber + 1;
             const newID = `SV${newIDNumber}`;
             return newID;
         } else {
-            // Nếu danh sách sinh viên trống, trả về ID đầu tiên
             return 'SV001';
         }
     };
@@ -72,7 +54,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
         const calculateAverage = () => {
             if (Mathscore !== null && Englishscore !== null && Literaturescore !== null) {
                 const totalScore = Mathscore + Englishscore + Literaturescore;
-                setAverageS(totalScore.toFixed(1)); // Set the average score state
+                setAverageS(totalScore.toFixed(1));
             }
         };
         calculateAverage();
@@ -80,10 +62,10 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     const addStudent = async () => {
         try {
             const formattedDateOfBirth = dateOfBirth ? dateOfBirth.format('DD/MM/YYYY') : '';
-            const newID = await generateID(); // Await for the ID generation
-            const studentRef = ref(db, `Detail/${newID}`); // Reference to the new student
+            const newID = await generateID();
+            const studentRef = ref(database, `Detail/${newID}`); 
             await set(studentRef, {
-                id: newID, // Use the generated ID
+                id: newID, 
                 email: Email,
                 name: Fullname,
                 enthicity: enthicity,
@@ -100,7 +82,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 isRegister: 'true',
             });
             const encodeEmail = encodeEmails(Email);
-            const accountRef = ref(db, `Account/${encodeEmail}`);
+            const accountRef = ref(database, `Account/${encodeEmail}`);
             await set(accountRef, {
                 email: Email,
                 password: 'Tvx1234@',
@@ -108,7 +90,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 Role: 'user',
             });
             const newData = {
-                id: newID, // Use the generated ID
+                id: newID, 
                 email: Email,
                 name: Fullname,
                 enthicity: enthicity,
@@ -137,7 +119,6 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     const handleOk = async () => {
         let hasError = false;
 
-        // Initial checks
         if (
             Fullname === '' ||
             Address === '' ||
@@ -155,13 +136,12 @@ const ModalAdd = ({ studentData, setStudentData }) => {
             hasError = true;
         }
 
-        // Validate Email
         if (Email !== '') {
             if (!validateEmailFormat(Email)) {
                 toast.error('Invalid Email');
                 hasError = true;
             } else {
-                const snapshot = await get(child(ref(db), `Detail/`));
+                const snapshot = await get(child(ref(database), `Detail/`));
                 if (snapshot.exists()) {
                     const students = snapshot.val();
                     const emailExists = Object.values(students).some((user) => user.email === Email);
@@ -173,13 +153,12 @@ const ModalAdd = ({ studentData, setStudentData }) => {
             }
         }
 
-        // Validate Identify Number
         if (Identify !== '') {
             if (!validateIdenNumber(Identify)) {
                 toast.error('Invalid identify');
                 hasError = true;
             } else {
-                const snapshot = await get(child(ref(db), `Detail/`));
+                const snapshot = await get(child(ref(database), `Detail/`));
                 if (snapshot.exists()) {
                     const Infors = snapshot.val();
                     const IdenExists = Object.values(Infors).some((user) => user.idenNum === Identify);
@@ -191,7 +170,6 @@ const ModalAdd = ({ studentData, setStudentData }) => {
             }
         }
 
-        // Final check before closing the modal
         if (!hasError) {
             addStudent();
             setFullname('');
@@ -209,7 +187,6 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     const handleCancel = () => {
         setAddress('');
         setIsModalOpen(false);
-        // Reset form validation status
         setFullname('');
         setEmail('');
         setDateOfBirth('');
@@ -361,7 +338,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 {t('button.Add')}
             </Button>
             <Modal
-                title="Register for Student"
+                title= {t('title.modal')}
                 open={isModalOpen}
                 onOk={handleOk}
                 onCancel={handleCancel}
@@ -373,7 +350,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         <Col span={12}>
                             <Form.Item
                                 className="form-item"
-                                label="Name"
+                                label={t('label.name')}
                                 name="name"
                                 validateStatus={!validateFullname(Fullname) && Fullname ? 'error' : ''}
                                 rules={[
@@ -399,7 +376,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         <Col span={12}>
                             <Form.Item
                                 className="form-item"
-                                label="Gender"
+                                label={t('label.gender')}
                                 name="gender"
                                 rules={[
                                     {
@@ -420,7 +397,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         <Col span={12}>
                             <Form.Item
                                 className="form-item"
-                                label="Date of Birth"
+                                label={t('label.dofb')}
                                 name="dob"
                                 rules={[
                                     {
@@ -439,7 +416,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item label="Place of Birth" className="form-item">
+                            <Form.Item label={t('label.pofb')} className="form-item">
                                 <Select
                                     initialvalues="Khánh Hòa"
                                     options={cities}
@@ -450,7 +427,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         </Col>
                     </Row>
                     <Form.Item
-                        label="Email"
+                          label={t('label.email')}
                         name="email"
                         className="form-item"
                         validateStatus={!validateEmailFormat(Email) && Email ? 'error' : ''}
@@ -477,7 +454,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                     <Row gutter={16}>
                         <Col span={12}>
                             <Form.Item
-                                label="Identify Number"
+                                  label={t('label.identify')}
                                 name="identify"
                                 className="form-item"
                                 validateStatus={!validateIdenNumber(Identify) && Identify ? 'error' : ''}
@@ -503,7 +480,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         </Col>
                         <Col span={12}>
                             <Form.Item
-                                label="Ethnicity"
+                               label={t('label.ethnicity')}
                                 name="ethnicity"
                                 className="form-item"
                                 rules={[
@@ -525,7 +502,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                     <Row gutter={16}>
                         <Col span={24}>
                             <Form.Item
-                                label="Address"
+                                label={t('label.address')}
                                 name="address"
                                 className="form-item"
                                 rules={[
@@ -549,7 +526,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                     <Row gutter={16}>
                         <Col span={6}>
                             <Form.Item
-                                label="Math"
+                                label={t('label.math')}
                                 className="form-item"
                                 name="math"
                                 rules={[
@@ -570,7 +547,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         </Col>
                         <Col span={6}>
                             <Form.Item
-                                label="English"
+                                label={t('label.english')}
                                 name="english"
                                 className="form-item"
                                 rules={[
@@ -591,7 +568,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         </Col>
                         <Col span={6}>
                             <Form.Item
-                                label="Literature"
+                                label={t('label.literature')}
                                 name="literature"
                                 className="form-item"
                                 validateStatus={
@@ -624,7 +601,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             </Form.Item>
                         </Col>
                         <Col span={6}>
-                            <Form.Item label="Entrance Score" className="form-item">
+                            <Form.Item  label={t('label.entrance')} className="form-item">
                                 <Input readOnly className="input-num" value={averageS} />
                             </Form.Item>
                         </Col>

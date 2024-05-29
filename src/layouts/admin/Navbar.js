@@ -1,11 +1,10 @@
 import React, { useContext } from 'react';
 import { Box, IconButton, useTheme } from '@mui/material';
-import { tokens } from '../../theme';
+import { tokens, ColorModeContext } from '../../theme';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { Dropdown, Space } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
-import { MenuContext } from '../../pages/MenuContext';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
@@ -17,10 +16,10 @@ const Navbar = () => {
     const currentLanguage = locales[i18n.language === 'vi' ? 'vi' : 'en'];
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    const colorMode = useContext(ColorModeContext);
     const dispatch = useDispatch();
     const history = useHistory();
     // const currentLanguage = locales[i18n.language];
-    const { selectedMenuItem } = useContext(MenuContext);
     const handleLanguage = (lng) => {
         i18n.changeLanguage(lng);
     };
@@ -94,7 +93,7 @@ const Navbar = () => {
     ];
 
     const handleLogout = () => {
-        const confirm = window.confirm('Are you sure want to log out?');
+        const confirm = window.confirm(t('title.confirm'));
         if (confirm) {
             localStorage.setItem('Infor', JSON.stringify(''));
             localStorage.removeItem('isLoggedIn');
@@ -105,7 +104,7 @@ const Navbar = () => {
 
             dispatch({ type: 'logout' });
 
-            history.push('/');
+            history.push('/Login');
         } else {
             return;
         }
@@ -154,6 +153,7 @@ const Navbar = () => {
                     {currentLanguage === 'Tiếng việt' ? 'Tiếng anh' : 'Egnlish'}
                 </button>
             </Box> */}
+            <Box display="flex" alignItems="center"></Box>
             <Box display="flex">
                 <Space wrap>
                     <DarkMode/>

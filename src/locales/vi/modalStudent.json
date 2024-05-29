@@ -1,0 +1,22 @@
+{
+    "button": {
+        "Add": "Thêm sinh viên"
+    },
+    "label": {
+        "name": "Họ và tên",
+        "gender": "Giới tính",
+        "dofb": "Ngày sinh",
+        "pofb": "Nơi sinh",
+        "email": "Email",
+        "identify": "CMND/CCCD",
+        "ethnicity": "Dân tộc",
+        "address": "Địa chỉ",
+        "math": "Điểm Toán",
+        "english": "Điểm Anh",
+        "literature": "Điểm Văn",
+        "entrance": "Điểm sàn"
+    },
+    "title": {
+        "modal": "Đăng kí sinh viên"
+    }
+}

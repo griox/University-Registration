@@ -1,0 +1,12 @@
+{
+    "button": {
+        "Add": "Thêm Trường"
+    },
+    "label": {
+        "uniname" : "Tên Trường",
+        "unicode" : "Mã Trường",
+        "address" : "Địa chỉ",
+        "entrance": "Điểm sàn",
+        "target": "Chỉ tiêu"
+    }
+}

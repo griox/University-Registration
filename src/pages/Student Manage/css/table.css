@@ -1,19 +1,19 @@
 
 .edit-cell{
-  margin: 0;
+  margin: 0px;
 }
 .search-column{
-  padding: 8;
+  padding: 8px;
 }
 .search-column Input {
-  margin-bottom: 8;
+  margin-bottom: 8px;
   display: block;
 }
 .search-column Button {
-  width: 90;
+  width: 90px;
 }
 .icon{
-  margin-right: 5;
+  margin-right: 5px;
 }
 .ant-typography{
   margin-right:8px;

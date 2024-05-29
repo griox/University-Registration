@@ -110,6 +110,8 @@ const ModalAdd = ({ studentData, setStudentData }) => {
             toast.success('Added a new student');
             setIsModalOpen(false);
         } catch (error) {
+            toast.error(error);
+            toast.error(error);
             toast.error('An error occurred while adding student');
         }
     };
@@ -351,11 +353,6 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 label={t('label.name')}
                                 name="name"
                                 validateStatus={!validateFullname(Fullname) && Fullname ? 'error' : ''}
-                                help={
-                                    !validateFullname(Fullname) && Fullname
-                                        ? 'University Name must contain only letters and spaces'
-                                        : ''
-                                }
                                 rules={[
                                     {
                                         required: true,

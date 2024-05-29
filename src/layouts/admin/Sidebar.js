@@ -10,9 +10,11 @@ import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
 import { MenuContext } from '../../pages/MenuContext';
+import { useTranslation } from 'react-i18next';
 
 const Item = ({ title, to, icon, tooltip }) => {
     const theme = useTheme();
+    const { t } = useTranslation('sidebar');
     const colors = tokens(theme.palette.mode);
     const { selectedMenuItem, setSelectedMenuItem } = useContext(MenuContext);
     return (
@@ -25,7 +27,7 @@ const Item = ({ title, to, icon, tooltip }) => {
                 onClick={() => setSelectedMenuItem(title)}
                 icon={icon}
             >
-                <Typography>{title}</Typography>
+                <Typography>{t(title)}</Typography>
                 <Link to={to} />
             </MenuItem>
         </Tooltip>
@@ -35,7 +37,7 @@ const Item = ({ title, to, icon, tooltip }) => {
 const Sidebar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-
+    const { t } = useTranslation('sidebar');
     const [isCollapsed, setIsCollapsed] = useState(() => JSON.parse(localStorage.getItem('sidebarCollapsed')) || false);
 
     const isInitialMountCollapsed = useRef(true);
@@ -163,23 +165,28 @@ const Sidebar = () => {
                         </Box>
                     )}
                     <Box paddingLeft={isCollapsed ? undefined : '1%'}>
-                        <Item title="Dashboard" to="/admin/dashboard" icon={<HomeOutlinedIcon />} tooltip="Dashboard" />
+                        <Item
+                            title={t('title.dashboard')}
+                            to="/admin/dashboard"
+                            icon={<HomeOutlinedIcon />}
+                            tooltip="Dashboard"
+                        />
                         {isAdminOrSuperAdmin && (
                             <>
                                 <Item
-                                    title="University Managerment"
+                                    title={t('title.university')}
                                     to="/admin/university"
                                     icon={<SchoolIcon />}
                                     tooltip="University Managerment"
                                 />
                                 <Item
-                                    title="Student Managerment"
+                                    title={t('title.student')}
                                     to="/admin/student"
                                     icon={<SolutionOutlined />}
                                     tooltip="Student Managerment"
                                 />
                                 <Item
-                                    title="Register Account"
+                                    title={t('title.register')}
                                     to="/register"
                                     icon={<SignatureOutlined />}
                                     tooltip="Register Account"

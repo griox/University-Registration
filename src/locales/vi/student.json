@@ -11,6 +11,18 @@
         "Action": "Hành động"
     },
     "button": {
-        "Add": "Thêm mới "
+        "Add": "Thêm mới ",
+        "edit": "Sửa",
+        "cancel": "Hủy",
+        "search": "Tìm kiếm",
+        "reset": "Đặt lại",
+        "filter": "Bộ lọc",
+        "close": "Đóng"
+    },
+    "title": {
+        "delete": "Chắc chắn muốn xóa ?",
+        "provide": "Cung cấp tài khoản ?",
+        "deleteacc": "Xóa tài khoản ?",
+        "total": "Tổng"
     }
 }

@@ -9,7 +9,8 @@ import '../../../assets/css/login.css';
 import { firebaseConfig } from '../../../constants/constants';
 import { validateEmailFormat } from '../../../commonFunctions';
 import { useTranslation } from 'react-i18next';
-import { Box } from '@mui/material';
+import { DownOutlined } from '@ant-design/icons';
+import { Dropdown, Space, Typography } from 'antd';
 import bcrypt from 'bcryptjs';
 export const Login = () => {
     const { t, i18n } = useTranslation('login');
@@ -121,6 +122,18 @@ export const Login = () => {
     const handleLanguage = (lng) => {
         i18n.changeLanguage(lng);
     };
+    const items = [
+        {
+            key: '1',
+            label: 'English',
+            onClick: () => handleLanguage('en'),
+        },
+        {
+            key: '2',
+            label: 'Tiếng Việt',
+            onClick: () => handleLanguage('vi'),
+        },
+    ];
     const getdt = (email, password) => {
         if (email !== '') {
             if (validateEmailFormat(email) !== true) {
@@ -144,6 +157,7 @@ export const Login = () => {
                                             localStorage.setItem('Name', y[i].name);
                                             if (rememberMe === true) {
                                                 localStorage.setItem('userToken', y[i].email);
+                                                localStorage.setItem('Email', y[i].email);
                                             }
 
                                             saveOnLocal(y[i].Role);
@@ -195,10 +209,6 @@ export const Login = () => {
     return (
         <>
             <div className="background">
-                <Box className="language">
-                    <button onClick={() => handleLanguage('vi')}>Tiếng việt</button>
-                    <button onClick={() => handleLanguage('en')}>Tiếng Anh</button>
-                </Box>
                 <div className="form-container">
                     <div className="col col-1">
                         <div className="image_layer">
@@ -266,6 +276,24 @@ export const Login = () => {
                                             <span>{t('button.log in')}</span>
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </div>
+                                    </div>
+
+                                    <div>
+                                        <Dropdown
+                                            className="drop-menu"
+                                            menu={{
+                                                items,
+                                                selectable: true,
+                                                defaultSelectedKeys: ['1'],
+                                            }}
+                                        >
+                                            <Typography.Link>
+                                                <Space className="title-drop">
+                                                    {t('title.language')}
+                                                    <DownOutlined />
+                                                </Space>
+                                            </Typography.Link>
+                                        </Dropdown>
                                     </div>
                                 </div>
                             </div>

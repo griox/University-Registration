@@ -1,6 +1,7 @@
 {
     "title": {
-        "setting": "Cài đặt"
+        "setting": "Cài đặt",
+        "confirm": "Bạn có chắc muốn đăng xuất ?"
     },
     "button": {
         "log out": "Đăng xuất",

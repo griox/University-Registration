@@ -13,7 +13,6 @@ import { getDownloadURL, uploadBytes, ref as storageRef } from 'firebase/storage
 import { ethnicities, firebaseConfig, gender, provinces } from '../constants/constants';
 import { useTranslation } from 'react-i18next';
 import Highlighter from 'react-highlight-words';
-import { GetColumnSearchProps } from '../commonFunctions';
 const MAX_COUNT = 5;
 
 const handleSearch = (selectedKeys, confirm, dataIndex, setSearchText, setSearchedColumn) => {

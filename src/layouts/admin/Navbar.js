@@ -103,7 +103,7 @@ const Navbar = () => {
 
             dispatch({ type: 'logout' });
 
-            history.push('/');
+            history.push('/Login');
         } else {
             return;
         }
@@ -141,7 +141,9 @@ const Navbar = () => {
             p={2}
         >
             <Box display="flex" alignItems="center">
-                <span style={{ color: colors.primary[500], fontSize: '1.2rem', fontWeight: 'bold' }}>{selectedMenuItem}</span>
+                <span style={{ color: colors.primary[500], fontSize: '1.2rem', fontWeight: 'bold' }}>
+                    {selectedMenuItem}
+                </span>
             </Box>
             <Box display="flex">
                 <Space wrap>

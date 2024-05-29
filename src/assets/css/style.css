@@ -37,3 +37,10 @@ html,
 .App {
     color: #333;
 }
+
+.username {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    text-align: center;
+}

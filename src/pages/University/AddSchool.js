@@ -247,7 +247,7 @@ const AddSchool = () => {
                 <Input
                     className="search"
                     ref={searchInput}
-                    placeholder={`Search ${dataIndex}`}
+                    placeholder={t('placeholder.search')}
                     value={selectedKeys[0]}
                     onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}

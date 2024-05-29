@@ -11,3 +11,84 @@
 .Date{
   width: 318px;
 }
+:where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-content{
+  background-color: var(--body_background);
+}
+:where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-title {
+  background-color: var(--body_background);
+  color: var(--body_color)
+}
+:where(.css-dev-only-do-not-override-j9bb5n).ant-form-vertical .ant-form-item-label >label{
+  color:var(--body_color)
+}
+:where(.css-dev-only-do-not-override-j9bb5n).ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector{
+  background-color: var(--input-color);
+  border-color: var(--border-color);
+  color:var(--body_color)
+}
+:where(.css-dev-only-do-not-override-j9bb5n).ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector:hover{
+  border-color: var(--hover-btn);
+  background-color: var(--input-color);
+}
+:where(.css-dev-only-do-not-override-j9bb5n).ant-picker-outlined {
+  background-color: var(--input-color);
+  border-color: var(--border-color);
+}
+:where(.css-dev-only-do-not-override-j9bb5n).ant-input-number-outlined{
+  background-color: var(--input-color);
+  border-color: var(--border-color);
+}
+:where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined{
+  background-color: var(--input-color);
+  border-color: var(--border-color);
+  color:var(--body_color)
+}
+:where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined:hover{
+  border-color: var(--hover-btn);
+  background-color: var(--input-color);
+}
+:where(.css-dev-only-do-not-override-j9bb5n).ant-input-affix-wrapper >input.ant-input {
+  color:var(--placeholder-color);
+  background-color: var(--input-color);
+}
+:where(.css-dev-only-do-not-override-j9bb5n).ant-input-affix-wrapper >input.ant-input:focus{
+  background-color: var(--input-color);
+}
+:where(.css-dev-only-do-not-override-j9bb5n).ant-pagination .ant-pagination-options-quick-jumper input{
+  background-color: var(--input-color);
+  border-color: var(--border-color); 
+}
+:where(.css-dev-only-do-not-override-j9bb5n).ant-pagination .ant-pagination-options-quick-jumper input:focus{
+  background-color: var(--input-color);
+  border-color: var(--hover-btn);
+  color:var(--body_color)
+}
+:where(.css-dev-only-do-not-override-j9bb5n).ant-pagination .ant-pagination-options-quick-jumper input:hover{
+  background-color: var(--input-color);
+  border-color: var(--hover-btn);
+  color:var(--body_color)
+}
+:where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined.ant-input-status-error:not(.ant-input-disabled){
+  background-color: var(--input-color) !important;
+}
+:where(.css-dev-only-do-not-override-j9bb5n).ant-input-affix-wrapper .ant-input-prefix{
+  color:var(--placeholder-color)
+}
+:where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined:focus{
+  background-color: var(--input-color);
+  border-color: var(--hover-btn);
+
+}
+:where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined:focus-within{
+  background-color: var(--input-color);
+  border-color: var(--hover-btn);
+}
+:where(.css-dev-only-do-not-override-j9bb5n).ant-select-dropdown{
+  background-color: var(--input-color);
+  color:var(--body_color);
+}
+:where(.css-dev-only-do-not-override-j9bb5n).ant-select-dropdown .ant-select-item-option-selected:not(.ant-select-item-option-disabled){
+  background-color: var(--hover-btn);
+  color: var(--boy_color);
+}
+

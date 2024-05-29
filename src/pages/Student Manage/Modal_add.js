@@ -376,11 +376,6 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 label="Name"
                                 name="name"
                                 validateStatus={!validateFullname(Fullname) && Fullname ? 'error' : ''}
-                                help={
-                                    !validateFullname(Fullname) && Fullname
-                                        ? 'University Name must contain only letters and spaces'
-                                        : ''
-                                }
                                 rules={[
                                     {
                                         required: true,

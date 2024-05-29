@@ -154,9 +154,9 @@ const Navbar = () => {
             </Box> */}
             <Box display="flex">
                 <Space wrap>
-                    <IconButton onClick={colorMode.toggleColorMode}>
+                    {/* <IconButton onClick={colorMode.toggleColorMode}>
                         {theme.palette.mode === 'dark' ? <DarkModeOutlinedIcon /> : <LightModeOutlinedIcon />}
-                    </IconButton>
+                    </IconButton> */}
                     <Dropdown menu={menuProps}>
                         <IconButton>
                             <Space>

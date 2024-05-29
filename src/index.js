@@ -6,6 +6,6 @@ import Bin from './bin';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <BrowserRouter>
-        <Bin />
+        <App />
     </BrowserRouter>,
 );

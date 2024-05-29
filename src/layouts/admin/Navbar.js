@@ -1,24 +1,25 @@
 import React, { useContext } from 'react';
 import { Box, IconButton, useTheme } from '@mui/material';
-import { tokens } from '../../theme';
+import { tokens, ColorModeContext } from '../../theme';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { Dropdown, Space } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
-import { MenuContext } from '../../pages/MenuContext';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { locales } from '../../translation/i18n';
+// import { locales } from '../../translation/i18n';
 
 const Navbar = () => {
     const { t, i18n } = useTranslation('navbar');
     const currentLanguage = locales[i18n.language === 'vi' ? 'vi' : 'en'];
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
+    const colorMode = useContext(ColorModeContext);
     const dispatch = useDispatch();
     const history = useHistory();
-    const { selectedMenuItem } = useContext(MenuContext);
+    // const currentLanguage = locales[i18n.language];
     const handleLanguage = (lng) => {
         i18n.changeLanguage(lng);
     };
@@ -131,7 +132,7 @@ const Navbar = () => {
         <Box
             display="flex"
             position="sticky"
-            bgcolor="#fff"
+            backgroundColor={colors.primary[400]}
             width="100%"
             zIndex={1000}
             top="0"
@@ -140,11 +141,16 @@ const Navbar = () => {
             boxShadow=" 0 7px 25px 0 rgba(0, 0, 0, 0.1)"
             p={2}
         >
-            <Box display="flex" alignItems="center">
-                <span style={{ color: colors.primary[500], fontSize: '1.2rem', fontWeight: 'bold' }}>
-                    {selectedMenuItem}
-                </span>
-            </Box>
+            <Box display="flex" alignItems="center"></Box>
+            {/* <Box>
+                <button onClick={() => handleLanguage('vi')}>
+                    {currentLanguage === 'Tiếng việt' ? 'Tiếng việt' : 'Vietnamese'}
+                </button>
+                <button onClick={() => handleLanguage('en')}>
+                    {currentLanguage === 'Tiếng việt' ? 'Tiếng anh' : 'Egnlish'}
+                </button>
+            </Box> */}
+            <Box display="flex" alignItems="center"></Box>
             <Box display="flex">
                 <Space wrap>
                     <Dropdown menu={menuProps}>

@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Route, Switch, useHistory } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Masterlayout from './layouts/admin/Masterlayout';
 import Home from './components/frontend/Home';
 import Login from './components/frontend/auth/Login';

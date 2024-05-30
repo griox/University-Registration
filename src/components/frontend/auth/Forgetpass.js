@@ -20,7 +20,7 @@ export const Forgetpass = () => {
         localStorage.setItem('Email', email);
         sendPasswordResetEmail(db, 'quang.nm.64cntt@ntu.edu.vn')
             .then((data) => {
-                alert('Check your email');
+                toast.success('The link will be sent to your email, please check your email');
             })
             .catch((error) => {
                 const errorCode = error.code;

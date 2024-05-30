@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, IconButton } from '@mui/material';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import { Badge, Button, Dropdown, Modal, Space, Table } from 'antd';
+import { Badge, Button, Dropdown, Modal, Space, Spin, Table } from 'antd';
 import { BellOutlined, UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -20,6 +20,7 @@ const Navbar = () => {
     const dispatch = useDispatch();
     const history = useHistory();
     const userRole = localStorage.getItem('Role');
+    const [tableLoading, setTableLoading] = useState(false);
     // const currentLanguage = locales[i18n.language];
     const handleLanguage = (lng) => {
         i18n.changeLanguage(lng);
@@ -139,9 +140,7 @@ const Navbar = () => {
     const [e, setE] = useState([]);
     const [ino, setIno] = useState(null);
 
-    const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
-    const [mess, setMess] = useState('');
     const showModal = () => {
         setOpen(true);
         if (l.length !== 0) {
@@ -152,79 +151,27 @@ const Navbar = () => {
             });
         }
     };
-    const handleOk = () => {
-        setLoading(true);
-        setTimeout(() => {
-            setLoading(false);
-            setOpen(false);
-        }, 3000);
-    };
+
     const handleCancel = () => {
         setOpen(false);
     };
 
     const app = initializeApp(firebaseConfig);
-    // const db = getDatabase(app);
     const db = getFirestore(app);
-    // setDoc(doc(db, 'cities', 'LA'), {
-    //     name: 'Los Angeles',
-    //     state: 'CA',
-    //     country: 'USA',
-    // });
 
     useEffect(() => {
         const g = () => {
+            setTableLoading(true);
             onSnapshot(query(collection(db, 'cities'), orderBy('time', 'desc')), (snapshot) => {
-                const x = snapshot.docs.map(
-                    (doc) =>
-                        // (doc) => console.log(doc.data(), doc.id),
-                        doc,
-                    // (doc) => setE((pre) => [...pre, { data: doc.data(), id: doc.id }]),
-                );
+                const x = snapshot.docs.map((doc) => doc);
                 setE(x.map((item) => item.data()));
                 setL(x.filter((item) => item.data().seen === false));
-                // console.log(list);
-                // setL(list);
-                // setL(e.filter((item) => item.data.seen === false));
             });
-            // get(child(ref(db), `Detail/SV398`)).then((snapshot) => {
-            //     if (snapshot.exists()) {
-            //         const x = snapshot.val();
-            //         // Object.values(x)
-            //         //     .map((item) => item)
-            //         //     .forEach((item) => {
-            //         //         setIno((prev) => [...prev, item]);
-            //         //     });
-            //         setIno(x.inotification.nb1 === undefined ? [] : x.inotification.nb1);
-            //     } else {
-            //         console.log('No data available');
-            //     }
-            // });
-            // addDoc(collection(db, 'cities'), {
-            //     name: 'KhanHoa',
-            //     country: 'DienKhanh',
-            // });
-            // console.log('Document written with ID: ' );
+            setTableLoading(false);
         };
         g();
-
-        // const timer = setTimeout(g, 100);
-        // return () => clearTimeout(timer);
     }, [db, e]);
-    const handleSend = () => {
-        // setDoc(doc(db, 'cities', 'LA'), {
-        //         name: 'Los Angeles',
-        //         state: 'CA',
-        //         country: 'USA',
-        //     });
-        addDoc(collection(db, 'cities'), {
-            name: mess,
-            country: mess,
-            state: mess,
-            time: new Date(),
-            seen: false,
-        });
-    };
+
     const handleIdClick = (record) => {
         setIno(record);
         setLoad(!load);
@@ -272,31 +219,8 @@ const Navbar = () => {
                         ''
                     ) : (
                         <div style={{ cursor: 'pointer' }}>
-                            <Modal
-                                open={open}
-                                title="Title"
-                                onOk={handleOk}
-                                onCancel={handleCancel}
-                                // footer={[
-                                //     <Button key="back" onClick={handleCancel}>
-                                //         Return
-                                //     </Button>,
-                                //     <Button key="submit" type="primary" loading={loading} onClick={handleOk}>
-                                //         Submit
-                                //     </Button>,
-                                //     <Button
-                                //         key="link"
-                                //         href="https://google.com"
-                                //         type="primary"
-                                //         loading={loading}
-                                //         onClick={handleOk}
-                                //     >
-                                //         Search on Google
-                                //     </Button>,
-                                // ]}
-                                footer={null}
-                            >
-                                <Modal title="Basic Modal" open={load} onOk={handleO} onCancel={handleCance}>
+                            <Modal open={open} title="Title" onCancel={handleCancel} footer={null}>
+                                <Modal title="Basic Modal" open={load} onCancel={handleCance} footer={null}>
                                     {ino && (
                                         <div>
                                             <p>Name: {ino.name}</p>
@@ -305,7 +229,6 @@ const Navbar = () => {
                                         </div>
                                     )}
                                 </Modal>
-
                                 <Table
                                     columns={columns}
                                     dataSource={e}

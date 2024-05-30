@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Button, Input, Select, Space, Table, Skeleton, Spin, Tooltip } from 'antd';
+import { Button, Input, Select, Space, Table, Skeleton, Spin, Tooltip, DatePicker } from 'antd';
 import '../assets/admin/css/profile.css';
 import 'firebase/auth';
 import { ref, child, getDatabase, get, update } from 'firebase/database';
@@ -13,6 +13,7 @@ import { getDownloadURL, uploadBytes, ref as storageRef } from 'firebase/storage
 import { ethnicities, firebaseConfig, gender, provinces } from '../constants/constants';
 import { useTranslation } from 'react-i18next';
 import Highlighter from 'react-highlight-words';
+import dayjs from 'dayjs';
 const MAX_COUNT = 5;
 
 const handleSearch = (selectedKeys, confirm, dataIndex, setSearchText, setSearchedColumn) => {
@@ -114,6 +115,7 @@ function Pr() {
     const [loadingTable, setLoadingTable] = useState(true);
     const size = 'middle';
     const [image, setImage] = useState(null);
+    const dateFormatList = 'DD/MM/YYYY';
 
     const columns = [
         {
@@ -149,17 +151,18 @@ function Pr() {
             sorter: (a, b) => a.score - b.score,
         },
         {
-            title: t('table.Target'),
-            dataIndex: 'capacity',
-            key: 'capacity',
-            sorter: (a, b) => a.capacity - b.capacity,
-        },
-        {
             title: t('table.Number of students registered'),
             dataIndex: 'isRegistered',
             key: 'isRegistered',
             sorter: (a, b) => a.isRegistered - b.isRegistered,
         },
+        {
+            title: t('table.Target'),
+            dataIndex: 'capacity',
+            key: 'capacity',
+            sorter: (a, b) => a.capacity - b.capacity,
+        },
+
         {
             title: t('table.Action'),
             key: 'action',
@@ -186,7 +189,7 @@ function Pr() {
             }
         });
 
-        const averageScore = personal.EnglishScore + personal.LiteratureScore + personal.MathScore;
+        const averageScore = (personal.EnglishScore + personal.LiteratureScore + personal.MathScore) / 3;
         get(child(ref(db), `University/`)).then((snapshot) => {
             if (snapshot.exists()) {
                 const x = snapshot.val();
@@ -388,6 +391,16 @@ function Pr() {
 
                         <div className="input">
                             <div className="detail-item">
+                                <h1>{t('title.ID')}: </h1>
+                                <Space.Compact size="large">
+                                    <Input
+                                        className="g-s size-input"
+                                        value={detail.id}
+                                        onChange={(e) => handleChange(e, 'id')}
+                                    />
+                                </Space.Compact>
+                            </div>
+                            <div className="detail-item">
                                 <h1>{t('title.name')}: </h1>
                                 <Space.Compact size="large">
                                     <Input
@@ -395,6 +408,19 @@ function Pr() {
                                         value={detail.name}
                                         onChange={(e) => handleChange(e, 'name')}
                                     />
+                                </Space.Compact>
+                            </div>
+                            <div className="detail-item">
+                                <h1>{t('title.name')}: </h1>
+                                <Space.Compact size="large">
+                                    <Space.Compact size="mid">
+                                        <DatePicker
+                                            className="g-s date-picker"
+                                            value={dayjs(detail.dateObirth, dateFormatList)}
+                                            format={dateFormatList}
+                                            onChange={(e) => handleSelect(e, 'dateObirth')}
+                                        />
+                                    </Space.Compact>
                                 </Space.Compact>
                             </div>
                             <div className="detail-item">

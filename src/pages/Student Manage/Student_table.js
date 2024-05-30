@@ -350,7 +350,7 @@ const StudentList = () => {
         {
             title: t('table.ID'),
             dataIndex: 'id',
-            
+
             width: '10%',
             ...getColumnSearchProps('id'),
             render: (_, record) => (
@@ -359,7 +359,7 @@ const StudentList = () => {
                 </span>
             ),
             key: 'id',
-            fixed:'left',
+            fixed: 'left',
         },
 
         {
@@ -367,7 +367,7 @@ const StudentList = () => {
             dataIndex: 'name',
             width: '19%',
             editable: true,
-            fixed:'left',
+            fixed: 'left',
             key: 'name',
             ...getColumnSearchProps('name'),
             render: (text, record) => {
@@ -394,7 +394,7 @@ const StudentList = () => {
                 </Tooltip>
             ),
             key: 'email',
-            fixed:'left',
+            fixed: 'left',
         },
         {
             title: t('table.Math'),
@@ -511,7 +511,6 @@ const StudentList = () => {
     };
 
     const handleOk = () => {
-        setBell(true);
         if (mess !== '') {
             addDoc(collection(db, 'cities'), {
                 name: mess,
@@ -519,58 +518,32 @@ const StudentList = () => {
                 state: mess,
                 time: new Date(),
                 seen: false,
-            });
+            })
+                .then(() => toast.success('The notification you sent was successful'), setIsModalOpen(false))
+                .catch(() => toast.error('The notification you sent has failed'), setIsModalOpen(false));
         }
-        setBell(false);
     };
     const handleCancel = () => {
         setIsModalOpen(false);
     };
-    const handleFile = (e) => {
-        if (e.target.files[0]) {
-            setFile(e.target.files[0]);
-            // const reader = new FileReader();
-            // reader.onload = (event) => {
-            //     const imgUrl = event.target.result;
-            //     document.getElementById('avatarImg').src = imgUrl;
-            // };
-            // reader.readAsDataURL(e.target.files[0]);
-            console.log(file);
-        }
-    };
-    const props = {
-        name: 'file',
-        action: 'https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload',
-        headers: {
-            authorization: 'authorization-text',
-        },
-        onChange(info) {
-            if (info.file.status !== 'uploading') {
-                console.log(info.file, info.fileList);
-            }
-            if (info.file.status === 'done') {
-                message.success(`${info.file.name} file uploaded successfully`);
-            } else if (info.file.status === 'error') {
-                message.error(`${info.file.name} file upload failed.`);
-            }
-        },
-    };
+
     return (
         <div className="Layout">
             <Space direction="vertical">
                 <div style={{ display: 'flex', columnGap: '10px' }}>
                     <ModalAdd studentData={studentData} setStudentData={setStudentData} />
+
                     <Modal
                         title="Basic Modal"
                         open={isModalOpen}
                         // onOk={() => setBell(true)}
-                        // onCancel={handleCancel}
+                        onCancel={handleCancel}
                         destroyOnClose
                         footer={[
-                            <Spin spinning={bell}>
-                                <Button onClick={handleOk}>Ok</Button>,
-                            </Spin>,
-                            <Button onClick={handleCancel}>Cance</Button>,
+                            <Button onClick={handleOk} loading={bell}>
+                                Ok
+                            </Button>,
+                            <Button onClick={handleCancel}>Cancel</Button>,
                         ]}
                     >
                         {/* <input type="file" id="fileInput" className="avatar-input" /> */}

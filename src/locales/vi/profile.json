@@ -10,7 +10,8 @@
         "MathScore": "Điểm toán",
         "EnglishScore": "Điểm anh",
         "LiteratureScore": "Điểm văn",
-        "University": "Trường đại học"
+        "University": "Trường đại học",
+        "ID": "ID"
     },
     "table": {
         "Code": "Mã trường",

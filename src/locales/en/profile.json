@@ -10,7 +10,8 @@
         "MathScore": "MathScore",
         "EnglishScore": "EnglishScore",
         "LiteratureScore": "LiteratureScore",
-        "University": "University"
+        "University": "University",
+        "ID": "ID"
     },
     "table": {
         "Code": "Code",

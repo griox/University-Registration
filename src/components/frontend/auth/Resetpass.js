@@ -11,6 +11,7 @@ import { encodePath } from '../../../commonFunctions';
 import { toast } from 'react-toastify';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 // import '../../../assets/js/login';
+import bcrypt from 'bcryptjs';
 
 export const Forgetpass = () => {
     const app = initializeApp(firebaseConfig);
@@ -18,6 +19,8 @@ export const Forgetpass = () => {
     const history = useHistory();
     const [newPass, setNewPass] = useState('');
     const [reNewPass, setReNewPass] = useState('');
+    const salt = bcrypt.genSaltSync(10);
+
     useEffect(() => {
         const passwordInput1 = document.querySelector('.pass_login_1');
         const eyeBtn1 = document.querySelector('.eye1');
@@ -100,20 +103,24 @@ export const Forgetpass = () => {
         get(child(ref(db), `Account/`)).then((snapshot) => {
             if (snapshot.exists()) {
                 const x = snapshot.val();
+
                 const listItem = Object.values(x).map((user) => user);
-                const y = listItem.find((item) => item.email === email);
+                const encodeEmail = encodePath(email);
+                const y = listItem.filter((item) => item.email === email);
+                console.log(listItem);
                 if (y !== undefined) {
                     if (newPass === reNewPass) {
-                        const encodeEmail = encodePath(email);
-
                         try {
+                            var hash = bcrypt.hashSync(newPass, salt);
                             update(ref(db, `Account/` + encodeEmail), {
-                                password: newPass,
+                                password: hash,
                             }).then(() => handleLogout());
                         } catch (error) {
                             toast.error('Your request is failed');
                         }
                     }
+                } else {
+                    toast.error('Your account was not found');
                 }
             }
         });
@@ -146,7 +153,7 @@ export const Forgetpass = () => {
                                 <br />
                                 <br />
                                 <div className="form-title">
-                                    <span>FORGET PASSWORD</span>
+                                    <span>RESET PASSWORD</span>
                                 </div>
                                 <div className="form-inputs">
                                     <div className="input-box">

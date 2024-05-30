@@ -18,14 +18,12 @@
 .typolink{
     margin-right: 8px;
 }
-
-.Layout {
-    display: flex; 
-    flex-grow: 1;
-    overflow-x: hidden; /* Ngăn bất kỳ phần nào của bảng bên trong `.table` bị hiển thị ra ngoài */
-  }
-  
-  .table {
-    max-width: 100%; /* Đảm bảo bảng không vượt quá kích thước của phần tử bao bọc nó */
-  }
-  
+.ant-table-cell-fix-right {
+    background-color: var(--body_background) !important;
+}
+.uniYes{
+    color:var(--registered-color);
+}
+.uniNo{
+    color:var(--unregistered-color);
+}

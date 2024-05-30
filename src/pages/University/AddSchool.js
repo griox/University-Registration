@@ -333,7 +333,7 @@ const AddSchool = () => {
             ...getColumnSearchProps('uniCode'),
             render: (text, record) => (
                 <Tooltip title={record.isRegistered === record.targer ? 'Can not regist' : ''}>
-                    <span style={{ color: record.isRegistered === record.target ? 'green' : 'black' }}>{text}</span>
+                    <span className={record.isRegistered === record.target ? 'unYes':'uniNo'}>{text}</span>
                 </Tooltip>
             ),
             key: 'uniCode',
@@ -371,7 +371,7 @@ const AddSchool = () => {
         {
             title: t('table.Action'),
             dataIndex: 'operation',
-            width: '13%',
+            width: '10%',
             fixed: 'right',
             render: (_, record) => {
                 const editable = isEditing(record);
@@ -423,28 +423,26 @@ const AddSchool = () => {
                 <Space direction="vertical">
                     <FormAdd UniData={UniData} setUniData={setUniData} />
                     <Spin spinning={loading}>
-                        <div className='table'>
-                            <Table
-                                columns={mergedColumns}
-                                dataSource={UniData}
-                                onChange={onChange}
-                                pagination={{
-                                    defaultPageSize: 10,
-                                    pageSizeOptions: ['10', '20', '40', '100'],
-                                    showSizeChanger: true,
-                                    showQuickJumper: true,
-                                    showTotal: (total) => `${t('title.total')} ${total}`
-                                }}
-                                scroll={{ x: false, y: 'calc(100vh - 350px)' }}
-                                components={{
-                                    body: {
-                                        cell: EditableCell,
-                                    },
-                                }}
-                                bordered
-                                ref={tableRef}
-                            />
-                        </div>
+                        <Table
+                            columns={mergedColumns}
+                            dataSource={UniData}
+                            onChange={onChange}
+                            pagination={{
+                                defaultPageSize: 10,
+                                pageSizeOptions: ['10', '20', '40', '100'],
+                                showSizeChanger: true,
+                                showQuickJumper: true,
+                                showTotal: (total) => `${t('title.total')} ${total}`
+                            }}
+                            scroll={{ x: false, y: 'calc(100vh - 350px)' }}
+                            components={{
+                                body: {
+                                    cell: EditableCell,
+                                },
+                            }}
+                            rowHoverable={false}
+                            ref={tableRef}
+                        />
                     </Spin>
                 </Space>
             </Form>

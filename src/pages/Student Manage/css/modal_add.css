@@ -1,97 +1,109 @@
-.form-item1{
-  font-weight: 600;
-
+.form-item {
+    font-weight: 600;
 }
-.btn-add {
-  margin-left: 9px;
+.input-num {
+    width: 50%;
 }
-.input-num{
-  width: 50%;
+.icon {
+    color: rgba(0, 0, 0, 0.45);
 }
-.icon{
-  color:rgba(0,0,0,.45);
+.Date {
+    width: 318px;
+    border-color: var(--border-color);
 }
-.Date{
-  width: 318px;
+.Date:hover {
+    background-color: var(--input-color);
+    color: var(--body_color);
+    border-color: var(--hover-btn);
 }
-:where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-content{
-  background-color: var(--body_background);
+.Date:focus-within {
+    background-color: var(--input-color);
+    color: var(--body_color);
 }
-:where(.css-dev-only-do-not-override-j9bb5n).ant-modal .ant-modal-title {
-  background-color: var(--body_background);
-  color: var(--body_color)
+.ant-picker-dropdown .ant-picker-panel-container .ant-picker-panel-layout {
+    background-color: var(--input-color);
+    color: var(--body_color) !important;
+    border-color: var(--border-color) !important;
 }
-:where(.css-dev-only-do-not-override-j9bb5n).ant-form-vertical .ant-form-item-label >label{
-  color:var(--body_color)
+.ant-picker-cell-in-view {
+    color: var(--body_color) !important;
 }
-:where(.css-dev-only-do-not-override-j9bb5n).ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector{
-  background-color: var(--input-color);
-  border-color: var(--border-color);
-  color:var(--body_color)
+.ant-picker-dropdown .ant-picker-content th {
+    color: var(--body_color) !important;
 }
-:where(.css-dev-only-do-not-override-j9bb5n).ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector:hover{
-  border-color: var(--hover-btn);
-  background-color: var(--input-color);
+.ant-picker-header-view {
+    color: var(--body_color) !important;
 }
-:where(.css-dev-only-do-not-override-j9bb5n).ant-picker-outlined {
-  background-color: var(--input-color);
-  border-color: var(--border-color);
+.ant-picker-dropdown .ant-picker-header-view button:hover {
+    color: var(--hover-btn) !important;
 }
-:where(.css-dev-only-do-not-override-j9bb5n).ant-input-number-outlined{
-  background-color: var(--input-color);
-  border-color: var(--border-color);
+.ant-picker-header {
+    color: var(--body_color) !important;
 }
-:where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined{
-  background-color: var(--input-color);
-  border-color: var(--border-color);
-  color:var(--body_color)
+.ant-picker-dropdown .ant-picker-ranges > li {
+    color: var(--body_color) !important;
 }
-:where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined:hover{
-  border-color: var(--hover-btn);
-  background-color: var(--input-color);
+.ant-input-outlined.ant-input-status-error:not(.ant-input-disabled) {
+    background-color: var(--input-color) !important;
 }
-:where(.css-dev-only-do-not-override-j9bb5n).ant-input-affix-wrapper >input.ant-input {
-  color:var(--placeholder-color);
-  background-color: var(--input-color);
+.ant-input-outlined.ant-input-status-error:not(.ant-input-disabled):focus {
+    background-color: var(--input-color) !important;
 }
-:where(.css-dev-only-do-not-override-j9bb5n).ant-input-affix-wrapper >input.ant-input:focus{
-  background-color: var(--input-color);
+.ant-input-number {
+    background-color: var(--input-color);
+    border-color: var(--border-color);
 }
-:where(.css-dev-only-do-not-override-j9bb5n).ant-pagination .ant-pagination-options-quick-jumper input{
-  background-color: var(--input-color);
-  border-color: var(--border-color); 
+.ant-input-number:hover {
+    background-color: var(--input-color);
+    border-color: var(--hover-btn);
 }
-:where(.css-dev-only-do-not-override-j9bb5n).ant-pagination .ant-pagination-options-quick-jumper input:focus{
-  background-color: var(--input-color);
-  border-color: var(--hover-btn);
-  color:var(--body_color)
+.ant-input-number:focus-within {
+    background-color: var(--input-color);
+    border-color: var(--hover-btn);
 }
-:where(.css-dev-only-do-not-override-j9bb5n).ant-pagination .ant-pagination-options-quick-jumper input:hover{
-  background-color: var(--input-color);
-  border-color: var(--hover-btn);
-  color:var(--body_color)
+.ant-input-number-input {
+    color: var(--body_color) !important;
 }
-:where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined.ant-input-status-error:not(.ant-input-disabled){
-  background-color: var(--input-color) !important;
+.ant-input-number-outlined .ant-input-number-handler-wrap .ant-input-number-handler-down {
+    order-block-start: 1px solid var(--border-color);
 }
-:where(.css-dev-only-do-not-override-j9bb5n).ant-input-affix-wrapper .ant-input-prefix{
-  color:var(--placeholder-color)
-}
-:where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined:focus{
-  background-color: var(--input-color);
-  border-color: var(--hover-btn);
-
-}
-:where(.css-dev-only-do-not-override-j9bb5n).ant-input-outlined:focus-within{
-  background-color: var(--input-color);
-  border-color: var(--hover-btn);
-}
-:where(.css-dev-only-do-not-override-j9bb5n).ant-select-dropdown{
-  background-color: var(--input-color);
-  color:var(--body_color);
-}
-:where(.css-dev-only-do-not-override-j9bb5n).ant-select-dropdown .ant-select-item-option-selected:not(.ant-select-item-option-disabled){
-  background-color: var(--hover-btn);
-  color: var(--boy_color);
+.ant-input-number .ant-input-number-handler-wrap {
+    background-color: var(--border-color);
 }
 
+input:-webkit-autofill {
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: #ffffff;
+    transition: background-color 5000s ease-in-out 0s;
+    box-shadow: inset 0 0 20px 20px var(--input-color);
+}
+.ant-input-number .ant-input-number-handler-down-inner svg {
+    color: var(--body_color) !important;
+}
+.ant-input-number .ant-input-number-handler-up-inner svg{
+  color: var(--body_color) !important;
+}
+.ant-modal-content {
+    background-color: var(--content-color) !important;
+}
+.ant-modal-header {
+    background-color: var(--content-color) !important;
+}
+.ant-modal-title {
+    color: var(--body_color) !important;
+}
+.ant-form-item-label > label {
+    color: var(--body_color) !important;
+}
+.ant-modal-close-x {
+    color: var(--body_color) !important;
+}
+.ant-input-textarea-show-count .ant-input-data-count {
+    color: var(--body_color);
+}
+.ant-picker .ant-picker-suffix {
+    color: var(--placeholder-color);
+}
+.ant-picker-input::placeholder {
+    color: var(--placeholder-color) !important;
+}

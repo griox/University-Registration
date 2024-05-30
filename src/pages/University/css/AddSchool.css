@@ -18,3 +18,12 @@
 .typolink{
     margin-right: 8px;
 }
+.ant-table-cell-fix-right {
+    background-color: var(--body_background) !important;
+}
+.uniYes{
+    color:var(--registered-color);
+}
+.uniNo{
+    color:var(--unregistered-color);
+}

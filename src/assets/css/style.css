@@ -10,7 +10,7 @@ html,
     font-family: 'Source Sans Pro', sans-serif;
 }
 :root {
-    --placeholder-color:black;
+    --placeholder-color:#d2dae2;
     --input-color:#fff;
     --hover-btn:#74b9ff;
     --icon-color:black;

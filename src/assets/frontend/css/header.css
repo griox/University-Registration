@@ -38,7 +38,7 @@ h6,
 .h5,
 .h6 {
     font-weight: 500;
-    color: var(--c-dark);
+    color: var(--hover-btn);
 }
 
 a {

@@ -340,6 +340,7 @@ const StudentList = () => {
         {
             title: t('table.ID'),
             dataIndex: 'id',
+            
             width: '10%',
             ...getColumnSearchProps('id'),
             render: (_, record) => (
@@ -348,6 +349,7 @@ const StudentList = () => {
                 </span>
             ),
             key: 'id',
+            fixed:'left',
         },
 
         {
@@ -355,6 +357,7 @@ const StudentList = () => {
             dataIndex: 'name',
             width: '19%',
             editable: true,
+            fixed:'left',
             key: 'name',
             ...getColumnSearchProps('name'),
             render: (text, record) => {
@@ -381,6 +384,7 @@ const StudentList = () => {
                 </Tooltip>
             ),
             key: 'email',
+            fixed:'left',
         },
         {
             title: t('table.Math'),
@@ -417,7 +421,7 @@ const StudentList = () => {
         {
             title: t('table.UniCode'),
             dataIndex: 'uniCode',
-            width: '13%',
+            width: '16%',
             render: (text) => {
                 if (typeof text === 'string') {
                     return text?.split(', ').join(', ');
@@ -432,7 +436,7 @@ const StudentList = () => {
         {
             title: t('table.Action'),
             dataIndex: 'operation',
-            width: '15%',
+            width: '11%',
             render: (_, record) => {
                 const editable = isEditing(record);
                 return editable ? (

@@ -13,19 +13,19 @@ import { useTranslation } from 'react-i18next';
 
 const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
     const theme = useTheme();
-    const { t } = useTranslation('sidebar');
     const colors = tokens(theme.palette.mode);
     return (
         <Tooltip title={tooltip} placement="right" arrow>
             <MenuItem
                 active={selected === title}
                 style={{
-                    color: colors.grey[100],
+                    // color: selected === title ? '#4e57d4' : colors.grey[100],
+                    backgroundColor: selected === title ? '#dfe4ea' : 'transparent',
                 }}
                 onClick={() => setSelected(title)}
                 icon={icon}
             >
-                <Typography>{t(title)}</Typography>
+                <Typography>{title}</Typography>
                 <Link to={to} />
             </MenuItem>
         </Tooltip>
@@ -103,13 +103,14 @@ const Sidebar = () => {
                     height: '100vh',
                     position: 'sticky',
                     top: '0',
+                    boxShadow: '2px 0 5px rgba(0, 0, 0, 0.1)',
                 },
                 '& .pro-icon-wrapper': {
                     backgroundColor: 'transparent !important',
                 },
                 '& .pro-inner-item': {
                     padding: '5px 35px 5px 20px !important',
-                    color:'var(--icon-color)'
+                    color: 'var(--icon-color)',
                 },
                 '& .pro-inner-item:hover': {
                     color: '#868dfb !important',

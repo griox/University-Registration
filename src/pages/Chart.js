@@ -43,12 +43,12 @@ const Chart = () => {
             { subject: t('subj.Literature'), score: literatureAS },
             { subject: t('subj.Total Students'), score: average },
         ],
-        width: 1000,
+        width: 670,
         height: 400,
         xField: 'subject',
         yField: 'score',
         scale: {
-            x: { padding: 0.8 },
+            x: { padding: 0.6 },
             y: {
                 domainMax: 10,
                 domainMin: 0,
@@ -74,8 +74,8 @@ const Chart = () => {
         ],
         angleField: 'value',
         colorField: 'type',
-        width: 1000,
-        height: 650,
+        width: 500,
+        height: 500,
         marginTop: 50,
         marginBottom: 50,
         label: {
@@ -102,8 +102,8 @@ const Chart = () => {
         ],
         angleField: 'value',
         colorField: 'gender',
-        width: 350,
-        height: 250,
+        width: 230,
+        height: 230,
         label: {
             text: (d) => `${d.gender}\n${d.value}`,
             style: {
@@ -315,6 +315,10 @@ const Chart = () => {
                         </div>
                     </div>
                     <div className="charts">
+                        <div className="charter">
+                            <h2>{t('title.gender')}</h2>
+                            <Pie {...gen} />
+                        </div>
                         <div className="charter">
                             <h2>{t('title.average scores of subjects')}</h2>
                             <Column {...config} />

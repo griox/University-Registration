@@ -6,7 +6,6 @@ import { database } from '../firebaseConfig.js';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import { toast } from 'react-toastify';
 const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
     const [university, setUniversity] = useState([]);
     const { t } = useTranslation('detailstudent');

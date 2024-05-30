@@ -143,7 +143,7 @@ const Navbar = () => {
             color= "var(--body_color)"
         >
             <Box display="flex" alignItems="center">
-                <span style={{ color: 'var(--body-color)', fontSize: '1.5rem' }}>{selectedMenuItem}</span>
+                <span style={{ color: 'var(--body-color)', fontSize: '1.5rem' }}></span>
             </Box>
             {/* <Box>
                 <button onClick={() => handleLanguage('vi')}>

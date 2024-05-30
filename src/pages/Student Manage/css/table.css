@@ -1,4 +1,3 @@
-
 .edit-cell{
   margin: 0px;
 }
@@ -20,14 +19,45 @@
   color: var(--id-color);
 }
 .Layout{
-  justify-content: center;
-  align-items: center;
+  /* justify-content: center;
+  align-items: center; */
   display: flex; 
     flex-grow: 1;
     overflow-x: hidden;
 }
 .table {
   max-width: 100%; /* Đảm bảo bảng không vượt quá kích thước của phần tử bao bọc nó */
+  /* overflow-x: auto; */
+}
+
+@media (min-width: 768px) {
+  /* .table {
+    overflow-x: auto;
+  }
+  .ant-table-cell {
+    white-space: nowrap; /* Ngăn văn bản xuống dòng 
+  } */
+  .column-id {
+    width: 5%;
+  }
+  .column-name {
+    width: 10%;
+  }
+  .column-email {
+    width: 7%;
+  }
+  .column-math,
+  .column-literature,
+  .column-average
+  .column-english {
+    width: 5%;
+  }
+  .column-unicode{
+    width: 6%;
+  }
+  .column-action {
+    width: 7%;
+  }
 }
 .ant-table-cell{
   background-color: var(--body_background);

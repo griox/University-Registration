@@ -165,8 +165,12 @@ function Pr() {
             key: 'action',
             render: (text, record) => (
                 <Button
-                    onClick={() => addUniversity(record.code)}
-                    disabled={detail.uniCode.includes(record.code) || detail.uniCode.length === 5}
+                    onClick={() => addUniversity(record.code, record)}
+                    disabled={
+                        detail.uniCode.includes(record.code) ||
+                        detail.uniCode.length === 5 ||
+                        record.capacity === record.isRegistered
+                    }
                 >
                     {t('button.Add')}
                 </Button>
@@ -175,6 +179,12 @@ function Pr() {
     ];
     useEffect(() => {
         const personal = JSON.parse(localStorage.getItem('Infor'));
+        get(child(ref(db), `Detail/` + personal.id)).then((snapshot) => {
+            if (snapshot.exists()) {
+                const x = snapshot.val();
+                dispatch({ type: 'user', payload: x });
+            }
+        });
 
         const averageScore = personal.EnglishScore + personal.LiteratureScore + personal.MathScore;
         get(child(ref(db), `University/`)).then((snapshot) => {
@@ -201,10 +211,10 @@ function Pr() {
                 toast.error('No data available');
             }
         });
-        dispatch({ type: 'user', payload: personal });
+
         setLoading(false);
     }, [db, dispatch]);
-    const addUniversity = (uniCode) => {
+    const addUniversity = (uniCode, record) => {
         dispatch({ type: 'pushUniCode', newValue: uniCode });
     };
 

@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { get, ref, child } from 'firebase/database';
 import { Divider, Table, Descriptions, Spin, Modal } from 'antd';
-import './css/modal_detail.css'
+import './css/modal_detail.css';
 import { database } from '../firebaseConfig.js';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 
-import { toast } from 'react-toastify';
 const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
     const [university, setUniversity] = useState([]);
     const { t } = useTranslation('detailstudent');
@@ -45,7 +44,7 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
             title: t('title.unicode'),
             dataIndex: 'uniCode',
             width: '13%',
-            key:'uniCode'
+            key: 'uniCode',
         },
         {
             title: t('title.address'),
@@ -53,7 +52,7 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
             filterSearch: true,
             editable: true,
             width: '20%',
-            key:'address'
+            key: 'address',
         },
         {
             title: t('title.entrance'),
@@ -61,7 +60,7 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
             width: '15%',
             editable: true,
             sorter: (a, b) => a.averageS - b.averageS,
-            key:'averageS'
+            key: 'averageS',
         },
     ];
     if (!visible) return null;
@@ -118,7 +117,7 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
             open={visible}
             width={970}
             height={400}
-            title= {t('title.modal')}
+            title={t('title.modal')}
             onCancel={onClose}
             footer={null}
         >

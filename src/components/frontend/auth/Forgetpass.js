@@ -18,14 +18,14 @@ export const Forgetpass = () => {
     const [email, setEmail] = useState('');
     const handleEmail = async () => {
         localStorage.setItem('Email', email);
-        sendPasswordResetEmail(db, 'minhquang20042110@gmail.com')
+        sendPasswordResetEmail(db, 'quang.nm.64cntt@ntu.edu.vn')
             .then((data) => {
                 alert('Check your email');
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                toast.error(`Error ${errorCode}: ${errorMessage}`)
+                toast.error(`Error ${errorCode}: ${errorMessage}`);
             });
     };
     const handleLanguage = (lng) => {
@@ -33,14 +33,14 @@ export const Forgetpass = () => {
     };
     const items = [
         {
-          key: '1',
-          label: 'English',
-          onClick: () => handleLanguage('en')
+            key: '1',
+            label: 'English',
+            onClick: () => handleLanguage('en'),
         },
         {
-          key: '2',
-          label: 'Tiếng Việt',
-          onClick: () => handleLanguage('vi')
+            key: '2',
+            label: 'Tiếng Việt',
+            onClick: () => handleLanguage('vi'),
         },
     ];
     return (
@@ -53,10 +53,10 @@ export const Forgetpass = () => {
                         </div>
 
                         <p className="featured">
-                        {t('title.inform forget')} <br /> {t('title.or')} <br /> <br />
+                            {t('title.inform forget')} <br /> {t('title.or')} <br /> <br />
                             <span>
                                 <Link className="btn-getback" to="/login">
-                                {t('button.get back')}
+                                    {t('button.get back')}
                                 </Link>
                             </span>
                         </p>
@@ -94,22 +94,22 @@ export const Forgetpass = () => {
                                     </div>
 
                                     <div>
-                                    <Dropdown className='drop-menu'
+                                        <Dropdown
+                                            className="drop-menu"
                                             menu={{
-                                            items,
-                                            selectable: true,
-                                            defaultSelectedKeys: ['1'],
+                                                items,
+                                                selectable: true,
+                                                defaultSelectedKeys: ['1'],
                                             }}
                                         >
                                             <Typography.Link>
-                                            <Space className='title-drop'>
-                                                {t('title.language')}
-                                                <DownOutlined />
-                                            </Space>
+                                                <Space className="title-drop">
+                                                    {t('title.language')}
+                                                    <DownOutlined />
+                                                </Space>
                                             </Typography.Link>
                                         </Dropdown>
                                     </div>
-
                                 </div>
                             </div>
                         </form>

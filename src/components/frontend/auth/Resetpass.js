@@ -175,8 +175,8 @@ export const Forgetpass = () => {
                                         <i className="fa fa-eye eye2 icon"></i>
                                     </div>
 
-                                    <div className="input-box">
-                                        <div className="input-submit" onClick={() => handlePassword()}>
+                                    <div className="input-box" onClick={() => handlePassword()}>
+                                        <div className="input-submit">
                                             <span>Continue</span>
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </div>

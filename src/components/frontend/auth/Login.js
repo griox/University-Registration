@@ -149,7 +149,6 @@ export const Login = () => {
                                     (item) =>
                                         item.email === email && bcrypt.compareSync(password, item.password) === true,
                                 );
-                                console.log(bcrypt.hashSync(password, salt));
                                 if (y.length !== 0) {
                                     for (let i in y) {
                                         if (y[i].name !== undefined && y[i].name !== null) {

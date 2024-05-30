@@ -99,7 +99,7 @@ const Sidebar = () => {
         <Box
             sx={{
                 '& .pro-sidebar-inner': {
-                    background: `${colors.primary[400]} !important`,
+                    backgroundColor: `var(--body_background)`,
                     height: '100vh',
                     position: 'sticky',
                     top: '0',
@@ -109,6 +109,7 @@ const Sidebar = () => {
                 },
                 '& .pro-inner-item': {
                     padding: '5px 35px 5px 20px !important',
+                    color:'var(--icon-color)'
                 },
                 '& .pro-inner-item:hover': {
                     color: '#868dfb !important',

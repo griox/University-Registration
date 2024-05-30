@@ -1,13 +1,8 @@
 
 /* button */
 .btn-addUni{
-    margin-bottom: 20px;
+    margin-left: 9px;
 }
-.form-item2{
-    font-weight: 600;
-    width: 150px;
-}
-/* input */
 .ip-textArea{
     width: 393px;
 }
@@ -25,8 +20,21 @@
 }
 /* icon */
 .ic-bank{
-    color: rgba(0,0,0,.25);
+    color: rgb(0, 0, 0);
 }
 .ic-info{
-    color: rgba(0,0,0,.45);
+    color: rgb(0, 0, 0);
+}
+
+.form-item2 {
+    font-weight: 600;
+}
+.form-item2 .ant-form-item-label {
+    white-space: nowrap; /* Giữ cho văn bản không bị xuống dòng */
+    text-align: left; 
+}
+
+.form-item2 .ant-form-item-control {
+    width: 100%; /* Đảm bảo trường nhập liệu chiếm toàn bộ không gian có sẵn */
+    font-weight: 550;
 }

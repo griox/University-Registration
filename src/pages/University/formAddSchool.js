@@ -117,7 +117,7 @@ const FormAdd = ({ UniData, setUniData }) => {
             <Button className="btn-addUni" type="primary" onClick={showModal}>
                 {t('button.Add')}
             </Button>
-            <Modal
+                        <Modal
                 title="Add a university"
                 open={isModalVisible}
                 onOk={handleOk}
@@ -128,12 +128,12 @@ const FormAdd = ({ UniData, setUniData }) => {
                 destroyOnClose
             >
                 <Space direction="vertical">
-                    <Form>
+                    <Form layout="horizontal">
                         <Form.Item
                             className="form-item2"
                             label={t('label.uniname')}
-                            labelCol={{ span: 22 }}
-                            wrapperCol={{ span: 12 }}
+                            labelCol={{ span: 9 }} 
+                            wrapperCol={{ span: 15 }} 
                             validateStatus={!validateUniName(uniName) && uniName ? 'error' : ''}
                             name="Input"
                             rules={[
@@ -145,13 +145,13 @@ const FormAdd = ({ UniData, setUniData }) => {
                         >
                             <Input
                                 className="ip-UniName"
-                                placeholder= {t('placeholder.name')}
+                                placeholder={t('placeholder.name')}
                                 prefix={<BankOutlined className="ic-bank" />}
                                 onChange={(e) => setUniName(e.target.value)}
                                 value={uniName}
                                 allowClear
                                 suffix={
-                                    <Tooltip title= {t('tooltip.name')}>
+                                    <Tooltip title={t('tooltip.name')}>
                                         <InfoCircleOutlined className="ic-info" />
                                     </Tooltip>
                                 }
@@ -161,8 +161,8 @@ const FormAdd = ({ UniData, setUniData }) => {
                         <Form.Item
                             className="form-item2"
                             label={t('label.unicode')}
-                            labelCol={{ span: 22 }}
-                            wrapperCol={{ span: 12 }}
+                            labelCol={{ span: 9 }}
+                            wrapperCol={{ span: 15 }} 
                             validateStatus={!validateName(uniCode) && uniCode ? 'error' : ''}
                             name="InputCode"
                             rules={[
@@ -174,12 +174,12 @@ const FormAdd = ({ UniData, setUniData }) => {
                         >
                             <Input
                                 className="ip-UniCode"
-                                placeholder= {t('placeholder.code')}
+                                placeholder={t('placeholder.code')}
                                 allowClear
                                 onChange={(e) => setUniCode(e.target.value)}
                                 maxLength={6}
                                 suffix={
-                                    <Tooltip title= {t('tooltip.code')}>
+                                    <Tooltip title={t('tooltip.code')}>
                                         <InfoCircleOutlined className="ic-info" />
                                     </Tooltip>
                                 }
@@ -187,60 +187,61 @@ const FormAdd = ({ UniData, setUniData }) => {
                             />
                         </Form.Item>
 
-                            <Form.Item
-                                className="form-item2"
-                                label={t('label.entrance')}
-                                labelCol={{ span: 22 }}
-                                wrapperCol={{ span: 12 }}
-                                name="Entrance"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: t('warning.input'),
-                                    },
-                                ]}
-                            >
-                                <InputNumber
-                                    className="ip-number1"
-                                    placeholder= {t('placeholder.entrance')}
-                                    maxLength={2}
-                                    value={averageScore}
-                                    onChange={(value) => setAverageScore(value)}
-                                    min={0}
-                                    max={30}
-                                    step={0.2}
-                                />
-                            </Form.Item>
-                            <Form.Item
-                                className="form-item2"
-                                label={t('label.target')}
-                                labelCol={{ span: 22 }}
-                                wrapperCol={{ span: 12 }}
-                                name="Target"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: t('warning.input'),
-                                    },
-                                ]}
-                            >
-                                <InputNumber
-                                    className="ip-number2"
-                                    placeholder= {t('placeholder.target')}
-                                    maxLength={5}
-                                    value={targetScore}
-                                    onChange={(value) => setTargetScore(value)}
-                                    max={500}
-                                    min={0}
-                                    step={100}
-                                />
-                            </Form.Item>
+                        <Form.Item
+                            className="form-item2"
+                            label={t('label.entrance')}
+                            labelCol={{ span: 9 }} 
+                            wrapperCol={{ span: 15 }} 
+                            name="Entrance"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: t('warning.input'),
+                                },
+                            ]}
+                        >
+                            <InputNumber
+                                className="ip-number1"
+                                placeholder={t('placeholder.entrance')}
+                                maxLength={2}
+                                value={averageScore}
+                                onChange={(value) => setAverageScore(value)}
+                                min={0}
+                                max={30}
+                                step={0.2}
+                            />
+                        </Form.Item>
 
-                            <Form.Item
+                        <Form.Item
+                            className="form-item2"
+                            label={t('label.target')}
+                            labelCol={{ span: 9 }} 
+                            wrapperCol={{ span: 15 }}
+                            name="Target"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: t('warning.input'),
+                                },
+                            ]}
+                        >
+                            <InputNumber
+                                className="ip-number2"
+                                placeholder={t('placeholder.target')}
+                                maxLength={5}
+                                value={targetScore}
+                                onChange={(value) => setTargetScore(value)}
+                                max={500}
+                                min={0}
+                                step={100}
+                            />
+                        </Form.Item>
+
+                        <Form.Item
                             className="form-item2"
                             label={t('label.address')}
-                            labelCol={{ span: 22 }}
-                            wrapperCol={{ span: 12 }}
+                            labelCol={{ span: 9 }} 
+                            wrapperCol={{ span: 15 }} 
                             name="TextArea"
                             rules={[
                                 {
@@ -251,7 +252,7 @@ const FormAdd = ({ UniData, setUniData }) => {
                         >
                             <Input.TextArea
                                 className="ip-textArea"
-                                placeholder= {t('placeholder.address')}
+                                placeholder={t('placeholder.address')}
                                 allowClear
                                 onChange={(e) => setAddress(e.target.value)}
                                 value={address}

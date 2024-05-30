@@ -2,6 +2,9 @@
   font-weight: 600;
 
 }
+.btn-add {
+  margin-left: 9px;
+}
 .input-num{
   width: 50%;
 }

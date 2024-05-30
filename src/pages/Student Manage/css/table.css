@@ -22,8 +22,12 @@
 .Layout{
   justify-content: center;
   align-items: center;
-
- 
+  display: flex; 
+    flex-grow: 1;
+    overflow-x: hidden;
+}
+.table {
+  max-width: 100%; /* Đảm bảo bảng không vượt quá kích thước của phần tử bao bọc nó */
 }
 .ant-table-cell{
   background-color: var(--body_background);

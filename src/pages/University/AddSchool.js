@@ -423,26 +423,28 @@ const AddSchool = () => {
                 <Space direction="vertical">
                     <FormAdd UniData={UniData} setUniData={setUniData} />
                     <Spin spinning={loading}>
-                        <Table
-                            columns={mergedColumns}
-                            dataSource={UniData}
-                            onChange={onChange}
-                            pagination={{
-                                defaultPageSize: 10,
-                                pageSizeOptions: ['10', '20', '40', '100'],
-                                showSizeChanger: true,
-                                showQuickJumper: true,
-                                showTotal: (total) => `${t('title.total')} ${total}`
-                            }}
-                            scroll={{ x: false, y: 'calc(100vh - 350px)' }}
-                            components={{
-                                body: {
-                                    cell: EditableCell,
-                                },
-                            }}
-                            bordered
-                            ref={tableRef}
-                        />
+                        <div className='table'>
+                            <Table
+                                columns={mergedColumns}
+                                dataSource={UniData}
+                                onChange={onChange}
+                                pagination={{
+                                    defaultPageSize: 10,
+                                    pageSizeOptions: ['10', '20', '40', '100'],
+                                    showSizeChanger: true,
+                                    showQuickJumper: true,
+                                    showTotal: (total) => `${t('title.total')} ${total}`
+                                }}
+                                scroll={{ x: false, y: 'calc(100vh - 350px)' }}
+                                components={{
+                                    body: {
+                                        cell: EditableCell,
+                                    },
+                                }}
+                                bordered
+                                ref={tableRef}
+                            />
+                        </div>
                     </Spin>
                 </Space>
             </Form>

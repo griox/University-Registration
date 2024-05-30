@@ -209,10 +209,6 @@ const ModalAdd = ({ studentData, setStudentData }) => {
         return idenNum.length === 12 && /^[0-9]+$/.test(idenNum);
     }
 
-    function validateNumber(EntranceScore) {
-        return /^[0-9.]+$/.test(EntranceScore);
-    }
-
     const genders = [
         { value: 'Female', label: 'Female' },
         { value: 'Male', label: 'Male' },
@@ -334,7 +330,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     const dateFormat = 'DD/MM/YYYY';
     return (
         <>
-            <Button type="primary" onClick={showModal}>
+            <Button className='btn-add' type="primary" onClick={showModal}>
                 {t('button.Add')}
             </Button>
             <Modal
@@ -540,6 +536,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     className="input-num"
                                     min={0}
                                     max={10}
+                                    maxLength={4}
                                     step={0.2}
                                     onChange={(value) => setMathscore(value)}
                                 />
@@ -559,6 +556,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             >
                                 <InputNumber
                                     min={0}
+                                    maxLength={4}
                                     max={10}
                                     step={0.2}
                                     className="input-num"
@@ -571,19 +569,6 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 label={t('label.literature')}
                                 name="literature"
                                 className="form-item1"
-                                validateStatus={
-                                    (!validateNumber(Literaturescore) && Literaturescore) ||
-                                    (Literaturescore && parseFloat(Literaturescore) > 10)
-                                        ? 'error'
-                                        : ''
-                                }
-                                help={
-                                    !validateNumber(Literaturescore) && Literaturescore
-                                        ? 'Literature Score must contain only numbers and no spaces'
-                                        : Literaturescore && parseFloat(Literaturescore) > 10
-                                        ? 'Literature Score must be less than or equal to 10'
-                                        : ''
-                                }
                                 rules={[
                                     {
                                         required: true,
@@ -594,6 +579,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 <InputNumber
                                     min={0}
                                     max={10}
+                                    maxLength={4}
                                     step={0.2}
                                     className="input-num"
                                     onChange={(value) => setLiteraturescore(value)}

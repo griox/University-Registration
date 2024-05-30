@@ -30,13 +30,13 @@
   /* overflow-x: auto; */
 }
 
-@media (min-width: 768px) {
+/* @media (min-width: 768px) {
   /* .table {
     overflow-x: auto;
   }
   .ant-table-cell {
     white-space: nowrap; /* Ngăn văn bản xuống dòng 
-  } */
+  } 
   .column-id {
     width: 5%;
   }
@@ -57,8 +57,8 @@
   }
   .column-action {
     width: 7%;
-  }
-}
+  } 
+} */
 .ant-table-cell{
   background-color: var(--body_background);
   color:var(--body_color);

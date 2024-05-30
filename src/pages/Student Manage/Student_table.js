@@ -339,8 +339,10 @@ const StudentList = () => {
     const columns = [
         {
             title: t('table.ID'),
+            className: 'column-id',
             dataIndex: 'id',
             width: '10%',
+            fixed: "left",
             ...getColumnSearchProps('id'),
             render: (_, record) => (
                 <span onClick={() => handleIdClick(record)} className="idOnClick">
@@ -353,7 +355,9 @@ const StudentList = () => {
         {
             title: t('table.Name'),
             dataIndex: 'name',
+            className: 'column-name',
             width: '19%',
+            fixed: "left",
             editable: true,
             key: 'name',
             ...getColumnSearchProps('name'),
@@ -372,7 +376,9 @@ const StudentList = () => {
         {
             title: t('table.Email'),
             dataIndex: 'email',
+            className: 'column-email',
             width: '15%',
+            fixed: "left",
             editable: true,
             ...getColumnSearchProps('email'),
             render: (text, record) => (
@@ -385,6 +391,7 @@ const StudentList = () => {
         {
             title: t('table.Math'),
             dataIndex: 'MathScore',
+            className: 'column-math',
             width: '10%',
             editable: true,
             sorter: (a, b) => a.MathScore - b.MathScore,
@@ -393,6 +400,7 @@ const StudentList = () => {
         {
             title: t('table.Literature'),
             dataIndex: 'LiteratureScore',
+            className: 'column-literature',
             width: '11%',
             editable: true,
             key: 'LiteratureScore',
@@ -402,6 +410,7 @@ const StudentList = () => {
         {
             title: t('table.English'),
             dataIndex: 'EnglishScore',
+            className: 'column-english',
             width: '10%',
             editable: true,
             key: 'EnglishScore',
@@ -410,6 +419,7 @@ const StudentList = () => {
         {
             title: t('table.Total Score'),
             dataIndex: 'AverageScore',
+            className: 'column-average',
             width: '10%',
             key: 'AverageScore',
             sorter: (a, b) => a.AverageScore - b.AverageScore,
@@ -417,6 +427,7 @@ const StudentList = () => {
         {
             title: t('table.UniCode'),
             dataIndex: 'uniCode',
+            className: 'column-unicode',
             width: '13%',
             render: (text) => {
                 if (typeof text === 'string') {
@@ -432,7 +443,9 @@ const StudentList = () => {
         {
             title: t('table.Action'),
             dataIndex: 'operation',
+            className: 'columm-action',
             width: '15%',
+            fixed: 'right',
             render: (_, record) => {
                 const editable = isEditing(record);
                 return editable ? (

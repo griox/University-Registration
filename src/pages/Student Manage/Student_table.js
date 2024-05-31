@@ -511,6 +511,7 @@ const StudentList = () => {
     };
 
     const handleOk = () => {
+        setBell(true);
         if (mess !== '') {
             addDoc(collection(db, 'cities'), {
                 name: mess,
@@ -519,8 +520,16 @@ const StudentList = () => {
                 time: new Date(),
                 seen: false,
             })
-                .then(() => toast.success('The notification you sent was successful'), setIsModalOpen(false))
-                .catch(() => toast.error('The notification you sent has failed'), setIsModalOpen(false));
+                .then(() => {
+                    setBell(false);
+                    setIsModalOpen(false);
+                    return toast.success('The notification you sent was successful');
+                })
+                .catch(() => {
+                    setBell(false);
+                    setIsModalOpen(false);
+                    return toast.error('The notification you sent has failed');
+                });
         }
     };
     const handleCancel = () => {
@@ -536,8 +545,9 @@ const StudentList = () => {
                     <Modal
                         title="Basic Modal"
                         open={isModalOpen}
-                        // onOk={() => setBell(true)}
+                        // onOk={() => handleOk()}
                         onCancel={handleCancel}
+                        confirmLoading={true}
                         destroyOnClose
                         footer={[
                             <Button onClick={handleOk} loading={bell}>

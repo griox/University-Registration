@@ -23,6 +23,8 @@ const Changepass = () => {
     const [reNewPass, setReNewPass] = useState('');
     const dispatch = useDispatch();
     const salt = bcrypt.genSaltSync(10);
+    const [loadingChangePass, setLoadingChangePass] = useState(false);
+    const [loadingClear, setLoadingClear] = useState(false);
     useEffect(() => {
         const passwordInput1 = document.querySelector('.old_pass');
         const eyeBtn1 = document.querySelector('.eye1');
@@ -124,9 +126,12 @@ const Changepass = () => {
     }, []);
 
     const clear = () => {
+        setLoadingClear(false);
+
         setOldPass('');
         setNewPass('');
         setReNewPass('');
+        setLoadingClear(true);
     };
 
     const handleLogout = () => {
@@ -144,33 +149,42 @@ const Changepass = () => {
     };
     const items = [
         {
-          key: '1',
-          label: 'English',
-          onClick: () => handleLanguage('en')
+            key: '1',
+            label: 'English',
+            onClick: () => handleLanguage('en'),
         },
         {
-          key: '2',
-          label: 'Tiếng Việt',
-          onClick: () => handleLanguage('vi')
+            key: '2',
+            label: 'Tiếng Việt',
+            onClick: () => handleLanguage('vi'),
         },
     ];
 
     const changePassWord = () => {
+        setLoadingChangePass(true);
         let temp = JSON.parse(localStorage.getItem('Email'));
         if (oldPass === '') {
             toast.error('Please enter your old password');
+            setLoadingChangePass(false);
+
             return;
         }
         if (newPass === '') {
             toast.error('Please enter your new password');
+            setLoadingChangePass(false);
+
             return;
         }
         if (reNewPass === '') {
             toast.error('Please confirm your password again');
+            setLoadingChangePass(false);
+
             return;
         }
         if (newPass !== reNewPass) {
             toast.error('You confirm your password is incorrect');
+            setLoadingChangePass(false);
+
             return;
         }
         temp = encodePath(temp);
@@ -185,15 +199,21 @@ const Changepass = () => {
                         password: newHash,
                     })
                         .then(() => {
-                            console.log(newHash);
-                            handleLogout();
+                            setLoadingChangePass(false);
                             toast.success('Updated sucessfully');
+                            handleLogout();
                         })
                         .catch((error) => {
                             alert('lỗi' + error);
                         });
+                } else {
+                    setLoadingChangePass(false);
+
+                    toast.error('Your password is correct');
                 }
             } else {
+                setLoadingChangePass(false);
+
                 toast.error('Data is not available');
             }
         });
@@ -266,35 +286,45 @@ const Changepass = () => {
                                     </div>
                                     <div className="input-box">
                                         <br />
-                                        <Button type="submit" className="input-submit" onClick={changePassWord}>
+                                        <Button
+                                            loading={loadingChangePass}
+                                            type="submit"
+                                            className="input-submit"
+                                            onClick={changePassWord}
+                                        >
                                             <span>{t('button.change')}</span>
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </Button>
                                     </div>
                                     <div className="input-box">
-                                        <div type="submit" className="input-submit" onClick={clear}>
+                                        <Button
+                                            loading={loadingClear}
+                                            type="submit"
+                                            className="input-submit"
+                                            onClick={clear}
+                                        >
                                             <span>{t('button.clear')}</span>
                                             <i className="bx bx-right-arrow-alt"></i>
-                                        </div>
+                                        </Button>
                                     </div>
 
                                     <div>
-                                    <Dropdown className='drop-menu'
+                                        <Dropdown
+                                            className="drop-menu"
                                             menu={{
-                                            items,
-                                            selectable: true,
-                                            defaultSelectedKeys: ['1'],
+                                                items,
+                                                selectable: true,
+                                                defaultSelectedKeys: ['1'],
                                             }}
                                         >
                                             <Typography.Link>
-                                            <Space className='title-drop'>
-                                                {t('title.language')}
-                                                <DownOutlined />
-                                            </Space>
+                                                <Space className="title-drop">
+                                                    {t('title.language')}
+                                                    <DownOutlined />
+                                                </Space>
                                             </Typography.Link>
                                         </Dropdown>
                                     </div>
-
                                 </div>
                             </div>
                         </form>

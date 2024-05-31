@@ -282,9 +282,6 @@ function Pr() {
             })
             .catch((error) => {
                 toast.error(error.message, 'Error');
-            })
-            .catch((error) => {
-                toast.error(error.message, 'Error');
             });
     };
     const save = () => {

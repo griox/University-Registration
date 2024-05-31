@@ -7,24 +7,41 @@ import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../../../constants/constants';
 import { DownOutlined } from '@ant-design/icons';
-import { Dropdown, Space, Typography } from 'antd';
+import { Button, Dropdown, Space, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import { validateEmailFormat } from '../../../commonFunctions';
 
 export const Forgetpass = () => {
     const { t, i18n } = useTranslation('fogetpassword');
     const app = initializeApp(firebaseConfig);
     const db = getAuth(app);
     const [email, setEmail] = useState('');
+    const [loadingResetPass, setLoadingResetPass] = useState(false);
     const handleEmail = async () => {
+        setLoadingResetPass(true);
+        if (email === '') {
+            toast.error('Please enter your email');
+            setLoadingResetPass(false);
+
+            return;
+        }
+        if (validateEmailFormat(email) === false) {
+            toast.error('Your email is not correct with format');
+            setLoadingResetPass(false);
+
+            return;
+        }
         localStorage.setItem('Email', email);
         sendPasswordResetEmail(db, 'quang.nm.64cntt@ntu.edu.vn')
             .then((data) => {
+                setLoadingResetPass(false);
                 toast.success('The link will be sent to your email, please check your email');
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
+                setLoadingResetPass(false);
                 toast.error(`Error ${errorCode}: ${errorMessage}`);
             });
     };
@@ -87,10 +104,14 @@ export const Forgetpass = () => {
                                     </div>
 
                                     <div className="input-box">
-                                        <div className="input-submit" onClick={() => handleEmail()}>
+                                        <Button
+                                            loading={loadingResetPass}
+                                            className="input-submit"
+                                            onClick={() => handleEmail()}
+                                        >
                                             <span>{t('button.continue')}</span>
                                             <i className="bx bx-right-arrow-alt"></i>
-                                        </div>
+                                        </Button>
                                     </div>
 
                                     <div>

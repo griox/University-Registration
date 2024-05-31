@@ -18,7 +18,7 @@ export const Forgetpass = () => {
     const db = getAuth(app);
     const [email, setEmail] = useState('');
     const [loadingResetPass, setLoadingResetPass] = useState(false);
-    const handleEmail = async () => {
+    const handleEmail = () => {
         setLoadingResetPass(true);
         if (email === '') {
             toast.error('Please enter your email');
@@ -34,7 +34,7 @@ export const Forgetpass = () => {
         }
         localStorage.setItem('Email', email);
         sendPasswordResetEmail(db, 'quang.nm.64cntt@ntu.edu.vn')
-            .then((data) => {
+            .then(() => {
                 setLoadingResetPass(false);
                 toast.success('The link will be sent to your email, please check your email');
             })

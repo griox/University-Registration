@@ -154,7 +154,9 @@ const Register = () => {
             return;
         }
         if (validatePasswordFormat(props.password) === false) {
-            toast.error('Password must have at least 8 characters');
+            toast.error(
+                'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 special character, 1 number, and be a minimum of 8 characters long.',
+            );
             if (props.role === 'admin') setLoadingAdmin(false);
             else setLoadingUser(false);
 
@@ -177,7 +179,10 @@ const Register = () => {
                             Role: props.role,
                         };
                         try {
-                            set(ref(db, `Account/` + encodeEmail), ip).then(() => toast.success('Sign up sucessfully'));
+                            set(ref(db, `Account/` + encodeEmail), ip).then(() => {
+                                if (props.role === 'admin') setLoadingAdmin(false);
+                                else setLoadingUser(false);
+                            }, toast.success('Sign up sucessfully'));
                         } catch (error) {
                             toast.error('Your request is failed');
                         }

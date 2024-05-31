@@ -7,10 +7,12 @@ import '../../../assets/css/login.css';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../../../constants/constants';
 import { child, get, getDatabase, ref, update } from 'firebase/database';
-import { encodePath } from '../../../commonFunctions';
+import { encodePath, validateEmailFormat } from '../../../commonFunctions';
 import { toast } from 'react-toastify';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 // import '../../../assets/js/login';
+import bcrypt from 'bcryptjs';
+import { Button } from 'antd';
 
 export const Forgetpass = () => {
     const app = initializeApp(firebaseConfig);
@@ -18,6 +20,9 @@ export const Forgetpass = () => {
     const history = useHistory();
     const [newPass, setNewPass] = useState('');
     const [reNewPass, setReNewPass] = useState('');
+    const salt = bcrypt.genSaltSync(10);
+    const [loadingResetPass, setLoadingResetPass] = useState(false);
+
     useEffect(() => {
         const passwordInput1 = document.querySelector('.pass_login_1');
         const eyeBtn1 = document.querySelector('.eye1');
@@ -95,28 +100,59 @@ export const Forgetpass = () => {
         toast.success('Your password has been reset');
         history.push('/Login');
     };
-    const handlePassword = async () => {
+    const handlePassword = () => {
         const email = localStorage.getItem('Email');
-        get(child(ref(db), `Account/`)).then((snapshot) => {
-            if (snapshot.exists()) {
-                const x = snapshot.val();
-                const listItem = Object.values(x).map((user) => user);
-                const y = listItem.find((item) => item.email === email);
-                if (y !== undefined) {
-                    if (newPass === reNewPass) {
-                        const encodeEmail = encodePath(email);
-
-                        try {
-                            update(ref(db, `Account/` + encodeEmail), {
-                                password: newPass,
-                            }).then(() => handleLogout());
-                        } catch (error) {
-                            toast.error('Your request is failed');
-                        }
-                    }
-                }
+        if (email === '""') {
+            toast.error('Your email was not found');
+            return;
+        } else if (validateEmailFormat(email) !== 0) {
+            toast.error('Your email is not in the correct format');
+            return;
+        } else {
+            if (newPass === '') {
+                toast.error('Please enter your new password');
+                return;
             }
-        });
+            if (reNewPass === '') {
+                toast.error('Please re-enter your email');
+                return;
+            }
+            get(child(ref(db), `Account/`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const x = snapshot.val();
+
+                    const listItem = Object.values(x).map((user) => user);
+                    const encodeEmail = encodePath(email);
+                    const y = listItem.filter((item) => item.email === email);
+                    if (y !== undefined) {
+                        if (newPass === reNewPass) {
+                            try {
+                                var hash = bcrypt.hashSync(newPass, salt);
+                                update(ref(db, `Account/` + encodeEmail), {
+                                    password: hash,
+                                }).then(() => setLoadingResetPass(false), handleLogout());
+                            } catch (error) {
+                                setLoadingResetPass(false);
+
+                                toast.error('Your request is failed');
+                            }
+                        } else {
+                            setLoadingResetPass(false);
+
+                            toast.error('The two passwords do not match together');
+                        }
+                        setLoadingResetPass(false);
+                    } else {
+                        setLoadingResetPass(false);
+
+                        toast.error('Your account was not found');
+                    }
+                } else {
+                    setLoadingResetPass(false);
+                    toast.error('No data available');
+                }
+            });
+        }
     };
     return (
         <>
@@ -146,7 +182,7 @@ export const Forgetpass = () => {
                                 <br />
                                 <br />
                                 <div className="form-title">
-                                    <span>FORGET PASSWORD</span>
+                                    <span>RESET PASSWORD</span>
                                 </div>
                                 <div className="form-inputs">
                                     <div className="input-box">
@@ -175,12 +211,17 @@ export const Forgetpass = () => {
                                         <i className="fa fa-eye eye2 icon"></i>
                                     </div>
 
-                                    <div className="input-box">
-                                        <div className="input-submit" onClick={() => handlePassword()}>
+                                    <Button
+                                        className="input-box"
+                                        onClick={() => handlePassword()}
+                                        style={{ backgroundColor: '#003865', border: 'none' }}
+                                        loading={loadingResetPass}
+                                    >
+                                        <div className="input-submit">
                                             <span>Continue</span>
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </div>
-                                    </div>
+                                    </Button>
                                 </div>
                             </div>
                         </form>

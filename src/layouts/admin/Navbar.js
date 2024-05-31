@@ -1,24 +1,26 @@
-import React, { useContext } from 'react';
-import { Box, IconButton, useTheme } from '@mui/material';
-import { tokens, ColorModeContext } from '../../theme';
+import React, { useEffect, useState } from 'react';
+import { Box, IconButton } from '@mui/material';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import { Dropdown, Space } from 'antd';
-import { UserOutlined } from '@ant-design/icons';
+import { Badge, Button, Dropdown, Modal, Space, Spin, Table } from 'antd';
+import { BellOutlined, UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { locales } from '../../translation/i18n';
 import DarkMode from '../../components/Darkmode/Darkmode';
+import { addDoc, collection, doc, getFirestore, onSnapshot, orderBy, updateDoc } from 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
+import { firebaseConfig } from '../../constants/constants';
+import { query } from 'firebase/database';
 
 const Navbar = () => {
     const { t, i18n } = useTranslation('navbar');
     const currentLanguage = locales[i18n.language === 'vi' ? 'vi' : 'en'];
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
-    const colorMode = useContext(ColorModeContext);
     const dispatch = useDispatch();
     const history = useHistory();
+    const userRole = localStorage.getItem('Role');
+    const [tableLoading, setTableLoading] = useState(false);
     // const currentLanguage = locales[i18n.language];
     const handleLanguage = (lng) => {
         i18n.changeLanguage(lng);
@@ -33,7 +35,13 @@ const Navbar = () => {
                     key: '1.1',
                     label: t('button.change password'),
                     icon: (
-                        <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 32 32" bgcolor='var(--body_background)' >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="1.2em"
+                            height="1.2em"
+                            viewBox="0 0 32 32"
+                            bgcolor="var(--body_background)"
+                        >
                             <path
                                 fill="currentColor"
                                 d="M21 2a8.998 8.998 0 0 0-8.612 11.612L2 24v6h6l10.388-10.388A9 9 0 1 0 21 2m0 16a7 7 0 0 1-2.032-.302l-1.147-.348l-.847.847l-3.181 3.181L12.414 20L11 21.414l1.379 1.379l-1.586 1.586L9.414 23L8 24.414l1.379 1.379L7.172 28H4v-3.172l9.802-9.802l.848-.847l-.348-1.147A7 7 0 1 1 21 18"
@@ -128,6 +136,67 @@ const Navbar = () => {
         items,
         onClick: handleMenuClick,
     };
+    const [l, setL] = useState([]);
+    const [e, setE] = useState([]);
+    const [ino, setIno] = useState(null);
+
+    const [open, setOpen] = useState(false);
+    const showModal = () => {
+        setOpen(true);
+        if (l.length !== 0) {
+            l.forEach((item) => {
+                updateDoc(doc(db, 'cities', item.id), {
+                    seen: true,
+                });
+            });
+        }
+    };
+
+    const handleCancel = () => {
+        setOpen(false);
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    useEffect(() => {
+        const g = () => {
+            setTableLoading(true);
+            onSnapshot(query(collection(db, 'cities'), orderBy('time', 'desc')), (snapshot) => {
+                const x = snapshot.docs.map((doc) => doc);
+                setE(x.map((item) => item.data()));
+                setL(x.filter((item) => item.data().seen === false));
+            });
+            setTableLoading(false);
+        };
+        g();
+    }, [db, e]);
+
+    const handleIdClick = (record) => {
+        setIno(record);
+        setLoad(!load);
+    };
+    const columns = [
+        {
+            title: 'name',
+            dataIndex: 'name',
+            key: 'name',
+            width: '30%',
+            render: (_, record) => (
+                <span onClick={() => handleIdClick(record)} className="idOnClick">
+                    {record.name}
+                </span>
+            ),
+        },
+    ];
+    const [load, setLoad] = useState(false);
+    const handleO = () => {
+        setLoad(false);
+    };
+
+    const handleCance = () => {
+        setLoad(false);
+    };
     return (
         <Box
             display="flex"
@@ -140,26 +209,54 @@ const Navbar = () => {
             justifyContent="space-between"
             boxShadow=" 0 7px 25px 0 rgba(0, 0, 0, 0.1)"
             p={2}
-            color= "var(--body_color)"
+            color="var(--body_color)"
         >
-            <Box display="flex" alignItems="center">
-            </Box>
-            {/* <Box>
-                <button onClick={() => handleLanguage('vi')}>
-                    {currentLanguage === 'Tiếng việt' ? 'Tiếng việt' : 'Vietnamese'}
-                </button>
-                <button onClick={() => handleLanguage('en')}>
-                    {currentLanguage === 'Tiếng việt' ? 'Tiếng anh' : 'Egnlish'}
-                </button>
-            </Box> */}
             <Box display="flex" alignItems="center"></Box>
+
             <Box display="flex">
                 <Space wrap>
-                    <DarkMode/>
+                    {userRole !== 'user' ? (
+                        ''
+                    ) : (
+                        <div style={{ cursor: 'pointer' }}>
+                            <Modal open={open} title="Title" onCancel={handleCancel} footer={null}>
+                                <Modal title="Basic Modal" open={load} onCancel={handleCance} footer={null}>
+                                    {ino && (
+                                        <div>
+                                            <p>Name: {ino.name}</p>
+                                            <p>Country: {ino.country}</p>
+                                            <p>State:{ino.state}</p>
+                                        </div>
+                                    )}
+                                </Modal>
+                                <Table
+                                    columns={columns}
+                                    dataSource={e}
+                                    pagination={{
+                                        defaultPageSize: '10',
+                                        pageSizeOptions: ['10', '20', '40', '100'],
+                                        showSizeChanger: true,
+                                        showQuickJumper: true,
+                                        showTotal: (total) => `Total ${total} items`,
+                                    }}
+                                    scroll={{ x: false, y: 'calc(100vh - 580px)' }}
+                                    bordered
+                                />
+                            </Modal>
+
+                            <Badge count={l.length} onClick={showModal}>
+                                <Space>
+                                    <BellOutlined style={{ fontSize: '30px' }} />
+                                </Space>
+                            </Badge>
+                        </div>
+                    )}
+
+                    <DarkMode />
                     <Dropdown menu={menuProps}>
                         <IconButton>
                             <Space>
-                                <UserOutlined style={{color:'var(--body_color)'}} />
+                                <UserOutlined style={{ color: 'var(--body_color)' }} />
                             </Space>
                         </IconButton>
                     </Dropdown>

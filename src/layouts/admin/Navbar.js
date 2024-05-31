@@ -213,7 +213,9 @@ const Navbar = () => {
             p={2}
             color="var(--body_color)"
         >
-            <Box display="flex" alignItems="center"></Box>
+            <Box display="flex" alignItems="center">
+                <span style={{ color: 'var(--body-color)', fontSize: '1.5rem' }}>Student Management</span>
+            </Box>
 
             <Box display="flex">
                 <Space wrap>

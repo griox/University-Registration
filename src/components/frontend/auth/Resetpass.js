@@ -7,7 +7,7 @@ import '../../../assets/css/login.css';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../../../constants/constants';
 import { child, get, getDatabase, ref, update } from 'firebase/database';
-import { encodePath, validateEmailFormat } from '../../../commonFunctions';
+import { encodePath, validateEmailFormat, validatePasswordFormat } from '../../../commonFunctions';
 import { toast } from 'react-toastify';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 // import '../../../assets/js/login';
@@ -101,57 +101,82 @@ export const Forgetpass = () => {
         history.push('/Login');
     };
     const handlePassword = () => {
+        setLoadingResetPass(true);
         const email = localStorage.getItem('Email');
+
         if (email === '""') {
+            setLoadingResetPass(false);
+
             toast.error('Your email was not found');
             return;
-        } else if (validateEmailFormat(email) !== 0) {
+        } else if (validateEmailFormat(email) === 0) {
+            console.log(validateEmailFormat(email));
+            setLoadingResetPass(false);
+
             toast.error('Your email is not in the correct format');
             return;
         } else {
             if (newPass === '') {
+                setLoadingResetPass(false);
+
                 toast.error('Please enter your new password');
                 return;
             }
             if (reNewPass === '') {
+                setLoadingResetPass(false);
+
                 toast.error('Please re-enter your email');
                 return;
             }
-            get(child(ref(db), `Account/`)).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const x = snapshot.val();
+            if (validatePasswordFormat(newPass) === false) {
+                toast.error(
+                    'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 special character, 1 number, and be a minimum of 8 characters long.',
+                );
+            }
+            get(child(ref(db), `Account/`))
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const x = snapshot.val();
 
-                    const listItem = Object.values(x).map((user) => user);
-                    const encodeEmail = encodePath(email);
-                    const y = listItem.filter((item) => item.email === email);
-                    if (y !== undefined) {
-                        if (newPass === reNewPass) {
-                            try {
-                                var hash = bcrypt.hashSync(newPass, salt);
-                                update(ref(db, `Account/` + encodeEmail), {
-                                    password: hash,
-                                }).then(() => setLoadingResetPass(false), handleLogout());
-                            } catch (error) {
+                        const listItem = Object.values(x).map((user) => user);
+                        const encodeEmail = encodePath(email);
+                        const y = listItem.filter((item) => item.email === email);
+                        if (y !== undefined) {
+                            if (newPass === reNewPass) {
+                                try {
+                                    var hash = bcrypt.hashSync(newPass, salt);
+                                    update(ref(db, `Account/` + encodeEmail), {
+                                        password: hash,
+                                    })
+                                        .then(() => setLoadingResetPass(false), handleLogout())
+                                        .catch(() => {
+                                            toast.error("Can't update");
+                                        });
+                                } catch (error) {
+                                    setLoadingResetPass(false);
+
+                                    toast.error('Your request is failed');
+                                }
+                            } else {
                                 setLoadingResetPass(false);
 
-                                toast.error('Your request is failed');
+                                toast.error('The two passwords do not match together');
                             }
+                            setLoadingResetPass(false);
                         } else {
                             setLoadingResetPass(false);
 
-                            toast.error('The two passwords do not match together');
+                            toast.error('Your account was not found');
                         }
-                        setLoadingResetPass(false);
                     } else {
                         setLoadingResetPass(false);
-
-                        toast.error('Your account was not found');
+                        toast.error('No data available');
                     }
-                } else {
+                })
+                .catch(() => {
                     setLoadingResetPass(false);
-                    toast.error('No data available');
-                }
-            });
+                    toast.error('Your request was invalid');
+                });
         }
     };
     return (

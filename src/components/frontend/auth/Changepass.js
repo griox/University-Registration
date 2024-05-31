@@ -8,7 +8,7 @@ import { useHistory } from 'react-router-dom';
 import '../../../assets/css/register.css';
 import { useDispatch } from 'react-redux';
 import { firebaseConfig } from '../../../constants/constants';
-import { encodePath } from '../../../commonFunctions';
+import { encodePath, validatePasswordFormat } from '../../../commonFunctions';
 import { useTranslation } from 'react-i18next';
 import { DownOutlined } from '@ant-design/icons';
 import { Dropdown, Space, Typography } from 'antd';
@@ -186,6 +186,11 @@ const Changepass = () => {
             setLoadingChangePass(false);
 
             return;
+        }
+        if (validatePasswordFormat(newPass) === false) {
+            toast.error(
+                'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 special character, 1 number, and be a minimum of 8 characters long.',
+            );
         }
         temp = encodePath(temp);
 

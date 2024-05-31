@@ -72,7 +72,6 @@ export const Login = () => {
                     for (let item in x) {
                         if (x[item].email === email) {
                             localStorage.setItem('Infor', JSON.stringify(x[item]));
-                            localStorage.setItem('Email', JSON.stringify(email));
                         }
                     }
                 }
@@ -84,7 +83,6 @@ export const Login = () => {
                     for (let item in x) {
                         if (x[item].email === email) {
                             localStorage.setItem('Infor', JSON.stringify(x[item]));
-                            localStorage.setItem('Email', JSON.stringify(email));
                         }
                     }
                 }
@@ -97,7 +95,6 @@ export const Login = () => {
                         if (x[item].email === email) {
                             const temp = x[item];
                             localStorage.setItem('Infor', JSON.stringify(temp));
-                            localStorage.setItem('Email', JSON.stringify(email));
                         }
                     }
                 }
@@ -147,9 +144,10 @@ export const Login = () => {
                                         if (y[i].name !== undefined && y[i].name !== null) {
                                             localStorage.setItem('Role', y[i].Role);
                                             localStorage.setItem('Name', y[i].name);
+                                            localStorage.setItem('Email', JSON.stringify(y[i].email));
+
                                             if (rememberMe === true) {
                                                 localStorage.setItem('userToken', y[i].email);
-                                                localStorage.setItem('Email', y[i].email);
                                             }
 
                                             saveOnLocal(y[i].Role);

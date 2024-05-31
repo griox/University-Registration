@@ -106,9 +106,20 @@ export const validateEmailFormat = (val) => {
 };
 
 export const validatePasswordFormat = (password) => {
-    if (password.length >= 8) {
-        return true;
-    } else {
+    if (password.length < 8) {
         return false;
     }
+    if (password.match(/[a-z]+/) === false) {
+        return false;
+    }
+    if (password.match(/[A-Z]+/) === false) {
+        return false;
+    }
+    if (password.match(/[0-9]+/) === false) {
+        return false;
+    }
+    if (password.match(/[$@#&!]+/) === false) {
+        return false;
+    }
+    return true;
 };

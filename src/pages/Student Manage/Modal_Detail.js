@@ -5,7 +5,10 @@ import './css/modal_detail.css';
 import { database } from '../firebaseConfig.js';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+<<<<<<< HEAD
 
+=======
+>>>>>>> b42f746a830f8e11ded97461f0bb003eee446eaa
 const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
     const [university, setUniversity] = useState([]);
     const { t } = useTranslation('detailstudent');
@@ -142,7 +145,7 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
                         showTotal: (total) => `Total ${total} items`,
                     }}
                     scroll={{ x: false, y: 'calc(100vh - 580px)' }}
-                    bordered
+                    rowHoverable={false}
                 />
             </Spin>
         </Modal>

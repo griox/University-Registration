@@ -333,7 +333,7 @@ const AddSchool = () => {
             ...getColumnSearchProps('uniCode'),
             render: (text, record) => (
                 <Tooltip title={record.isRegistered === record.targer ? 'Can not regist' : ''}>
-                    <span style={{ color: record.isRegistered === record.target ? 'green' : 'black' }}>{text}</span>
+                    <span className={record.isRegistered === record.target ? 'unYes':'uniNo'}>{text}</span>
                 </Tooltip>
             ),
             key: 'uniCode',
@@ -371,7 +371,7 @@ const AddSchool = () => {
         {
             title: t('table.Action'),
             dataIndex: 'operation',
-            width: '13%',
+            width: '10%',
             fixed: 'right',
             render: (_, record) => {
                 const editable = isEditing(record);
@@ -440,7 +440,7 @@ const AddSchool = () => {
                                     cell: EditableCell,
                                 },
                             }}
-                            bordered
+                            rowHoverable={false}
                             ref={tableRef}
                         />
                     </Spin>

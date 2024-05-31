@@ -98,22 +98,22 @@ const AddSchool = () => {
 
     const handleDelete = async (record) => {
         try {
-            if(record.registeration!==undefined){
-                for(const student in record.registeration){
-                    const studentRef = ref(database,`Detail/${record.registeration[student].id}`)
+            if (record.registeration !== undefined) {
+                for (const student in record.registeration) {
+                    const studentRef = ref(database, `Detail/${record.registeration[student].id}`);
                     const snapshot = await get(studentRef);
-                    if(snapshot.exists()){
-                     const studentData = snapshot.val();
-                     const newArray = studentData.uniCode.filter(item=>item !==record.uniCode);
-                     await update(studentRef,{uniCode:newArray});
+                    if (snapshot.exists()) {
+                        const studentData = snapshot.val();
+                        const newArray = studentData.uniCode.filter((item) => item !== record.uniCode);
+                        await update(studentRef, { uniCode: newArray });
                     }
-                 }
+                }
             }
             await remove(child(ref(database), `University/${record.uniCode}`));
             const newUni = UniData.filter((item) => item.uniCode !== record.uniCode);
             setUniData(newUni);
         } catch (error) {
-            toast.error('Error when deleting data',error);
+            toast.error('Error when deleting data', error);
         }
     };
 
@@ -282,7 +282,7 @@ const AddSchool = () => {
                             setSearchedColumn(dataIndex);
                         }}
                     >
-                         {t('button.filter')}
+                        {t('button.filter')}
                     </Button>
                     <Button type="link" size="small" onClick={() => close()}>
                         {t('button.close')}
@@ -333,7 +333,7 @@ const AddSchool = () => {
             ...getColumnSearchProps('uniCode'),
             render: (text, record) => (
                 <Tooltip title={record.isRegistered === record.targer ? 'Can not regist' : ''}>
-                    <span className={record.isRegistered === record.target ? 'unYes':'uniNo'}>{text}</span>
+                    <span className={record.isRegistered === record.target ? 'unYes' : 'uniNo'}>{text}</span>
                 </Tooltip>
             ),
             key: 'uniCode',
@@ -387,7 +387,7 @@ const AddSchool = () => {
                         <Typography.Link className="typolink" disabled={editingKey !== ''} onClick={() => edit(record)}>
                             <EditOutlined />
                         </Typography.Link>
-                        <Popconfirm title= {t('title.delete')} onConfirm={() => handleDelete(record)}>
+                        <Popconfirm title={t('title.delete')} onConfirm={() => handleDelete(record)}>
                             <Typography.Link>
                                 <DeleteOutlined />
                             </Typography.Link>
@@ -432,7 +432,7 @@ const AddSchool = () => {
                                 pageSizeOptions: ['10', '20', '40', '100'],
                                 showSizeChanger: true,
                                 showQuickJumper: true,
-                                showTotal: (total) => `${t('title.total')} ${total}`
+                                showTotal: (total) => `${t('title.total')} ${total}`,
                             }}
                             scroll={{ x: false, y: 'calc(100vh - 350px)' }}
                             components={{

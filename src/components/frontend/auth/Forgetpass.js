@@ -7,25 +7,42 @@ import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../../../constants/constants';
 import { DownOutlined } from '@ant-design/icons';
-import { Dropdown, Space, Typography } from 'antd';
+import { Button, Dropdown, Space, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
+import { validateEmailFormat } from '../../../commonFunctions';
 
 export const Forgetpass = () => {
     const { t, i18n } = useTranslation('fogetpassword');
     const app = initializeApp(firebaseConfig);
     const db = getAuth(app);
     const [email, setEmail] = useState('');
+    const [loadingResetPass, setLoadingResetPass] = useState(false);
     const handleEmail = async () => {
+        setLoadingResetPass(true);
+        if (email === '') {
+            toast.error('Please enter your email');
+            setLoadingResetPass(false);
+
+            return;
+        }
+        if (validateEmailFormat(email) === false) {
+            toast.error('Your email is not correct with format');
+            setLoadingResetPass(false);
+
+            return;
+        }
         localStorage.setItem('Email', email);
-        sendPasswordResetEmail(db, 'minhquang20042110@gmail.com')
+        sendPasswordResetEmail(db, 'quang.nm.64cntt@ntu.edu.vn')
             .then((data) => {
-                alert('Check your email');
+                setLoadingResetPass(false);
+                toast.success('The link will be sent to your email, please check your email');
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
-                toast.error(`Error ${errorCode}: ${errorMessage}`)
+                setLoadingResetPass(false);
+                toast.error(`Error ${errorCode}: ${errorMessage}`);
             });
     };
     const handleLanguage = (lng) => {
@@ -33,14 +50,14 @@ export const Forgetpass = () => {
     };
     const items = [
         {
-          key: '1',
-          label: 'English',
-          onClick: () => handleLanguage('en')
+            key: '1',
+            label: 'English',
+            onClick: () => handleLanguage('en'),
         },
         {
-          key: '2',
-          label: 'Tiếng Việt',
-          onClick: () => handleLanguage('vi')
+            key: '2',
+            label: 'Tiếng Việt',
+            onClick: () => handleLanguage('vi'),
         },
     ];
     return (
@@ -53,10 +70,10 @@ export const Forgetpass = () => {
                         </div>
 
                         <p className="featured">
-                        {t('title.inform forget')} <br /> {t('title.or')} <br /> <br />
+                            {t('title.inform forget')} <br /> {t('title.or')} <br /> <br />
                             <span>
                                 <Link className="btn-getback" to="/login">
-                                {t('button.get back')}
+                                    {t('button.get back')}
                                 </Link>
                             </span>
                         </p>
@@ -87,29 +104,33 @@ export const Forgetpass = () => {
                                     </div>
 
                                     <div className="input-box">
-                                        <div className="input-submit" onClick={() => handleEmail()}>
+                                        <Button
+                                            loading={loadingResetPass}
+                                            className="input-submit"
+                                            onClick={() => handleEmail()}
+                                        >
                                             <span>{t('button.continue')}</span>
                                             <i className="bx bx-right-arrow-alt"></i>
-                                        </div>
+                                        </Button>
                                     </div>
 
                                     <div>
-                                    <Dropdown className='drop-menu'
+                                        <Dropdown
+                                            className="drop-menu"
                                             menu={{
-                                            items,
-                                            selectable: true,
-                                            defaultSelectedKeys: ['1'],
+                                                items,
+                                                selectable: true,
+                                                defaultSelectedKeys: ['1'],
                                             }}
                                         >
                                             <Typography.Link>
-                                            <Space className='title-drop'>
-                                                {t('title.language')}
-                                                <DownOutlined />
-                                            </Space>
+                                                <Space className="title-drop">
+                                                    {t('title.language')}
+                                                    <DownOutlined />
+                                                </Space>
                                             </Typography.Link>
                                         </Dropdown>
                                     </div>
-
                                 </div>
                             </div>
                         </form>

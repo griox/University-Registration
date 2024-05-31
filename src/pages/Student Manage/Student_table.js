@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin } from 'antd';
+import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin, Modal, message, Upload } from 'antd';
 import './css/table.css';
+import 'antd/dist/reset.css';
 import {
     SearchOutlined,
     EditOutlined,
@@ -8,6 +9,7 @@ import {
     PlusCircleOutlined,
     MinusCircleOutlined,
     ManOutlined,
+    UploadOutlined,
 } from '@ant-design/icons';
 import { toast } from 'react-toastify';
 import { Button, Space } from 'antd';
@@ -18,6 +20,9 @@ import ModalAdd from './Modal_add';
 import ModalDetail from './Modal_Detail';
 import { useTranslation } from 'react-i18next';
 import { database } from '../firebaseConfig.js';
+import { addDoc, collection, getFirestore } from 'firebase/firestore';
+import { firebaseConfig } from '../../constants/constants.js';
+import { initializeApp } from 'firebase/app';
 
 const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
     const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
@@ -54,6 +59,12 @@ const StudentList = () => {
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [Loading, setLoading] = useState(true);
     const tableRef = useRef(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [mess, setMess] = useState('');
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const [bell, setBell] = useState(false);
+    const [file, setFile] = useState(null);
     useEffect(() => {
         const fetchData = async () => {
             const studentRef = child(ref(database), 'Detail');
@@ -153,7 +164,7 @@ const StudentList = () => {
                             setSearchedColumn(dataIndex);
                         }}
                     >
-                       {t('button.filter')}
+                        {t('button.filter')}
                     </Button>
                     <Button type="link" size="small" onClick={() => close()}>
                         {t('button.close')}
@@ -242,7 +253,7 @@ const StudentList = () => {
 
         if (index > -1) {
             newData[index][dataIndex] = value;
-            setStudentData(newData); 
+            setStudentData(newData);
             try {
                 await update(ref(database, `Detail/${key}`), {
                     [dataIndex]: value,
@@ -302,7 +313,7 @@ const StudentList = () => {
                 setEditingKey('');
                 handleFieldChange(key, Object.keys(row)[0], row[Object.keys(row)[0]]);
 
-                await set(ref(database, `Detail/${key}`), row); 
+                await set(ref(database, `Detail/${key}`), row);
                 toast.success('Data added to Firebase successfully');
             }
         } catch (errInfo) {
@@ -333,6 +344,7 @@ const StudentList = () => {
         {
             title: t('table.ID'),
             dataIndex: 'id',
+
             width: '10%',
             fixed: 'left',
             ...getColumnSearchProps('id'),
@@ -342,6 +354,7 @@ const StudentList = () => {
                 </span>
             ),
             key: 'id',
+            fixed: 'left',
         },
 
         {
@@ -382,6 +395,7 @@ const StudentList = () => {
                 </Tooltip>
             ),
             key: 'email',
+            fixed: 'left',
         },
         {
             title: t('table.Math'),
@@ -441,7 +455,9 @@ const StudentList = () => {
                         <Typography.Link className="Typo_link" onClick={() => save(record.key)}>
                             {t('button.edit')}
                         </Typography.Link>
-                        <Typography.Link onClick={cancel}>{t('button.cancel')}</Typography.Link>
+                        <Typography.Link className="Typo_link" onClick={cancel}>
+                            Cancel
+                        </Typography.Link>
                     </span>
                 ) : (
                     <Space size={'middle'}>
@@ -491,11 +507,64 @@ const StudentList = () => {
             }),
         };
     });
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleOk = () => {
+        setBell(true);
+        if (mess !== '') {
+            addDoc(collection(db, 'cities'), {
+                name: mess,
+                country: mess,
+                state: mess,
+                time: new Date(),
+                seen: false,
+            })
+                .then(() => {
+                    setBell(false);
+                    setIsModalOpen(false);
+                    return toast.success('The notification you sent was successful');
+                })
+                .catch(() => {
+                    setBell(false);
+                    setIsModalOpen(false);
+                    return toast.error('The notification you sent has failed');
+                });
+        }
+    };
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
 
     return (
         <div className="Layout">
             <Space direction="vertical">
-                <ModalAdd studentData={studentData} setStudentData={setStudentData} />
+                <div style={{ display: 'flex', columnGap: '10px' }}>
+                    <ModalAdd studentData={studentData} setStudentData={setStudentData} />
+
+                    <Modal
+                        title="Basic Modal"
+                        open={isModalOpen}
+                        // onOk={() => handleOk()}
+                        onCancel={handleCancel}
+                        confirmLoading={true}
+                        destroyOnClose
+                        footer={[
+                            <Button onClick={handleOk} loading={bell}>
+                                Ok
+                            </Button>,
+                            <Button onClick={handleCancel}>Cancel</Button>,
+                        ]}
+                    >
+                        {/* <input type="file" id="fileInput" className="avatar-input" /> */}
+
+                        <Input onChange={(e) => setMess(e.target.value)} />
+                    </Modal>
+                    <Button type="primary" onClick={showModal}>
+                        Send inform
+                    </Button>
+                </div>
                 <ModalDetail
                     visible={isModalVisible}
                     onClose={() => {
@@ -508,31 +577,31 @@ const StudentList = () => {
                 <Form form={form} component={false}>
                     <Spin spinning={Loading}>
                         <div className='table'>
-                            <Table
-                                components={{
-                                    body: {
-                                        cell: EditableCell,
-                                    },
-                                }}
-                                bordered
-                                dataSource={studentData}
-                                columns={mergedColumns}
-                                scroll={{
-                                    x: 900,
-                                    y: 'calc(100vh - 300px)',
-                                }}
-                                rowClassName="editable-row"
-                                showSorterTooltip={{
-                                    target: 'sorter-icon',
-                                }}
-                                pagination={{
-                                    onChange: cancel,
-                                    showSizeChanger: true,
-                                    showQuickJumper: true,
-                                    showTotal: (total) => `${t('title.total')} ${total}`
-                                }}
-                                ref={tableRef}
-                            />
+                        <Table
+                            components={{
+                                body: {
+                                    cell: EditableCell,
+                                },
+                            }}
+                            dataSource={studentData}
+                            columns={mergedColumns}
+                            scroll={{
+                                x: 900,
+                                y: 'calc(100vh - 300px)',
+                            }}
+                            rowClassName="editable-row"
+                            showSorterTooltip={{
+                                target: 'sorter-icon',
+                            }}
+                            pagination={{
+                                onChange: cancel,
+                                showSizeChanger: true,
+                                showQuickJumper: true,
+                                showTotal: (total) => `${t('title.total')} ${total}`
+                            }}
+                            rowHoverable={false}
+                            ref={tableRef}
+                        />
                         </div>
                     </Spin>
                 </Form>

@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import { Button, Modal, Select, InputNumber, DatePicker, Form } from 'antd';
 import { InfoCircleOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
 import { Input, Tooltip, Row, Col } from 'antd';
-import './css/modal_add.css';
+import '../Student Manage/css/modal_add.css';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { database } from '../firebaseConfig.js';
@@ -209,10 +209,6 @@ const ModalAdd = ({ studentData, setStudentData }) => {
         return idenNum.length === 12 && /^[0-9]+$/.test(idenNum);
     }
 
-    function validateNumber(EntranceScore) {
-        return /^[0-9.]+$/.test(EntranceScore);
-    }
-
     const genders = [
         { value: 'Female', label: 'Female' },
         { value: 'Male', label: 'Male' },
@@ -334,7 +330,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     const dateFormat = 'DD/MM/YYYY';
     return (
         <>
-            <Button type="primary" onClick={showModal}>
+            <Button className='btn-add' type="primary" onClick={showModal}>
                 {t('button.Add')}
             </Button>
             <Modal
@@ -349,7 +345,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                     <Row gutter={16}>
                         <Col span={12}>
                             <Form.Item
-                                className="form-item"
+                                className="form-item1"
                                 label={t('label.name')}
                                 name="name"
                                 validateStatus={!validateFullname(Fullname) && Fullname ? 'error' : ''}
@@ -375,7 +371,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         </Col>
                         <Col span={12}>
                             <Form.Item
-                                className="form-item"
+                                className="form-item1"
                                 label={t('label.gender')}
                                 name="gender"
                                 rules={[
@@ -396,7 +392,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                     <Row gutter={16}>
                         <Col span={12}>
                             <Form.Item
-                                className="form-item"
+                                className="form-item1"
                                 label={t('label.dofb')}
                                 name="dob"
                                 rules={[
@@ -416,7 +412,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item label={t('label.pofb')} className="form-item">
+                            <Form.Item label={t('label.pofb')} className="form-item1">
                                 <Select
                                     initialvalues="Khánh Hòa"
                                     options={cities}
@@ -429,7 +425,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                     <Form.Item
                           label={t('label.email')}
                         name="email"
-                        className="form-item"
+                        className="form-item1"
                         validateStatus={!validateEmailFormat(Email) && Email ? 'error' : ''}
                         help={validateEmailFormat(Email) && Email ? ' ' : ''}
                         rules={[
@@ -456,7 +452,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             <Form.Item
                                   label={t('label.identify')}
                                 name="identify"
-                                className="form-item"
+                                className="form-item1"
                                 validateStatus={!validateIdenNumber(Identify) && Identify ? 'error' : ''}
                                 help={
                                     !validateIdenNumber(Identify) && Identify
@@ -482,7 +478,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             <Form.Item
                                label={t('label.ethnicity')}
                                 name="ethnicity"
-                                className="form-item"
+                                className="form-item1"
                                 rules={[
                                     {
                                         required: true,
@@ -504,7 +500,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             <Form.Item
                                 label={t('label.address')}
                                 name="address"
-                                className="form-item"
+                                className="form-item1"
                                 rules={[
                                     {
                                         required: true,
@@ -527,7 +523,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         <Col span={6}>
                             <Form.Item
                                 label={t('label.math')}
-                                className="form-item"
+                                className="form-item1"
                                 name="math"
                                 rules={[
                                     {
@@ -540,6 +536,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     className="input-num"
                                     min={0}
                                     max={10}
+                                    maxLength={4}
                                     step={0.2}
                                     onChange={(value) => setMathscore(value)}
                                 />
@@ -549,7 +546,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             <Form.Item
                                 label={t('label.english')}
                                 name="english"
-                                className="form-item"
+                                className="form-item1"
                                 rules={[
                                     {
                                         required: true,
@@ -559,6 +556,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             >
                                 <InputNumber
                                     min={0}
+                                    maxLength={4}
                                     max={10}
                                     step={0.2}
                                     className="input-num"
@@ -570,20 +568,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             <Form.Item
                                 label={t('label.literature')}
                                 name="literature"
-                                className="form-item"
-                                validateStatus={
-                                    (!validateNumber(Literaturescore) && Literaturescore) ||
-                                    (Literaturescore && parseFloat(Literaturescore) > 10)
-                                        ? 'error'
-                                        : ''
-                                }
-                                help={
-                                    !validateNumber(Literaturescore) && Literaturescore
-                                        ? 'Literature Score must contain only numbers and no spaces'
-                                        : Literaturescore && parseFloat(Literaturescore) > 10
-                                        ? 'Literature Score must be less than or equal to 10'
-                                        : ''
-                                }
+                                className="form-item1"
                                 rules={[
                                     {
                                         required: true,
@@ -594,6 +579,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 <InputNumber
                                     min={0}
                                     max={10}
+                                    maxLength={4}
                                     step={0.2}
                                     className="input-num"
                                     onChange={(value) => setLiteraturescore(value)}
@@ -601,7 +587,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             </Form.Item>
                         </Col>
                         <Col span={6}>
-                            <Form.Item  label={t('label.entrance')} className="form-item">
+                            <Form.Item  label={t('label.entrance')} className="form-item1">
                                 <Input readOnly className="input-num" value={averageS} />
                             </Form.Item>
                         </Col>

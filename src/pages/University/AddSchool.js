@@ -249,7 +249,7 @@ const AddSchool = () => {
                 <Input
                     className="search"
                     ref={searchInput}
-                    placeholder={`Search ${dataIndex}`}
+                    placeholder={t('placeholder.search')}
                     value={selectedKeys[0]}
                     onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
@@ -333,7 +333,7 @@ const AddSchool = () => {
             ...getColumnSearchProps('uniCode'),
             render: (text, record) => (
                 <Tooltip title={record.isRegistered === record.targer ? 'Can not regist' : ''}>
-                    <span className={record.isRegistered === record.target ? 'unYes' : 'uniNo'}>{text}</span>
+                    <span className={record.isRegistered === record.target ? 'uniYes':'uniNo'}>{text}</span>
                 </Tooltip>
             ),
             key: 'uniCode',
@@ -423,6 +423,7 @@ const AddSchool = () => {
                 <Space direction="vertical">
                     <FormAdd UniData={UniData} setUniData={setUniData} />
                     <Spin spinning={loading}>
+                        <div className='table'>
                         <Table
                             columns={mergedColumns}
                             dataSource={UniData}
@@ -443,6 +444,7 @@ const AddSchool = () => {
                             rowHoverable={false}
                             ref={tableRef}
                         />
+                        </div>
                     </Spin>
                 </Space>
             </Form>

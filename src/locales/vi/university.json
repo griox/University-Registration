@@ -21,5 +21,8 @@
         "cancel": "Hủy",
         "total": "Tổng",
         "delete": "Chắc chắn xóa ?"
+    },
+    "placeholder": {
+        "search": "Tìm kiếm"
     }
 }

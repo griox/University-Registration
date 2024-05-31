@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin } from 'antd';
 import './css/table.css';
-import  'antd/dist/reset.css';
 import {
     SearchOutlined,
     EditOutlined,
@@ -67,7 +66,7 @@ const StudentList = () => {
                     setLoading(false);
                 }
             } catch (error) {
-                toast.error(error);
+                toast.error('Error when fetch data');
             }
         };
 
@@ -100,7 +99,7 @@ const StudentList = () => {
             const newData = studentData.map((item) => (item.key === record.key ? { ...item, isRegister: true } : item));
             setStudentData(newData);
         } catch (error) {
-            toast.error('Error provide account student:', error);
+            toast.error('Error provide account student');
         }
     };
     const handleDeleteAccount = async (record) => {
@@ -112,7 +111,7 @@ const StudentList = () => {
             );
             setStudentData(newData);
         } catch (error) {
-            toast.error('Error deleting account', error);
+            toast.error('Error deleting account');
         }
     };
 
@@ -126,7 +125,7 @@ const StudentList = () => {
             <div className="search-column" onKeyDown={(e) => e.stopPropagation()}>
                 <Input
                     ref={searchInput}
-                    placeholder={t('placeholder.search')}
+                    placeholder={`Search ${dataIndex}`}
                     value={selectedKeys[0]}
                     onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
@@ -210,7 +209,6 @@ const StudentList = () => {
                         await update(universityRef, { isRegistered: updatedIsRegistered });
                     } else {
                         toast.error('University not found');
-                        toast.error('University not found');
                     }
                 }
             }
@@ -221,7 +219,7 @@ const StudentList = () => {
             const newData = studentData.filter((item) => item.id !== record.id);
             setStudentData(newData);
         } catch (error) {
-            toast.error('Error deleting data:', error);
+            toast.error('Error deleting data');
         }
     };
 
@@ -250,8 +248,7 @@ const StudentList = () => {
                     [dataIndex]: value,
                 });
             } catch (error) {
-                toast.error('Error updating document:', error);
-                // Handle update error (optional: show notification to user)
+                toast.error('Error updating document');
             }
         }
     };
@@ -309,15 +306,11 @@ const StudentList = () => {
                 toast.success('Data added to Firebase successfully');
             }
         } catch (errInfo) {
-            toast.error('Validate Failed:', errInfo);
+            toast.error('Validate Failed');
         }
     };
-    const renderNameWithGender = (y) => {
-        return (
-            <span className="icon">
-                {y === 'Male' ? <ManOutlined className="male" /> : <WomanOutlined className="female" />}
-            </span>
-        );
+    const renderNameWithGender = (record) => {
+        return <span className="icon">{record.gender === 'Male' ? <ManOutlined /> : <WomanOutlined />}</span>;
     };
 
     const handleIdClick = (record) => {
@@ -339,37 +332,38 @@ const StudentList = () => {
     const columns = [
         {
             title: t('table.ID'),
-            className: 'column-id',
             dataIndex: 'id',
-            
             width: '10%',
-            fixed: "left",
+            fixed: 'left',
             ...getColumnSearchProps('id'),
             render: (_, record) => (
-                <span onClick={() => handleIdClick(record)} className="idOnClick">
+                <span onClick={() => handleIdClick(record)} style={{ color: 'blue', cursor: 'pointer' }}>
                     {record.id}
                 </span>
             ),
             key: 'id',
-            fixed:'left',
         },
 
         {
             title: t('table.Name'),
             dataIndex: 'name',
-            className: 'column-name',
             width: '19%',
-            fixed: "left",
             editable: true,
-            fixed:'left',
+            fixed: 'left',
             key: 'name',
             ...getColumnSearchProps('name'),
             render: (text, record) => {
                 return (
                     <>
-                        {renderNameWithGender(record.gender)}
+                        {renderNameWithGender(text, record)}
                         <Tooltip title={temp(record.uniCode) ? 'can not register more' : ''}>
-                            <span className={temp(record.uniCode) ? 'Can_Regist' : 'NoRegist'}>{text}</span>
+                            <span
+                                style={{
+                                    color: temp(record.uniCode) ? '#FF8C00' : 'black',
+                                }}
+                            >
+                                {text}
+                            </span>
                         </Tooltip>
                     </>
                 );
@@ -379,23 +373,19 @@ const StudentList = () => {
         {
             title: t('table.Email'),
             dataIndex: 'email',
-            className: 'column-email',
             width: '15%',
-            fixed: "left",
             editable: true,
             ...getColumnSearchProps('email'),
             render: (text, record) => (
                 <Tooltip title={record.isRegister ? 'had account' : 'account not exists'}>
-                    <span className={record.isRegister ? 'Registered' : 'UnRegistered'}>{text}</span>
+                    <span style={{ color: record.isRegister ? 'green' : 'red' }}>{text}</span>
                 </Tooltip>
             ),
             key: 'email',
-            fixed:'left',
         },
         {
             title: t('table.Math'),
             dataIndex: 'MathScore',
-            className: 'column-math',
             width: '10%',
             editable: true,
             sorter: (a, b) => a.MathScore - b.MathScore,
@@ -404,7 +394,6 @@ const StudentList = () => {
         {
             title: t('table.Literature'),
             dataIndex: 'LiteratureScore',
-            className: 'column-literature',
             width: '11%',
             editable: true,
             key: 'LiteratureScore',
@@ -414,7 +403,6 @@ const StudentList = () => {
         {
             title: t('table.English'),
             dataIndex: 'EnglishScore',
-            className: 'column-english',
             width: '10%',
             editable: true,
             key: 'EnglishScore',
@@ -423,7 +411,6 @@ const StudentList = () => {
         {
             title: t('table.Total Score'),
             dataIndex: 'AverageScore',
-            className: 'column-average',
             width: '10%',
             key: 'AverageScore',
             sorter: (a, b) => a.AverageScore - b.AverageScore,
@@ -431,7 +418,7 @@ const StudentList = () => {
         {
             title: t('table.UniCode'),
             dataIndex: 'uniCode',
-            width: '16%',
+            width: '13%',
             render: (text) => {
                 if (typeof text === 'string') {
                     return text?.split(', ').join(', ');
@@ -446,7 +433,7 @@ const StudentList = () => {
         {
             title: t('table.Action'),
             dataIndex: 'operation',
-            width: '11%',
+            width: '15%',
             render: (_, record) => {
                 const editable = isEditing(record);
                 return editable ? (
@@ -454,7 +441,7 @@ const StudentList = () => {
                         <Typography.Link className="Typo_link" onClick={() => save(record.key)}>
                             {t('button.edit')}
                         </Typography.Link>
-                        <Typography.Link className="Typo_link" onClick={cancel}>Cancel</Typography.Link>
+                        <Typography.Link onClick={cancel}>{t('button.cancel')}</Typography.Link>
                     </span>
                 ) : (
                     <Space size={'middle'}>
@@ -463,23 +450,23 @@ const StudentList = () => {
                             onClick={() => edit(record)}
                             className="Typo_link"
                         >
-                            <EditOutlined className="control" />
+                            <EditOutlined />
                         </Typography.Link>
                         <Popconfirm title={t('title.delete')} onConfirm={() => handleDelete(record)}>
                             <Typography.Link>
-                                <DeleteOutlined className="control" />
+                                <DeleteOutlined />
                             </Typography.Link>
                         </Popconfirm>
                         {!record.isRegister ? (
                             <Popconfirm title={t('title.provide')} onConfirm={() => handleProvideAccount(record)}>
                                 <Typography.Link>
-                                    <PlusCircleOutlined className="control" />
+                                    <PlusCircleOutlined />
                                 </Typography.Link>
                             </Popconfirm>
                         ) : (
                             <Popconfirm title={t('title.deleteacc')} onConfirm={() => handleDeleteAccount(record)}>
                                 <Typography.Link>
-                                    <MinusCircleOutlined className="control" />
+                                    <MinusCircleOutlined />
                                 </Typography.Link>
                             </Popconfirm>
                         )}
@@ -527,6 +514,7 @@ const StudentList = () => {
                                         cell: EditableCell,
                                     },
                                 }}
+                                bordered
                                 dataSource={studentData}
                                 columns={mergedColumns}
                                 scroll={{
@@ -543,7 +531,6 @@ const StudentList = () => {
                                     showQuickJumper: true,
                                     showTotal: (total) => `${t('title.total')} ${total}`
                                 }}
-                                rowHoverable={false}
                                 ref={tableRef}
                             />
                         </div>

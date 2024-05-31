@@ -33,3 +33,13 @@
 .uniNo {
     color: var(--unregistered-color);
 }
+
+.Layout {
+    display: flex;
+    flex-grow: 1;
+    overflow-x: hidden;
+}
+
+.table {
+    max-width: 100%;
+}

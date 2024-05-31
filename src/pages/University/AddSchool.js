@@ -421,29 +421,32 @@ const AddSchool = () => {
         <div className="Layout">
             <Form form={form} component={false}>
                 <Space direction="vertical">
-                    <FormAdd UniData={UniData} setUniData={setUniData} />
-                    <Spin spinning={loading}>
-                        <Table
-                            columns={mergedColumns}
-                            dataSource={UniData}
-                            onChange={onChange}
-                            pagination={{
-                                defaultPageSize: 10,
-                                pageSizeOptions: ['10', '20', '40', '100'],
-                                showSizeChanger: true,
-                                showQuickJumper: true,
-                                showTotal: (total) => `${t('title.total')} ${total}`,
-                            }}
-                            scroll={{ x: false, y: 'calc(100vh - 350px)' }}
-                            components={{
-                                body: {
-                                    cell: EditableCell,
-                                },
-                            }}
-                            rowHoverable={false}
-                            ref={tableRef}
-                        />
-                    </Spin>
+                    <div className="table">
+                        <FormAdd UniData={UniData} setUniData={setUniData} />
+                        <Spin spinning={loading}>
+                            <Table
+                                columns={mergedColumns}
+                                dataSource={UniData}
+                                onChange={onChange}
+                                pagination={{
+                                    defaultPageSize: 10,
+                                    pageSizeOptions: ['10', '20', '40', '100'],
+                                    showSizeChanger: true,
+                                    showQuickJumper: true,
+                                    showTotal: (total) => `${t('title.total')} ${total}`,
+                                }}
+                                scroll={{ x: false, y: 'calc(100vh - 350px)' }}
+                                components={{
+                                    body: {
+                                        cell: EditableCell,
+                                    },
+                                }}
+                                rowHoverable={false}
+                                className="table-responsive"
+                                ref={tableRef}
+                            />
+                        </Spin>
+                    </div>
                 </Space>
             </Form>
             <Modal open={isModalDetailVisible} onCancel={handleCancel} onOk={handleOk} width={1000} height={500}>

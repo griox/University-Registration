@@ -20,7 +20,7 @@
     box-shadow: 0 7px 25px 0 rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
     padding: 20px;
-    grid-gap: 10px;
+    grid-gap: 20px;
 }
 
 .card-content {
@@ -31,14 +31,14 @@
 
 .cards {
     width: 100%;
-    padding: 30px 10px;
+    height: 320px;
+    padding: 20px 10px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
     grid-gap: 20px;
 }
 
 .cards .carder {
-    padding: 35px 35px 35px 35px;
     border-radius: 10px;
     box-shadow: 0 7px 25px 0 rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
@@ -49,6 +49,7 @@
     transform: scale(1.05);
     box-shadow: 0 15px 35px 0 rgba(0, 0, 0, 0.2);
 }
+
 .card-content {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -63,6 +64,7 @@
     column-gap: 5px;
     width: auto;
 }
+
 .number {
     font-size: 60px;
     font-weight: 800;
@@ -75,9 +77,8 @@
 
 .card-name {
     font-weight: 600;
-    font-size: 20px;
+    font-size: 18px;
     width: auto;
-    margin-top: 10px;
 }
 
 .icon-box {
@@ -90,9 +91,11 @@
 }
 
 .charts {
-    grid-gap: 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 10px;
     width: 100%;
-    padding: 20px;
+    padding: 10px;
     padding-top: 0;
 }
 
@@ -100,7 +103,6 @@
     background: #fff;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 7px 25px rgba(0, 0, 0, 0.1);
     width: 100%;
     box-shadow: 0 7px 25px 0 rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
@@ -118,46 +120,86 @@
 
 .charter h2 {
     text-align: center;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .content-chart-icon-green {
-    font-size: 28px;
+    font-size: 25px;
     color: green;
 }
-.content-chart-icon-red {
-    font-size: 28px;
-    color: red;
-}
-.number-below-red {
-    font-size: 28px;
-    color: red;
-    font-weight: 500;
-}
+
 .number-below-green {
-    font-size: 28px;
+    font-size: 25px;
     color: green;
     font-weight: 500;
 }
 
-@media only screen and (max-width: 767px) {
+.content-chart-icon-red {
+    font-size: 25px;
+    color: red;
+}
+
+.number-below-red {
+    font-size: 25px;
+    color: red;
+    font-weight: 500;
+}
+
+@media only screen and (max-width: 414px) {
     .cards {
         grid-template-columns: repeat(1, 1fr);
+        height: 330px;
     }
 
     .carder {
         padding: 20px;
     }
+
+    .charts {
+        grid-template-columns: 1fr;
+    }
+
+    .charter {
+        margin-top: 20px;
+    }
 }
 
-@media only screen and (min-width: 768px) and (max-width: 991px) {
+@media only screen and (max-width: 767px) {
+    .container {
+        overflow: auto;
+    }
+
+    .cards {
+        grid-template-columns: repeat(1, 1fr);
+        height: 570px;
+    }
+
+    .carder {
+        padding: 20px;
+    }
+
+    .charts {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .charter {
+        margin-top: 20px;
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
     .cards {
         grid-template-columns: repeat(2, 1fr);
+        height: 600px;
+    }
+
+    .charts {
+        grid-template-columns: 1fr;
     }
 }
 
 @media only screen and (min-width: 992px) {
     .cards {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
     }
 }

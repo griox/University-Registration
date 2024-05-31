@@ -1,6 +1,5 @@
 import React from 'react';
-import { Box, IconButton, useTheme } from '@mui/material';
-// import { tokens, ColorModeContext } from '../../theme';
+import { Box, IconButton } from '@mui/material';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { Dropdown, Space } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
@@ -14,12 +13,8 @@ import DarkMode from '../../components/Darkmode/Darkmode';
 const Navbar = () => {
     const { t, i18n } = useTranslation('navbar');
     const currentLanguage = locales[i18n.language === 'vi' ? 'vi' : 'en'];
-    // const theme = useTheme();
-    // const colors = tokens(theme.palette.mode);
-    // const colorMode = useContext(ColorModeContext);
     const dispatch = useDispatch();
     const history = useHistory();
-    // const currentLanguage = locales[i18n.language];
     const handleLanguage = (lng) => {
         i18n.changeLanguage(lng);
     };
@@ -149,17 +144,8 @@ const Navbar = () => {
             color="var(--body_color)"
         >
             <Box display="flex" alignItems="center">
-                <span style={{ color: 'var(--body-color)', fontSize: '1.5rem' }}>Student Management System</span>
+                <span style={{ color: 'var(--body-color)', fontSize: '1rem' }}>Student Management</span>
             </Box>
-            {/* <Box>
-                <button onClick={() => handleLanguage('vi')}>
-                    {currentLanguage === 'Tiếng việt' ? 'Tiếng việt' : 'Vietnamese'}
-                </button>
-                <button onClick={() => handleLanguage('en')}>
-                    {currentLanguage === 'Tiếng việt' ? 'Tiếng anh' : 'Egnlish'}
-                </button>
-            </Box> */}
-            <Box display="flex" alignItems="center"></Box>
             <Box display="flex">
                 <Space wrap>
                     <DarkMode />

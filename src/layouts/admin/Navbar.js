@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+
 import { Box, IconButton } from '@mui/material';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import { Badge, Button, Dropdown, Modal, Space, Spin, Table } from 'antd';
@@ -19,9 +20,10 @@ const Navbar = () => {
     const currentLanguage = locales[i18n.language === 'vi' ? 'vi' : 'en'];
     const dispatch = useDispatch();
     const history = useHistory();
+
     const userRole = localStorage.getItem('Role');
     const [tableLoading, setTableLoading] = useState(false);
-    // const currentLanguage = locales[i18n.language];
+
     const handleLanguage = (lng) => {
         i18n.changeLanguage(lng);
     };
@@ -207,11 +209,13 @@ const Navbar = () => {
             top="0"
             left="0"
             justifyContent="space-between"
-            boxShadow=" 0 7px 25px 0 rgba(0, 0, 0, 0.1)"
+            boxShadow=" 0 7px 25px 0 rgba(0, 0, 0, 0.4)"
             p={2}
             color="var(--body_color)"
         >
-            <Box display="flex" alignItems="center"></Box>
+            <Box display="flex" alignItems="center">
+                <span style={{ color: 'var(--body-color)', fontSize: '1.5rem' }}>Student Management</span>
+            </Box>
 
             <Box display="flex">
                 <Space wrap>

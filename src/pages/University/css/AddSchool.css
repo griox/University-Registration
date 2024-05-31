@@ -8,6 +8,14 @@
     margin-bottom: 8px;
     display: block;
 }
+.Layout {
+    display: flex; 
+    flex-grow: 1;
+    overflow-x: hidden;
+}
+.table{
+    max-width: 100%;
+}
 /* button filter */
 .all-btn-filter{
     width: 90px;

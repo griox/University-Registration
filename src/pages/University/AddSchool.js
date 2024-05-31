@@ -423,6 +423,7 @@ const AddSchool = () => {
                 <Space direction="vertical">
                     <FormAdd UniData={UniData} setUniData={setUniData} />
                     <Spin spinning={loading}>
+                        <div className='table'>
                         <Table
                             columns={mergedColumns}
                             dataSource={UniData}
@@ -443,6 +444,7 @@ const AddSchool = () => {
                             rowHoverable={false}
                             ref={tableRef}
                         />
+                        </div>
                     </Spin>
                 </Space>
             </Form>

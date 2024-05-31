@@ -17,6 +17,22 @@
         "entrance": "Entrance Score"
     },
     "title": {
-        "modal": "Register for Student"
+        "modal": "Register for Student",
+        "ok": "Add",
+        "cancel": "Cancel"
+    },
+    "placeholder": {
+        "name": "Enter Student's name",
+        "email": "Enter Student's email",
+        "address": "Student's Address"
+    },
+    "warning": {
+        "name": "University Name must contain only letters and spaces",
+        "input": "Please input !",
+        "identify": "Identify number must be 12 digits and contain only number "
+    },
+    "tooltip": {
+        "name": "Name must contain letters and no space",
+        "email": "Email must contain @example"
     }
 }

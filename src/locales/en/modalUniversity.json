@@ -8,5 +8,26 @@
         "address" : "Address",
         "entrance": "Entrance score",
         "target": "Target"
+    },
+    "title": {
+        "ok": "Add",
+        "cancel": "Cancel"
+    },
+    "toast": {
+        "addsuccess": "Added a university"
+    },
+    "warning": {
+        "input": "Please input !"
+    },
+    "placeholder": {
+        "name": "Enter University's name",
+        "code": "Uni's Code",
+        "address": "Uni's address",
+        "entrance": "Input entrance score",
+        "target": "Input number target"
+    },
+    "tooltip": {
+        "name": "Name just only contain letters and no numbers",
+        "code": "uniCode just contain only letters "
     }
 }

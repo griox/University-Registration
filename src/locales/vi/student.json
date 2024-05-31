@@ -24,5 +24,8 @@
         "provide": "Cung cấp tài khoản ?",
         "deleteacc": "Xóa tài khoản ?",
         "total": "Tổng"
+    },
+    "placeholder": {
+        "search": "Tìm kiếm"
     }
 }

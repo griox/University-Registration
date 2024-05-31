@@ -204,7 +204,7 @@ const Changepass = () => {
                             handleLogout();
                         })
                         .catch((error) => {
-                            alert('lỗi' + error);
+                            toast.error('lỗi' + error);
                         });
                 } else {
                     setLoadingChangePass(false);

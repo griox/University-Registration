@@ -99,7 +99,7 @@ const Sidebar = () => {
         <Box
             sx={{
                 '& .pro-sidebar-inner': {
-                    backgroundColor: `var(--body_background)`,
+                    backgroundColor: `var(--sidebar-color)`,
                     height: '100vh',
                     position: 'sticky',
                     top: '0',

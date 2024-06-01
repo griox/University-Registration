@@ -101,7 +101,7 @@ const FormAdd = ({ UniData, setUniData }) => {
             isRegistered: 0,
             target: targetScore,
         };
-        setUniData = [...UniData, newUni];
+        setUniData([...UniData, newUni]);
         toast.success('Added a university');
     };
 
@@ -220,7 +220,7 @@ const FormAdd = ({ UniData, setUniData }) => {
                                     value={averageScore}
                                     onChange={(value) => setAverageScore(value)}
                                     min={0}
-                                    max={30}
+                                    max={10}
                                     step={0.2}
                                 />
                             </Form.Item>

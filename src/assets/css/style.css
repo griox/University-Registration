@@ -15,6 +15,7 @@ html,
     --hover-btn:#74b9ff;
     --icon-color:black;
     --body_background: white;
+    --sidebar-color:#f1f2f6;
     --navbar-color:white;
     --content-color:white;
     --btn-color:rgb(7, 153, 244);
@@ -30,6 +31,7 @@ html,
     --female-color:rgb(239, 73, 101);
 }
 [data-theme="dark"] {
+    --sidebar-color:#3d3d3d;
     --placeholder-color:#ced6e0;
     --input-color:#485460;
     --hover-btn:#FF8C00;
@@ -146,4 +148,10 @@ background-color: var(--content-color);
     text-overflow: ellipsis;
     width: 100%;
     text-align: center;
+}
+.ant-input-outlined[disabled]{
+    color:var(--placeholder-color) !important;
+}
+.css-hxopmt{
+    padding: 18px !important;
 }

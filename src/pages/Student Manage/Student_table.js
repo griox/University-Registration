@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin } from 'antd';
 import './css/table.css';
-import  'antd/dist/reset.css';
+import 'antd/dist/reset.css';
 import {
     SearchOutlined,
     EditOutlined,
@@ -154,7 +154,7 @@ const StudentList = () => {
                             setSearchedColumn(dataIndex);
                         }}
                     >
-                       {t('button.filter')}
+                        {t('button.filter')}
                     </Button>
                     <Button type="link" size="small" onClick={() => close()}>
                         {t('button.close')}
@@ -244,7 +244,7 @@ const StudentList = () => {
 
         if (index > -1) {
             newData[index][dataIndex] = value;
-            setStudentData(newData); 
+            setStudentData(newData);
             try {
                 await update(ref(database, `Detail/${key}`), {
                     [dataIndex]: value,
@@ -289,7 +289,7 @@ const StudentList = () => {
                 const mathScore = updatedRow['MathScore'] || 0;
                 const literatureScore = updatedRow['LiteratureScore'] || 0;
                 const englishScore = updatedRow['EnglishScore'] || 0;
-                const averageScore = mathScore + literatureScore + englishScore;
+                const averageScore = (mathScore + literatureScore + englishScore) / 3;
 
                 updatedRow['AverageScore'] = Math.round(averageScore * 10) / 10;
 
@@ -305,7 +305,7 @@ const StudentList = () => {
                 setEditingKey('');
                 handleFieldChange(key, Object.keys(row)[0], row[Object.keys(row)[0]]);
 
-                await set(ref(database, `Detail/${key}`), row); 
+                await set(ref(database, `Detail/${key}`), row);
                 toast.success('Data added to Firebase successfully');
             }
         } catch (errInfo) {
@@ -340,7 +340,7 @@ const StudentList = () => {
         {
             title: t('table.ID'),
             dataIndex: 'id',
-            
+
             width: '10%',
             ...getColumnSearchProps('id'),
             render: (_, record) => (
@@ -349,7 +349,7 @@ const StudentList = () => {
                 </span>
             ),
             key: 'id',
-            fixed:'left',
+            fixed: 'left',
         },
 
         {
@@ -357,7 +357,7 @@ const StudentList = () => {
             dataIndex: 'name',
             width: '19%',
             editable: true,
-            fixed:'left',
+            fixed: 'left',
             key: 'name',
             ...getColumnSearchProps('name'),
             render: (text, record) => {
@@ -384,7 +384,6 @@ const StudentList = () => {
                 </Tooltip>
             ),
             key: 'email',
-            fixed:'left',
         },
         {
             title: t('table.Math'),
@@ -437,6 +436,7 @@ const StudentList = () => {
             title: t('table.Action'),
             dataIndex: 'operation',
             width: '11%',
+            fixed: 'right',
             render: (_, record) => {
                 const editable = isEditing(record);
                 return editable ? (
@@ -444,7 +444,9 @@ const StudentList = () => {
                         <Typography.Link className="Typo_link" onClick={() => save(record.key)}>
                             {t('button.edit')}
                         </Typography.Link>
-                        <Typography.Link className="Typo_link" onClick={cancel}>Cancel</Typography.Link>
+                        <Typography.Link className="Typo_link" onClick={cancel}>
+                            Cancel
+                        </Typography.Link>
                     </span>
                 ) : (
                     <Space size={'middle'}>
@@ -497,46 +499,48 @@ const StudentList = () => {
 
     return (
         <div className="Layout">
-            <Space direction="vertical">
-                <ModalAdd studentData={studentData} setStudentData={setStudentData} />
-                <ModalDetail
-                    visible={isModalVisible}
-                    onClose={() => {
-                        setIsModalVisible(false);
-                    }}
-                    student={selectedStudent}
-                    Loading={Loading}
-                    setLoading={setLoading}
-                />
-                <Form form={form} component={false}>
-                    <Spin spinning={Loading}>
-                        <Table
-                            components={{
-                                body: {
-                                    cell: EditableCell,
-                                },
-                            }}
-                            dataSource={studentData}
-                            columns={mergedColumns}
-                            scroll={{
-                                x: 900,
-                                y: 'calc(100vh - 300px)',
-                            }}
-                            rowClassName="editable-row"
-                            showSorterTooltip={{
-                                target: 'sorter-icon',
-                            }}
-                            pagination={{
-                                onChange: cancel,
-                                showSizeChanger: true,
-                                showQuickJumper: true,
-                                showTotal: (total) => `${t('title.total')} ${total}`
-                            }}
-                            rowHoverable={false}
-                            ref={tableRef}
-                        />
-                    </Spin>
-                </Form>
+            <Space direction="vertical" size={'small'}>
+                <div className="table">
+                    <ModalAdd studentData={studentData} setStudentData={setStudentData} />
+                    <ModalDetail
+                        visible={isModalVisible}
+                        onClose={() => {
+                            setIsModalVisible(false);
+                        }}
+                        student={selectedStudent}
+                        Loading={Loading}
+                        setLoading={setLoading}
+                    />
+                    <Form form={form} component={false}>
+                        <Spin spinning={Loading}>
+                            <Table
+                                components={{
+                                    body: {
+                                        cell: EditableCell,
+                                    },
+                                }}
+                                dataSource={studentData}
+                                columns={mergedColumns}
+                                scroll={{
+                                    x: 'calc(100vw - 290px)',
+                                    y: 'calc(100vh - 350px)',
+                                }}
+                                rowClassName="editable-row"
+                                showSorterTooltip={{
+                                    target: 'sorter-icon',
+                                }}
+                                pagination={{
+                                    onChange: cancel,
+                                    showSizeChanger: true,
+                                    showQuickJumper: true,
+                                    showTotal: (total) => `${t('title.total')} ${total}`,
+                                }}
+                                rowHoverable={false}
+                                ref={tableRef}
+                            />
+                        </Spin>
+                    </Form>
+                </div>
             </Space>
         </div>
     );

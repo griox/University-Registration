@@ -98,22 +98,23 @@ const AddSchool = () => {
 
     const handleDelete = async (record) => {
         try {
-            if(record.registeration!==undefined){
-                for(const student in record.registeration){
-                    const studentRef = ref(database,`Detail/${record.registeration[student].id}`)
+            if (record.registeration !== undefined) {
+                for (const student in record.registeration) {
+                    const studentRef = ref(database, `Detail/${record.registeration[student].id}`);
                     const snapshot = await get(studentRef);
-                    if(snapshot.exists()){
-                     const studentData = snapshot.val();
-                     const newArray = studentData.uniCode.filter(item=>item !==record.uniCode);
-                     await update(studentRef,{uniCode:newArray});
+                    if (snapshot.exists()) {
+                        const studentData = snapshot.val();
+                        const newArray = studentData.uniCode.filter((item) => item !== record.uniCode);
+                        await update(studentRef, { uniCode: newArray });
                     }
-                 }
+                }
             }
             await remove(child(ref(database), `University/${record.uniCode}`));
             const newUni = UniData.filter((item) => item.uniCode !== record.uniCode);
             setUniData(newUni);
+            toast.success('Delete university sucessfully');
         } catch (error) {
-            toast.error('Error when deleting data',error);
+            toast.error('Error when deleting data', error);
         }
     };
 
@@ -188,7 +189,7 @@ const AddSchool = () => {
                     toast.error('Targets must not be less than Number of registration');
                     return;
                 }
-                if (row.averageS > 30 || row.averageS < 0) {
+                if (row.averageS > 10 || row.averageS < 0) {
                     toast.error('Invalid Entrance Score Format');
                 }
                 if (row.uniCode !== item.uniCode) {
@@ -282,7 +283,7 @@ const AddSchool = () => {
                             setSearchedColumn(dataIndex);
                         }}
                     >
-                         {t('button.filter')}
+                        {t('button.filter')}
                     </Button>
                     <Button type="link" size="small" onClick={() => close()}>
                         {t('button.close')}
@@ -319,6 +320,7 @@ const AddSchool = () => {
             dataIndex: 'nameU',
             key: 'nameU',
             width: '30%',
+            fixed: 'left',
             editable: true,
             ...getColumnSearchProps('nameU'),
             render: (text, record) => (
@@ -332,8 +334,8 @@ const AddSchool = () => {
             editable: true,
             ...getColumnSearchProps('uniCode'),
             render: (text, record) => (
-                <Tooltip title={record.isRegistered === record.targer ? 'Can not regist' : ''}>
-                    <span className={record.isRegistered === record.target ? 'unYes':'uniNo'}>{text}</span>
+                <Tooltip title={record.isRegistered === record.target ? 'This school is full' : ''}>
+                    <span className={record.isRegistered === record.target ? 'uniYes' : 'uniNo'}>{text}</span>
                 </Tooltip>
             ),
             key: 'uniCode',
@@ -350,7 +352,6 @@ const AddSchool = () => {
             title: t('table.Entrance Score'),
             dataIndex: 'averageS',
             width: '15%',
-            editable: true,
             sorter: (a, b) => a.averageS - b.averageS,
             key: 'averageS',
         },
@@ -371,7 +372,7 @@ const AddSchool = () => {
         {
             title: t('table.Action'),
             dataIndex: 'operation',
-            width: '10%',
+            width: '13%',
             fixed: 'right',
             render: (_, record) => {
                 const editable = isEditing(record);
@@ -387,7 +388,7 @@ const AddSchool = () => {
                         <Typography.Link className="typolink" disabled={editingKey !== ''} onClick={() => edit(record)}>
                             <EditOutlined />
                         </Typography.Link>
-                        <Popconfirm title= {t('title.delete')} onConfirm={() => handleDelete(record)}>
+                        <Popconfirm title={t('title.delete')} onConfirm={() => handleDelete(record)}>
                             <Typography.Link>
                                 <DeleteOutlined />
                             </Typography.Link>
@@ -418,32 +419,35 @@ const AddSchool = () => {
     });
 
     return (
-        <div className="Layout">
+        <div className="LayoutUni">
             <Form form={form} component={false}>
-                <Space direction="vertical">
-                    <FormAdd UniData={UniData} setUniData={setUniData} />
-                    <Spin spinning={loading}>
-                        <Table
-                            columns={mergedColumns}
-                            dataSource={UniData}
-                            onChange={onChange}
-                            pagination={{
-                                defaultPageSize: 10,
-                                pageSizeOptions: ['10', '20', '40', '100'],
-                                showSizeChanger: true,
-                                showQuickJumper: true,
-                                showTotal: (total) => `${t('title.total')} ${total}`
-                            }}
-                            scroll={{ x: false, y: 'calc(100vh - 350px)' }}
-                            components={{
-                                body: {
-                                    cell: EditableCell,
-                                },
-                            }}
-                            rowHoverable={false}
-                            ref={tableRef}
-                        />
-                    </Spin>
+                <Space direction="vertical" size={'small'}>
+                    <div className="table">
+                        <FormAdd UniData={UniData} setUniData={setUniData} />
+                        <Spin spinning={loading}>
+                            <Table
+                                columns={mergedColumns}
+                                dataSource={UniData}
+                                onChange={onChange}
+                                pagination={{
+                                    defaultPageSize: 10,
+                                    pageSizeOptions: ['10', '20', '40', '100'],
+                                    showSizeChanger: true,
+                                    showQuickJumper: true,
+                                    showTotal: (total) => `${t('title.total')} ${total}`,
+                                }}
+                                scroll={{ x: 'calc(100vw - 290px)', y: 'calc(100vh - 350px)' }}
+                                components={{
+                                    body: {
+                                        cell: EditableCell,
+                                    },
+                                }}
+                                rowHoverable={false}
+                                rowClassName="rowUni"
+                                ref={tableRef}
+                            />
+                        </Spin>
+                    </div>
                 </Space>
             </Form>
             <Modal open={isModalDetailVisible} onCancel={handleCancel} onOk={handleOk} width={1000} height={500}>

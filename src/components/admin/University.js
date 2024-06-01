@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Box } from '@mui/material';
 import AddSchool from '../../pages/University/AddSchool';
-// import FormAdd from '../../pages/University/formAddSchool';
+import '../../assets/css/fix-table.css';
 
 const AddUniversity = () => {
     useEffect(() => {
@@ -10,10 +10,7 @@ const AddUniversity = () => {
 
     return (
         <Box m="20px">
-            {/* <Header title="ADD UNIVERSITY" subtitle="List of University" /> */}
-            {/* <Header title="UNIVERSITY MANAGERMENT" /> */}
-
-            <div>
+            <div className="fixed-container">
                 <AddSchool></AddSchool>
             </div>
         </Box>

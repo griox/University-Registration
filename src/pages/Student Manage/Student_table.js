@@ -9,7 +9,6 @@ import {
     PlusCircleOutlined,
     MinusCircleOutlined,
     ManOutlined,
-    UploadOutlined,
 } from '@ant-design/icons';
 import { toast } from 'react-toastify';
 import { Button, Space } from 'antd';
@@ -576,32 +575,32 @@ const StudentList = () => {
                 />
                 <Form form={form} component={false}>
                     <Spin spinning={Loading}>
-                        <div className='table'>
-                        <Table
-                            components={{
-                                body: {
-                                    cell: EditableCell,
-                                },
-                            }}
-                            dataSource={studentData}
-                            columns={mergedColumns}
-                            scroll={{
-                                x: 900,
-                                y: 'calc(100vh - 300px)',
-                            }}
-                            rowClassName="editable-row"
-                            showSorterTooltip={{
-                                target: 'sorter-icon',
-                            }}
-                            pagination={{
-                                onChange: cancel,
-                                showSizeChanger: true,
-                                showQuickJumper: true,
-                                showTotal: (total) => `${t('title.total')} ${total}`
-                            }}
-                            rowHoverable={false}
-                            ref={tableRef}
-                        />
+                        <div className="table">
+                            <Table
+                                components={{
+                                    body: {
+                                        cell: EditableCell,
+                                    },
+                                }}
+                                dataSource={studentData}
+                                columns={mergedColumns}
+                                scroll={{
+                                    x: 900,
+                                    y: 'calc(100vh - 300px)',
+                                }}
+                                rowClassName="editable-row"
+                                showSorterTooltip={{
+                                    target: 'sorter-icon',
+                                }}
+                                pagination={{
+                                    onChange: cancel,
+                                    showSizeChanger: true,
+                                    showQuickJumper: true,
+                                    showTotal: (total) => `${t('title.total')} ${total}`,
+                                }}
+                                rowHoverable={false}
+                                ref={tableRef}
+                            />
                         </div>
                     </Spin>
                 </Form>

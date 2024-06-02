@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Route, Switch, useHistory } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Masterlayout from './layouts/admin/Masterlayout';
 import Home from './components/frontend/Home';
 import Login from './components/frontend/auth/Login';
@@ -19,13 +19,13 @@ import './translation/i18n';
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
-    const x = localStorage.getItem('userToken');
+    const userToken = localStorage.getItem('userToken');
     return (
         <Provider store={store}>
             <div className="App">
                 <Router>
                     <Switch>
-                        <Route exact path="/" component={x !== null ? Masterlayout : Home} />
+                        <Route exact path="/" component={userToken !== null ? Masterlayout : Home} />
                         <Route path="/login" component={Login} />
                         <Route path="/register" component={Register} />
                         <Route path="/forgetpass" component={forgetpass} />

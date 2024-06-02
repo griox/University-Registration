@@ -7,12 +7,8 @@ import { child, get, getDatabase, ref } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../constants/constants';
 import { useTranslation } from 'react-i18next';
-import { tokens } from '../theme';
-import { useTheme } from '@mui/material';
 
 const Chart = () => {
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
     const { t } = useTranslation('dashboard');
     const [studentTotal, setStudentTotal] = useState(0);
     const [stMoreThanF, setStMoreThanF] = useState(0);
@@ -43,12 +39,12 @@ const Chart = () => {
             { subject: t('subj.Literature'), score: literatureAS },
             { subject: t('subj.Total Students'), score: average },
         ],
-        width: 1000,
+        width: 400,
         height: 400,
         xField: 'subject',
         yField: 'score',
         scale: {
-            x: { padding: 0.8 },
+            x: { padding: 0.4 },
             y: {
                 domainMax: 10,
                 domainMin: 0,
@@ -59,7 +55,7 @@ const Chart = () => {
             textBaseline: 'bottom',
         },
         style: {
-            width: 50,
+            width: 45,
         },
     };
 
@@ -74,8 +70,8 @@ const Chart = () => {
         ],
         angleField: 'value',
         colorField: 'type',
-        width: 1000,
-        height: 650,
+        width: 350,
+        height: 350,
         marginTop: 50,
         marginBottom: 50,
         label: {
@@ -86,7 +82,7 @@ const Chart = () => {
             color: {
                 title: false,
                 position: 'right',
-                rowPadding: 5,
+                rowPadding: 6,
             },
         },
         style: {
@@ -102,8 +98,9 @@ const Chart = () => {
         ],
         angleField: 'value',
         colorField: 'gender',
-        width: 350,
+        width: 300,
         height: 250,
+        marginBottom: 65,
         label: {
             text: (d) => `${d.gender}\n${d.value}`,
             style: {
@@ -308,7 +305,7 @@ const Chart = () => {
                                 </div>
                             </div>
 
-                            <div className="carder">
+                            <div className="carder" style={{ gridColumn: 'span 2' }}>
                                 <div className="card-name">{t('title.gender')} </div>
                                 <Pie {...gen} />
                             </div>

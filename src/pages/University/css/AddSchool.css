@@ -1,19 +1,29 @@
-.form-editCell{
+.form-editCell {
     margin: 0;
 }
-.filter{
+
+.filter {
     padding: 8px;
 }
-.search{
+.search {
     margin-bottom: 8px;
     display: block;
 }
+.Layout {
+    display: flex; 
+    flex-grow: 1;
+    overflow-x: hidden;
+}
+.table{
+    max-width: 100%;
+}
 /* button filter */
-.all-btn-filter{
+.all-btn-filter {
     width: 90px;
 }
-.ic-search{
-    color: '#1677ff'
+
+.ic-search {
+    color: '#1677ff';
 }
 .LayoutUni{
     justify-content: center;
@@ -29,11 +39,13 @@
 .typolink{
     margin-right: 8px;
 }
+
 .ant-table-cell-fix-right {
     background-color: var(--body_background) !important;
 }
-.uniYes{
-    color:var(--registered-color);
+
+.uniYes {
+    color: var(--registered-color);
 }
 .uniNo{
     color:var(--unregistered-color);

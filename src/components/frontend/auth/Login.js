@@ -10,7 +10,7 @@ import { firebaseConfig } from '../../../constants/constants';
 import { validateEmailFormat } from '../../../commonFunctions';
 import { useTranslation } from 'react-i18next';
 import { DownOutlined } from '@ant-design/icons';
-import { Dropdown, Space, Typography } from 'antd';
+import { Button, Dropdown, Space, Typography } from 'antd';
 import bcrypt from 'bcryptjs';
 export const Login = () => {
     const { t, i18n } = useTranslation('login');
@@ -20,23 +20,8 @@ export const Login = () => {
     const [rememberMe, setRememberMe] = useState(false);
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const salt = bcrypt.genSaltSync(10);
-    // useEffect(() => {
-    //     const keyDownHandler = (event) => {
-    //         if (email !== '' && password !== '') {
-    //             if (event.key === 'Enter') {
-    //             }
-    //             getdt(email, password);
-    //         }
-    //     };
-    //     document.addEventListener('keydown', function (event) {
-    //         if (email !== '' && password !== '') {
-    //             if (event.key === 'Enter') {
-    //             }
-    //             getdt(email, password);
-    //         }
-    //     });
-    // }, [email, password]);
+    const [loadingLogin, setLoadingLogin] = useState(false);
+
     useEffect(() => {
         const passwordInput = document.querySelector('.pass_login');
         const eyeBtn = document.querySelector('.eye');
@@ -87,7 +72,6 @@ export const Login = () => {
                     for (let item in x) {
                         if (x[item].email === email) {
                             localStorage.setItem('Infor', JSON.stringify(x[item]));
-                            localStorage.setItem('Email', JSON.stringify(email));
                         }
                     }
                 }
@@ -99,7 +83,6 @@ export const Login = () => {
                     for (let item in x) {
                         if (x[item].email === email) {
                             localStorage.setItem('Infor', JSON.stringify(x[item]));
-                            localStorage.setItem('Email', JSON.stringify(email));
                         }
                     }
                 }
@@ -112,7 +95,6 @@ export const Login = () => {
                         if (x[item].email === email) {
                             const temp = x[item];
                             localStorage.setItem('Infor', JSON.stringify(temp));
-                            localStorage.setItem('Email', JSON.stringify(email));
                         }
                     }
                 }
@@ -135,11 +117,19 @@ export const Login = () => {
         },
     ];
     const getdt = (email, password) => {
-        if (email !== '') {
-            if (validateEmailFormat(email) !== true) {
+        setLoadingLogin(true);
+        if (email === '') {
+            setLoadingLogin(false);
+            toast.error('Please enter your email');
+        } else {
+            if (validateEmailFormat(email) === false) {
+                setLoadingLogin(false);
                 toast.error('Incorrect format');
             } else {
-                if (password !== '') {
+                if (password === '') {
+                    setLoadingLogin(false);
+                    toast.error('Please enter your password');
+                } else {
                     get(child(ref(db), `Account/`))
                         .then((snapshot) => {
                             if (snapshot.exists()) {
@@ -149,15 +139,15 @@ export const Login = () => {
                                     (item) =>
                                         item.email === email && bcrypt.compareSync(password, item.password) === true,
                                 );
-                                console.log(bcrypt.hashSync(password, salt));
                                 if (y.length !== 0) {
                                     for (let i in y) {
                                         if (y[i].name !== undefined && y[i].name !== null) {
                                             localStorage.setItem('Role', y[i].Role);
                                             localStorage.setItem('Name', y[i].name);
+                                            localStorage.setItem('Email', JSON.stringify(y[i].email));
+
                                             if (rememberMe === true) {
                                                 localStorage.setItem('userToken', y[i].email);
-                                                localStorage.setItem('Email', y[i].email);
                                             }
 
                                             saveOnLocal(y[i].Role);
@@ -168,39 +158,32 @@ export const Login = () => {
 
                                     setIsLoggedIn(true);
                                     localStorage.setItem('isLoggedIn', 'true');
+                                    setLoadingLogin(false);
+
                                     <Link to="/admin/dashboard" />;
                                 } else {
+                                    setLoadingLogin(false);
+
                                     toast.error('Account not found. Please check your email and password again.');
                                 }
                             } else {
+                                setLoadingLogin(false);
+
                                 toast.error('No data available');
                             }
                         })
                         .catch((error) => {
+                            setLoadingLogin(false);
+
                             toast.error('Error');
                         });
-                } else {
-                    toast.error('Please enter your password');
                 }
             }
-        } else {
-            toast.error('Please enter your email');
         }
 
         <Link to="/admin/dashboard" />;
     };
 
-    // const KeyDownHandler = (event) => {
-    //     const keyDownHandler = (event) => {
-    //         if (event.key === 'Enter') {
-    //             getdt(email, password);
-    //         }
-    //     };
-    //     document.addEventListener('keydown', keyDownHandler);
-    //     return () => {
-    //         document.removeEventListener('keydown', keyDownHandler);
-    //     };
-    // };
     const handleEnterKey = (e) => {
         if (e.key === 'Enter') {
             getdt(email, password);
@@ -270,13 +253,17 @@ export const Login = () => {
                                             <Link to="/forgetpass">{t('title.forgot password')}</Link>
                                         </div>
                                     </div>
-
-                                    <div className="input-box" onClick={() => getdt(email, password)}>
+                                    <Button
+                                        style={{ backgroundColor: '#003865', border: 'none' }}
+                                        className="input-box"
+                                        onClick={() => getdt(email, password)}
+                                        loading={loadingLogin}
+                                    >
                                         <div className="input-submit">
                                             <span>{t('button.log in')}</span>
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </div>
-                                    </div>
+                                    </Button>
 
                                     <div>
                                         <Dropdown

@@ -11,6 +11,8 @@ const initState = {
     LiteratureScore: 0,
     uniCode: [],
     img: '',
+    id: '',
+    dateObirth: '0/0/0',
 };
 
 const reducer = (state = initState, action) => {
@@ -29,6 +31,7 @@ const reducer = (state = initState, action) => {
                 LiteratureScore: 0,
                 uniCode: [],
                 img: '',
+                id: '',
             };
         case 'update':
             const { propertyName, newValue } = action.payload;

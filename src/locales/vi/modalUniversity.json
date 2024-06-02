@@ -8,5 +8,22 @@
         "address" : "Địa chỉ",
         "entrance": "Điểm sàn",
         "target": "Chỉ tiêu"
+    },
+    "title": {
+        "ok": "Thêm",
+        "cancel": "Hủy"
+    },
+    "toast": {
+        "addsuccess": "Đã thêm trường thành công"
+    },
+    "warning": {
+        "input": "Vui lòng nhập !"
+    },
+    "placeholder": {
+        "name": "Nhập tên trường",
+        "code": "Nhập mã trường",
+        "address": "Nhập địa chỉ",
+        "entrance": "Nhập điểm sàn",
+        "target": "Nhập chỉ tiêu"
     }
 }

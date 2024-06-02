@@ -38,6 +38,7 @@ const AddSchool = () => {
     const [searchedColumn, setSearchedColumn] = useState('');
     const [, setPagination] = useState({ current: 1, pageSize: 5 });
     const [loading, setLoading] = useState(true);
+    const [numberRegist, setNumberRegist] = useState(null);
     const tableRef = useRef(null);
     const searchInput = useRef(null);
 
@@ -95,7 +96,6 @@ const AddSchool = () => {
     const cancel = () => {
         setEditingKey('');
     };
-
     const handleDelete = async (record) => {
         try {
             if (record.registeration !== undefined) {
@@ -112,7 +112,7 @@ const AddSchool = () => {
             await remove(child(ref(database), `University/${record.uniCode}`));
             const newUni = UniData.filter((item) => item.uniCode !== record.uniCode);
             setUniData(newUni);
-            toast.success('Delete university sucessfully');
+            toast.success('Delete university successfully');
         } catch (error) {
             toast.error('Error when deleting data', error);
         }
@@ -250,7 +250,7 @@ const AddSchool = () => {
                 <Input
                     className="search"
                     ref={searchInput}
-                    placeholder={`Search ${dataIndex}`}
+                    placeholder={t('placeholder.search')}
                     value={selectedKeys[0]}
                     onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
@@ -283,6 +283,7 @@ const AddSchool = () => {
                             setSearchedColumn(dataIndex);
                         }}
                     >
+                        {t('button.filter')}
                         {t('button.filter')}
                     </Button>
                     <Button type="link" size="small" onClick={() => close()}>
@@ -360,6 +361,10 @@ const AddSchool = () => {
             dataIndex: 'isRegistered',
             width: '13%',
             key: 'isRegistered',
+            render: (_, record) => {
+                setNumberRegist(record);
+                return record.isRegistered;
+            },
         },
         {
             title: t('table.Target'),

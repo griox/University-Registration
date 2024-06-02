@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin } from 'antd';
+import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin, Modal, message, Upload } from 'antd';
 import './css/table.css';
+import 'antd/dist/reset.css';
 import 'antd/dist/reset.css';
 import {
     SearchOutlined,
@@ -19,6 +20,9 @@ import ModalAdd from './Modal_add';
 import ModalDetail from './Modal_Detail';
 import { useTranslation } from 'react-i18next';
 import { database } from '../firebaseConfig.js';
+import { addDoc, collection, getFirestore } from 'firebase/firestore';
+import { firebaseConfig } from '../../constants/constants.js';
+import { initializeApp } from 'firebase/app';
 
 const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
     const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
@@ -55,6 +59,12 @@ const StudentList = () => {
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [Loading, setLoading] = useState(true);
     const tableRef = useRef(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [mess, setMess] = useState('');
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const [bell, setBell] = useState(false);
+    const [file, setFile] = useState(null);
     useEffect(() => {
         const fetchData = async () => {
             const studentRef = child(ref(database), 'Detail');
@@ -67,7 +77,7 @@ const StudentList = () => {
                     setLoading(false);
                 }
             } catch (error) {
-                toast.error(error);
+                toast.error('Error when fetch data');
             }
         };
 
@@ -100,7 +110,7 @@ const StudentList = () => {
             const newData = studentData.map((item) => (item.key === record.key ? { ...item, isRegister: true } : item));
             setStudentData(newData);
         } catch (error) {
-            toast.error('Error provide account student:', error);
+            toast.error('Error provide account student');
         }
     };
     const handleDeleteAccount = async (record) => {
@@ -112,7 +122,7 @@ const StudentList = () => {
             );
             setStudentData(newData);
         } catch (error) {
-            toast.error('Error deleting account', error);
+            toast.error('Error deleting account');
         }
     };
 
@@ -154,6 +164,7 @@ const StudentList = () => {
                             setSearchedColumn(dataIndex);
                         }}
                     >
+                        {t('button.filter')}
                         {t('button.filter')}
                     </Button>
                     <Button type="link" size="small" onClick={() => close()}>
@@ -210,7 +221,6 @@ const StudentList = () => {
                         await update(universityRef, { isRegistered: updatedIsRegistered });
                     } else {
                         toast.error('University not found');
-                        toast.error('University not found');
                     }
                 }
             }
@@ -221,7 +231,7 @@ const StudentList = () => {
             const newData = studentData.filter((item) => item.id !== record.id);
             setStudentData(newData);
         } catch (error) {
-            toast.error('Error deleting data:', error);
+            toast.error('Error deleting data');
         }
     };
 
@@ -245,13 +255,13 @@ const StudentList = () => {
         if (index > -1) {
             newData[index][dataIndex] = value;
             setStudentData(newData);
+            setStudentData(newData);
             try {
                 await update(ref(database, `Detail/${key}`), {
                     [dataIndex]: value,
                 });
             } catch (error) {
-                toast.error('Error updating document:', error);
-                // Handle update error (optional: show notification to user)
+                toast.error('Error updating document');
             }
         }
     };
@@ -306,16 +316,18 @@ const StudentList = () => {
                 handleFieldChange(key, Object.keys(row)[0], row[Object.keys(row)[0]]);
 
                 await set(ref(database, `Detail/${key}`), row);
+                await set(ref(database, `Detail/${key}`), row);
                 toast.success('Data added to Firebase successfully');
             }
         } catch (errInfo) {
-            toast.error('Validate Failed:', errInfo);
+            toast.error('Validate Failed');
         }
     };
-    const renderNameWithGender = (y) => {
+    const renderNameWithGender = (record) => {
+        console.log(record);
         return (
-            <span className="icon">
-                {y === 'Male' ? <ManOutlined className="male" /> : <WomanOutlined className="female" />}
+            <span className={record === 'Male' ? 'male' : 'female'}>
+                {record === 'Male' ? <ManOutlined /> : <WomanOutlined />}
             </span>
         );
     };
@@ -342,6 +354,7 @@ const StudentList = () => {
             dataIndex: 'id',
 
             width: '10%',
+            fixed: 'left',
             ...getColumnSearchProps('id'),
             render: (_, record) => (
                 <span onClick={() => handleIdClick(record)} className="idOnClick">
@@ -349,6 +362,7 @@ const StudentList = () => {
                 </span>
             ),
             key: 'id',
+            fixed: 'left',
             fixed: 'left',
         },
 
@@ -358,6 +372,7 @@ const StudentList = () => {
             width: '19%',
             editable: true,
             fixed: 'left',
+            fixed: 'left',
             key: 'name',
             ...getColumnSearchProps('name'),
             render: (text, record) => {
@@ -365,7 +380,7 @@ const StudentList = () => {
                     <>
                         {renderNameWithGender(record.gender)}
                         <Tooltip title={temp(record.uniCode) ? 'can not register more' : ''}>
-                            <span className={temp(record.uniCode) ? 'Can_Regist' : 'NoRegist'}>{text}</span>
+                            <span className={temp(record.uniCode) ? 'Can_Regist' : 'Not_Regist'}>{text}</span>
                         </Tooltip>
                     </>
                 );
@@ -420,7 +435,7 @@ const StudentList = () => {
         {
             title: t('table.UniCode'),
             dataIndex: 'uniCode',
-            width: '16%',
+            width: '13%',
             render: (text) => {
                 if (typeof text === 'string') {
                     return text?.split(', ').join(', ');
@@ -435,7 +450,7 @@ const StudentList = () => {
         {
             title: t('table.Action'),
             dataIndex: 'operation',
-            width: '11%',
+            width: '12%',
             fixed: 'right',
             render: (_, record) => {
                 const editable = isEditing(record);
@@ -449,29 +464,29 @@ const StudentList = () => {
                         </Typography.Link>
                     </span>
                 ) : (
-                    <Space size={'middle'}>
+                    <Space size={'small'}>
                         <Typography.Link
                             disabled={editingKey !== ''}
                             onClick={() => edit(record)}
                             className="Typo_link"
                         >
-                            <EditOutlined className="control" />
+                            <EditOutlined />
                         </Typography.Link>
                         <Popconfirm title={t('title.delete')} onConfirm={() => handleDelete(record)}>
                             <Typography.Link>
-                                <DeleteOutlined className="control" />
+                                <DeleteOutlined />
                             </Typography.Link>
                         </Popconfirm>
                         {!record.isRegister ? (
                             <Popconfirm title={t('title.provide')} onConfirm={() => handleProvideAccount(record)}>
                                 <Typography.Link>
-                                    <PlusCircleOutlined className="control" />
+                                    <PlusCircleOutlined />
                                 </Typography.Link>
                             </Popconfirm>
                         ) : (
                             <Popconfirm title={t('title.deleteacc')} onConfirm={() => handleDeleteAccount(record)}>
                                 <Typography.Link>
-                                    <MinusCircleOutlined className="control" />
+                                    <MinusCircleOutlined />
                                 </Typography.Link>
                             </Popconfirm>
                         )}
@@ -496,6 +511,35 @@ const StudentList = () => {
             }),
         };
     });
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
+
+    const handleOk = () => {
+        setBell(true);
+        if (mess !== '') {
+            addDoc(collection(db, 'cities'), {
+                name: mess,
+                country: mess,
+                state: mess,
+                time: new Date(),
+                seen: false,
+            })
+                .then(() => {
+                    setBell(false);
+                    setIsModalOpen(false);
+                    return toast.success('The notification you sent was successful');
+                })
+                .catch(() => {
+                    setBell(false);
+                    setIsModalOpen(false);
+                    return toast.error('The notification you sent has failed');
+                });
+        }
+    };
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
 
     return (
         <div className="Layout">

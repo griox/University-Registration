@@ -8,7 +8,7 @@ import '../../../assets/css/register.css';
 import { firebaseConfig } from '../../../constants/constants';
 import { encodePath, validateEmailFormat, validatePasswordFormat } from '../../../commonFunctions';
 import { DownOutlined } from '@ant-design/icons';
-import { Dropdown, Space, Typography } from 'antd';
+import { Button, Dropdown, Space, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import bcrypt from 'bcryptjs';
 
@@ -22,6 +22,9 @@ const Register = () => {
     const history = useHistory();
     const { t, i18n } = useTranslation('register');
     const salt = bcrypt.genSaltSync(10);
+    const [user, setUser] = useState(false);
+    const [loadingUser, setLoadingUser] = useState(false);
+    const [loadingAdmin, setLoadingAdmin] = useState(false);
 
     useEffect(() => {
         const passwordInput1 = document.querySelector('.pass_login_1');
@@ -96,14 +99,14 @@ const Register = () => {
     };
     const items = [
         {
-          key: '1',
-          label: 'English',
-          onClick: () => handleLanguage('en')
+            key: '1',
+            label: 'English',
+            onClick: () => handleLanguage('en'),
         },
         {
-          key: '2',
-          label: 'Tiếng Việt',
-          onClick: () => handleLanguage('vi')
+            key: '2',
+            label: 'Tiếng Việt',
+            onClick: () => handleLanguage('vi'),
         },
     ];
     const clear = () => {
@@ -113,22 +116,51 @@ const Register = () => {
         setAgainPassword('');
     };
     const regist = (props) => {
+        if (props.role === 'admin') setLoadingAdmin(true);
+        else setLoadingUser(true);
         if (props.name === '') {
             toast.error('Please enter your name');
+            if (props.role === 'admin') setLoadingAdmin(false);
+            else setLoadingUser(false);
+
             return;
         }
         if (props.email === '') {
             toast.error('Please enter your email');
+            if (props.role === 'admin') setLoadingAdmin(false);
+            else setLoadingUser(false);
+
             return;
         }
         if (validateEmailFormat(props.email) === false) {
             toast.error('Incorrect format');
+            if (props.role === 'admin') setLoadingAdmin(false);
+            else setLoadingUser(false);
+
+            return;
         }
         if (props.password === '') {
             toast.error('Please enter your password');
+            if (props.role === 'admin') setLoadingAdmin(false);
+            else setLoadingUser(false);
+
+            return;
+        }
+        if (props.againPassword === '') {
+            toast.error('Please re-enter your password');
+            if (props.role === 'admin') setLoadingAdmin(false);
+            else setLoadingUser(false);
+
+            return;
         }
         if (validatePasswordFormat(props.password) === false) {
-            toast.error('Password must have at least 8 characters');
+            toast.error(
+                'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 special character, 1 number, and be a minimum of 8 characters long.',
+            );
+            if (props.role === 'admin') setLoadingAdmin(false);
+            else setLoadingUser(false);
+
+            return;
         }
 
         get(child(ref(db), `Account/`)).then((snapshot) => {
@@ -147,16 +179,27 @@ const Register = () => {
                             Role: props.role,
                         };
                         try {
-                            set(ref(db, `Account/` + encodeEmail), ip).then(() => toast.success('Sign up sucessfully'));
+                            set(ref(db, `Account/` + encodeEmail), ip).then(() => {
+                                if (props.role === 'admin') setLoadingAdmin(false);
+                                else setLoadingUser(false);
+                            }, toast.success('Sign up sucessfully'));
                         } catch (error) {
                             toast.error('Your request is failed');
                         }
                         clear();
+                    } else {
+                        if (props.role === 'admin') setLoadingAdmin(false);
+                        else setLoadingUser(false);
+                        toast.error('Two passwords do not match together');
                     }
                 } else {
+                    if (props.role === 'admin') setLoadingAdmin(false);
+                    else setLoadingUser(false);
                     toast.error('Account already exists');
                 }
             } else {
+                if (props.role === 'admin') setLoadingAdmin(false);
+                else setLoadingUser(false);
                 toast.error('No data available');
             }
         });
@@ -239,7 +282,8 @@ const Register = () => {
                                     <div className="input-box">
                                         <div className="input-box">
                                             {localStorage.getItem('Role') === 'admin' ? (
-                                                <div
+                                                <Button
+                                                    loading={loadingUser}
                                                     type="submit"
                                                     className="input-submit"
                                                     onClick={() =>
@@ -253,10 +297,11 @@ const Register = () => {
                                                     }
                                                 >
                                                     <span>{t('button.regist')}</span>
-                                                </div>
+                                                </Button>
                                             ) : (
                                                 <>
-                                                    <div
+                                                    <Button
+                                                        loading={loadingUser}
                                                         className="button-clear"
                                                         onClick={() =>
                                                             regist({
@@ -269,8 +314,9 @@ const Register = () => {
                                                         }
                                                     >
                                                         <span>{t('button.user')}</span>
-                                                    </div>
-                                                    <div
+                                                    </Button>
+                                                    <Button
+                                                        loading={loadingAdmin}
                                                         className="button-submit"
                                                         onClick={() =>
                                                             regist({
@@ -283,35 +329,35 @@ const Register = () => {
                                                         }
                                                     >
                                                         <span>{t('button.admin')}</span>
-                                                    </div>
+                                                    </Button>
                                                 </>
                                             )}
                                         </div>
                                     </div>
-                                    <div className="input-box">
+                                    <Button className="input-box" loading={user}>
                                         <div type="submit" className="input-submit" onClick={clear}>
                                             <span className="clear">{t('button.clear')}</span>
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </div>
-                                    </div>
+                                    </Button>
 
                                     <div>
-                                    <Dropdown className='drop-menu'
+                                        <Dropdown
+                                            className="drop-menu"
                                             menu={{
-                                            items,
-                                            selectable: true,
-                                            defaultSelectedKeys: ['1'],
+                                                items,
+                                                selectable: true,
+                                                defaultSelectedKeys: ['1'],
                                             }}
                                         >
                                             <Typography.Link>
-                                            <Space className='title-drop'>
-                                                {t('title.language')}
-                                                <DownOutlined />
-                                            </Space>
+                                                <Space className="title-drop">
+                                                    {t('title.language')}
+                                                    <DownOutlined />
+                                                </Space>
                                             </Typography.Link>
                                         </Dropdown>
                                     </div>
-
                                 </div>
                             </div>
                         </form>

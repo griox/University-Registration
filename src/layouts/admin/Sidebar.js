@@ -5,27 +5,29 @@ import { Link } from 'react-router-dom';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { tokens } from '../../theme';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import { SignatureOutlined, SolutionOutlined } from '@ant-design/icons';
+import { LogoutOutlined, SignatureOutlined, SolutionOutlined } from '@ant-design/icons';
 import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
 import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
 const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
-    const theme = useTheme();
-    const { t } = useTranslation('sidebar');
-    const colors = tokens(theme.palette.mode);
+    // const theme = useTheme();
+    // const colors = tokens(theme.palette.mode);
     return (
         <Tooltip title={tooltip} placement="right" arrow>
             <MenuItem
                 active={selected === title}
                 style={{
-                    color: colors.grey[100],
+                    // color: selected === title ? '#4e57d4' : colors.grey[100],
+                    backgroundColor: selected === title ? '#dfe4ea' : 'transparent',
                 }}
                 onClick={() => setSelected(title)}
                 icon={icon}
             >
-                <Typography>{t(title)}</Typography>
+                <Typography>{title}</Typography>
                 <Link to={to} />
             </MenuItem>
         </Tooltip>
@@ -95,6 +97,27 @@ const Sidebar = () => {
     const isAdminOrSuperAdmin =
         localStorage.getItem('Role') === 'admin' || localStorage.getItem('Role') === 'super_admin';
 
+    const dispatch = useDispatch();
+    const history = useHistory();
+
+    const handleLogout = () => {
+        const confirm = window.confirm('Are you sure to logout of this system?');
+        if (confirm) {
+            localStorage.setItem('Infor', JSON.stringify(''));
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('selectedMenuItem');
+            localStorage.setItem('Name', '');
+            localStorage.setItem('Email', JSON.stringify(''));
+            localStorage.setItem('Role', '');
+
+            dispatch({ type: 'logout' });
+
+            history.push('/');
+        } else {
+            return;
+        }
+    };
+
     return (
         <Box
             sx={{
@@ -103,13 +126,14 @@ const Sidebar = () => {
                     height: '100vh',
                     position: 'sticky',
                     top: '0',
+                    boxShadow: '2px 0 5px rgba(0, 0, 0, 0.1)',
                 },
                 '& .pro-icon-wrapper': {
                     backgroundColor: 'transparent !important',
                 },
                 '& .pro-inner-item': {
                     padding: '5px 35px 5px 20px !important',
-                    color:'var(--icon-color)'
+                    color: 'var(--icon-color)',
                 },
                 '& .pro-inner-item:hover': {
                     color: '#868dfb !important',
@@ -175,7 +199,7 @@ const Sidebar = () => {
                     )}
                     <Box paddingLeft={isCollapsed ? undefined : '1%'}>
                         <Item
-                            title="Dashboard"
+                            title={t('title.dashboard')}
                             to="/admin/dashboard"
                             icon={<HomeOutlinedIcon />}
                             selected={selected}
@@ -223,6 +247,32 @@ const Sidebar = () => {
                             </>
                         )}
                     </Box>
+                    <MenuItem
+                        onClick={handleLogout}
+                        className="logout-item"
+                        style={{
+                            position: 'absolute',
+                            bottom: '0',
+                            left: '0',
+                            width: '100%',
+                            borderTop: '1px solid #ccc',
+                            padding: '10px 20px',
+                        }}
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="1.2em"
+                            height="1.2em"
+                            color="crimson"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                fill="#ff4d4f"
+                                d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h7v2H5v14h7v2zm11-4l-1.375-1.45l2.55-2.55H9v-2h8.175l-2.55-2.55L16 7l5 5z"
+                            />
+                        </svg>
+                        <span style={{ color: '#ff4d4f' }}> Logout</span>
+                    </MenuItem>
                 </Menu>
             </ProSidebar>
         </Box>

@@ -1,7 +1,8 @@
 {
     "title": {
         "setting": "Cài đặt",
-        "confirm": "Bạn có chắc muốn đăng xuất ?"
+        "confirm": "Bạn có chắc muốn đăng xuất ?",
+        "noti": "Thông Báo"
     },
     "button": {
         "log out": "Đăng xuất",

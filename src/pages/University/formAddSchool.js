@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Button, Form, Input, InputNumber, Space, Tooltip } from 'antd';
+import { Modal, Button, Form, Input, InputNumber, Space, Tooltip, Result } from 'antd';
 import 'firebase/auth';
 import { ref, child, get, set } from 'firebase/database';
 import { toast } from 'react-toastify';
@@ -16,6 +16,8 @@ const FormAdd = ({ UniData, setUniData }) => {
     const [averageScore, setAverageScore] = useState(null);
     const [targetScore, setTargetScore] = useState(null);
     const { t } = useTranslation('modalUni');
+    // const [showSuccess, setShowSuccess] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
 
     const showModal = () => {
         setVisible(true);
@@ -83,6 +85,11 @@ const FormAdd = ({ UniData, setUniData }) => {
         setVisible(false);
     };
 
+    const handleOkandReload = () => {
+        // setShowSuccessModal(false);
+        window.location.reload()
+    }
+
     const AddSchool = async () => {
         const uniRef = ref(database, `University/${uniCode}`);
         await set(uniRef, {
@@ -102,8 +109,22 @@ const FormAdd = ({ UniData, setUniData }) => {
             target: targetScore,
         };
         setUniData = [...UniData, newUni];
-        toast.success(t('toast.addsuccess'));
+        // toast.success(t('toast.addsuccess'));
+        setShowSuccessModal(true);
     };
+
+    const Success = () => (
+        <Result
+          status="success"
+          title={<div className='result-title'>Successfully Added a university</div>}
+          style={{width: '100%', height: 'auto'}}
+          extra={[
+            <Button type="primary" onClick={handleOkandReload} style={{width: '100px', height: 'auto'}}>
+              OK
+            </Button>,
+          ]}
+        />
+      );
 
     function validateName(uniName) {
         return /^[A-Za-zÀ-ÿ]+$/.test(uniName);
@@ -117,7 +138,18 @@ const FormAdd = ({ UniData, setUniData }) => {
             <Button className="btn-addUni" type="primary" onClick={showModal}>
                 {t('button.Add')}
             </Button>
-                        <Modal
+            <Modal
+            className="custom-modal"
+                style={{height: '200px'}}
+                width={500}
+                open={showSuccessModal}
+                footer={null}
+                closable={false}
+                onCancel={() => setShowSuccessModal(false)}
+            >
+                <Success />
+            </Modal>
+                <Modal
                 title="Add a university"
                 open={isModalVisible}
                 onOk={handleOk}

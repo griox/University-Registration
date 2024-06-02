@@ -17,13 +17,16 @@
         "search": "Search",
         "reset": "Reset",
         "filter": "Filter",
-        "close": "Close"
+        "close": "Close",
+        "sendnoti": "Send notification",
+        "send": "Send"
     },
     "title": {
         "delete": "Sure to delete ?",
         "provide": "Provide Account ?",
         "deleteacc": "Delete Account ?",
-        "total": "Total"
+        "total": "Total",
+        "modalsend": "Send notification"
     },
     "placeholder": {
         "search": "Search"

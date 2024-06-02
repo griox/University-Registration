@@ -456,7 +456,7 @@ const StudentList = () => {
                             {t('button.edit')}
                         </Typography.Link>
                         <Typography.Link className="Typo_link" onClick={cancel}>
-                            Cancel
+                            {t('button.cancel')}
                         </Typography.Link>
                     </span>
                 ) : (
@@ -544,7 +544,7 @@ const StudentList = () => {
                     <ModalAdd studentData={studentData} setStudentData={setStudentData} />
 
                     <Modal
-                        title="Basic Modal"
+                        title={t('title.modalsend')}
                         open={isModalOpen}
                         // onOk={() => handleOk()}
                         onCancel={handleCancel}
@@ -552,17 +552,79 @@ const StudentList = () => {
                         destroyOnClose
                         footer={[
                             <Button onClick={handleOk} loading={bell}>
-                                Ok
+                                {t('button.send')}
                             </Button>,
-                            <Button onClick={handleCancel}>Cancel</Button>,
+                            <Button onClick={handleCancel}>{t('button.cancel')}</Button>,
                         ]}
                     >
                         {/* <input type="file" id="fileInput" className="avatar-input" /> */}
 
                         <Input onChange={(e) => setMess(e.target.value)} />
+                        <Space direction="vertical">
+                    <Form layout="horizontal">
+                    <Form.Item
+                            label={t('label.unicode')}
+                            labelCol={{ span: 9 }}
+                            wrapperCol={{ span: 15 }} 
+                            name="InputCode"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: t('warning.input'),
+                                },
+                            ]}
+                        >
+                            <Input
+            
+                                placeholder={t('placeholder.code')}
+                                allowClear
+                                maxLength={6}
+                            />
+                        </Form.Item>
+                    <Form.Item
+                            label={t('label.unicode')}
+                            labelCol={{ span: 9 }}
+                            wrapperCol={{ span: 15 }} 
+                            name="InputCode"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: t('warning.input'),
+                                },
+                            ]}
+                        >
+                            <Input
+            
+                                placeholder={t('placeholder.code')}
+                                allowClear
+                                maxLength={6}
+                            />
+                        </Form.Item>
+
+                        <Form.Item
+                            label={t('label.unicode')}
+                            labelCol={{ span: 9 }}
+                            wrapperCol={{ span: 15 }} 
+                            name="InputCode"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: t('warning.input'),
+                                },
+                            ]}
+                        >
+                            <Input
+            
+                                placeholder={t('placeholder.code')}
+                                allowClear
+                                maxLength={6}
+                            />
+                        </Form.Item>
+                    </Form>
+                </Space>
                     </Modal>
                     <Button type="primary" onClick={showModal}>
-                        Send inform
+                        {t('button.sendnoti')} 
                     </Button>
                 </div>
                 <ModalDetail

@@ -568,6 +568,7 @@ function Pr() {
                                 showQuickJumper: true,
                                 showTotal: (total) => `Total ${total} items`,
                             }}
+                            rowHoverable={false}
                             className="table"
                         />
                     </Spin>

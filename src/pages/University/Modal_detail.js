@@ -140,7 +140,7 @@ export const Form_Detail = ({ university,loading,setLoading }) => {
             <Form form={form} component={false}>
                 <Spin spinning={loading} >
                 <Table className='table'
-                    bordered
+                    rowHoverable={false}
                     dataSource={student}
                     columns={colums}
                     scroll={{

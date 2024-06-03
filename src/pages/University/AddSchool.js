@@ -38,11 +38,19 @@ const AddSchool = () => {
     const [searchedColumn, setSearchedColumn] = useState('');
     const [, setPagination] = useState({ current: 1, pageSize: 5 });
     const [loading, setLoading] = useState(true);
+    const [numberRegist, setNumberRegist] = useState('');
     const tableRef = useRef(null);
     const searchInput = useRef(null);
 
     const isEditing = (record) => record.key === editingKey;
-
+    const checkTargetError = (record) => {
+        if (record.target < record.isRegistered) {
+            setNumberRegist('Target must not be less than Number of registration');
+        } else {
+            setNumberRegist('');
+        }
+    };
+    
     const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
         const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
         return (
@@ -95,7 +103,6 @@ const AddSchool = () => {
     const cancel = () => {
         setEditingKey('');
     };
-
     const handleDelete = async (record) => {
         try {
             if (record.registeration !== undefined) {
@@ -112,6 +119,7 @@ const AddSchool = () => {
             await remove(child(ref(database), `University/${record.uniCode}`));
             const newUni = UniData.filter((item) => item.uniCode !== record.uniCode);
             setUniData(newUni);
+            toast.success('Delete university successfully');
         } catch (error) {
             toast.error('Error when deleting data', error);
         }
@@ -188,7 +196,7 @@ const AddSchool = () => {
                     toast.error('Targets must not be less than Number of registration');
                     return;
                 }
-                if (row.averageS > 30 || row.averageS < 0) {
+                if (row.averageS > 10 || row.averageS < 0) {
                     toast.error('Invalid Entrance Score Format');
                 }
                 if (row.uniCode !== item.uniCode) {
@@ -283,6 +291,7 @@ const AddSchool = () => {
                         }}
                     >
                         {t('button.filter')}
+                        {t('button.filter')}
                     </Button>
                     <Button type="link" size="small" onClick={() => close()}>
                         {t('button.close')}
@@ -319,6 +328,7 @@ const AddSchool = () => {
             dataIndex: 'nameU',
             key: 'nameU',
             width: '30%',
+            fixed: 'left',
             editable: true,
             ...getColumnSearchProps('nameU'),
             render: (text, record) => (
@@ -332,7 +342,7 @@ const AddSchool = () => {
             editable: true,
             ...getColumnSearchProps('uniCode'),
             render: (text, record) => (
-                <Tooltip title={record.isRegistered === record.targer ? 'Can not regist' : ''}>
+                <Tooltip title={record.isRegistered === record.target ? 'This school is full' : ''}>
                     <span className={record.isRegistered === record.target ? 'uniYes' : 'uniNo'}>{text}</span>
                 </Tooltip>
             ),
@@ -350,7 +360,6 @@ const AddSchool = () => {
             title: t('table.Entrance Score'),
             dataIndex: 'averageS',
             width: '15%',
-            editable: true,
             sorter: (a, b) => a.averageS - b.averageS,
             key: 'averageS',
         },
@@ -359,6 +368,10 @@ const AddSchool = () => {
             dataIndex: 'isRegistered',
             width: '13%',
             key: 'isRegistered',
+            render: (_, record) => {
+                setNumberRegist(record);
+                return record.isRegistered;
+            },
         },
         {
             title: t('table.Target'),
@@ -371,7 +384,7 @@ const AddSchool = () => {
         {
             title: t('table.Action'),
             dataIndex: 'operation',
-            width: '10%',
+            width: '13%',
             fixed: 'right',
             render: (_, record) => {
                 const editable = isEditing(record);
@@ -418,9 +431,9 @@ const AddSchool = () => {
     });
 
     return (
-        <div className="Layout">
+        <div className="LayoutUni">
             <Form form={form} component={false}>
-                <Space direction="vertical">
+                <Space direction="vertical" size={'small'}>
                     <div className="table">
                         <FormAdd UniData={UniData} setUniData={setUniData} />
                         <Spin spinning={loading}>
@@ -435,14 +448,14 @@ const AddSchool = () => {
                                     showQuickJumper: true,
                                     showTotal: (total) => `${t('title.total')} ${total}`,
                                 }}
-                                scroll={{ x: false, y: 'calc(100vh - 350px)' }}
+                                scroll={{ x: 'calc(100vw - 290px)', y: 'calc(100vh - 350px)' }}
                                 components={{
                                     body: {
                                         cell: EditableCell,
                                     },
                                 }}
                                 rowHoverable={false}
-                                className="table-responsive"
+                                rowClassName="rowUni"
                                 ref={tableRef}
                             />
                         </Spin>

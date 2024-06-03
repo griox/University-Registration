@@ -16,6 +16,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
+    background-color: var(--body_background);
     border-radius: 10px;
     box-shadow: 0 7px 25px 0 rgba(0, 0, 0, 0.1);
     transition: transform 0.3s, box-shadow 0.3s;
@@ -79,11 +80,13 @@
     font-weight: 600;
     font-size: 18px;
     width: auto;
+    margin-top: 10px;
+    color:var(--body_color);
 }
 
 .icon-box {
     font-size: 45px;
-    color: #299b63;
+    color: var(--registered-color);
 }
 
 .number-below {
@@ -100,7 +103,7 @@
 }
 
 .charter {
-    background: #fff;
+    background:var(--body_background);
     padding: 20px;
     border-radius: 10px;
     width: 100%;
@@ -124,8 +127,8 @@
 }
 
 .content-chart-icon-green {
-    font-size: 25px;
-    color: green;
+    font-size: 40px;
+    color: var(--registered-color);
 }
 
 .number-below-green {
@@ -135,71 +138,16 @@
 }
 
 .content-chart-icon-red {
-    font-size: 25px;
-    color: red;
+    font-size: 40px;
+    color: var(--unregistered-color);
 }
 
 .number-below-red {
-    font-size: 25px;
-    color: red;
-    font-weight: 500;
+    font-size: 50px;
+    color: var(--unregistered-color);
 }
+.number-below-green {
+    font-size: 50px;
 
-@media only screen and (max-width: 414px) {
-    .cards {
-        grid-template-columns: repeat(1, 1fr);
-        height: 330px;
-    }
-
-    .carder {
-        padding: 20px;
-    }
-
-    .charts {
-        grid-template-columns: 1fr;
-    }
-
-    .charter {
-        margin-top: 20px;
-    }
-}
-
-@media only screen and (max-width: 767px) {
-    .container {
-        overflow: auto;
-    }
-
-    .cards {
-        grid-template-columns: repeat(1, 1fr);
-        height: 570px;
-    }
-
-    .carder {
-        padding: 20px;
-    }
-
-    .charts {
-        grid-template-columns: repeat(1, 1fr);
-    }
-
-    .charter {
-        margin-top: 20px;
-    }
-}
-
-@media only screen and (min-width: 768px) and (max-width: 1024px) {
-    .cards {
-        grid-template-columns: repeat(2, 1fr);
-        height: 600px;
-    }
-
-    .charts {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media only screen and (min-width: 992px) {
-    .cards {
-        grid-template-columns: repeat(4, 1fr);
-    }
+    color:var(--registered-color);
 }

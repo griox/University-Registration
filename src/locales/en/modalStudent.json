@@ -19,12 +19,15 @@
     "title": {
         "modal": "Register for Student",
         "ok": "Add",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "success": "Successfully Added a Student",
+        "reload": "Reload"
     },
     "placeholder": {
         "name": "Enter Student's name",
         "email": "Enter Student's email",
-        "address": "Student's Address"
+        "address": "Student's Address",
+        "date": "Select date"
     },
     "warning": {
         "name": "University Name must contain only letters and spaces",

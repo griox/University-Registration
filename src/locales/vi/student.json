@@ -17,15 +17,27 @@
         "search": "Tìm kiếm",
         "reset": "Đặt lại",
         "filter": "Bộ lọc",
-        "close": "Đóng"
+        "close": "Đóng",
+        "sendnoti": "Gửi thông báo",
+        "send": "Gửi"
     },
     "title": {
         "delete": "Chắc chắn muốn xóa ?",
         "provide": "Cung cấp tài khoản ?",
         "deleteacc": "Xóa tài khoản ?",
-        "total": "Tổng"
+        "total": "Tổng",
+        "modalsend": "Gửi thông báo"
     },
     "placeholder": {
         "search": "Tìm kiếm"
+    },
+    "tooltip": {
+        "account1": "Đã có tài khoản",
+        "account2": "Chưa có tài khoản"
+    },
+    "confirm": {
+        "ok1": "Xóa",
+        "cancel": "Hủy",
+        "ok2": "Cung cấp"
     }
 }

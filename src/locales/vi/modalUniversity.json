@@ -11,13 +11,16 @@
     },
     "title": {
         "ok": "Thêm",
-        "cancel": "Hủy"
+        "cancel": "Hủy",
+        "success": "Thêm Trường thành công",
+        "reload": "Làm mới"
     },
     "toast": {
         "addsuccess": "Đã thêm trường thành công"
     },
     "warning": {
-        "input": "Vui lòng nhập !"
+        "input": "Vui lòng nhập !",
+        "unicode": "Mã trường chỉ bao gồm các chữ cái "
     },
     "placeholder": {
         "name": "Nhập tên trường",
@@ -25,5 +28,9 @@
         "address": "Nhập địa chỉ",
         "entrance": "Nhập điểm sàn",
         "target": "Nhập chỉ tiêu"
+    },
+    "tooltip": {
+        "name": "Tên trường chỉ gồm chữ cái và không có số",
+        "code": "Mã trường chỉ bao gồm các chữ cái "
     }
 }

@@ -52,26 +52,42 @@ const AddSchool = () => {
     };
 
     const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
-        const [temp, setTemp] = useState('');
-        const handleOnchange = (e) => {
-            if (e.target.value.match(/[0-9]+/) === null) {
-                setTemp(e.target.value);
+        const inputNode = inputType === 'number' ? <InputNumber /> : <Input  />;
+        const isTarget = dataIndex === 'target';
+        const isUniCode = dataIndex === 'uniCode';
+        const rules = [
+            {
+                required: true,
+                message: `Please Input ${title}!`,
+            },
+            {
+                validator: (_, value) => {
+                    if (isTarget && value < record.isRegistered) { // Kiểm tra nếu là cột 'target' và giá trị nhỏ hơn số đã đăng ký
+                        return Promise.reject(new Error('Target must be greater than or equal to Num of registered'));
+                    } 
+                    if (isTarget && !/^\d+$/.test(value)) { // Kiểm tra nếu là cột 'target' và không chứa ký tự nào ngoại trừ số
+                        return Promise.reject(new Error('Target must contain only numbers'));
+                    }
+                    return Promise.resolve();
+                },
+            },
+            {
+                validator: (_, value) => {
+                    if (isUniCode && !/^\S+$/.test(value))  { // Kiểm tra nếu là cột 'uniCode' và không chứa ký tự số
+                        return Promise.reject(new Error('UniCode must not contain digits'));
+                    }
+                    return Promise.resolve();
+                }
             }
-        };
-        const inputNode =
-            inputType === 'number' ? <InputNumber /> : <Input onChange={(e) => handleOnchange(e)} value={temp} />;
+        ];
+        
         return (
             <td {...restProps}>
                 {editing ? (
                     <Form.Item
                         className="form-editCell"
                         name={dataIndex}
-                        rules={[
-                            {
-                                required: true,
-                                message: `Please Input ${title}!`,
-                            },
-                        ]}
+                        rules={rules}
                     >
                         {inputNode}
                     </Form.Item>
@@ -104,6 +120,7 @@ const AddSchool = () => {
             address: '',
             ...record,
         });
+
         setEditingKey(record.key);
     };
 
@@ -130,10 +147,6 @@ const AddSchool = () => {
         } catch (error) {
             toast.error('Error when deleting data', error);
         }
-    };
-
-    const handleOk = () => {
-        setDetailVisible(false);
     };
 
     const handleCancel = () => {
@@ -380,7 +393,8 @@ const AddSchool = () => {
         {
             title: t('table.Entrance Score'),
             dataIndex: 'averageS',
-            width: '15%',
+            width: '12%',
+            editable: true,
             sorter: (a, b) => a.averageS - b.averageS,
             key: 'averageS',
             responsive:['sm']
@@ -408,7 +422,7 @@ const AddSchool = () => {
         {
             title: t('table.Action'),
             dataIndex: 'operation',
-            width: '13%',
+            width: '12%',
             fixed: 'right',
             responsive:['sm'],
             render: (_, record) => {
@@ -425,7 +439,7 @@ const AddSchool = () => {
                         <Typography.Link className="typolink" disabled={editingKey !== ''} onClick={() => edit(record)}>
                             <EditOutlined />
                         </Typography.Link>
-                        <Popconfirm title={t('title.delete')} onConfirm={() => handleDelete(record)}>
+                        <Popconfirm title={t('title.delete')} onConfirm={() => handleDelete(record)} okText={t('confirm.ok')} cancelText={t('confirm.cancel')} >
                             <Typography.Link>
                                 <DeleteOutlined />
                             </Typography.Link>
@@ -490,7 +504,6 @@ const AddSchool = () => {
             <Modal
                 open={isModalDetailVisible}
                 onCancel={handleCancel}
-                onOk={handleOk}
                 width={1000}
                 height={500}
                 style={{ marginLeft: '25%' }}

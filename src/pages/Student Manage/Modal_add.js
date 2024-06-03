@@ -4,7 +4,7 @@ import { ref, child, get, set } from 'firebase/database';
 import { toast } from 'react-toastify';
 import { Button, Modal, Select, InputNumber, DatePicker, Form } from 'antd';
 import { InfoCircleOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
-import { Input, Tooltip, Row, Col } from 'antd';
+import { Input, Tooltip, Row, Col, Result } from 'antd';
 import '../Student Manage/css/modal_add.css';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
@@ -25,6 +25,33 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     const [Literaturescore, setLiteraturescore] = useState(null);
     const [averageS, setAverageS] = useState(null);
     const { t } = useTranslation('modalStudent');
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [isFormValid, setIsFormValid] = useState(false);
+
+    useEffect(() => {
+        // Hàm kiểm tra tính hợp lệ của form
+        const checkFormValidity = () => {
+            return (
+                Email !== '' &&
+                Fullname !== '' &&
+                enthicity !== '' &&
+                Gender !== '' &&
+                dateOfBirth !== '' &&
+                placeOfBirth !== '' &&
+                Identify !== '' &&
+                Mathscore !== null &&
+                Englishscore !== null &&
+                Literaturescore !== null &&
+                validateEmailFormat(Email) &&
+                validateFullname(Fullname) &&
+                validateIdenNumber(Identify)
+            );
+        };
+
+        // Cập nhật trạng thái hợp lệ của form
+        setIsFormValid(checkFormValidity());
+    }, [Email, Fullname, enthicity, Gender, dateOfBirth, placeOfBirth, Identify,Mathscore, Englishscore,Literaturescore]);
+
     const showModal = () => {
         setIsModalOpen(true);
     };
@@ -107,8 +134,8 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 isRegister: 'true',
             };
             setStudentData([...studentData, newData]);
-            toast.success('Added a new student');
             setIsModalOpen(false);
+            setShowSuccessModal(true);
         } catch (error) {
             toast.error(error);
             toast.error(error);
@@ -328,11 +355,39 @@ const ModalAdd = ({ studentData, setStudentData }) => {
 
     const { TextArea } = Input;
     const dateFormat = 'DD/MM/YYYY';
+
+    const handleReload = () => {
+        window.location.reload()
+    }
+    const Success = () => (
+        <Result
+          status="success"
+          title={<div className='result-title'>{t('title.success')}</div>}
+          style={{width: '100%', height: 'auto'}}
+          extra={[
+            <Button type="primary" onClick={handleReload} style={{width: '100px', height: 'auto'}}>
+              {t('title.reload')}
+            </Button>,
+          ]}
+        />
+      );
+
     return (
         <>
             <Button className='btn-add' type="primary" onClick={showModal}>
                 {t('button.Add')}
             </Button>
+            <Modal
+            className="custom-modal"
+            style={{height: '200px'}}
+            width={500}
+            open={showSuccessModal}
+            footer={null}
+            closable={false}
+            onCancel={() => setShowSuccessModal(false)}
+            >
+                <Success />
+            </Modal>
             <Modal
                 title= {t('title.modal')}
                 open={isModalOpen}
@@ -340,6 +395,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 onCancel={handleCancel}
                 width={700}
                 destroyOnClose
+                okButtonProps={{disabled: !isFormValid}}
             >
                 <Form layout="vertical">
                     <Row gutter={16}>
@@ -408,6 +464,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     maxDate={dayjs('31/12/2004', dateFormat)}
                                     format="DD/MM/YYYY"
                                     onChange={(value) => setDateOfBirth(value)}
+                                    placeholder=''
                                 />
                             </Form.Item>
                         </Col>
@@ -415,6 +472,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             <Form.Item label={t('label.pofb')} className="form-item1">
                                 <Select
                                     initialvalues="Khánh Hòa"
+                                    defaultValue={"Khánh Hòa"}
                                     options={cities}
                                     showSearch
                                     onChange={(value) => setPlaceOfBirth(value)}
@@ -488,6 +546,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             >
                                 <Select
                                     initialvalues="Kinh"
+                                    defaultValue={"Kinh"}
                                     options={enthicities}
                                     onChange={(value) => setEnthicity(value)}
                                     showSearch

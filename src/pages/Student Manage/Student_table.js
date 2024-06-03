@@ -26,6 +26,9 @@ import { initializeApp } from 'firebase/app';
 
 const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
     const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
+    const isMath = dataIndex === 'MathScore'
+    const isLiterature = dataIndex === 'LiteratureScore'
+    const isEnglish = dataIndex === 'EnglishScore'
     return (
         <td {...restProps}>
             {editing ? (
@@ -36,6 +39,30 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
                         {
                             required: true,
                             message: `Please Input ${title}!`,
+                        },
+                        {
+                            validator: (_, value) => {
+                                if (isMath && !(value >= 0 && value <= 10)) { // Kiểm tra nếu là cột 'target' và giá trị nhỏ hơn số đã đăng ký
+                                    return Promise.reject(new Error('Must >= 0 and <= 10 and just number'));
+                                }
+                                return Promise.resolve();
+                            },
+                        },
+                        {
+                            validator: (_, value) => {
+                                if (isEnglish && !(value >= 0 && value <= 10)) { // Kiểm tra nếu là cột 'target' và giá trị nhỏ hơn số đã đăng ký
+                                    return Promise.reject(new Error('Must >= 0 and <= 10 and just number'));
+                                }
+                                return Promise.resolve();
+                            },
+                        },
+                        {
+                            validator: (_, value) => {
+                                if (isLiterature && !(value >= 0 && value <= 10)) { // Kiểm tra nếu là cột 'target' và giá trị nhỏ hơn số đã đăng ký
+                                    return Promise.reject(new Error('Must >= 0 and <= 10 and just number'));
+                                }
+                                return Promise.resolve();
+                            },
                         },
                     ]}
                 >
@@ -415,8 +442,8 @@ const StudentList = () => {
             editable: true,
             ...getColumnSearchProps('email'),
             render: (text, record) => (
-                <Tooltip title={record.isRegister ? 'had account' : 'account not exists'}>
-                    <span className={record.isRegister ? 'Registered' : 'UnRegistered'}>{text}</span>
+                <Tooltip title={record.isRegister ? t('tooltip.account1') : t('tooltip.account2')}>
+                    <span style={{ color: record.isRegister ? 'green' : 'red' }}>{text}</span>
                 </Tooltip>
             ),
             key: 'email',
@@ -487,7 +514,7 @@ const StudentList = () => {
                             {t('button.edit')}
                         </Typography.Link>
                         <Typography.Link className="Typo_link" onClick={cancel}>
-                            Cancel
+                            {t('button.cancel')}
                         </Typography.Link>
                     </span>
                 ) : (
@@ -499,19 +526,19 @@ const StudentList = () => {
                         >
                             <EditOutlined />
                         </Typography.Link>
-                        <Popconfirm title={t('title.delete')} onConfirm={() => handleDelete(record)}>
+                        <Popconfirm title={t('title.delete')} onConfirm={() => handleDelete(record)} okText={t('confirm.ok1')} cancelText={t('confirm.cancel')}>
                             <Typography.Link>
                                 <DeleteOutlined />
                             </Typography.Link>
                         </Popconfirm>
                         {!record.isRegister ? (
-                            <Popconfirm title={t('title.provide')} onConfirm={() => handleProvideAccount(record)}>
+                            <Popconfirm title={t('title.provide')} onConfirm={() => handleProvideAccount(record)} okText={t('confirm.ok2')} cancelText={t('confirm.cancel')}>
                                 <Typography.Link>
                                     <PlusCircleOutlined />
                                 </Typography.Link>
                             </Popconfirm>
                         ) : (
-                            <Popconfirm title={t('title.deleteacc')} onConfirm={() => handleDeleteAccount(record)}>
+                            <Popconfirm title={t('title.deleteacc')} onConfirm={() => handleDeleteAccount(record)} okText={t('confirm.ok1')} cancelText={t('confirm.cancel')}>
                                 <Typography.Link>
                                     <MinusCircleOutlined />
                                 </Typography.Link>
@@ -574,7 +601,7 @@ const StudentList = () => {
                 <div className="table">
                     <ModalAdd studentData={studentData} setStudentData={setStudentData} />
                     <Modal
-                        title="Basic Modal"
+                        title={t('title.modalsend')}
                         open={isModalOpen}
                         // onOk={() => handleOk()}
                         onCancel={handleCancel}
@@ -582,9 +609,9 @@ const StudentList = () => {
                         destroyOnClose
                         footer={[
                             <Button onClick={handleOk} loading={bell}>
-                                Ok
+                                {t('button.send')}
                             </Button>,
-                            <Button onClick={handleCancel}>Cancel</Button>,
+                            <Button onClick={handleCancel}>{t('button.cancel')}</Button>,
                         ]}
                     >
                         {/* <input type="file" id="fileInput" className="avatar-input" /> */}
@@ -592,7 +619,7 @@ const StudentList = () => {
                         <Input onChange={(e) => setMess(e.target.value)} />
                     </Modal>
                     <Button type="primary" onClick={showModal}>
-                        Send inform
+                        {t('button.sendnoti')} 
                     </Button>
                     <ModalDetail
                         visible={isModalVisible}

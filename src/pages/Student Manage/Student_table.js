@@ -25,6 +25,9 @@ import { initializeApp } from 'firebase/app';
 
 const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
     const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
+    const isMath = dataIndex === 'MathScore'
+    const isLiterature = dataIndex === 'LiteratureScore'
+    const isEnglish = dataIndex === 'EnglishScore'
     return (
         <td {...restProps}>
             {editing ? (
@@ -35,6 +38,30 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
                         {
                             required: true,
                             message: `Please Input ${title}!`,
+                        },
+                        {
+                            validator: (_, value) => {
+                                if (isMath && !(value >= 0 && value <= 10)) { // Kiểm tra nếu là cột 'target' và giá trị nhỏ hơn số đã đăng ký
+                                    return Promise.reject(new Error('Must >= 0 and <= 10 and just number'));
+                                }
+                                return Promise.resolve();
+                            },
+                        },
+                        {
+                            validator: (_, value) => {
+                                if (isEnglish && !(value >= 0 && value <= 10)) { // Kiểm tra nếu là cột 'target' và giá trị nhỏ hơn số đã đăng ký
+                                    return Promise.reject(new Error('Must >= 0 and <= 10 and just number'));
+                                }
+                                return Promise.resolve();
+                            },
+                        },
+                        {
+                            validator: (_, value) => {
+                                if (isLiterature && !(value >= 0 && value <= 10)) { // Kiểm tra nếu là cột 'target' và giá trị nhỏ hơn số đã đăng ký
+                                    return Promise.reject(new Error('Must >= 0 and <= 10 and just number'));
+                                }
+                                return Promise.resolve();
+                            },
                         },
                     ]}
                 >
@@ -389,7 +416,7 @@ const StudentList = () => {
             editable: true,
             ...getColumnSearchProps('email'),
             render: (text, record) => (
-                <Tooltip title={record.isRegister ? 'had account' : 'account not exists'}>
+                <Tooltip title={record.isRegister ? t('tooltip.account1') : t('tooltip.account2')}>
                     <span style={{ color: record.isRegister ? 'green' : 'red' }}>{text}</span>
                 </Tooltip>
             ),
@@ -467,19 +494,19 @@ const StudentList = () => {
                         >
                             <EditOutlined />
                         </Typography.Link>
-                        <Popconfirm title={t('title.delete')} onConfirm={() => handleDelete(record)}>
+                        <Popconfirm title={t('title.delete')} onConfirm={() => handleDelete(record)} okText={t('confirm.ok1')} cancelText={t('confirm.cancel')}>
                             <Typography.Link>
                                 <DeleteOutlined />
                             </Typography.Link>
                         </Popconfirm>
                         {!record.isRegister ? (
-                            <Popconfirm title={t('title.provide')} onConfirm={() => handleProvideAccount(record)}>
+                            <Popconfirm title={t('title.provide')} onConfirm={() => handleProvideAccount(record)} okText={t('confirm.ok2')} cancelText={t('confirm.cancel')}>
                                 <Typography.Link>
                                     <PlusCircleOutlined />
                                 </Typography.Link>
                             </Popconfirm>
                         ) : (
-                            <Popconfirm title={t('title.deleteacc')} onConfirm={() => handleDeleteAccount(record)}>
+                            <Popconfirm title={t('title.deleteacc')} onConfirm={() => handleDeleteAccount(record)} okText={t('confirm.ok1')} cancelText={t('confirm.cancel')}>
                                 <Typography.Link>
                                     <MinusCircleOutlined />
                                 </Typography.Link>
@@ -541,7 +568,6 @@ const StudentList = () => {
             <Space direction="vertical">
                 <div style={{ display: 'flex', columnGap: '10px' }}>
                     <ModalAdd studentData={studentData} setStudentData={setStudentData} />
-
                     <Modal
                         title={t('title.modalsend')}
                         open={isModalOpen}
@@ -559,68 +585,6 @@ const StudentList = () => {
                         {/* <input type="file" id="fileInput" className="avatar-input" /> */}
 
                         <Input onChange={(e) => setMess(e.target.value)} />
-                        <Space direction="vertical">
-                    <Form layout="horizontal">
-                    <Form.Item
-                            label={t('label.unicode')}
-                            labelCol={{ span: 9 }}
-                            wrapperCol={{ span: 15 }} 
-                            name="InputCode"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: t('warning.input'),
-                                },
-                            ]}
-                        >
-                            <Input
-            
-                                placeholder={t('placeholder.code')}
-                                allowClear
-                                maxLength={6}
-                            />
-                        </Form.Item>
-                    <Form.Item
-                            label={t('label.unicode')}
-                            labelCol={{ span: 9 }}
-                            wrapperCol={{ span: 15 }} 
-                            name="InputCode"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: t('warning.input'),
-                                },
-                            ]}
-                        >
-                            <Input
-            
-                                placeholder={t('placeholder.code')}
-                                allowClear
-                                maxLength={6}
-                            />
-                        </Form.Item>
-
-                        <Form.Item
-                            label={t('label.unicode')}
-                            labelCol={{ span: 9 }}
-                            wrapperCol={{ span: 15 }} 
-                            name="InputCode"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: t('warning.input'),
-                                },
-                            ]}
-                        >
-                            <Input
-            
-                                placeholder={t('placeholder.code')}
-                                allowClear
-                                maxLength={6}
-                            />
-                        </Form.Item>
-                    </Form>
-                </Space>
                     </Modal>
                     <Button type="primary" onClick={showModal}>
                         {t('button.sendnoti')} 

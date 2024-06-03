@@ -172,8 +172,8 @@ const Navbar = () => {
                         ''
                     ) : (
                         <div style={{ cursor: 'pointer' }}>
-                            <Modal open={open} title="Title" onCancel={handleCancel} footer={null}>
-                                <Modal title="Basic Modal" open={load} onCancel={handleCance} footer={null}>
+                            <Modal open={open} title={t('title.noti')} onCancel={handleCancel} footer={null} width={800}>
+                                <Modal title= 'basic_modal' open={load} onCancel={handleCance} footer={null} width={600}>
                                     {ino && (
                                         <div>
                                             <p>Name: {ino.name}</p>

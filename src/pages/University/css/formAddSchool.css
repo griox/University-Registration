@@ -38,3 +38,8 @@
     width: 100%; /* Đảm bảo trường nhập liệu chiếm toàn bộ không gian có sẵn */
     font-weight: 550;
 }
+
+.result-title {
+    font-size: 16px;
+    font-weight: 500;
+}

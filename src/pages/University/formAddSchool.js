@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { Modal, Button, Form, Input, InputNumber, Space, Tooltip } from 'antd';
-import { BankOutlined, InfoCircleOutlined } from '@ant-design/icons';
-import { ref, get, set } from 'firebase/database';
+import React, { useState, useEffect } from 'react';
+import { Modal, Button, Form, Input, InputNumber, Space, Tooltip, Result } from 'antd';
+import 'firebase/auth';
+import { ref, child, get, set } from 'firebase/database';
 import { toast } from 'react-toastify';
+import { BankOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { database } from '../firebaseConfig.js';
 import { useTranslation } from 'react-i18next';
 import '../University/css/formAddSchool.css';
@@ -15,6 +16,27 @@ const FormAdd = ({ UniData, setUniData }) => {
     const [averageScore, setAverageScore] = useState(null);
     const [targetScore, setTargetScore] = useState(null);
     const { t } = useTranslation('modalUni');
+    // const [showSuccess, setShowSuccess] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [isFormValid, setIsFormValid] = useState(false);
+
+    useEffect(() => {
+        // Hàm kiểm tra tính hợp lệ của form
+        const checkFormValidity = () => {
+            return (
+                uniName !== '' &&
+                address !== '' &&
+                averageScore !== null &&
+                targetScore !== null &&
+                uniCode !== '' &&
+                validateName(uniCode) &&
+                validateUniName(uniName)
+            );
+        };
+
+        // Cập nhật trạng thái hợp lệ của form
+        setIsFormValid(checkFormValidity());
+    }, [uniName, address, averageScore, targetScore, uniCode]);
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -82,6 +104,10 @@ const FormAdd = ({ UniData, setUniData }) => {
         }
     };
 
+    const handleReload = () => {
+        window.location.reload()
+    }
+
     const AddSchool = async () => {
         const uniRef = ref(database, `University/${uniCode}`);
         await set(uniRef, {
@@ -100,8 +126,26 @@ const FormAdd = ({ UniData, setUniData }) => {
             isRegistered: 0,
             target: targetScore,
         };
-        setUniData([...UniData, newUni]);
+        setUniData = [...UniData, newUni];
+        setShowSuccessModal(true);
     };
+
+    const Success = () => (
+        <Result
+          status="success"
+          title={<div className='result-title'>{t('title.success')}</div>}
+          style={{width: '100%', height: 'auto'}}
+          extra={[
+            <Button type="primary" onClick={handleReload} style={{width: '100px', height: 'auto'}}>
+              {t('title.reload')}
+            </Button>,
+          ]}
+        />
+      );
+      
+    function validateUniName(uniName) {
+        return /^\D+$/u.test(uniName);
+    }
 
     return (
         <>
@@ -109,12 +153,24 @@ const FormAdd = ({ UniData, setUniData }) => {
                 {t('button.Add')}
             </Button>
             <Modal
+            className="custom-modal"
+                style={{height: '200px'}}
+                width={500}
+                open={showSuccessModal}
+                footer={null}
+                closable={false}
+                onCancel={() => setShowSuccessModal(false)}
+            >
+                <Success />
+            </Modal>
+            <Modal
                 title="Add a university"
                 visible={isModalVisible}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 width={700}
                 destroyOnClose
+                okButtonProps={{disabled: !isFormValid}}
             >
                 <Space direction="vertical">
                     <Form layout="horizontal">
@@ -133,7 +189,14 @@ const FormAdd = ({ UniData, setUniData }) => {
                         <Form.Item
                             label={t('label.unicode')}
                             validateStatus={!validateName(uniCode) && uniCode ? 'error' : ''}
-                            help={!validateName(uniCode) && uniCode ? 'Invalid uniCode format' : ''}
+                            help={!validateName(uniCode) && uniCode ? t('warning.unicode') : ''}
+                            name="InputCode"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: t('warning.input'),
+                                },
+                            ]}
                         >
                             <Input
                                 placeholder={t('placeholder.code')}

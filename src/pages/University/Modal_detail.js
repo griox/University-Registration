@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 export const Form_Detail = ({ university, loading, setLoading }) => {
     const [student, setStudents] = useState([]);
-    const [form] = Form.useForm();
+    const [ form] = Form.useForm();
     const student_regist = university.registeration;
     const { t } = useTranslation('detailuniversity');
 

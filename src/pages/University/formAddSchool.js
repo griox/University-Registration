@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Input, InputNumber, Space, Tooltip, Result } from 'antd';
 import 'firebase/auth';
-import { ref, child, get, set } from 'firebase/database';
+import { ref, get, set } from 'firebase/database';
 import { toast } from 'react-toastify';
-import { BankOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { database } from '../firebaseConfig.js';
 import { useTranslation } from 'react-i18next';
 import '../University/css/formAddSchool.css';

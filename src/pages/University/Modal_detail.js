@@ -1,14 +1,15 @@
 import { get, ref, child } from 'firebase/database';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { Descriptions, Divider, Table, Form, Spin } from 'antd';
+import { Descriptions, Table, Form, Spin } from 'antd';
 import { database } from '../firebaseConfig.js';
 import './css/Modal_detail.css';
 import { useTranslation } from 'react-i18next';
 
 export const Form_Detail = ({ university, loading, setLoading }) => {
     const [student, setStudents] = useState([]);
-    const [ form] = Form.useForm();
+    const [studentExist, setStudentExist] = useState(true);
+    const [form] = Form.useForm();
     const student_regist = university.registeration;
     const { t } = useTranslation('detailuniversity');
 
@@ -119,8 +120,10 @@ export const Form_Detail = ({ university, loading, setLoading }) => {
                 }
                 setLoading(false);
                 setStudents(studentsData);
+                setStudentExist(true);
             } else {
-                toast.error('There are not any students in this school');
+                setStudentExist(false);
+                setLoading(false);
             }
         };
         fetchData();
@@ -135,30 +138,33 @@ export const Form_Detail = ({ university, loading, setLoading }) => {
                     </Descriptions.Item>
                 ))}
             </Descriptions>
-            <Divider />
-            <h4>{t('title.list')}</h4>
-            <Form form={form} component={false}>
-                <Spin spinning={loading}>
-                    <Table
-                        className="table"
-                        rowHoverable={false}
-                        dataSource={student}
-                        columns={colums}
-                        scroll={{
-                            x: 900,
-                            y: 'calc(100vh - 580px)',
-                        }}
-                        showSorterTooltip={{
-                            target: 'sorter-icon',
-                        }}
-                        pagination={{
-                            onChange: cancel,
-                            showSizeChanger: true,
-                            showQuickJumper: true,
-                        }}
-                    />
-                </Spin>
-            </Form>
+            <Spin spinning={loading}>
+                <h4>{t('title.list')}</h4>
+                {studentExist && !loading ? (
+                    <>
+                        <Table
+                            className="table"
+                            rowHoverable={false}
+                            dataSource={student}
+                            columns={colums}
+                            scroll={{
+                                x: 900,
+                                y: 'calc(100vh - 550px)',
+                            }}
+                            showSorterTooltip={{
+                                target: 'sorter-icon',
+                            }}
+                            pagination={{
+                                onChange: cancel,
+                                showSizeChanger: true,
+                                showQuickJumper: true,
+                            }}
+                        />
+                    </>
+                ) : (
+                    <p className="description">This School hasn't been registered by any students!</p>
+                )}
+            </Spin>
         </>
     );
 };

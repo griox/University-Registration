@@ -5,14 +5,13 @@ import { Link } from 'react-router-dom';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { tokens } from '../../theme';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import { WechatWorkOutlined , SignatureOutlined, SolutionOutlined } from '@ant-design/icons';
+import { WechatWorkOutlined, SignatureOutlined, SolutionOutlined } from '@ant-design/icons';
 import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-
 const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
     // const theme = useTheme();
     // const colors = tokens(theme.palette.mode);
@@ -206,6 +205,14 @@ const Sidebar = () => {
                             setSelected={setSelected}
                             tooltip="Dashboard"
                         />
+                        <Item
+                            title={t('ChatRoom')}
+                            to="/admin/ChatRoom"
+                            icon={<WechatWorkOutlined />}
+                            selected={selected}
+                            setSelected={setSelected}
+                            tooltip="Chatroom"
+                        />
                         {isAdminOrSuperAdmin && (
                             <>
                                 <Item
@@ -231,14 +238,6 @@ const Sidebar = () => {
                                     selected={selected}
                                     setSelected={setSelected}
                                     tooltip="Register Account"
-                                />
-                                <Item
-                                       title={t('ChatRoom')}
-                                       to="/register"
-                                       icon={<WechatWorkOutlined />}
-                                       selected={selected}
-                                       setSelected={setSelected}
-                                       tooltip="Chatroom"
                                 />
                             </>
                         )}

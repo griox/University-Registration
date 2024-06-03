@@ -324,6 +324,17 @@ const AddSchool = () => {
 
     const columns = [
         {
+            title:t('Name + Unicode'),
+            render:(record)=>(
+                <React.Fragment>
+                    {record.uniCode}
+                    <br/>
+                    {record.nameU}
+                </React.Fragment>
+            ),
+            responsive:['xs']
+            },
+        {
             title: t('table.Name'),
             dataIndex: 'nameU',
             key: 'nameU',
@@ -334,6 +345,7 @@ const AddSchool = () => {
             render: (text, record) => (
                 <Typography.Link onClick={() => handleSchoolDetail(record)}>{text}</Typography.Link>
             ),
+            responsive:['sm']
         },
         {
             title: t('table.UniCode'),
@@ -347,6 +359,7 @@ const AddSchool = () => {
                 </Tooltip>
             ),
             key: 'uniCode',
+            responsive:['sm']
         },
         {
             title: t('table.Address'),
@@ -355,6 +368,7 @@ const AddSchool = () => {
             editable: true,
             width: '20%',
             key: 'address',
+            responsive:['sm']
         },
         {
             title: t('table.Entrance Score'),
@@ -362,6 +376,7 @@ const AddSchool = () => {
             width: '15%',
             sorter: (a, b) => a.averageS - b.averageS,
             key: 'averageS',
+            responsive:['sm']
         },
         {
             title: t('table.Number of registration'),
@@ -372,6 +387,7 @@ const AddSchool = () => {
                 setNumberRegist(record);
                 return record.isRegistered;
             },
+            responsive:['sm']
         },
         {
             title: t('table.Target'),
@@ -380,12 +396,14 @@ const AddSchool = () => {
             editable: true,
             sorter: (a, b) => a.targets - b.targets,
             key: 'target',
+            responsive:['sm']
         },
         {
             title: t('table.Action'),
             dataIndex: 'operation',
             width: '13%',
             fixed: 'right',
+            responsive:['sm'],
             render: (_, record) => {
                 const editable = isEditing(record);
                 return editable ? (
@@ -448,7 +466,7 @@ const AddSchool = () => {
                                     showQuickJumper: true,
                                     showTotal: (total) => `${t('title.total')} ${total}`,
                                 }}
-                                scroll={{ x: 'calc(100vw - 290px)', y: 'calc(100vh - 350px)' }}
+                                scroll={{ x: 'calc(100vw - 320px)', y: 'calc(100vh - 350px)' }}
                                 components={{
                                     body: {
                                         cell: EditableCell,

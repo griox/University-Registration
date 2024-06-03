@@ -11,13 +11,16 @@
     },
     "title": {
         "ok": "Add",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "success": "Successfully Added a University",
+        "reload": "Reload"
     },
     "toast": {
         "addsuccess": "Added a university"
     },
     "warning": {
-        "input": "Please input !"
+        "input": "Please input !",
+        "unicode": "University code just contain only letters"
     },
     "placeholder": {
         "name": "Enter University's name",
@@ -28,6 +31,6 @@
     },
     "tooltip": {
         "name": "Name just only contain letters and no numbers",
-        "code": "uniCode just contain only letters "
+        "code": "University code just contain only letters "
     }
 }

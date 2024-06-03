@@ -19,7 +19,9 @@
     "title": {
         "modal": "Đăng kí sinh viên",
         "ok": "Thêm",
-        "cancel": "Hủy"
+        "cancel": "Hủy",
+        "success": "Thêm sinh viên thành công",
+        "reload": "Làm mới"
     },
     "placeholder": {
         "name": "Nhập tên sinh viên",

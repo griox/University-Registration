@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Button, Form, Input, InputNumber, Space, Tooltip, Result } from 'antd';
 import 'firebase/auth';
 import { ref, child, get, set } from 'firebase/database';
@@ -18,6 +18,25 @@ const FormAdd = ({ UniData, setUniData }) => {
     const { t } = useTranslation('modalUni');
     // const [showSuccess, setShowSuccess] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [isFormValid, setIsFormValid] = useState(false);
+
+    useEffect(() => {
+        // Hàm kiểm tra tính hợp lệ của form
+        const checkFormValidity = () => {
+            return (
+                uniName !== '' &&
+                address !== '' &&
+                averageScore !== null &&
+                targetScore !== null &&
+                uniCode !== '' &&
+                validateName(uniCode) &&
+                validateUniName(uniName)
+            );
+        };
+
+        // Cập nhật trạng thái hợp lệ của form
+        setIsFormValid(checkFormValidity());
+    }, [uniName, address, averageScore, targetScore, uniCode]);
 
     const showModal = () => {
         setVisible(true);
@@ -85,8 +104,7 @@ const FormAdd = ({ UniData, setUniData }) => {
         setVisible(false);
     };
 
-    const handleOkandReload = () => {
-        // setShowSuccessModal(false);
+    const handleReload = () => {
         window.location.reload()
     }
 
@@ -109,18 +127,17 @@ const FormAdd = ({ UniData, setUniData }) => {
             target: targetScore,
         };
         setUniData = [...UniData, newUni];
-        // toast.success(t('toast.addsuccess'));
         setShowSuccessModal(true);
     };
 
     const Success = () => (
         <Result
           status="success"
-          title={<div className='result-title'>Successfully Added a university</div>}
+          title={<div className='result-title'>{t('title.success')}</div>}
           style={{width: '100%', height: 'auto'}}
           extra={[
-            <Button type="primary" onClick={handleOkandReload} style={{width: '100px', height: 'auto'}}>
-              OK
+            <Button type="primary" onClick={handleReload} style={{width: '100px', height: 'auto'}}>
+              {t('title.reload')}
             </Button>,
           ]}
         />
@@ -149,7 +166,7 @@ const FormAdd = ({ UniData, setUniData }) => {
             >
                 <Success />
             </Modal>
-                <Modal
+            <Modal
                 title="Add a university"
                 open={isModalVisible}
                 onOk={handleOk}
@@ -158,6 +175,7 @@ const FormAdd = ({ UniData, setUniData }) => {
                 cancelText={t('title.cancel')}
                 width={700}
                 destroyOnClose
+                okButtonProps={{disabled: !isFormValid}}
             >
                 <Space direction="vertical">
                     <Form layout="horizontal">
@@ -196,6 +214,7 @@ const FormAdd = ({ UniData, setUniData }) => {
                             labelCol={{ span: 9 }}
                             wrapperCol={{ span: 15 }} 
                             validateStatus={!validateName(uniCode) && uniCode ? 'error' : ''}
+                            help={!validateName(uniCode) && uniCode ? t('warning.unicode') : ''}
                             name="InputCode"
                             rules={[
                                 {

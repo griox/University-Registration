@@ -28,6 +28,7 @@ html,
     --id-color: blue;
     --male-color: rgb(6, 26, 205);
     --female-color: rgb(239, 73, 101);
+    --droplng: #1677FF;
 }
 [data-theme='dark'] {
     --placeholder-color: #ced6e0;
@@ -48,6 +49,7 @@ html,
     --id-color: #33d9b2;
     --male-color: #25ccf7;
     --female-color: #fda7df;
+    --droplng: #ff7f50;
 }
 .app {
     display: flex;

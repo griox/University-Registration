@@ -30,5 +30,14 @@
     },
     "placeholder": {
         "search": "Search"
+    },
+    "tooltip": {
+        "account1": "Had account",
+        "account2": "Account not exists"
+    },
+    "confirm": {
+        "ok1": "Delete",
+        "cancel": "Cancel",
+        "ok2": "Provide"
     }
 }

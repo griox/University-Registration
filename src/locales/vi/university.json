@@ -24,5 +24,9 @@
     },
     "placeholder": {
         "search": "Tìm kiếm"
+    },
+    "confirm": {
+        "ok": "Xóa",
+        "cancel": "Hủy"
     }
 }

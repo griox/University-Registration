@@ -376,6 +376,26 @@ const StudentList = () => {
     };
     const columns = [
         {
+        title:t('ID + Name'),
+        render:(record)=>(
+            <React.Fragment>
+                {record.id}
+                <br/>
+                {record.name}
+            </React.Fragment>
+        ),
+        responsive:['xs']
+        },
+        {
+            title:t('Score '),
+            render:(record)=>(
+                <React.Fragment>
+                    {record.AverageScore}
+                </React.Fragment>
+            ),
+            responsive:['xs']
+            },
+        {
             title: t('table.ID'),
             dataIndex: 'id',
 
@@ -390,6 +410,7 @@ const StudentList = () => {
             key: 'id',
             fixed: 'left',
             fixed: 'left',
+           
         },
 
         {
@@ -411,6 +432,7 @@ const StudentList = () => {
                     </>
                 );
             },
+            responsive:['sm']
         },
 
         {
@@ -425,6 +447,7 @@ const StudentList = () => {
                 </Tooltip>
             ),
             key: 'email',
+       
         },
         {
             title: t('table.Math'),
@@ -442,7 +465,9 @@ const StudentList = () => {
             key: 'LiteratureScore',
 
             sorter: (a, b) => a.LiteratureScore - b.LiteratureScore,
+            responsive:['sm']
         },
+       
         {
             title: t('table.English'),
             dataIndex: 'EnglishScore',
@@ -457,6 +482,7 @@ const StudentList = () => {
             width: '10%',
             key: 'AverageScore',
             sorter: (a, b) => a.AverageScore - b.AverageScore,
+            responsive:['sm']
         },
         {
             title: t('table.UniCode'),
@@ -472,12 +498,14 @@ const StudentList = () => {
                 }
             },
             key: 'uniCode',
+            responsive:['sm']
         },
         {
             title: t('table.Action'),
             dataIndex: 'operation',
             width: '12%',
             fixed: 'right',
+            responsive:['sm'],
             render: (_, record) => {
                 const editable = isEditing(record);
                 return editable ? (
@@ -613,7 +641,7 @@ const StudentList = () => {
                                 dataSource={studentData}
                                 columns={mergedColumns}
                                 scroll={{
-                                    x: 'calc(100vh - 290px)',
+                                    x: 'calc(100vh - 320px)',
                                     y: 'calc(100vh - 350px)',
                                 }}
                                 rowClassName="editable-row"

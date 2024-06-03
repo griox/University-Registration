@@ -2,6 +2,8 @@ import Dashboard from '../components/admin/Dashboard';
 import AddUniversity from '../components/admin/University';
 import Student from '../components/admin/Student';
 import Profile from '../components/admin/Profile';
+import ChatRoom from '../components/admin/ChatRoom'
+
 
 const routes = [
     { path: '/admin', exact: true, name: 'Admin' },
@@ -29,6 +31,12 @@ const routes = [
         name: 'Profile',
         component: Profile,
     },
+    {
+        path:'/admin/ChatRoom',
+        exact: true,
+        name: 'ChatRoom',
+        component: ChatRoom,
+    }
 ];
 
 export default routes;

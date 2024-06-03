@@ -214,6 +214,14 @@ const Sidebar = () => {
                             setSelected={setSelected}
                             tooltip="Dashboard"
                         />
+                        <Item
+                            title={t('ChatRoom')}
+                            to="/admin/ChatRoom"
+                            icon={<WechatWorkOutlined />}
+                            selected={selected}
+                            setSelected={setSelected}
+                            tooltip="Chatroom"
+                        />
                         {isAdminOrSuperAdmin && (
                             <>
                                 <Item
@@ -240,14 +248,7 @@ const Sidebar = () => {
                                     setSelected={setSelected}
                                     tooltip="Register Account"
                                 />
-                                <Item
-                                    title={t('ChatRoom')}
-                                    to="/register"
-                                    icon={<WechatWorkOutlined />}
-                                    selected={selected}
-                                    setSelected={setSelected}
-                                    tooltip="Chatroom"
-                                />
+                               
                             </>
                         )}
                         {localStorage.getItem('Role') === 'user' && (

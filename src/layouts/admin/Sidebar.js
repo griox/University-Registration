@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { tokens } from '../../theme';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import { SignatureOutlined, SolutionOutlined } from '@ant-design/icons';
+import { WechatWorkOutlined, SignatureOutlined, SolutionOutlined } from '@ant-design/icons';
 import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
@@ -23,7 +23,7 @@ const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
                 active={selected === title}
                 style={{
                     // color: selected === title ? '#4e57d4' : colors.grey[100],
-                    backgroundColor: selected === title ? '#dfe4ea' : 'transparent',
+                    backgroundColor: selected === title ? 'var(--border-color)' : 'transparent',
                 }}
                 onClick={() => setSelected(title)}
                 icon={icon}
@@ -130,7 +130,7 @@ const Sidebar = () => {
         <Box
             sx={{
                 '& .pro-sidebar-inner': {
-                    backgroundColor: `var(--body_background)`,
+                    backgroundColor: `var(--sidebar-color)`,
                     height: '100vh',
                     position: 'sticky',
                     top: '0',
@@ -239,6 +239,14 @@ const Sidebar = () => {
                                     selected={selected}
                                     setSelected={setSelected}
                                     tooltip="Register Account"
+                                />
+                                <Item
+                                    title={t('ChatRoom')}
+                                    to="/register"
+                                    icon={<WechatWorkOutlined />}
+                                    selected={selected}
+                                    setSelected={setSelected}
+                                    tooltip="Chatroom"
                                 />
                             </>
                         )}

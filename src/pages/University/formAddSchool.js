@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { Modal, Button, Form, Input, InputNumber, Space, Tooltip } from 'antd';
-import 'firebase/auth';
-import { ref, child, get, set } from 'firebase/database';
-import { toast } from 'react-toastify';
 import { BankOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { ref, get, set } from 'firebase/database';
+import { toast } from 'react-toastify';
 import { database } from '../firebaseConfig.js';
-import '../University/css/formAddSchool.css';
 import { useTranslation } from 'react-i18next';
+import '../University/css/formAddSchool.css';
 
 const FormAdd = ({ UniData, setUniData }) => {
-    const [isModalVisible, setVisible] = useState(false);
+    const [isModalVisible, setIsModalVisible] = useState(false);
     const [uniName, setUniName] = useState('');
     const [uniCode, setUniCode] = useState('');
     const [address, setAddress] = useState('');
@@ -18,69 +17,69 @@ const FormAdd = ({ UniData, setUniData }) => {
     const { t } = useTranslation('modalUni');
 
     const showModal = () => {
-        setVisible(true);
-    };
-
-    const handleOk = async () => {
-        let hasError = false;
-        if (uniName === '' || address === '' || averageScore === null || targetScore === null || uniCode === '') {
-            toast.error('Please fill in all information');
-            hasError = true;
-            if (uniName !== '') {
-                if (uniCode !== '') {
-                    if (!validateName(uniCode)) {
-                        toast.error('Invalid uniCode format');
-                        hasError = true;
-                    } else {
-                        const snapshot = await get(child(ref(database), `University/`));
-                        if (snapshot.exists()) {
-                            const inFors = snapshot.val();
-                            const uniCodeExists = Object.values(inFors).some((uni) => uni.uniCode === uniCode);
-                            if (uniCodeExists) {
-                                toast.error('This uniCode has already exists');
-                                hasError = true;
-                            }
-                        }
-                    }
-                }
-            } else {
-                const snapshot = await get(child(ref(database), `University/`));
-                if (snapshot.exists()) {
-                    const inFors = snapshot.val();
-                    const uniCodeExists = Object.values(inFors).some((uni) => uni.nameU === uniName);
-                    if (uniCodeExists) {
-                        toast.error('This university has already exists');
-                        hasError = true;
-                    }
-                }
-            }
-        } else if (!validateUniName(uniName)) {
-            toast.error('Invalid name');
-            hasError = true;
-        }
-
-        if (!hasError) {
-            try {
-                await AddSchool();
-                setUniName('');
-                setUniCode('');
-                setAddress('');
-                setAverageScore(null);
-                setTargetScore(null);
-                setVisible(false);
-            } catch (error) {
-                toast.error('An error occurred while adding university');
-            }
-        }
+        setIsModalVisible(true);
     };
 
     const handleCancel = () => {
+        setIsModalVisible(false);
+        resetForm();
+    };
+
+    const resetForm = () => {
         setUniName('');
         setUniCode('');
         setAddress('');
         setAverageScore(null);
         setTargetScore(null);
-        setVisible(false);
+    };
+
+    const validateName = (name) => {
+        return /^[A-Za-zÀ-ÿ]+$/.test(name);
+    };
+
+    const validateUniCode = (code) => {
+        return /^\D+$/u.test(code);
+    };
+
+    const handleOk = async () => {
+        if (!uniName || !uniCode || !address || averageScore === null || targetScore === null) {
+            toast.error('Please fill in all information');
+            return;
+        }
+
+        if (!validateName(uniName)) {
+            toast.error('Invalid name');
+            return;
+        }
+
+        if (!validateUniCode(uniCode)) {
+            toast.error('Invalid uniCode format');
+            return;
+        }
+
+        const snapshot = await get(ref(database, `University/`));
+        if (snapshot.exists()) {
+            const universities = snapshot.val();
+            const uniCodeExists = Object.values(universities).some((uni) => uni.uniCode === uniCode);
+            const uniNameExists = Object.values(universities).some((uni) => uni.nameU === uniName);
+            if (uniCodeExists) {
+                toast.error('This uniCode already exists');
+                return;
+            }
+            if (uniNameExists) {
+                toast.error('This university name already exists');
+                return;
+            }
+        }
+
+        try {
+            await AddSchool();
+            setIsModalVisible(false);
+            resetForm();
+            toast.success('University added successfully');
+        } catch (error) {
+            toast.error('An error occurred while adding university');
+        }
     };
 
     const AddSchool = async () => {
@@ -101,161 +100,76 @@ const FormAdd = ({ UniData, setUniData }) => {
             isRegistered: 0,
             target: targetScore,
         };
-        setUniData = [...UniData, newUni];
-        toast.success(t('toast.addsuccess'));
+        setUniData([...UniData, newUni]);
     };
-
-    function validateName(uniName) {
-        return /^[A-Za-zÀ-ÿ]+$/.test(uniName);
-    }
-    function validateUniName(uniName) {
-        return /^\D+$/u.test(uniName);
-    }
 
     return (
         <>
             <Button className="btn-addUni" type="primary" onClick={showModal}>
                 {t('button.Add')}
             </Button>
-                        <Modal
+            <Modal
                 title="Add a university"
-                open={isModalVisible}
+                visible={isModalVisible}
                 onOk={handleOk}
-                okText={t('title.ok')}
                 onCancel={handleCancel}
-                cancelText={t('title.cancel')}
                 width={700}
                 destroyOnClose
             >
                 <Space direction="vertical">
                     <Form layout="horizontal">
                         <Form.Item
-                            className="form-item2"
                             label={t('label.uniname')}
-                            labelCol={{ span: 9 }} 
-                            wrapperCol={{ span: 15 }} 
-                            validateStatus={!validateUniName(uniName) && uniName ? 'error' : ''}
-                            name="Input"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: t('warning.input'),
-                                },
-                            ]}
+                            validateStatus={!validateUniCode(uniName) && uniName ? 'error' : ''}
+                            help={!validateUniCode(uniName) && uniName ? 'Invalid university name' : ''}
                         >
                             <Input
-                                className="ip-UniName"
                                 placeholder={t('placeholder.name')}
-                                prefix={<BankOutlined className="ic-bank" />}
                                 onChange={(e) => setUniName(e.target.value)}
                                 value={uniName}
-                                allowClear
-                                suffix={
-                                    <Tooltip title={t('tooltip.name')}>
-                                        <InfoCircleOutlined className="ic-info" />
-                                    </Tooltip>
-                                }
                             />
                         </Form.Item>
 
                         <Form.Item
-                            className="form-item2"
                             label={t('label.unicode')}
-                            labelCol={{ span: 9 }}
-                            wrapperCol={{ span: 15 }} 
                             validateStatus={!validateName(uniCode) && uniCode ? 'error' : ''}
-                            name="InputCode"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: t('warning.input'),
-                                },
-                            ]}
+                            help={!validateName(uniCode) && uniCode ? 'Invalid uniCode format' : ''}
                         >
                             <Input
-                                className="ip-UniCode"
                                 placeholder={t('placeholder.code')}
-                                allowClear
                                 onChange={(e) => setUniCode(e.target.value)}
                                 maxLength={6}
-                                suffix={
-                                    <Tooltip title={t('tooltip.code')}>
-                                        <InfoCircleOutlined className="ic-info" />
-                                    </Tooltip>
-                                }
                                 value={uniCode}
                             />
                         </Form.Item>
 
-                        <Form.Item
-                            className="form-item2"
-                            label={t('label.entrance')}
-                            labelCol={{ span: 9 }} 
-                            wrapperCol={{ span: 15 }} 
-                            name="Entrance"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: t('warning.input'),
-                                },
-                            ]}
-                        >
+                        <Form.Item label={t('label.address')}>
+                            <Input.TextArea
+                                placeholder={t('placeholder.address')}
+                                onChange={(e) => setAddress(e.target.value)}
+                                value={address}
+                            />
+                        </Form.Item>
+
+                        <Form.Item label={t('label.entrance')}>
                             <InputNumber
-                                className="ip-number1"
                                 placeholder={t('placeholder.entrance')}
-                                maxLength={2}
                                 value={averageScore}
                                 onChange={(value) => setAverageScore(value)}
                                 min={0}
-                                max={30}
+                                max={10}
                                 step={0.2}
                             />
                         </Form.Item>
 
-                        <Form.Item
-                            className="form-item2"
-                            label={t('label.target')}
-                            labelCol={{ span: 9 }} 
-                            wrapperCol={{ span: 15 }}
-                            name="Target"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: t('warning.input'),
-                                },
-                            ]}
-                        >
+                        <Form.Item label={t('label.target')}>
                             <InputNumber
-                                className="ip-number2"
                                 placeholder={t('placeholder.target')}
-                                maxLength={5}
                                 value={targetScore}
                                 onChange={(value) => setTargetScore(value)}
                                 max={500}
                                 min={0}
                                 step={100}
-                            />
-                        </Form.Item>
-
-                        <Form.Item
-                            className="form-item2"
-                            label={t('label.address')}
-                            labelCol={{ span: 9 }} 
-                            wrapperCol={{ span: 15 }} 
-                            name="TextArea"
-                            rules={[
-                                {
-                                    required: true,
-                                    message: t('warning.input'),
-                                },
-                            ]}
-                        >
-                            <Input.TextArea
-                                className="ip-textArea"
-                                placeholder={t('placeholder.address')}
-                                allowClear
-                                onChange={(e) => setAddress(e.target.value)}
-                                value={address}
                             />
                         </Form.Item>
                     </Form>

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin, Modal, message, Upload } from 'antd';
 import './css/table.css';
 import 'antd/dist/reset.css';
+import 'antd/dist/reset.css';
 import {
     SearchOutlined,
     EditOutlined,
@@ -9,7 +10,6 @@ import {
     PlusCircleOutlined,
     MinusCircleOutlined,
     ManOutlined,
-    UploadOutlined,
 } from '@ant-design/icons';
 import { toast } from 'react-toastify';
 import { Button, Space } from 'antd';
@@ -165,6 +165,7 @@ const StudentList = () => {
                         }}
                     >
                         {t('button.filter')}
+                        {t('button.filter')}
                     </Button>
                     <Button type="link" size="small" onClick={() => close()}>
                         {t('button.close')}
@@ -254,6 +255,7 @@ const StudentList = () => {
         if (index > -1) {
             newData[index][dataIndex] = value;
             setStudentData(newData);
+            setStudentData(newData);
             try {
                 await update(ref(database, `Detail/${key}`), {
                     [dataIndex]: value,
@@ -297,7 +299,7 @@ const StudentList = () => {
                 const mathScore = updatedRow['MathScore'] || 0;
                 const literatureScore = updatedRow['LiteratureScore'] || 0;
                 const englishScore = updatedRow['EnglishScore'] || 0;
-                const averageScore = mathScore + literatureScore + englishScore;
+                const averageScore = (mathScore + literatureScore + englishScore) / 3;
 
                 updatedRow['AverageScore'] = Math.round(averageScore * 10) / 10;
 
@@ -314,6 +316,7 @@ const StudentList = () => {
                 handleFieldChange(key, Object.keys(row)[0], row[Object.keys(row)[0]]);
 
                 await set(ref(database, `Detail/${key}`), row);
+                await set(ref(database, `Detail/${key}`), row);
                 toast.success('Data added to Firebase successfully');
             }
         } catch (errInfo) {
@@ -321,7 +324,11 @@ const StudentList = () => {
         }
     };
     const renderNameWithGender = (record) => {
-        return <span className="icon">{record.gender === 'Male' ? <ManOutlined /> : <WomanOutlined />}</span>;
+        return (
+            <span className={record === 'Male' ? 'male' : 'female'}>
+                {record === 'Male' ? <ManOutlined /> : <WomanOutlined />}
+            </span>
+        );
     };
 
     const handleIdClick = (record) => {
@@ -349,11 +356,12 @@ const StudentList = () => {
             fixed: 'left',
             ...getColumnSearchProps('id'),
             render: (_, record) => (
-                <span onClick={() => handleIdClick(record)} style={{ color: 'blue', cursor: 'pointer' }}>
+                <span onClick={() => handleIdClick(record)} className="idOnClick">
                     {record.id}
                 </span>
             ),
             key: 'id',
+            fixed: 'left',
             fixed: 'left',
         },
 
@@ -363,20 +371,15 @@ const StudentList = () => {
             width: '19%',
             editable: true,
             fixed: 'left',
+            fixed: 'left',
             key: 'name',
             ...getColumnSearchProps('name'),
             render: (text, record) => {
                 return (
                     <>
-                        {renderNameWithGender(text, record)}
+                        {renderNameWithGender(record.gender)}
                         <Tooltip title={temp(record.uniCode) ? 'can not register more' : ''}>
-                            <span
-                                style={{
-                                    color: temp(record.uniCode) ? '#FF8C00' : 'black',
-                                }}
-                            >
-                                {text}
-                            </span>
+                            <span className={temp(record.uniCode) ? 'Can_Regist' : 'Not_Regist'}>{text}</span>
                         </Tooltip>
                     </>
                 );
@@ -391,11 +394,10 @@ const StudentList = () => {
             ...getColumnSearchProps('email'),
             render: (text, record) => (
                 <Tooltip title={record.isRegister ? 'had account' : 'account not exists'}>
-                    <span style={{ color: record.isRegister ? 'green' : 'red' }}>{text}</span>
+                    <span className={record.isRegister ? 'Registered' : 'UnRegistered'}>{text}</span>
                 </Tooltip>
             ),
             key: 'email',
-            fixed: 'left',
         },
         {
             title: t('table.Math'),
@@ -447,7 +449,8 @@ const StudentList = () => {
         {
             title: t('table.Action'),
             dataIndex: 'operation',
-            width: '15%',
+            width: '12%',
+            fixed: 'right',
             render: (_, record) => {
                 const editable = isEditing(record);
                 return editable ? (
@@ -460,7 +463,7 @@ const StudentList = () => {
                         </Typography.Link>
                     </span>
                 ) : (
-                    <Space size={'middle'}>
+                    <Space size={'small'}>
                         <Typography.Link
                             disabled={editingKey !== ''}
                             onClick={() => edit(record)}
@@ -539,10 +542,9 @@ const StudentList = () => {
 
     return (
         <div className="Layout">
-            <Space direction="vertical">
-                <div style={{ display: 'flex', columnGap: '10px' }}>
+            <Space direction="vertical" size={'small'}>
+                <div className="table">
                     <ModalAdd studentData={studentData} setStudentData={setStudentData} />
-
                     <Modal
                         title="Basic Modal"
                         open={isModalOpen}
@@ -564,19 +566,17 @@ const StudentList = () => {
                     <Button type="primary" onClick={showModal}>
                         Send inform
                     </Button>
-                </div>
-                <ModalDetail
-                    visible={isModalVisible}
-                    onClose={() => {
-                        setIsModalVisible(false);
-                    }}
-                    student={selectedStudent}
-                    Loading={Loading}
-                    setLoading={setLoading}
-                />
-                <Form form={form} component={false}>
-                    <Spin spinning={Loading}>
-                        <div className="table">
+                    <ModalDetail
+                        visible={isModalVisible}
+                        onClose={() => {
+                            setIsModalVisible(false);
+                        }}
+                        student={selectedStudent}
+                        Loading={Loading}
+                        setLoading={setLoading}
+                    />
+                    <Form form={form} component={false}>
+                        <Spin spinning={Loading}>
                             <Table
                                 components={{
                                     body: {
@@ -586,8 +586,8 @@ const StudentList = () => {
                                 dataSource={studentData}
                                 columns={mergedColumns}
                                 scroll={{
-                                    x: 900,
-                                    y: 'calc(100vh - 300px)',
+                                    x: 'calc(100vh - 290px)',
+                                    y: 'calc(100vh - 350px)',
                                 }}
                                 rowClassName="editable-row"
                                 showSorterTooltip={{
@@ -602,9 +602,9 @@ const StudentList = () => {
                                 rowHoverable={false}
                                 ref={tableRef}
                             />
-                        </div>
-                    </Spin>
-                </Form>
+                        </Spin>
+                    </Form>
+                </div>
             </Space>
         </div>
     );

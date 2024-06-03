@@ -80,7 +80,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     useEffect(() => {
         const calculateAverage = () => {
             if (Mathscore !== null && Englishscore !== null && Literaturescore !== null) {
-                const totalScore = Mathscore + Englishscore + Literaturescore;
+                const totalScore = round((Mathscore + Englishscore + Literaturescore),1)/3;
                 setAverageS(totalScore.toFixed(1));
             }
         };
@@ -103,7 +103,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 MathScore: Mathscore,
                 EnglishScore: Englishscore,
                 LiteratureScore: Literaturescore,
-                AverageScore: round(Mathscore + Englishscore + Literaturescore, 1),
+                AverageScore: round((Mathscore + Englishscore + Literaturescore, 1)/3),
                 Address: Address,
                 uniCode: [],
                 isRegister: 'true',
@@ -128,7 +128,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 MathScore: Mathscore,
                 EnglishScore: Englishscore,
                 LiteratureScore: Literaturescore,
-                AverageScore: round(Mathscore + Englishscore + Literaturescore, 1),
+                AverageScore: round((Mathscore + Englishscore + Literaturescore, 1)/3),
                 Address: Address,
                 uniCode: [],
                 isRegister: 'true',

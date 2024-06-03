@@ -1,12 +1,12 @@
 import { get, ref, child } from 'firebase/database';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { Descriptions, Divider, Table, Form,Spin } from 'antd';
+import { Descriptions, Divider, Table, Form, Spin } from 'antd';
 import { database } from '../firebaseConfig.js';
 import './css/Modal_detail.css';
 import { useTranslation } from 'react-i18next';
 
-export const Form_Detail = ({ university,loading,setLoading }) => {
+export const Form_Detail = ({ university, loading, setLoading }) => {
     const [student, setStudents] = useState([]);
     const [ form] = Form.useForm();
     const student_regist = university.registeration;
@@ -102,7 +102,7 @@ export const Form_Detail = ({ university,loading,setLoading }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            if (student_regist && typeof student_regist === 'object') { 
+            if (student_regist && typeof student_regist === 'object') {
                 const studentList = Object.values(student_regist).map((student) => student.id);
                 const studentsData = [];
                 for (const studentId of studentList) {
@@ -114,18 +114,18 @@ export const Form_Detail = ({ university,loading,setLoading }) => {
                             studentsData.push({ id: studentId, ...studentData });
                         }
                     } catch (error) {
-                        toast.error('Cannot fetch student details')
+                        toast.error('Cannot fetch student details');
                     }
                 }
                 setLoading(false);
                 setStudents(studentsData);
             } else {
-                toast.error('There are not any students in this school')
+                toast.error('There are not any students in this school');
             }
         };
         fetchData();
     }, [student_regist, setLoading]);
-    
+
     return (
         <>
             <Descriptions title={t('title.uniinf')} column={2}>
@@ -138,26 +138,26 @@ export const Form_Detail = ({ university,loading,setLoading }) => {
             <Divider />
             <h4>{t('title.list')}</h4>
             <Form form={form} component={false}>
-                <Spin spinning={loading} >
-                <Table className='table'
-                    bordered
-                    dataSource={student}
-                    columns={colums}
-                    scroll={{
-                        x: 900,
-                        y: 'calc(100vh - 580px)',
-                    }}
-                    showSorterTooltip={{
-                        target: 'sorter-icon',
-                    }}
-                    pagination={{
-                        onChange: cancel,
-                        showSizeChanger: true,
-                        showQuickJumper: true,
-                    }}
-                />
+                <Spin spinning={loading}>
+                    <Table
+                        className="table"
+                        rowHoverable={false}
+                        dataSource={student}
+                        columns={colums}
+                        scroll={{
+                            x: 900,
+                            y: 'calc(100vh - 580px)',
+                        }}
+                        showSorterTooltip={{
+                            target: 'sorter-icon',
+                        }}
+                        pagination={{
+                            onChange: cancel,
+                            showSizeChanger: true,
+                            showQuickJumper: true,
+                        }}
+                    />
                 </Spin>
-                
             </Form>
         </>
     );

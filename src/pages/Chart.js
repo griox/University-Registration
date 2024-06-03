@@ -7,6 +7,7 @@ import { child, get, getDatabase, ref } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../constants/constants';
 import { useTranslation } from 'react-i18next';
+import { colors } from '@mui/material';
 
 const Chart = () => {
     const { t } = useTranslation('dashboard');
@@ -70,10 +71,13 @@ const Chart = () => {
         ],
         angleField: 'value',
         colorField: 'type',
-        width: 350,
-        height: 350,
+        width: 400,
+        height: 400,
         marginTop: 50,
+        marginLeft: 50,
+
         marginBottom: 50,
+
         label: {
             text: (d) => `${d.value}`,
             position: 'outside',
@@ -96,6 +100,7 @@ const Chart = () => {
             { gender: t('gen.Male'), value: male },
             { gender: t('gen.Female'), value: female },
         ],
+
         angleField: 'value',
         colorField: 'gender',
         width: 300,
@@ -105,6 +110,7 @@ const Chart = () => {
             text: (d) => `${d.gender}\n${d.value}`,
             style: {
                 fontWeight: 'bold',
+                fontSize: '50px',
             },
         },
         legend: {

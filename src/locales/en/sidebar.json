@@ -3,6 +3,8 @@
         "dashboard": "Dashboard",
         "university": "University Managerment",
         "student": "Student Managerment",
-        "register": "Register Account"
+        "register": "Register Account",
+        "profile": "Profile",
+        "logout": "Log out"
     }
 }

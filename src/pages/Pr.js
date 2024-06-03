@@ -16,89 +16,6 @@ import Highlighter from 'react-highlight-words';
 import dayjs from 'dayjs';
 const MAX_COUNT = 5;
 
-const handleSearch = (selectedKeys, confirm, dataIndex, setSearchText, setSearchedColumn) => {
-    confirm();
-    setSearchText(selectedKeys[0]);
-    setSearchedColumn(dataIndex);
-};
-const handleReset = (clearFilters, setSearchText) => {
-    clearFilters();
-    setSearchText('');
-};
-const getColumnSearchProps = (props) => ({
-    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-        <div onKeyDown={(e) => e.stopPropagation()} className="getColumnSearchProps">
-            <Input
-                ref={props.searchInput}
-                placeholder={`Search ${props.dataIndex}`}
-                value={selectedKeys[0]}
-                onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-                onPressEnter={() => handleSearch(selectedKeys, confirm, props.dataIndex)}
-                className="getColumnSearchProps-Input"
-            />
-            <Space>
-                <Button
-                    type="primary"
-                    onClick={() =>
-                        handleSearch(selectedKeys, confirm, props.dataIndex, {
-                            setSearchText: props.setSearchText,
-                            setSearchedColumn: props.setSearchedColumn,
-                        })
-                    }
-                    icon={<SearchOutlined />}
-                    size="small"
-                    className="getColumnSearchProps-Button"
-                >
-                    Search
-                </Button>
-                <Button
-                    onClick={() => clearFilters && handleReset(clearFilters, { setSearchText: props.setSearchText })}
-                    size="small"
-                    className="getColumnSearchProps-Button"
-                >
-                    Reset
-                </Button>
-                <Button
-                    type="link"
-                    size="small"
-                    onClick={() => {
-                        confirm({
-                            closeDropdown: false,
-                        });
-                        props.setSearchText(selectedKeys[0]);
-                        props.setSearchedColumn(props.dataIndex);
-                    }}
-                >
-                    Filter
-                </Button>
-                <Button type="link" size="small" onClick={() => close()}>
-                    Close
-                </Button>
-            </Space>
-        </div>
-    ),
-    filterIcon: (filtered) => <SearchOutlined className={filtered ? 'getColumnSearchProps-filterIcon' : undefined} />,
-    onFilter: (value, record) => record[props.dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
-    onFilterDropdownOpenChange: (visible) => {
-        if (visible) {
-            setTimeout(() => props.searchInput.current?.select(), 100);
-        }
-    },
-    render: (text) =>
-        props.searchedColumn === props.dataIndex ? (
-            <Highlighter
-                highlightStyle={{
-                    backgroundColor: '#ffc069',
-                    padding: 0,
-                }}
-                searchWords={[props.searchText]}
-                autoEscape
-                textToHighlight={text ? text.toString() : ''}
-            />
-        ) : (
-            text
-        ),
-});
 function Pr() {
     const { t } = useTranslation('profile');
     const [suitableSchoolList, setSuitableSchoolList] = useState([]);
@@ -116,33 +33,76 @@ function Pr() {
     const size = 'middle';
     const [image, setImage] = useState(null);
     const dateFormatList = 'DD/MM/YYYY';
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+    };
 
+    const getColumnSearchProps = (dataIndex) => ({
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+            <div onKeyDown={(e) => e.stopPropagation()} className="getColumnSearchProps">
+                <Input
+                    ref={searchInput}
+                    placeholder={`Search ${dataIndex}`}
+                    value={selectedKeys[0]}
+                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                    className="getColumnSearchProps-Input"
+                />
+                <Space>
+                    <Button
+                        type="primary"
+                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                        icon={<SearchOutlined />}
+                        size="small"
+                        className="getColumnSearchProps-Button"
+                    >
+                        Search
+                    </Button>
+
+                    <Button type="link" size="small" onClick={() => close()}>
+                        Close
+                    </Button>
+                </Space>
+            </div>
+        ),
+        filterIcon: (filtered) => (
+            <SearchOutlined className={filtered ? 'getColumnSearchProps-filterIcon' : undefined} />
+        ),
+        onFilter: (value, record) => record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+        onFilterDropdownOpenChange: (visible) => {
+            if (visible) {
+                setTimeout(() => searchInput.current?.select(), 100);
+            }
+        },
+        render: (text) =>
+            searchedColumn === dataIndex ? (
+                <Highlighter
+                    highlightStyle={{
+                        backgroundColor: '#ffc069',
+                        padding: 0,
+                    }}
+                    searchWords={[searchText]}
+                    autoEscape
+                    textToHighlight={text ? text.toString() : ''}
+                />
+            ) : (
+                text
+            ),
+    });
     const columns = [
         {
             title: t('table.Code'),
             dataIndex: 'code',
             key: 'code',
-            ...getColumnSearchProps({
-                dataIndex: 'code',
-                searchInput: searchInput,
-                searchText: searchText,
-                searchedColumn: searchedColumn,
-                setSearchText: setSearchText,
-                setSearchedColumn: setSearchedColumn,
-            }),
+            ...getColumnSearchProps('code'),
         },
         {
             title: t('table.Name'),
             dataIndex: 'name',
             key: 'name',
-            ...getColumnSearchProps({
-                dataIndex: 'code',
-                searchInput: searchInput,
-                searchText: searchText,
-                searchedColumn: searchedColumn,
-                setSearchText: setSearchText,
-                setSearchedColumn: setSearchedColumn,
-            }),
+            ...getColumnSearchProps('name'),
         },
         {
             title: t('table.Entrance Score'),
@@ -391,6 +351,7 @@ function Pr() {
                                 <h1>{t('title.ID')}: </h1>
                                 <Space.Compact size="large">
                                     <Input
+                                        disabled
                                         className="g-s size-input"
                                         value={detail.id}
                                         onChange={(e) => handleChange(e, 'id')}
@@ -559,7 +520,7 @@ function Pr() {
                             dataSource={suitableSchoolList}
                             columns={columns}
                             rowKey="code"
-                            scroll={{ x: 190, y: 'calc(100vh - 590px)' }}
+                            scroll={{ x: 190, y: 'calc(100vh - 600px)' }}
                             pagination={{
                                 defaultPageSize: '10',
                                 pageSizeOptions: ['10', '20', '40', '100'],
@@ -568,6 +529,7 @@ function Pr() {
                                 showQuickJumper: true,
                                 showTotal: (total) => `Total ${total} items`,
                             }}
+                            rowHoverable={false}
                             className="table"
                         />
                     </Spin>

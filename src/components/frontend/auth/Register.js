@@ -205,6 +205,17 @@ const Register = () => {
         });
     };
 
+    const handleEnterKey = (e) => {
+        if (e.key === 'Enter') {
+            regist({
+                role: 'user',
+                name: fullName,
+                email: email,
+                password: password,
+                againPassword: againPassword,
+            });
+        }
+    };
     return (
         <>
             <div className="background">
@@ -216,13 +227,12 @@ const Register = () => {
 
                         <p className="featured">
                             {t('title.inform register')}
-                            <br /> {t('title.or')} <br /> <br />
-                            <span>
-                                <button className="btn-getback" onClick={() => history.goBack()}>
-                                    {t('button.get back')}
-                                </button>
-                            </span>
+                            <br /> {t('title.or')}
                         </p>
+
+                        <Button className="btn-getback" onClick={() => history.goBack()}>
+                            <span>{t('button.get back')}</span>
+                        </Button>
                     </div>
 
                     <div className="col col-2">
@@ -240,6 +250,7 @@ const Register = () => {
                                             required
                                             value={fullName}
                                             onChange={(e) => setFullName(e.target.value)}
+                                            onKeyDown={handleEnterKey}
                                         />
                                         <i className="bx bx-user icon"></i>
                                     </div>
@@ -250,6 +261,7 @@ const Register = () => {
                                             placeholder={t('title.email')}
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
+                                            onKeyDown={handleEnterKey}
                                         />
                                         <i className="bx bx-envelope icon"></i>
                                     </div>
@@ -261,6 +273,7 @@ const Register = () => {
                                             required
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
+                                            onKeyDown={handleEnterKey}
                                         />
                                         <i className="bx bx-lock-alt icon"></i>
                                         <i className="fa fa-eye eye1 icon"></i>
@@ -274,6 +287,7 @@ const Register = () => {
                                             required
                                             value={againPassword}
                                             onChange={(e) => setAgainPassword(e.target.value)}
+                                            onKeyDown={handleEnterKey}
                                         />
                                         <i className="bx bx-lock-alt icon"></i>
                                         <i className="fa fa-eye eye2 icon"></i>
@@ -284,7 +298,6 @@ const Register = () => {
                                             {localStorage.getItem('Role') === 'admin' ? (
                                                 <Button
                                                     loading={loadingUser}
-                                                    type="submit"
                                                     className="input-submit"
                                                     onClick={() =>
                                                         regist({
@@ -295,6 +308,7 @@ const Register = () => {
                                                             againPassword: againPassword,
                                                         })
                                                     }
+                                                    onKeyDown={handleEnterKey}
                                                 >
                                                     <span>{t('button.regist')}</span>
                                                 </Button>
@@ -302,7 +316,7 @@ const Register = () => {
                                                 <>
                                                     <Button
                                                         loading={loadingUser}
-                                                        className="button-clear"
+                                                        className=" input-submit"
                                                         onClick={() =>
                                                             regist({
                                                                 role: 'user',
@@ -317,7 +331,7 @@ const Register = () => {
                                                     </Button>
                                                     <Button
                                                         loading={loadingAdmin}
-                                                        className="button-submit"
+                                                        className=" input-submit"
                                                         onClick={() =>
                                                             regist({
                                                                 role: 'admin',
@@ -334,11 +348,10 @@ const Register = () => {
                                             )}
                                         </div>
                                     </div>
-                                    <Button className="input-box" loading={user}>
-                                        <div type="submit" className="input-submit" onClick={clear}>
-                                            <span className="clear">{t('button.clear')}</span>
-                                            <i className="bx bx-right-arrow-alt"></i>
-                                        </div>
+
+                                    <Button className=" input-submit" loading={user} onClick={clear}>
+                                        <span className="clear">{t('button.clear')}</span>
+                                        <i className="bx bx-right-arrow-alt"></i>
                                     </Button>
 
                                     <div>

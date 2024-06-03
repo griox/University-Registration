@@ -6,7 +6,8 @@ import { initializeApp } from 'firebase/app';
 import { child, get, getDatabase, query, ref, update } from 'firebase/database';
 import { addDoc, collection, doc, getFirestore, onSnapshot, orderBy, updateDoc } from 'firebase/firestore';
 import 'firebase/firestore';
-
+const Bin = () => {};
+export default Bin;
 // const Bin = () => {
 //     const [l, setL] = useState([]);
 //     const [e, setE] = useState([]);

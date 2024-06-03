@@ -34,6 +34,7 @@ const Chart = () => {
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const config = {
+        
         data: [
             { subject: t('subj.Math'), score: mathAS },
             { subject: t('subj.English'), score: englishAS },

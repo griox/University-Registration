@@ -7,3 +7,8 @@
 .ant-descriptions-item-container .ant-descriptions-item-content{
   color: var(--body_color);
 }
+.decription{
+  color: var(--name-colorY);
+    align-items: center;
+    justify-content: center;
+}

@@ -426,7 +426,7 @@ const StudentList = () => {
                 return (
                     <>
                         {renderNameWithGender(record.gender)}
-                        <Tooltip title={temp(record.uniCode) ? 'can not register more' : ''}>
+                        <Tooltip title={temp(record.uniCode) ? 'maximum number of shools' : ''}>
                             <span className={temp(record.uniCode) ? 'Can_Regist' : 'Not_Regist'}>{text}</span>
                         </Tooltip>
                     </>
@@ -443,7 +443,7 @@ const StudentList = () => {
             ...getColumnSearchProps('email'),
             render: (text, record) => (
                 <Tooltip title={record.isRegister ? t('tooltip.account1') : t('tooltip.account2')}>
-                    <span style={{ color: record.isRegister ? 'green' : 'red' }}>{text}</span>
+                    <span className={ record.isRegister ? 'Registered' : 'UnRegistered' }>{text}</span>
                 </Tooltip>
             ),
             key: 'email',
@@ -642,7 +642,7 @@ const StudentList = () => {
                                 columns={mergedColumns}
                                 scroll={{
                                     x: 'calc(100vh - 320px)',
-                                    y: 'calc(100vh - 350px)',
+                                    y: 'calc(100vh - 300px)',
                                 }}
                                 rowClassName="editable-row"
                                 showSorterTooltip={{

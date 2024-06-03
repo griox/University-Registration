@@ -27,10 +27,13 @@
     align-items: center;
     display: flex;
     flex-grow: 1;
+  
 }
 .ant-table {
     background-color: var(--body_background) !important;
     color: var(--body_color) !important;
+    padding: 0;
+    margin: 0;
 }
 .editable-row {
     background-color: var(--body_background);

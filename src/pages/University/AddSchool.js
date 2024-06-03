@@ -487,7 +487,7 @@ const AddSchool = () => {
                                     showQuickJumper: true,
                                     showTotal: (total) => `${t('title.total')} ${total}`,
                                 }}
-                                scroll={{ x: 'calc(100vh - 320px)', y: 'calc(100vh - 350px)' }}
+                                scroll={{ x: 'calc(100vh - 320px)', y: 'calc(100vh - 300px)' }}
                                 components={{
                                     body: {
                                         cell: EditableCell,
@@ -506,7 +506,8 @@ const AddSchool = () => {
                 onCancel={handleCancel}
                 width={1000}
                 height={500}
-                style={{ marginLeft: '25%' }}
+                style={{ marginLeft: '20%' }}
+                footer={null}
             >
                 <FormDetail
                     university={selectedUniverse}

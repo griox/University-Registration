@@ -4,8 +4,6 @@ import 'firebase/auth';
 import { ref, child, get, set } from 'firebase/database';
 import { toast } from 'react-toastify';
 import { BankOutlined, InfoCircleOutlined } from '@ant-design/icons';
-import { ref, get, set } from 'firebase/database';
-import { toast } from 'react-toastify';
 import { database } from '../firebaseConfig.js';
 import { useTranslation } from 'react-i18next';
 import '../University/css/formAddSchool.css';
@@ -144,10 +142,7 @@ const FormAdd = ({ UniData, setUniData }) => {
           ]}
         />
       );
-
-    function validateName(uniName) {
-        return /^[A-Za-zÀ-ÿ]+$/.test(uniName);
-    }
+      
     function validateUniName(uniName) {
         return /^\D+$/u.test(uniName);
     }

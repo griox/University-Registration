@@ -486,7 +486,6 @@ const AddSchool = () => {
             <Modal
                 open={isModalDetailVisible}
                 onCancel={handleCancel}
-                onOk={handleOk}
                 width={1000}
                 height={500}
                 style={{ marginLeft: '25%' }}

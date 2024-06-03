@@ -95,6 +95,7 @@
     font-weight: 500;
     color: white;
     margin-bottom: 0;
+    margin-right: 8px;
 }
 
 .ant-btn-primary:not(:disabled):not(.ant-btn-disabled):hover {

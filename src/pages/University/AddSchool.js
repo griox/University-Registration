@@ -38,12 +38,19 @@ const AddSchool = () => {
     const [searchedColumn, setSearchedColumn] = useState('');
     const [, setPagination] = useState({ current: 1, pageSize: 5 });
     const [loading, setLoading] = useState(true);
-    const [numberRegist, setNumberRegist] = useState(null);
+    const [numberRegist, setNumberRegist] = useState('');
     const tableRef = useRef(null);
     const searchInput = useRef(null);
 
     const isEditing = (record) => record.key === editingKey;
-
+    const checkTargetError = (record) => {
+        if (record.target < record.isRegistered) {
+            setNumberRegist('Target must not be less than Number of registration');
+        } else {
+            setNumberRegist('');
+        }
+    };
+    
     const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
         const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
         return (

@@ -324,7 +324,6 @@ const StudentList = () => {
         }
     };
     const renderNameWithGender = (record) => {
-        console.log(record);
         return (
             <span className={record === 'Male' ? 'male' : 'female'}>
                 {record === 'Male' ? <ManOutlined /> : <WomanOutlined />}

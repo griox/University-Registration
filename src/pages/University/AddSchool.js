@@ -50,9 +50,16 @@ const AddSchool = () => {
             setNumberRegist('');
         }
     };
-    
+
     const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
-        const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
+        const [temp, setTemp] = useState('');
+        const handleOnchange = (e) => {
+            if (e.target.value.match(/[0-9]+/) === null) {
+                setTemp(e.target.value);
+            }
+        };
+        const inputNode =
+            inputType === 'number' ? <InputNumber /> : <Input onChange={(e) => handleOnchange(e)} value={temp} />;
         return (
             <td {...restProps}>
                 {editing ? (
@@ -466,7 +473,7 @@ const AddSchool = () => {
                                     showQuickJumper: true,
                                     showTotal: (total) => `${t('title.total')} ${total}`,
                                 }}
-                                scroll={{ x: 'calc(100vw - 320px)', y: 'calc(100vh - 350px)' }}
+                                scroll={{ x: 'calc(100vh - 320px)', y: 'calc(100vh - 350px)' }}
                                 components={{
                                     body: {
                                         cell: EditableCell,
@@ -480,7 +487,14 @@ const AddSchool = () => {
                     </div>
                 </Space>
             </Form>
-            <Modal open={isModalDetailVisible} onCancel={handleCancel} onOk={handleOk} width={1000} height={500}>
+            <Modal
+                open={isModalDetailVisible}
+                onCancel={handleCancel}
+                onOk={handleOk}
+                width={1000}
+                height={500}
+                style={{ marginLeft: '25%' }}
+            >
                 <FormDetail
                     university={selectedUniverse}
                     open={isModalDetailVisible}

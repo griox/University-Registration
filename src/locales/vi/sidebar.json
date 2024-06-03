@@ -3,6 +3,8 @@
         "dashboard": "Bảng điều khiển",
         "university": "Quản lí trường đại học",
         "student": "Quản lí sinh viên",
-        "register": "Đăng kí tài khoản"
+        "register": "Đăng kí tài khoản",
+        "profile": "Hồ sơ",
+        "logout": "Đăng xuất"
     }
 }

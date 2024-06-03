@@ -109,16 +109,16 @@ export const validatePasswordFormat = (password) => {
     if (password.length < 8) {
         return false;
     }
-    if (password.match(/[a-z]+/) === false) {
+    if (password.match(/[a-z]+/) === null) {
         return false;
     }
-    if (password.match(/[A-Z]+/) === false) {
+    if (password.match(/[A-Z]+/) === null) {
         return false;
     }
-    if (password.match(/[0-9]+/) === false) {
+    if (password.match(/[0-9]+/) === null) {
         return false;
     }
-    if (password.match(/[$@#&!]+/) === false) {
+    if (password.match(/[$@#&!]+/) === null) {
         return false;
     }
     return true;

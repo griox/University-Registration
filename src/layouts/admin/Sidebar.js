@@ -12,6 +12,8 @@ import SchoolIcon from '@mui/icons-material/School';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { Modal } from 'antd';
+
 const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
     // const theme = useTheme();
     // const colors = tokens(theme.palette.mode);
@@ -39,6 +41,7 @@ const Sidebar = () => {
     const { t } = useTranslation('sidebar');
     const [isCollapsed, setIsCollapsed] = useState(() => JSON.parse(localStorage.getItem('sidebarCollapsed')) || false);
     const [selected, setSelected] = useState(() => localStorage.getItem('selectedMenuItem') || 'Dashboard');
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const isInitialMountCollapsed = useRef(true);
     const isInitialMountSelected = useRef(true);
@@ -100,23 +103,29 @@ const Sidebar = () => {
     const history = useHistory();
 
     const handleLogout = () => {
-        const confirm = window.confirm('Are you sure to logout of this system?');
-        if (confirm) {
-            localStorage.setItem('Infor', JSON.stringify(''));
-            localStorage.removeItem('isLoggedIn');
-            localStorage.removeItem('selectedMenuItem');
-            localStorage.setItem('Name', '');
-            localStorage.setItem('Email', JSON.stringify(''));
-            localStorage.setItem('Role', '');
+        localStorage.setItem('Infor', JSON.stringify(''));
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('selectedMenuItem');
+        localStorage.setItem('Name', '');
+        localStorage.setItem('Email', JSON.stringify(''));
+        localStorage.setItem('Role', '');
 
-            dispatch({ type: 'logout' });
+        dispatch({ type: 'logout' });
 
-            history.push('/');
-        } else {
-            return;
-        }
+        history.push('/');
+    };
+    const showModal = () => {
+        setIsModalOpen(true);
     };
 
+    const handleOk = () => {
+        setIsModalOpen(false);
+        handleLogout();
+    };
+
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
     return (
         <Box
             sx={{
@@ -239,12 +248,13 @@ const Sidebar = () => {
                                     setSelected={setSelected}
                                     tooltip="Register Account"
                                 />
+                               
                             </>
                         )}
                         {localStorage.getItem('Role') === 'user' && (
                             <>
                                 <Item
-                                    title="Profile"
+                                    title={t('title.profile')}
                                     to="/admin/profile"
                                     icon={<ContactsOutlinedIcon />}
                                     selected={selected}
@@ -254,8 +264,11 @@ const Sidebar = () => {
                             </>
                         )}
                     </Box>
+                    <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                        <p>Do you want to log out?</p>
+                    </Modal>
                     <MenuItem
-                        onClick={handleLogout}
+                        onClick={showModal}
                         className="logout-item"
                         style={{
                             position: 'absolute',
@@ -278,7 +291,7 @@ const Sidebar = () => {
                                 d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h7v2H5v14h7v2zm11-4l-1.375-1.45l2.55-2.55H9v-2h8.175l-2.55-2.55L16 7l5 5z"
                             />
                         </svg>
-                        <span style={{ color: '#ff4d4f' }}> Logout</span>
+                        <span style={{ color: '#ff4d4f' }}> {t('title.logout')}</span>
                     </MenuItem>
                 </Menu>
             </ProSidebar>

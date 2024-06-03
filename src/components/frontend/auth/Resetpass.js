@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
-// import 'boxicons/css/boxicons.min.css';
 import 'firebase/auth';
 import { Link } from 'react-router-dom';
 import '../../../assets/css/login.css';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../../../constants/constants';
 import { child, get, getDatabase, ref, update } from 'firebase/database';
-import { encodePath, validateEmailFormat, validatePasswordFormat } from '../../../commonFunctions';
+import { encodePath, validatePasswordFormat } from '../../../commonFunctions';
 import { toast } from 'react-toastify';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom';
-// import '../../../assets/js/login';
 import bcrypt from 'bcryptjs';
-import { Button } from 'antd';
+import { Button, Dropdown, Space, Typography } from 'antd';
+import { useTranslation } from 'react-i18next';
+import { DownOutlined } from '@ant-design/icons';
 
 export const Forgetpass = () => {
     const app = initializeApp(firebaseConfig);
@@ -22,7 +22,52 @@ export const Forgetpass = () => {
     const [reNewPass, setReNewPass] = useState('');
     const salt = bcrypt.genSaltSync(10);
     const [loadingResetPass, setLoadingResetPass] = useState(false);
+    const { t, i18n } = useTranslation('resetpassword');
+    const [link, setLink] = useState(null);
+    const items = [
+        {
+            key: '1',
+            label: 'English',
+            onClick: () => handleLanguage('en'),
+        },
+        {
+            key: '2',
+            label: 'Tiếng Việt',
+            onClick: () => handleLanguage('vi'),
+        },
+    ];
+    useEffect(() => {
+        const fetch = async () => {
+            const tempEmail = localStorage.getItem('Email');
+            get(child(ref(db), `Account/` + encodePath(tempEmail))).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const x = snapshot.val();
+                    if (x.link !== undefined) {
+                        if (x.link !== '') {
+                            console.log('not undefined');
+                            let hrefCurrent = window.location.href;
 
+                            if (hrefCurrent.includes(x.link)) {
+                                console.log('set thanh true');
+                                setLink((pre) => true);
+                            } else {
+                                console.log('set thanh false');
+
+                                setLink((pre) => false);
+                            }
+                            console.log(link);
+                        } else {
+                        }
+                    } else {
+                        setLink(false);
+                    }
+                }
+            });
+        };
+
+        const timer = setTimeout(fetch, 10);
+        return () => clearTimeout(timer);
+    }, [db]);
     useEffect(() => {
         const passwordInput1 = document.querySelector('.pass_login_1');
         const eyeBtn1 = document.querySelector('.eye1');
@@ -109,12 +154,6 @@ export const Forgetpass = () => {
 
             toast.error('Your email was not found');
             return;
-        } else if (validateEmailFormat(email) === 0) {
-            console.log(validateEmailFormat(email));
-            setLoadingResetPass(false);
-
-            toast.error('Your email is not in the correct format');
-            return;
         } else {
             if (newPass === '') {
                 setLoadingResetPass(false);
@@ -129,9 +168,12 @@ export const Forgetpass = () => {
                 return;
             }
             if (validatePasswordFormat(newPass) === false) {
+                setLoadingResetPass(false);
+
                 toast.error(
                     'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 special character, 1 number, and be a minimum of 8 characters long.',
                 );
+                return;
             }
             get(child(ref(db), `Account/`))
                 .then((snapshot) => {
@@ -145,7 +187,10 @@ export const Forgetpass = () => {
                             if (newPass === reNewPass) {
                                 try {
                                     var hash = bcrypt.hashSync(newPass, salt);
+                                    console.log(hash);
+                                    console.log(encodeEmail);
                                     update(ref(db, `Account/` + encodeEmail), {
+                                        link: '',
                                         password: hash,
                                     })
                                         .then(() => setLoadingResetPass(false), handleLogout())
@@ -155,7 +200,7 @@ export const Forgetpass = () => {
                                 } catch (error) {
                                     setLoadingResetPass(false);
 
-                                    toast.error('Your request is failed');
+                                    toast.error(error.message);
                                 }
                             } else {
                                 setLoadingResetPass(false);
@@ -179,80 +224,207 @@ export const Forgetpass = () => {
                 });
         }
     };
+    const handleLanguage = (lng) => {
+        i18n.changeLanguage(lng);
+    };
+    const handleEnterKey = (e) => {
+        if (e.key === 'Enter') {
+            handlePassword();
+        }
+    };
     return (
         <>
-            <div className="background">
-                <div className="form-container">
-                    <div className="col col-1">
-                        <div className="image_layer">
-                            <img src="assets/login/img/FPTnew.png" className="form_img_main" alt="" />
+            {link === true ? (
+                <div className="background">
+                    {console.log('true')}
+
+                    {console.log(window.location.href)}
+                    <div className="form-container">
+                        <div className="col col-1">
+                            <div className="image_layer">
+                                <img src="assets/login/img/FPTnew.png" className="form_img_main" alt="" />
+                            </div>
+
+                            <p className="featured">
+                                {t('title.inform forget')}
+                                <br />
+                                {t('title.or')} <br />
+                            </p>
+                            <Link to="/login">
+                                <Button className="btn-getback">
+                                    <span>{t('button.get back')}</span>
+                                </Button>
+                            </Link>
                         </div>
 
-                        <p className="featured">
-                            Please enter EMAIL to continue <br /> or <br /> <br />
-                            <span>
-                                <Link className="btn-getback" to="/login">
-                                    Get back
-                                </Link>
-                            </span>
-                        </p>
-                    </div>
-
-                    <div className="col col-2">
-                        <form action="">
-                            {/* Trang đăng nhập */}
-                            <div className="login-form">
-                                <br />
-                                <br />
-                                <br />
-                                <br />
-                                <div className="form-title">
-                                    <span>RESET PASSWORD</span>
-                                </div>
-                                <div className="form-inputs">
-                                    <div className="input-box">
-                                        <input
-                                            type="password"
-                                            className="input-field pass_login_1"
-                                            placeholder="New password"
-                                            required
-                                            value={newPass}
-                                            onChange={(e) => setNewPass(e.target.value)}
-                                        />
-                                        <i className="bx bx-lock-alt icon"></i>
-                                        <i className="fa fa-eye eye1 icon"></i>
+                        <div className="col col-2">
+                            <form action="">
+                                {/* Trang đăng nhập */}
+                                <div className="login-form">
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <div className="form-title">
+                                        <span>{t('header')}</span>
                                     </div>
-
-                                    <div className="input-box">
-                                        <input
-                                            type="password"
-                                            className="input-field con_pass_login"
-                                            placeholder="Re-New Password"
-                                            required
-                                            value={reNewPass}
-                                            onChange={(e) => setReNewPass(e.target.value)}
-                                        />
-                                        <i className="bx bx-lock-alt icon"></i>
-                                        <i className="fa fa-eye eye2 icon"></i>
-                                    </div>
-
-                                    <Button
-                                        className="input-box"
-                                        onClick={() => handlePassword()}
-                                        style={{ backgroundColor: '#003865', border: 'none' }}
-                                        loading={loadingResetPass}
-                                    >
-                                        <div className="input-submit">
-                                            <span>Continue</span>
-                                            <i className="bx bx-right-arrow-alt"></i>
+                                    <div className="form-inputs">
+                                        <div className="input-box">
+                                            <input
+                                                type="password"
+                                                className="input-field pass_login_1"
+                                                placeholder={t('title.newPassword')}
+                                                required
+                                                value={newPass}
+                                                onChange={(e) => setNewPass(e.target.value)}
+                                                onKeyDown={handleEnterKey}
+                                            />
+                                            <i className="bx bx-lock-alt icon"></i>
+                                            <i className="fa fa-eye eye1 icon"></i>
                                         </div>
-                                    </Button>
+
+                                        <div className="input-box">
+                                            <input
+                                                type="password"
+                                                className="input-field con_pass_login"
+                                                placeholder={t('title.reNewPassword')}
+                                                required
+                                                value={reNewPass}
+                                                onChange={(e) => setReNewPass(e.target.value)}
+                                                onKeyDown={handleEnterKey}
+                                            />
+                                            <i className="bx bx-lock-alt icon"></i>
+                                            <i className="fa fa-eye eye2 icon"></i>
+                                        </div>
+
+                                        <Button
+                                            className=" input-submit"
+                                            onClick={() => handlePassword()}
+                                            loading={loadingResetPass}
+                                        >
+                                            <span>{t('button.continue')}</span>
+                                            <i className="bx bx-right-arrow-alt"></i>
+                                        </Button>
+                                        <div>
+                                            <Dropdown
+                                                className="drop-menu"
+                                                menu={{
+                                                    items,
+                                                    selectable: true,
+                                                    defaultSelectedKeys: ['1'],
+                                                }}
+                                            >
+                                                <Typography.Link>
+                                                    <Space className="title-drop">
+                                                        {t('title.language')}
+                                                        <DownOutlined />
+                                                    </Space>
+                                                </Typography.Link>
+                                            </Dropdown>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
+            ) : (
+                <div className="background">
+                    {console.log('false')}
+
+                    {console.log(window.location.href)}
+                    <div className="form-container">
+                        <div className="col col-1">
+                            <div className="image_layer">
+                                <img src="assets/login/img/FPTnew.png" className="form_img_main" alt="" />
+                            </div>
+
+                            <p className="featured">
+                                {t('title.inform forget')}
+                                <br />
+                                {t('title.or')} <br />
+                            </p>
+                            <Link to="/login">
+                                <Button className="btn-getback">
+                                    <span>{t('button.get back')}</span>
+                                </Button>
+                            </Link>
+                        </div>
+
+                        <div className="col col-2">
+                            <form action="">
+                                {/* Trang đăng nhập */}
+                                <div className="login-form">
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <br />
+                                    <div className="form-title">
+                                        <span>{t('invalid')}</span>
+                                    </div>
+                                    <div className="form-inputs">
+                                        <div className="input-box">
+                                            <input
+                                                type="password"
+                                                className="input-field pass_login_1"
+                                                placeholder={t('title.newPassword')}
+                                                required
+                                                value={newPass}
+                                                onChange={(e) => setNewPass(e.target.value)}
+                                                onKeyDown={handleEnterKey}
+                                                disabled
+                                            />
+                                            <i className="bx bx-lock-alt icon"></i>
+                                            <i className="fa fa-eye eye1 icon"></i>
+                                        </div>
+
+                                        <div className="input-box">
+                                            <input
+                                                type="password"
+                                                className="input-field con_pass_login"
+                                                placeholder={t('title.reNewPassword')}
+                                                required
+                                                value={reNewPass}
+                                                onChange={(e) => setReNewPass(e.target.value)}
+                                                onKeyDown={handleEnterKey}
+                                                disabled
+                                            />
+                                            <i className="bx bx-lock-alt icon"></i>
+                                            <i className="fa fa-eye eye2 icon"></i>
+                                        </div>
+
+                                        <Button
+                                            className=" input-submit"
+                                            onClick={() => handlePassword()}
+                                            loading={loadingResetPass}
+                                        >
+                                            <span>{t('button.continue')}</span>
+                                            <i className="bx bx-right-arrow-alt"></i>
+                                        </Button>
+                                        <div>
+                                            <Dropdown
+                                                className="drop-menu"
+                                                menu={{
+                                                    items,
+                                                    selectable: true,
+                                                    defaultSelectedKeys: ['1'],
+                                                }}
+                                            >
+                                                <Typography.Link>
+                                                    <Space className="title-drop">
+                                                        {t('title.language')}
+                                                        <DownOutlined />
+                                                    </Space>
+                                                </Typography.Link>
+                                            </Dropdown>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 };

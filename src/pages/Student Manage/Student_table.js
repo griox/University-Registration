@@ -573,6 +573,27 @@ const StudentList = () => {
             <Space direction="vertical" size={'small'}>
                 <div className="table">
                     <ModalAdd studentData={studentData} setStudentData={setStudentData} />
+                    <Modal
+                        title="Basic Modal"
+                        open={isModalOpen}
+                        // onOk={() => handleOk()}
+                        onCancel={handleCancel}
+                        confirmLoading={true}
+                        destroyOnClose
+                        footer={[
+                            <Button onClick={handleOk} loading={bell}>
+                                Ok
+                            </Button>,
+                            <Button onClick={handleCancel}>Cancel</Button>,
+                        ]}
+                    >
+                        {/* <input type="file" id="fileInput" className="avatar-input" /> */}
+
+                        <Input onChange={(e) => setMess(e.target.value)} />
+                    </Modal>
+                    <Button type="primary" onClick={showModal}>
+                        Send inform
+                    </Button>
                     <ModalDetail
                         visible={isModalVisible}
                         onClose={() => {
@@ -593,7 +614,7 @@ const StudentList = () => {
                                 dataSource={studentData}
                                 columns={mergedColumns}
                                 scroll={{
-                                    x: 'calc(100vw - 320px)',
+                                    x: 'calc(100vh - 320px)',
                                     y: 'calc(100vh - 350px)',
                                 }}
                                 rowClassName="editable-row"

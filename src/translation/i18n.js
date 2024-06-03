@@ -28,9 +28,10 @@ import DETAILSTUDENT_EN from '../locales/en/detailStudent.json';
 import DETAILSTUDENT_VI from '../locales/vi/detailStudent.json';
 import MODALUNIVERSITY_EN from '../locales/en/modalUniversity.json';
 import MODALUNIVERSITY_VI from '../locales/vi/modalUniversity.json';
-import MODALSTUDENT_EN  from '../locales/en/modalStudent.json';
+import MODALSTUDENT_EN from '../locales/en/modalStudent.json';
 import MODALSTUDENT_VI from '../locales/vi/modalStudent.json';
-
+import RESETPASSWORD_EN from '../locales/en/resetpassword.json';
+import RESETPASSWORD_VI from '../locales/vi/resetpassword.json';
 export const locales = {
     en: 'English',
     vi: 'Tiếng việt',
@@ -52,6 +53,7 @@ const resources = {
         detailstudent: DETAILSTUDENT_EN,
         modalUni: MODALUNIVERSITY_EN,
         modalStudent: MODALSTUDENT_EN,
+        resetpassword: RESETPASSWORD_EN,
     },
     vi: {
         home: HOME_VI,
@@ -69,13 +71,25 @@ const resources = {
         detailstudent: DETAILSTUDENT_VI,
         modalUni: MODALUNIVERSITY_VI,
         modalStudent: MODALSTUDENT_VI,
+        resetpassword: RESETPASSWORD_VI,
     },
 };
 const defaultNs = 'product';
 i18n.use(initReactI18next).init({
     resources,
     lng: 'en',
-    ns: ['home', 'profile', 'university', 'student', 'dashboard', 'register', 'login', 'changePassword', 'navbar'],
+    ns: [
+        'home',
+        'profile',
+        'university',
+        'student',
+        'dashboard',
+        'register',
+        'login',
+        'changePassword',
+        'navbar',
+        'resetpassword',
+    ],
     fallbackLng: 'en',
     defaultNs,
     interpolation: {

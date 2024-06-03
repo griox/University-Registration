@@ -12,6 +12,8 @@ import { useTranslation } from 'react-i18next';
 import { DownOutlined } from '@ant-design/icons';
 import { Button, Dropdown, Space, Typography } from 'antd';
 import bcrypt from 'bcryptjs';
+import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
+
 export const Login = () => {
     const { t, i18n } = useTranslation('login');
     const [email, setEmail] = useState('');
@@ -20,6 +22,7 @@ export const Login = () => {
     const [rememberMe, setRememberMe] = useState(false);
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    const auth = getAuth();
     const [loadingLogin, setLoadingLogin] = useState(false);
 
     useEffect(() => {
@@ -189,6 +192,19 @@ export const Login = () => {
             getdt(email, password);
         }
     };
+    const loginGoogle = () => {
+        const provider = new GoogleAuthProvider();
+        signInWithPopup(auth, provider).then(async (result) => {
+            console.log(result);
+            if (result.user) {
+                toast.success('User logged in successfully', {
+                    position: 'top-center',
+                });
+                // <Link to="/admin/dashboard" />;
+                // window.location.href = '/admin/dashboard';
+            }
+        });
+    };
     return (
         <>
             <div className="background">
@@ -199,13 +215,13 @@ export const Login = () => {
                         </div>
 
                         <p className="featured">
-                            {t('title.inform login')} <br /> {t('title.or')} <br /> <br />
-                            <span>
-                                <Link className="btn-getback" to="/">
-                                    {t('button.get back')}
-                                </Link>
-                            </span>
+                            {t('title.inform login')} <br /> {t('title.or')}
                         </p>
+                        <Link to="/login">
+                            <Button className="btn-getback">
+                                <span>{t('button.get back')}</span>
+                            </Button>
+                        </Link>
                     </div>
 
                     <div className="col col-2">
@@ -254,15 +270,16 @@ export const Login = () => {
                                         </div>
                                     </div>
                                     <Button
-                                        style={{ backgroundColor: '#003865', border: 'none' }}
-                                        className="input-box"
+                                        className="input-submit"
                                         onClick={() => getdt(email, password)}
                                         loading={loadingLogin}
                                     >
-                                        <div className="input-submit">
-                                            <span>{t('button.log in')}</span>
-                                            <i className="bx bx-right-arrow-alt"></i>
-                                        </div>
+                                        <span>{t('button.log in')}</span>
+                                        <i className="bx bx-right-arrow-alt"></i>
+                                    </Button>
+                                    <Button className="input-submit" onClick={loginGoogle} loading={loadingLogin}>
+                                        <span>{'Đăng nhập với google'}</span>
+                                        <i className="bx bx-right-arrow-alt"></i>
                                     </Button>
 
                                     <div>

@@ -223,6 +223,11 @@ const Changepass = () => {
             }
         });
     };
+    const handleEnterKey = (e) => {
+        if (e.key === 'Enter') {
+            changePassWord();
+        }
+    };
     return (
         <>
             <div className="background">
@@ -233,13 +238,11 @@ const Changepass = () => {
                         </div>
 
                         <p className="featured">
-                            {t('title.inform changepassword')} <br /> {t('title.or')} <br /> <br />
-                            <span>
-                                <button onClick={() => history.goBack()} className="btn-getback">
-                                    {t('button.get back')}
-                                </button>
-                            </span>
+                            {t('title.inform changepassword')} <br /> {t('title.or')}
                         </p>
+                        <Button onClick={() => history.goBack()} className="btn-getback">
+                            {t('button.get back')}
+                        </Button>
                     </div>
 
                     <div className="col col-2">
@@ -259,6 +262,7 @@ const Changepass = () => {
                                             required
                                             value={oldPass}
                                             onChange={(e) => setOldPass(e.target.value)}
+                                            onKeyDown={handleEnterKey}
                                         />
                                         <i className="bx bx-lock-alt icon"></i>
                                         <i className="fa fa-eye eye1 icon"></i>
@@ -272,6 +276,7 @@ const Changepass = () => {
                                             required
                                             value={newPass}
                                             onChange={(e) => setNewPass(e.target.value)}
+                                            onKeyDown={handleEnterKey}
                                         />
                                         <i className="bx bx-lock-alt icon"></i>
                                         <i className="fa fa-eye eye2 icon"></i>
@@ -285,15 +290,16 @@ const Changepass = () => {
                                             required
                                             value={reNewPass}
                                             onChange={(e) => setReNewPass(e.target.value)}
+                                            onKeyDown={handleEnterKey}
                                         />
                                         <i className="bx bx-lock-alt icon"></i>
                                         <i className="fa fa-eye eye3 icon"></i>
                                     </div>
                                     <div className="input-box">
                                         <br />
+
                                         <Button
                                             loading={loadingChangePass}
-                                            type="submit"
                                             className="input-submit"
                                             onClick={changePassWord}
                                         >
@@ -302,12 +308,7 @@ const Changepass = () => {
                                         </Button>
                                     </div>
                                     <div className="input-box">
-                                        <Button
-                                            loading={loadingClear}
-                                            type="submit"
-                                            className="input-submit"
-                                            onClick={clear}
-                                        >
+                                        <Button loading={loadingClear} className="input-submit" onClick={clear}>
                                             <span>{t('button.clear')}</span>
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </Button>

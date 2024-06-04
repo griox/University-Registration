@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin, Modal, message, Upload } from 'antd';
+import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin, Modal } from 'antd';
 import './css/table.css';
 import 'antd/dist/reset.css';
 import 'antd/dist/reset.css';
@@ -191,7 +191,6 @@ const StudentList = () => {
                             setSearchedColumn(dataIndex);
                         }}
                     >
-                        {t('button.filter')}
                         {t('button.filter')}
                     </Button>
                     <Button type="link" size="small" onClick={() => close()}>

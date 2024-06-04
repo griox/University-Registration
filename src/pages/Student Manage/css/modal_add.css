@@ -1,14 +1,31 @@
 .form-item1 {
     font-weight: 600;
 }
-.input-num {
+.input-num:disabled {
     width: 50%;
+    cursor: not-allowed;
+    pointer-events: none;
 }
 .icon {
     color: rgba(0, 0, 0, 0.45);
 }
+/* .custom-ok-button {
+    color: white !important;
+    width: 80px;
+}
+
+.custom-ok-button:not([disabled]) {
+    color: white !important;
+    background-color: #4caf50 !important; /* Green background color 
+}
+.custom-cancel-button {
+    color: white !important;
+    background-color:#FF7F50 !important; /* Red background for Cancel button 
+    border-color: #FF7F50 !important;
+} */
 .btn-add {
     margin-right: 10px;
+    margin-left: 7px;
 }
 .Date {
     width: 318px;

@@ -7,6 +7,9 @@
 .icon {
     color: rgba(0, 0, 0, 0.45);
 }
+.btn-add {
+    margin-right: 10px;
+}
 .Date {
     width: 318px;
     border-color: var(--border-color);

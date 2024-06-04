@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Button, Space, Modal, Spin } from 'antd';
-import { SearchOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { SearchOutlined, EditOutlined, DeleteOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { toast } from 'react-toastify';
 import Highlighter from 'react-highlight-words';
 import { get, ref, child, remove, update, set } from 'firebase/database';
@@ -9,6 +9,7 @@ import FormAdd from './formAddSchool';
 import { database } from '../firebaseConfig.js';
 import './css/AddSchool.css';
 import { useTranslation } from 'react-i18next';
+import { or } from 'firebase/firestore';
 
 const AddSchool = () => {
     useEffect(() => {
@@ -41,18 +42,11 @@ const AddSchool = () => {
     const [numberRegist, setNumberRegist] = useState('');
     const tableRef = useRef(null);
     const searchInput = useRef(null);
-
     const isEditing = (record) => record.key === editingKey;
-    const checkTargetError = (record) => {
-        if (record.target < record.isRegistered) {
-            setNumberRegist('Target must not be less than Number of registration');
-        } else {
-            setNumberRegist('');
-        }
-    };
 
     const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
-        const inputNode = inputType === 'number' ? <InputNumber /> : <Input  />;
+        const [error, setError] = useState(null);
+        const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
         const isTarget = dataIndex === 'target';
         const isUniCode = dataIndex === 'uniCode';
         const rules = [
@@ -62,35 +56,43 @@ const AddSchool = () => {
             },
             {
                 validator: (_, value) => {
-                    if (isTarget && value < record.isRegistered) { // Kiểm tra nếu là cột 'target' và giá trị nhỏ hơn số đã đăng ký
-                        return Promise.reject(new Error('Target must be greater than or equal to Num of registered'));
-                    } 
-                    if (isTarget && !/^\d+$/.test(value)) { // Kiểm tra nếu là cột 'target' và không chứa ký tự nào ngoại trừ số
-                        return Promise.reject(new Error('Target must contain only numbers'));
+                    if (isTarget) {
+                        if (value < record.isRegistered) {
+                            setError('Target must be greater than or equal to Num of registered');
+                            return Promise.reject('Validate Error');
+                        }
+                        if (!/^\d+$/.test(value)) {
+                            setError('Target must contain only numbers');
+                            return Promise.reject('Validate Error');
+                        }
+                        if (!(value >= 100 && value <= 1000)) {
+                            setError('Target must be >= 100 and <= 1000');
+                            return Promise.reject('Validate Error');
+                        }
                     }
+                    if (isUniCode && !/^[a-zA-Z]+$/.test(value)) {
+                        setError('UniCode must contain letters only');
+                        return Promise.reject('Validate Error');
+                    }
+                    setError(null);
                     return Promise.resolve();
                 },
             },
-            {
-                validator: (_, value) => {
-                    if (isUniCode && !/^\S+$/.test(value))  { // Kiểm tra nếu là cột 'uniCode' và không chứa ký tự số
-                        return Promise.reject(new Error('UniCode must not contain digits'));
-                    }
-                    return Promise.resolve();
-                }
-            }
         ];
-        
+    
         return (
             <td {...restProps}>
                 {editing ? (
-                    <Form.Item
+                    <><Form.Item
                         className="form-editCell"
                         name={dataIndex}
                         rules={rules}
                     >
                         {inputNode}
+
                     </Form.Item>
+                    <Tooltip title={error} open={error ? true : false} placement="bottomRight" overlayStyle={{fontSize: '12px'}} >
+                    </Tooltip></>
                 ) : (
                     children
                 )}
@@ -218,6 +220,7 @@ const AddSchool = () => {
                 }
                 if (row.averageS > 10 || row.averageS < 0) {
                     toast.error('Invalid Entrance Score Format');
+                    return;
                 }
                 if (row.uniCode !== item.uniCode) {
                     const uniCodeExists = await checkUniCodeExistence(row.uniCode);

@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import { database } from '../firebaseConfig.js';
 import { useTranslation } from 'react-i18next';
 import '../University/css/formAddSchool.css';
-
+import { BankOutlined, InfoCircleOutlined  } from '@ant-design/icons';
 const FormAdd = ({ UniData, setUniData }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [uniName, setUniName] = useState('');
@@ -53,12 +53,13 @@ const FormAdd = ({ UniData, setUniData }) => {
         setTargetScore(null);
     };
 
-    const validateUniCode = (code) => {
-        return /^[A-Za-zÀ-ÿ]+$/.test(code);
+    const validateUniCode = (uniCode) => {
+        return /^[a-zA-Z]+$/.test(uniCode);
     };
 
     const validateName = (name) => {
-        return /^\D+$/u.test(name);
+        // return /^\D+$/u.test(name);
+        return /^[\p{L}\s]+$/u.test(name);
     };
 
     const handleOk = async () => {
@@ -173,6 +174,11 @@ const FormAdd = ({ UniData, setUniData }) => {
                             labelCol={{ span: 9 }} 
                             wrapperCol={{ span: 15 }} 
                             validateStatus={!validateName(uniName) && uniName ? 'error' : ''}
+                            help={
+                                !validateName(uniName) && uniName
+                                    ? t('warning.uniname')
+                                    : ''
+                            }
                             name="Input"
                             rules={[
                                 {
@@ -201,7 +207,12 @@ const FormAdd = ({ UniData, setUniData }) => {
                             label={t('label.unicode')}
                             labelCol={{ span: 9 }}
                             wrapperCol={{ span: 15 }} 
-                            validateStatus={!validateName(uniCode) && uniCode ? 'error' : ''}
+                            validateStatus={!validateUniCode(uniCode) && uniCode ? 'error' : ''}
+                            help={
+                                !validateUniCode(uniCode) && uniCode
+                                    ? t('warning.unicode')
+                                    : ''
+                            }
                             name="InputCode"
                             rules={[
                                 {
@@ -266,7 +277,7 @@ const FormAdd = ({ UniData, setUniData }) => {
                             <InputNumber
                                 className="ip-number2"
                                 placeholder={t('placeholder.target')}
-                                maxLength={5}
+                                maxLength={3}
                                 value={targetScore}
                                 onChange={(value) => setTargetScore(value)}
                                 max={500}

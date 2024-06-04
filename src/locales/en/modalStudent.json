@@ -1,6 +1,8 @@
 {
     "button": {
-        "Add": "Add Student"
+        "Add": "Add Student",
+        "ok": "Add",
+        "cancel": "Cancel"
     },
     "label": {
         "name": "Name",
@@ -30,7 +32,7 @@
         "date": "Select date"
     },
     "warning": {
-        "name": "University Name must contain only letters and spaces",
+        "name": "University Name must contain only letters",
         "input": "Please input !",
         "identify": "Identify number must be 12 digits and contain only number "
     },

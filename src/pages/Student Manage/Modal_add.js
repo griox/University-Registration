@@ -230,7 +230,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     }
 
     function validateFullname(name) {
-        return /^[A-Za-zÀ-ÿ]+$/.test(name);
+        return /^[A-Za-z]+$/.test(name);
     }
     function validateIdenNumber(idenNum) {
         return idenNum.length === 12 && /^[0-9]+$/.test(idenNum);
@@ -396,6 +396,8 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 width={700}
                 destroyOnClose
                 okButtonProps={{disabled: !isFormValid}}
+                okText= {t('button.ok')}
+                cancelText={t('button.cancel')}
             >
                 <Form layout="vertical">
                     <Row gutter={16}>
@@ -405,19 +407,23 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 label={t('label.name')}
                                 name="name"
                                 validateStatus={!validateFullname(Fullname) && Fullname ? 'error' : ''}
+                                help= {!validateFullname(Fullname) && Fullname
+                                    ? t('warning.name')
+                                    : ''
+                                }
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Please input!',
+                                        message: t('warning.input'),
                                     },
                                 ]}
                             >
                                 <Input
-                                    placeholder="Enter Student's name"
+                                    placeholder={t('placeholder.name')}
                                     prefix={<UserOutlined className="icon" />}
                                     onChange={(e) => setFullname(e.target.value)}
                                     suffix={
-                                        <Tooltip title="Name must contain letters and no space ">
+                                        <Tooltip title= {t('tooltip.name')}>
                                             <InfoCircleOutlined className="icon" />
                                         </Tooltip>
                                     }
@@ -433,7 +439,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Please input!',
+                                        message: t('warning.input'),
                                     },
                                 ]}
                             >
@@ -454,7 +460,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Please input!',
+                                        message: t('warning.input'),
                                     },
                                 ]}
                             >
@@ -489,15 +495,15 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input!',
+                                message: t('warning.input'),
                             },
                         ]}
                     >
                         <Input
-                            placeholder="Enter Student's email"
+                            placeholder={t('placeholder.email')}
                             prefix={<MailOutlined className="icon" />}
                             suffix={
-                                <Tooltip title="Email must contain @example">
+                                <Tooltip title={t('tooltip.email')}>
                                     <InfoCircleOutlined className="icon" />
                                 </Tooltip>
                             }
@@ -514,13 +520,13 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 validateStatus={!validateIdenNumber(Identify) && Identify ? 'error' : ''}
                                 help={
                                     !validateIdenNumber(Identify) && Identify
-                                        ? 'Identify number must be 12 digits and contain only number '
+                                        ? t('warning.identify')
                                         : ''
                                 }
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Please input!',
+                                        message: t('warning.input'),
                                     },
                                 ]}
                             >
@@ -540,7 +546,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Please input!',
+                                        message: t('warning.input'),
                                     },
                                 ]}
                             >
@@ -563,7 +569,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Please input!',
+                                        message: t('warning.input'),
                                     },
                                 ]}
                             >
@@ -571,7 +577,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     showCount
                                     maxLength={100}
                                     allowClear
-                                    placeholder="Student's Address"
+                                    placeholder={t('placeholder.address')}
                                     onChange={(e) => setAddress(e.target.value)}
                                     value={Address}
                                 />
@@ -587,7 +593,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Please input!',
+                                        message: t('warning.input'),
                                     },
                                 ]}
                             >
@@ -609,7 +615,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Please input!',
+                                        message: t('warning.input'),
                                     },
                                 ]}
                             >
@@ -631,7 +637,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Please input!',
+                                        message: t('warning.input'),
                                     },
                                 ]}
                             >
@@ -647,7 +653,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         </Col>
                         <Col span={6}>
                             <Form.Item  label={t('label.entrance')} className="form-item1">
-                                <Input readOnly className="input-num" value={averageS} />
+                                <Input className="input-num" value={averageS} disabled />
                             </Form.Item>
                         </Col>
                     </Row>

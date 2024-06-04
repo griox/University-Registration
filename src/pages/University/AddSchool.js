@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Button, Space, Modal, Spin } from 'antd';
-import { SearchOutlined, EditOutlined, DeleteOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { SearchOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { toast } from 'react-toastify';
 import Highlighter from 'react-highlight-words';
 import { get, ref, child, remove, update, set } from 'firebase/database';
@@ -9,7 +9,6 @@ import FormAdd from './formAddSchool';
 import { database } from '../firebaseConfig.js';
 import './css/AddSchool.css';
 import { useTranslation } from 'react-i18next';
-import { or } from 'firebase/firestore';
 
 const AddSchool = () => {
     useEffect(() => {
@@ -39,7 +38,7 @@ const AddSchool = () => {
     const [searchedColumn, setSearchedColumn] = useState('');
     const [, setPagination] = useState({ current: 1, pageSize: 5 });
     const [loading, setLoading] = useState(true);
-    const [numberRegist, setNumberRegist] = useState('');
+    const [, setNumberRegist] = useState('');
     const tableRef = useRef(null);
     const searchInput = useRef(null);
     const isEditing = (record) => record.key === editingKey;
@@ -49,13 +48,15 @@ const AddSchool = () => {
         const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
         const isTarget = dataIndex === 'target';
         const isUniCode = dataIndex === 'uniCode';
+        const isEntrance = dataIndex === 'averageS';
         const rules = [
             {
-                required: true,
-                message: `Please Input ${title}!`,
-            },
-            {
                 validator: (_, value) => {
+                    if (dataIndex) {
+                        if (value === '') {
+                            return Promise.reject(`Please input ${title}`);
+                        }
+                    }
                     if (isTarget) {
                         if (value < record.isRegistered) {
                             setError('Target must be greater than or equal to Num of registered');
@@ -73,6 +74,12 @@ const AddSchool = () => {
                     if (isUniCode && !/^[a-zA-Z]+$/.test(value)) {
                         setError('UniCode must contain letters only');
                         return Promise.reject('Validate Error');
+                    }
+                    if (isEntrance) {
+                        if (!(value > 0 && value <= 10 )) {
+                            setError('Entrance Score must be > 0 and <= 10');
+                            return Promise.reject('Validate Error');
+                        }
                     }
                     setError(null);
                     return Promise.resolve();
@@ -313,7 +320,6 @@ const AddSchool = () => {
                             setSearchedColumn(dataIndex);
                         }}
                     >
-                        {t('button.filter')}
                         {t('button.filter')}
                     </Button>
                     <Button type="link" size="small" onClick={() => close()}>

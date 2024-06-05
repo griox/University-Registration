@@ -1,7 +1,8 @@
-import { SearchOutlined } from '@ant-design/icons';
-import { Button, Input, Space } from 'antd';
+import { DownOutlined, ExclamationCircleOutlined, SearchOutlined } from '@ant-design/icons';
+import { Button, Dropdown, Input, Space, Tooltip, Typography } from 'antd';
 import { useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 
 export const GetColumnSearchProps = (dataIndex) => {
     const searchInput = useRef(null);
@@ -122,4 +123,82 @@ export const validatePasswordFormat = (password) => {
         return false;
     }
     return true;
+};
+
+export const HandleError = (props) => {
+    return (
+        <div>
+            <span>Invalid template </span>
+            <Tooltip
+                title={
+                    props.string === 'password'
+                        ? ' Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 special character, 1 number, and be a minimum of 8characters long.'
+                        : 'Your email format is not correct'
+                }
+                color={'red'}
+                key={'red'}
+                placement="bottom"
+            >
+                <ExclamationCircleOutlined style={{ marginLeft: '5px' }} />
+            </Tooltip>
+        </div>
+    );
+};
+
+export const onchangeInput = (e, sNP, sENP) => {
+    if (e === '') {
+        sNP(e);
+        sENP(false);
+    } else if (validatePasswordFormat(e) === false) {
+        sNP(e);
+        sENP(true);
+    } else {
+        sNP(e);
+        sENP(false);
+    }
+};
+export const language = (items, tLanguage) => {
+    return (
+        <>
+            <div>
+                <Dropdown
+                    className="drop-menu"
+                    menu={{
+                        items,
+                        selectable: true,
+                        defaultSelectedKeys: ['1'],
+                    }}
+                >
+                    <Typography.Link>
+                        <Space className="title-drop">
+                            {tLanguage}
+                            <DownOutlined />
+                        </Space>
+                    </Typography.Link>
+                </Dropdown>
+            </div>
+        </>
+    );
+};
+
+export const getback = (history, inform, or, btnGetback) => {
+    const goback = () => {
+        history.goBack();
+    };
+    return (
+        <>
+            <div className="col col-1">
+                <div className="image_layer">
+                    <img src="assets/login/img/FPTnew.png" className="form_img_main" alt="" />
+                </div>
+
+                <p className="featured">
+                    {inform} <br /> {or}
+                </p>
+                <Button onClick={goback} className="btn-getback">
+                    {btnGetback}
+                </Button>
+            </div>
+        </>
+    );
 };

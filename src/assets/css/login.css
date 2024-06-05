@@ -146,7 +146,8 @@
 .col-2 {
     position: relative;
     width: 45%;
-    padding: 20px;
+    padding: 0 20px 40px;
+
     overflow: hidden;
 }
 
@@ -367,7 +368,7 @@
     color: #fff;
     cursor: pointer;
 }
-.drop-menu .title-drop{
+.drop-menu .title-drop {
     color: white;
 }
 @media (max-width: 892px) {

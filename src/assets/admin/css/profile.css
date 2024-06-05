@@ -1,29 +1,75 @@
-.container {
+* {
+    padding: 0;
+    margin: 0;
+}
+.pr-container {
     width: 100%;
-    height: auto;
+    height: calc(100vh - 80px);
+    overflow: scroll;
+    background-color: #f2f2f2;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
     /* background-color: #fff; */
 }
 .pr {
     font-size: 30px;
 }
 
-.full-name {
+.col2 {
+    width: auto;
+    height: auto;
+    background-color: #fff;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 30px;
+    background-color: var(--body_background);
+    border-radius: 10px;
+    box-shadow: 0 7px 25px 0 rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    padding: 10px;
+    grid-gap: 20px;
+    margin-right: 10px;
+    overflow: hidden;
 }
-.full-name h1 {
-    width: 150px;
+.col1 {
+    width: auto;
+    height: auto;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: var(--body_background);
+
+    border-radius: 10px;
+    box-shadow: 0 7px 25px 0 rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    padding: 10px;
+    grid-gap: 15px;
+    margin-left: 10px;
+
+    overflow: hidden;
 }
 
+.col2:hover {
+    box-shadow: 0 15px 35px 0 rgba(0, 0, 0, 0.2);
+}
+.col1:hover {
+    box-shadow: 0 15px 35px 0 rgba(0, 0, 0, 0.2);
+}
 .detail-item {
+    width: 100%;
+
     display: flex;
     align-items: center;
-    gap: 30px;
-    margin: 5px 0;
+    justify-content: space-between;
+    gap: 10px;
 }
 .detail-item h1 {
-    width: 100px;
+    width: auto;
+    font-size: 15px;
 }
 .date {
     display: flex;
@@ -44,34 +90,30 @@ h1 {
 
 .g-s {
     height: 30px;
-    width: 200px;
+    width: 250px;
+    font-size: 14px;
 }
 
 .btn-save {
     width: 100px;
-    height: 50px;
+    height: 60px;
     font-size: 20px;
+    display: flex;
+    align-items: center;
 }
-.input {
-    display: grid;
-    grid-template-columns: repeat(2, 450px);
+.btn-save span {
+    margin-left: 10px;
 }
 
-.uni {
-    width: 500px;
-    height: 300px;
-}
 .custom-select .ant-select-selector {
     font-size: 16px;
 }
 
-.size-input {
-    font-size: 14px;
-}
-
-.pr-content {
-    display: flex;
-    column-gap: 20px;
+.pro-content {
+    display: grid;
+    grid-template-columns: 33% 64.5%;
+    column-gap: 2.5%;
+    margin: 20px;
 }
 
 input[type='file'] {
@@ -86,9 +128,15 @@ input[type='button'] {
     display: flex;
     column-gap: 10px;
 }
+.pr-input {
+    height: auto;
+    display: flex;
+    justify-content: space-between;
+    column-gap: 50px;
+}
 .avatar {
-    width: 200px;
-    height: 200px;
+    width: 150px;
+    height: 150px;
 }
 .avatar-container {
     position: relative;
@@ -102,8 +150,8 @@ input[type='button'] {
     position: absolute;
     top: 0;
     left: 0;
-    width: 200px; /* Kích thước giống với cha (.avatar-container) */
-    height: 200px; /* Kích thước giống với cha (.avatar-container) */
+    width: 150px; /* Kích thước giống với cha (.avatar-container) */
+    height: 150px; /* Kích thước giống với cha (.avatar-container) */
     background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
@@ -133,19 +181,52 @@ input[type='button'] {
     display: none;
 }
 
-.addr {
-    width: 300px;
-}
-.ethnicity {
-    width: 200px;
-}
 .InfoCircleOutlined {
     color: 'rgba(0,0,0,.45)';
 }
 .university {
-    width: 800px;
+    height: 60px;
+    width: 535px;
     cursor: pointer;
 }
-.table {
-    margin-top: 20px;
+
+.pr-score {
+    width: 100px;
+}
+
+.pr-ID {
+    width: 300x;
+}
+.pr-gender {
+    width: 300x;
+}
+
+.pr-ethnicity {
+    width: 300x;
+}
+
+.pr-place-birth {
+    width: 300x;
+}
+.pr-CCCD {
+    width: 300x;
+}
+
+.pr-email {
+    width: 300x;
+}
+.detail-item-university {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+.detail-item-university h1 {
+    font-size: 16px;
+}
+.ant-table-wrapper .ant-table-pagination.ant-pagination {
+    margin: 0;
+}
+.col2 .table {
+    margin: 0;
 }

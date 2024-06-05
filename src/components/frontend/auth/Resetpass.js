@@ -6,13 +6,13 @@ import '../../../assets/css/login.css';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../../../constants/constants';
 import { child, get, getDatabase, ref, update } from 'firebase/database';
-import { encodePath, validatePasswordFormat } from '../../../commonFunctions';
+import { HandleError, encodePath, onchangeInput, validatePasswordFormat } from '../../../commonFunctions';
 import { toast } from 'react-toastify';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 import bcrypt from 'bcryptjs';
-import { Button, Dropdown, Space, Typography } from 'antd';
+import { Button, Dropdown, Form, Input, Space, Tooltip, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined, ExclamationCircleOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 
 export const Forgetpass = () => {
     const app = initializeApp(firebaseConfig);
@@ -20,6 +20,9 @@ export const Forgetpass = () => {
     const history = useHistory();
     const [newPass, setNewPass] = useState('');
     const [reNewPass, setReNewPass] = useState('');
+    const [errorReNewPass, setErrorReNewPass] = useState(false);
+    const [errorNewPass, setErrorNewPass] = useState(false);
+
     const salt = bcrypt.genSaltSync(10);
     const [loadingResetPass, setLoadingResetPass] = useState(false);
     const { t, i18n } = useTranslation('resetpassword');
@@ -68,74 +71,7 @@ export const Forgetpass = () => {
         const timer = setTimeout(fetch, 10);
         return () => clearTimeout(timer);
     }, [db]);
-    useEffect(() => {
-        const passwordInput1 = document.querySelector('.pass_login_1');
-        const eyeBtn1 = document.querySelector('.eye1');
-        const passwordInput2 = document.querySelector('.con_pass_login');
-        const eyeBtn2 = document.querySelector('.eye2');
 
-        const handlePasswordInput1 = () => {
-            if (passwordInput1.value.trim() !== '') {
-                eyeBtn1.style.display = 'block';
-            } else {
-                eyeBtn1.style.display = 'none';
-                passwordInput1.setAttribute('type', 'password');
-                eyeBtn1.classList.remove('fa-eye-slash');
-                eyeBtn1.classList.add('fa-eye');
-            }
-        };
-
-        const handleEyeBtn1 = () => {
-            if (passwordInput1.type === 'password') {
-                passwordInput1.setAttribute('type', 'text');
-                eyeBtn1.classList.remove('fa-eye');
-                eyeBtn1.classList.add('fa-eye-slash');
-            } else {
-                passwordInput1.setAttribute('type', 'password');
-                eyeBtn1.classList.add('fa-eye');
-                eyeBtn1.classList.remove('fa-eye-slash');
-            }
-        };
-
-        const handlePasswordInput2 = () => {
-            if (passwordInput2.value.trim() !== '') {
-                eyeBtn2.style.display = 'block';
-            } else {
-                eyeBtn2.style.display = 'none';
-                passwordInput2.setAttribute('type', 'password');
-                eyeBtn2.classList.remove('fa-eye-slash');
-                eyeBtn2.classList.add('fa-eye');
-            }
-        };
-
-        const handleEyeBtn2 = () => {
-            if (passwordInput2.type === 'password') {
-                passwordInput2.setAttribute('type', 'text');
-                eyeBtn2.classList.remove('fa-eye');
-                eyeBtn2.classList.add('fa-eye-slash');
-            } else {
-                passwordInput2.setAttribute('type', 'password');
-                eyeBtn2.classList.add('fa-eye');
-                eyeBtn2.classList.remove('fa-eye-slash');
-            }
-        };
-
-        passwordInput1.addEventListener('focus', handlePasswordInput1);
-        passwordInput1.addEventListener('keyup', handlePasswordInput1);
-        eyeBtn1.addEventListener('click', handleEyeBtn1);
-        passwordInput2.addEventListener('focus', handlePasswordInput2);
-        passwordInput2.addEventListener('keyup', handlePasswordInput2);
-        eyeBtn2.addEventListener('click', handleEyeBtn2);
-
-        return () => {
-            passwordInput1.removeEventListener('focus', handlePasswordInput1);
-            passwordInput1.removeEventListener('keyup', handlePasswordInput1);
-            eyeBtn1.removeEventListener('click', handleEyeBtn1);
-            passwordInput2.removeEventListener('focus', handlePasswordInput2);
-            passwordInput2.removeEventListener('keyup', handlePasswordInput2);
-            eyeBtn2.removeEventListener('click', handleEyeBtn2);
-        };
-    }, []);
     const handleLogout = () => {
         localStorage.setItem('Infor', JSON.stringify(''));
         localStorage.setItem('Name', '');
@@ -232,6 +168,7 @@ export const Forgetpass = () => {
             handlePassword();
         }
     };
+
     return (
         <>
             {link === true ? (
@@ -269,33 +206,75 @@ export const Forgetpass = () => {
                                         <span>{t('header')}</span>
                                     </div>
                                     <div className="form-inputs">
-                                        <div className="input-box">
-                                            <input
-                                                type="password"
-                                                className="input-field pass_login_1"
-                                                placeholder={t('title.newPassword')}
-                                                required
-                                                value={newPass}
-                                                onChange={(e) => setNewPass(e.target.value)}
+                                        <Form.Item
+                                            name="email"
+                                            validateStatus={errorNewPass ? 'error' : ''}
+                                            help={errorNewPass ? <HandleError string="password" /> : ''}
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Please input!',
+                                                },
+                                            ]}
+                                        >
+                                            <Input.Password
+                                                placeholder="New password"
+                                                onChange={(e) =>
+                                                    onchangeInput(e.target.value, setNewPass, setErrorNewPass)
+                                                }
                                                 onKeyDown={handleEnterKey}
+                                                allowClear
+                                                style={{
+                                                    border: 'none',
+                                                    padding: '15px',
+                                                    color: '#000',
+                                                    backgroundColor: 'blue',
+                                                }}
+                                                value={errorNewPass}
+                                                iconRender={(visible) =>
+                                                    visible ? (
+                                                        <EyeTwoTone style={{ fontSize: '20px' }} />
+                                                    ) : (
+                                                        <EyeInvisibleOutlined style={{ fontSize: '20px' }} />
+                                                    )
+                                                }
                                             />
-                                            <i className="bx bx-lock-alt icon"></i>
-                                            <i className="fa fa-eye eye1 icon"></i>
-                                        </div>
+                                        </Form.Item>
 
-                                        <div className="input-box">
-                                            <input
-                                                type="password"
-                                                className="input-field con_pass_login"
-                                                placeholder={t('title.reNewPassword')}
-                                                required
-                                                value={reNewPass}
-                                                onChange={(e) => setReNewPass(e.target.value)}
+                                        <Form.Item
+                                            name="email"
+                                            validateStatus={errorReNewPass ? 'error' : ''}
+                                            help={errorReNewPass ? <HandleError string="password" /> : ''}
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Please input!',
+                                                },
+                                            ]}
+                                        >
+                                            <Input.Password
+                                                placeholder="Re-enter new password"
+                                                onChange={(e) =>
+                                                    onchangeInput(e.target.value, setReNewPass, setErrorReNewPass)
+                                                }
                                                 onKeyDown={handleEnterKey}
+                                                allowClear
+                                                style={{
+                                                    border: 'none',
+                                                    padding: '15px',
+                                                    color: '#000',
+                                                    backgroundColor: 'blue',
+                                                }}
+                                                value={errorReNewPass}
+                                                iconRender={(visible) =>
+                                                    visible ? (
+                                                        <EyeTwoTone style={{ fontSize: '20px' }} />
+                                                    ) : (
+                                                        <EyeInvisibleOutlined style={{ fontSize: '20px' }} />
+                                                    )
+                                                }
                                             />
-                                            <i className="bx bx-lock-alt icon"></i>
-                                            <i className="fa fa-eye eye2 icon"></i>
-                                        </div>
+                                        </Form.Item>
 
                                         <Button
                                             className=" input-submit"

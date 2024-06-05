@@ -6,9 +6,9 @@ import { toast } from 'react-toastify';
 import { useHistory } from 'react-router-dom';
 import '../../../assets/css/register.css';
 import { firebaseConfig } from '../../../constants/constants';
-import { encodePath, validateEmailFormat, validatePasswordFormat } from '../../../commonFunctions';
-import { DownOutlined } from '@ant-design/icons';
-import { Button, Dropdown, Space, Typography } from 'antd';
+import { HandleError, encodePath, validateEmailFormat, validatePasswordFormat } from '../../../commonFunctions';
+import { DownOutlined, ExclamationCircleOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import { Button, Dropdown, Form, Input, Radio, Space, Tooltip, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import bcrypt from 'bcryptjs';
 
@@ -17,83 +17,18 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [againPassword, setAgainPassword] = useState('');
+    const [errorEmail, setErrorEmail] = useState(false);
+    const [errorPassword, setErrorPassword] = useState(false);
+    const [errorAgainPassword, setErrorAgainPassword] = useState(false);
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const history = useHistory();
     const { t, i18n } = useTranslation('register');
     const salt = bcrypt.genSaltSync(10);
-    const [user, setUser] = useState(false);
-    const [loadingUser, setLoadingUser] = useState(false);
-    const [loadingAdmin, setLoadingAdmin] = useState(false);
+    const [loadingRegist, setLoadingRegist] = useState(false);
 
-    useEffect(() => {
-        const passwordInput1 = document.querySelector('.pass_login_1');
-        const eyeBtn1 = document.querySelector('.eye1');
-        const passwordInput2 = document.querySelector('.con_pass_login');
-        const eyeBtn2 = document.querySelector('.eye2');
+    const [value1, setValue1] = useState('User');
 
-        const handlePasswordInput1 = () => {
-            if (passwordInput1.value.trim() !== '') {
-                eyeBtn1.style.display = 'block';
-            } else {
-                eyeBtn1.style.display = 'none';
-                passwordInput1.setAttribute('type', 'password');
-                eyeBtn1.classList.remove('fa-eye-slash');
-                eyeBtn1.classList.add('fa-eye');
-            }
-        };
-
-        const handleEyeBtn1 = () => {
-            if (passwordInput1.type === 'password') {
-                passwordInput1.setAttribute('type', 'text');
-                eyeBtn1.classList.remove('fa-eye');
-                eyeBtn1.classList.add('fa-eye-slash');
-            } else {
-                passwordInput1.setAttribute('type', 'password');
-                eyeBtn1.classList.add('fa-eye');
-                eyeBtn1.classList.remove('fa-eye-slash');
-            }
-        };
-
-        const handlePasswordInput2 = () => {
-            if (passwordInput2.value.trim() !== '') {
-                eyeBtn2.style.display = 'block';
-            } else {
-                eyeBtn2.style.display = 'none';
-                passwordInput2.setAttribute('type', 'password');
-                eyeBtn2.classList.remove('fa-eye-slash');
-                eyeBtn2.classList.add('fa-eye');
-            }
-        };
-
-        const handleEyeBtn2 = () => {
-            if (passwordInput2.type === 'password') {
-                passwordInput2.setAttribute('type', 'text');
-                eyeBtn2.classList.remove('fa-eye');
-                eyeBtn2.classList.add('fa-eye-slash');
-            } else {
-                passwordInput2.setAttribute('type', 'password');
-                eyeBtn2.classList.add('fa-eye');
-                eyeBtn2.classList.remove('fa-eye-slash');
-            }
-        };
-
-        passwordInput1.addEventListener('focus', handlePasswordInput1);
-        passwordInput1.addEventListener('keyup', handlePasswordInput1);
-        eyeBtn1.addEventListener('click', handleEyeBtn1);
-        passwordInput2.addEventListener('focus', handlePasswordInput2);
-        passwordInput2.addEventListener('keyup', handlePasswordInput2);
-        eyeBtn2.addEventListener('click', handleEyeBtn2);
-
-        return () => {
-            passwordInput1.removeEventListener('focus', handlePasswordInput1);
-            passwordInput1.removeEventListener('keyup', handlePasswordInput1);
-            eyeBtn1.removeEventListener('click', handleEyeBtn1);
-            passwordInput2.removeEventListener('focus', handlePasswordInput2);
-            passwordInput2.removeEventListener('keyup', handlePasswordInput2);
-            eyeBtn2.removeEventListener('click', handleEyeBtn2);
-        };
-    }, []);
     const handleLanguage = (lng) => {
         i18n.changeLanguage(lng);
     };
@@ -109,47 +44,36 @@ const Register = () => {
             onClick: () => handleLanguage('vi'),
         },
     ];
-    const clear = () => {
-        setFullName('');
-        setEmail('');
-        setPassword('');
-        setAgainPassword('');
-    };
+
     const regist = (props) => {
-        if (props.role === 'admin') setLoadingAdmin(true);
-        else setLoadingUser(true);
+        setLoadingRegist(true);
         if (props.name === '') {
             toast.error('Please enter your name');
-            if (props.role === 'admin') setLoadingAdmin(false);
-            else setLoadingUser(false);
+            setLoadingRegist(false);
 
             return;
         }
         if (props.email === '') {
             toast.error('Please enter your email');
-            if (props.role === 'admin') setLoadingAdmin(false);
-            else setLoadingUser(false);
+            setLoadingRegist(false);
 
             return;
         }
         if (validateEmailFormat(props.email) === false) {
             toast.error('Incorrect format');
-            if (props.role === 'admin') setLoadingAdmin(false);
-            else setLoadingUser(false);
+            setLoadingRegist(false);
 
             return;
         }
         if (props.password === '') {
             toast.error('Please enter your password');
-            if (props.role === 'admin') setLoadingAdmin(false);
-            else setLoadingUser(false);
+            setLoadingRegist(false);
 
             return;
         }
         if (props.againPassword === '') {
             toast.error('Please re-enter your password');
-            if (props.role === 'admin') setLoadingAdmin(false);
-            else setLoadingUser(false);
+            setLoadingRegist(false);
 
             return;
         }
@@ -157,8 +81,7 @@ const Register = () => {
             toast.error(
                 'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 special character, 1 number, and be a minimum of 8 characters long.',
             );
-            if (props.role === 'admin') setLoadingAdmin(false);
-            else setLoadingUser(false);
+            setLoadingRegist(false);
 
             return;
         }
@@ -180,26 +103,24 @@ const Register = () => {
                         };
                         try {
                             set(ref(db, `Account/` + encodeEmail), ip).then(() => {
-                                if (props.role === 'admin') setLoadingAdmin(false);
-                                else setLoadingUser(false);
+                                setLoadingRegist(false);
                             }, toast.success('Sign up sucessfully'));
                         } catch (error) {
                             toast.error('Your request is failed');
                         }
-                        clear();
                     } else {
-                        if (props.role === 'admin') setLoadingAdmin(false);
-                        else setLoadingUser(false);
+                        setLoadingRegist(false);
+
                         toast.error('Two passwords do not match together');
                     }
                 } else {
-                    if (props.role === 'admin') setLoadingAdmin(false);
-                    else setLoadingUser(false);
+                    setLoadingRegist(false);
+
                     toast.error('Account already exists');
                 }
             } else {
-                if (props.role === 'admin') setLoadingAdmin(false);
-                else setLoadingUser(false);
+                setLoadingRegist(false);
+
                 toast.error('No data available');
             }
         });
@@ -214,6 +135,43 @@ const Register = () => {
                 password: password,
                 againPassword: againPassword,
             });
+        }
+    };
+
+    const onchangeEmail = (e) => {
+        if (e === '') {
+            setEmail(e);
+            setErrorEmail(false);
+        } else if (validateEmailFormat(e) === false) {
+            setEmail(e);
+            setErrorEmail(true);
+        } else {
+            setEmail(e);
+            setErrorEmail(false);
+        }
+    };
+    const onchangePassword = (e) => {
+        if (e === '') {
+            setPassword(e);
+            setErrorPassword(false);
+        } else if (validatePasswordFormat(e) === false) {
+            setPassword(e);
+            setErrorPassword(true);
+        } else {
+            setPassword(e);
+            setErrorPassword(false);
+        }
+    };
+    const onchangeAgainPassword = (e) => {
+        if (e === '') {
+            setAgainPassword(e);
+            setErrorAgainPassword(false);
+        } else if (validatePasswordFormat(e) === false) {
+            setAgainPassword(e);
+            setErrorAgainPassword(true);
+        } else {
+            setAgainPassword(e);
+            setErrorAgainPassword(false);
         }
     };
     return (
@@ -242,66 +200,170 @@ const Register = () => {
                                     <span>{t('header')}</span>
                                 </div>
                                 <div className="form-inputs">
-                                    <div className="input-box">
-                                        <input
-                                            type="text"
-                                            className="input-field"
-                                            placeholder={t('title.name')}
-                                            required
-                                            value={fullName}
+                                    <Form.Item
+                                        name="email"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Please input!',
+                                            },
+                                        ]}
+                                    >
+                                        <Input
+                                            placeholder="Full name"
                                             onChange={(e) => setFullName(e.target.value)}
                                             onKeyDown={handleEnterKey}
+                                            allowClear
+                                            style={{
+                                                border: 'none',
+                                                padding: '10px',
+                                                color: '#000',
+                                                backgroundColor: 'blue',
+                                            }}
+                                            value={fullName}
                                         />
-                                        <i className="bx bx-user icon"></i>
-                                    </div>
-                                    <div className="input-box">
-                                        <input
-                                            type="text"
-                                            className="input-field"
-                                            placeholder={t('title.email')}
+                                    </Form.Item>
+                                    <Form.Item
+                                        name="email"
+                                        validateStatus={errorEmail ? 'error' : ''}
+                                        help={errorEmail ? <HandleError string="email" /> : ''}
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Please input!',
+                                            },
+                                        ]}
+                                    >
+                                        <Input
+                                            placeholder="Email"
+                                            onChange={(e) => onchangeEmail(e.target.value)}
+                                            onKeyDown={handleEnterKey}
+                                            allowClear
+                                            style={{
+                                                border: 'none',
+                                                padding: '10px',
+                                                color: '#000',
+                                                backgroundColor: 'blue',
+                                            }}
                                             value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            onKeyDown={handleEnterKey}
                                         />
-                                        <i className="bx bx-envelope icon"></i>
-                                    </div>
-                                    <div className="input-box">
-                                        <input
-                                            type="password"
-                                            className="input-field pass_login_1"
-                                            placeholder={t('title.password')}
-                                            required
+                                    </Form.Item>
+
+                                    <Form.Item
+                                        name="email"
+                                        validateStatus={errorPassword ? 'error' : ''}
+                                        help={errorPassword ? <HandleError string="password" /> : ''}
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Please input!',
+                                            },
+                                        ]}
+                                    >
+                                        <Input.Password
+                                            placeholder="Password"
+                                            onChange={(e) => onchangePassword(e.target.value)}
+                                            onKeyDown={handleEnterKey}
+                                            allowClear
+                                            style={{
+                                                border: 'none',
+                                                padding: '10px',
+                                                color: '#000',
+                                                backgroundColor: 'blue',
+                                            }}
                                             value={password}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            onKeyDown={handleEnterKey}
+                                            iconRender={(visible) =>
+                                                visible ? (
+                                                    <EyeTwoTone style={{ fontSize: '20px' }} />
+                                                ) : (
+                                                    <EyeInvisibleOutlined style={{ fontSize: '20px' }} />
+                                                )
+                                            }
                                         />
-                                        <i className="bx bx-lock-alt icon"></i>
-                                        <i className="fa fa-eye eye1 icon"></i>
-                                    </div>
-
-                                    <div className="input-box">
-                                        <input
-                                            type="password"
-                                            className="input-field con_pass_login"
-                                            placeholder={t('title.re-password')}
-                                            required
+                                    </Form.Item>
+                                    <Form.Item
+                                        name="email"
+                                        validateStatus={errorAgainPassword ? 'error' : ''}
+                                        help={errorAgainPassword ? <HandleError string="password" /> : ''}
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Please input!',
+                                            },
+                                        ]}
+                                    >
+                                        <Input.Password
+                                            placeholder="Re-enter password"
+                                            onChange={(e) => onchangeAgainPassword(e.target.value)}
+                                            onKeyDown={handleEnterKey}
+                                            allowClear
+                                            style={{
+                                                border: 'none',
+                                                padding: '10px',
+                                                color: '#000',
+                                                backgroundColor: 'blue',
+                                            }}
                                             value={againPassword}
-                                            onChange={(e) => setAgainPassword(e.target.value)}
-                                            onKeyDown={handleEnterKey}
+                                            iconRender={(visible) =>
+                                                visible ? (
+                                                    <EyeTwoTone style={{ fontSize: '20px' }} />
+                                                ) : (
+                                                    <EyeInvisibleOutlined style={{ fontSize: '20px' }} />
+                                                )
+                                            }
                                         />
-                                        <i className="bx bx-lock-alt icon"></i>
-                                        <i className="fa fa-eye eye2 icon"></i>
+                                    </Form.Item>
+                                    <div
+                                        className="register-checkbox"
+                                        style={{
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            columnGap: '20px',
+                                        }}
+                                    >
+                                        <h1 style={{ fontSize: '15px', marginTop: '5px', color: '#fff' }}>
+                                            Regist for
+                                        </h1>
+                                        <Radio.Group
+                                            name="radiogroup"
+                                            defaultValue={value1}
+                                            onChange={(e) => setValue1(e.target.value)}
+                                        >
+                                            <Radio value={'Admin'} style={{ color: '#fff' }}>
+                                                Admin
+                                            </Radio>
+                                            <Radio value={'User'} style={{ color: '#fff' }}>
+                                                User
+                                            </Radio>
+                                        </Radio.Group>
                                     </div>
-
                                     <div className="input-box">
-                                        <div className="input-box">
-                                            {localStorage.getItem('Role') === 'admin' ? (
+                                        {localStorage.getItem('Role') === 'admin' ? (
+                                            <Button
+                                                loading={loadingRegist}
+                                                className="input-submit"
+                                                onClick={() =>
+                                                    regist({
+                                                        role: 'user',
+                                                        name: fullName,
+                                                        email: email,
+                                                        password: password,
+                                                        againPassword: againPassword,
+                                                    })
+                                                }
+                                                onKeyDown={handleEnterKey}
+                                            >
+                                                <span>{t('button.regist')}</span>
+                                            </Button>
+                                        ) : (
+                                            <>
                                                 <Button
-                                                    loading={loadingUser}
-                                                    className="input-submit"
+                                                    loading={loadingRegist}
+                                                    className=" input-submit"
                                                     onClick={() =>
                                                         regist({
-                                                            role: 'user',
+                                                            role: value1,
                                                             name: fullName,
                                                             email: email,
                                                             password: password,
@@ -310,46 +372,13 @@ const Register = () => {
                                                     }
                                                     onKeyDown={handleEnterKey}
                                                 >
-                                                    <span>{t('button.regist')}</span>
+                                                    <span>Regist</span>
                                                 </Button>
-                                            ) : (
-                                                <>
-                                                    <Button
-                                                        loading={loadingUser}
-                                                        className=" input-submit"
-                                                        onClick={() =>
-                                                            regist({
-                                                                role: 'user',
-                                                                name: fullName,
-                                                                email: email,
-                                                                password: password,
-                                                                againPassword: againPassword,
-                                                            })
-                                                        }
-                                                    >
-                                                        <span>{t('button.user')}</span>
-                                                    </Button>
-                                                    <Button
-                                                        loading={loadingAdmin}
-                                                        className=" input-submit"
-                                                        onClick={() =>
-                                                            regist({
-                                                                role: 'admin',
-                                                                name: fullName,
-                                                                email: email,
-                                                                password: password,
-                                                                againPassword: againPassword,
-                                                            })
-                                                        }
-                                                    >
-                                                        <span>{t('button.admin')}</span>
-                                                    </Button>
-                                                </>
-                                            )}
-                                        </div>
+                                            </>
+                                        )}
                                     </div>
 
-                                    <Button className=" input-submit" loading={user} onClick={clear}>
+                                    <Button className=" input-submit">
                                         <span className="clear">{t('button.clear')}</span>
                                         <i className="bx bx-right-arrow-alt"></i>
                                     </Button>

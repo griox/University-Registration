@@ -7,10 +7,10 @@ import { toast } from 'react-toastify';
 import { Link, Redirect } from 'react-router-dom';
 import '../../../assets/css/login.css';
 import { firebaseConfig } from '../../../constants/constants';
-import { validateEmailFormat } from '../../../commonFunctions';
+import { HandleError, validateEmailFormat, validatePasswordFormat } from '../../../commonFunctions';
 import { useTranslation } from 'react-i18next';
-import { DownOutlined } from '@ant-design/icons';
-import { Button, Dropdown, Space, Typography } from 'antd';
+import { DownOutlined, ExclamationCircleOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import { Button, Dropdown, Form, Input, Space, Tooltip, Typography } from 'antd';
 import bcrypt from 'bcryptjs';
 import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
 
@@ -24,48 +24,8 @@ export const Login = () => {
     const db = getDatabase(app);
     const auth = getAuth();
     const [loadingLogin, setLoadingLogin] = useState(false);
-
-    useEffect(() => {
-        const passwordInput = document.querySelector('.pass_login');
-        const eyeBtn = document.querySelector('.eye');
-        const handleFocus = () => {
-            if (passwordInput.value.trim() !== '') {
-                eyeBtn.style.display = 'block';
-            }
-
-            passwordInput.onkeyup = () => {
-                let val = passwordInput.value;
-                if (val.trim() !== '') {
-                    eyeBtn.style.display = 'block';
-                } else {
-                    eyeBtn.style.display = 'none';
-                    passwordInput.setAttribute('type', 'password');
-                    eyeBtn.classList.remove('fa-eye-slash');
-                    eyeBtn.classList.add('fa-eye');
-                }
-            };
-        };
-
-        const handleEyeClick = () => {
-            if (passwordInput.type === 'password') {
-                passwordInput.setAttribute('type', 'text');
-                eyeBtn.classList.remove('fa-eye');
-                eyeBtn.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.setAttribute('type', 'password');
-                eyeBtn.classList.add('fa-eye');
-                eyeBtn.classList.remove('fa-eye-slash');
-            }
-        };
-
-        passwordInput.addEventListener('focus', handleFocus);
-        eyeBtn.addEventListener('click', handleEyeClick);
-
-        return () => {
-            passwordInput.removeEventListener('focus', handleFocus);
-            eyeBtn.removeEventListener('click', handleEyeClick);
-        };
-    }, []);
+    const [errorEmail, setErrorEmail] = useState(false);
+    const [errorPassword, setErrorPassword] = useState(false);
 
     const saveOnLocal = (role) => {
         if (role === 'super_admin') {
@@ -147,7 +107,7 @@ export const Login = () => {
                                         if (y[i].name !== undefined && y[i].name !== null) {
                                             localStorage.setItem('Role', y[i].Role);
                                             localStorage.setItem('Name', y[i].name);
-                                            localStorage.setItem('Email', JSON.stringify(y[i].email));
+                                            localStorage.setItem('Email', y[i].email);
 
                                             if (rememberMe === true) {
                                                 localStorage.setItem('userToken', y[i].email);
@@ -201,10 +161,35 @@ export const Login = () => {
                     position: 'top-center',
                 });
                 // <Link to="/admin/dashboard" />;
-                // window.location.href = '/admin/dashboard';
+                window.location.href = '/admin/dashboard';
             }
         });
     };
+    const onchangeEmail = (e) => {
+        if (e === '') {
+            setEmail(e);
+            setErrorEmail(false);
+        } else if (validateEmailFormat(e) === false) {
+            setEmail(e);
+            setErrorEmail(true);
+        } else {
+            setEmail(e);
+            setErrorEmail(false);
+        }
+    };
+    const onchangePassword = (e) => {
+        if (e === '') {
+            setPassword(e);
+            setErrorPassword(false);
+        } else if (validatePasswordFormat(e) === false) {
+            setPassword(e);
+            setErrorPassword(true);
+        } else {
+            setPassword(e);
+            setErrorPassword(false);
+        }
+    };
+
     return (
         <>
             <div className="background">
@@ -231,32 +216,63 @@ export const Login = () => {
                                     <span>{t('header')}</span>
                                 </div>
                                 <div className="form-inputs">
-                                    <div className="input-box">
-                                        <input
-                                            type="email"
-                                            className="input-field"
+                                    <Form.Item
+                                        name="email"
+                                        validateStatus={errorEmail ? 'error' : ''}
+                                        help={errorEmail ? <HandleError string="email" /> : ''}
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Please input!',
+                                            },
+                                        ]}
+                                    >
+                                        <Input
+                                            placeholder="Email"
+                                            onChange={(e) => onchangeEmail(e.target.value)}
+                                            onKeyDown={handleEnterKey}
+                                            allowClear
+                                            style={{
+                                                border: 'none',
+                                                padding: '15px',
+                                                color: '#000',
+                                                backgroundColor: 'blue',
+                                            }}
                                             value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            placeholder={t('title.email')}
-                                            required
-                                            onKeyDown={handleEnterKey}
                                         />
-                                        <i className="bx bx-envelope icon"></i>
-                                    </div>
-                                    <div className="input-box">
-                                        <input
-                                            type="password"
-                                            className="input-field pass_login"
-                                            onChange={(e) => setPassword(e.target.value)}
+                                    </Form.Item>
+                                    <Form.Item
+                                        name="email"
+                                        validateStatus={errorPassword ? 'error' : ''}
+                                        help={errorPassword ? <HandleError string="password" /> : ''}
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Please input!',
+                                            },
+                                        ]}
+                                    >
+                                        <Input.Password
+                                            placeholder="Password"
+                                            onChange={(e) => onchangePassword(e.target.value)}
+                                            onKeyDown={handleEnterKey}
+                                            allowClear
+                                            style={{
+                                                border: 'none',
+                                                padding: '15px',
+                                                color: '#000',
+                                                backgroundColor: 'blue',
+                                            }}
                                             value={password}
-                                            placeholder={t('title.password')}
-                                            required
-                                            onKeyDown={handleEnterKey}
+                                            iconRender={(visible) =>
+                                                visible ? (
+                                                    <EyeTwoTone style={{ fontSize: '20px' }} />
+                                                ) : (
+                                                    <EyeInvisibleOutlined style={{ fontSize: '20px' }} />
+                                                )
+                                            }
                                         />
-
-                                        <i className="bx bx-lock-alt icon"></i>
-                                        <i className="fa fa-eye eye icon"></i>
-                                    </div>
+                                    </Form.Item>
 
                                     <div className="forget-pass">
                                         <div className="input-box">

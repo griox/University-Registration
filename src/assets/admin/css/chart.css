@@ -81,7 +81,7 @@
     font-size: 18px;
     width: auto;
     margin-top: 10px;
-    color:var(--body_color);
+    color: var(--body_color);
 }
 
 .icon-box {
@@ -103,7 +103,7 @@
 }
 
 .charter {
-    background:var(--body_background);
+    background: var(--body_background);
     padding: 20px;
     border-radius: 10px;
     width: 100%;
@@ -132,7 +132,6 @@
 }
 
 .number-below-green {
-    font-size: 25px;
     color: green;
     font-weight: 500;
 }
@@ -143,11 +142,11 @@
 }
 
 .number-below-red {
-    font-size: 50px;
+    font-size: 40px;
     color: var(--unregistered-color);
 }
 .number-below-green {
-    font-size: 50px;
+    font-size: 40px;
 
-    color:var(--registered-color);
+    color: var(--registered-color);
 }

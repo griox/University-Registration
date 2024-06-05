@@ -251,13 +251,12 @@ const FormAdd = ({ UniData, setUniData }) => {
                         >
                             <InputNumber
                                 className="ip-number1"
-                                placeholder={t('placeholder.entrance')}
                                 maxLength={4}
                                 value={averageScore}
                                 onChange={(value) => setAverageScore(value)}
                                 min={0}
                                 max={10.0}
-                                step={0.}
+                                step={0.2}
                             />
                         </Form.Item>
 
@@ -276,7 +275,6 @@ const FormAdd = ({ UniData, setUniData }) => {
                         >
                             <InputNumber
                                 className="ip-number2"
-                                placeholder={t('placeholder.target')}
                                 maxLength={3}
                                 value={targetScore}
                                 onChange={(value) => setTargetScore(value)}

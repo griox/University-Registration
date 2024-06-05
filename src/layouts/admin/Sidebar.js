@@ -4,25 +4,25 @@ import { Box, IconButton, Typography, useTheme, Tooltip, Avatar } from '@mui/mat
 import { Link } from 'react-router-dom';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { tokens } from '../../theme';
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import { WechatWorkOutlined, SignatureOutlined, SolutionOutlined } from '@ant-design/icons';
 import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import ChatIcon from '@mui/icons-material/Chat';
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
+import InsertChartIcon from '@mui/icons-material/InsertChart';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Modal } from 'antd';
+import '../css/sidebar.css';
 
 const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
-    // const theme = useTheme();
-    // const colors = tokens(theme.palette.mode);
     return (
         <Tooltip title={tooltip} placement="right" arrow>
-            <MenuItem
+            <MenuItem 
                 active={selected === title}
                 style={{
-                    // color: selected === title ? '#4e57d4' : colors.grey[100],
                     backgroundColor: selected === title ? 'var(--border-color)' : 'transparent',
                 }}
                 onClick={() => setSelected(title)}
@@ -153,13 +153,9 @@ const Sidebar = () => {
         >
             <ProSidebar collapsed={isCollapsed}>
                 <Menu iconShape="square">
-                    <MenuItem
+                    <MenuItem className='icon-menu'
                         onClick={() => setIsCollapsed(!isCollapsed)}
                         icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
-                        style={{
-                            margin: '10px 0 20px 0',
-                            color: colors.grey[100],
-                        }}
                     >
                         {!isCollapsed && (
                             <Box display="flex" justifyContent="space-between" alignItems="center" ml="15px">
@@ -209,7 +205,7 @@ const Sidebar = () => {
                         <Item
                             title={t('title.dashboard')}
                             to="/admin/dashboard"
-                            icon={<HomeOutlinedIcon />}
+                            icon={<InsertChartIcon />}
                             selected={selected}
                             setSelected={setSelected}
                             tooltip="Dashboard"
@@ -217,7 +213,7 @@ const Sidebar = () => {
                         <Item
                             title={t('ChatRoom')}
                             to="/admin/ChatRoom"
-                            icon={<WechatWorkOutlined />}
+                            icon={<ChatIcon />}
                             selected={selected}
                             setSelected={setSelected}
                             tooltip="Chatroom"
@@ -235,7 +231,7 @@ const Sidebar = () => {
                                 <Item
                                     title={t('title.student')}
                                     to="/admin/student"
-                                    icon={<SolutionOutlined />}
+                                    icon={<AssignmentIndIcon />}
                                     selected={selected}
                                     setSelected={setSelected}
                                     tooltip="Student Managerment"
@@ -243,7 +239,7 @@ const Sidebar = () => {
                                 <Item
                                     title={t('title.register')}
                                     to="/register"
-                                    icon={<SignatureOutlined />}
+                                    icon={<AppRegistrationIcon/>}
                                     selected={selected}
                                     setSelected={setSelected}
                                     tooltip="Register Account"
@@ -270,14 +266,6 @@ const Sidebar = () => {
                     <MenuItem
                         onClick={showModal}
                         className="logout-item"
-                        style={{
-                            position: 'absolute',
-                            bottom: '0',
-                            left: '0',
-                            width: '100%',
-                            borderTop: '1px solid #ccc',
-                            padding: '10px 20px',
-                        }}
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -291,7 +279,7 @@ const Sidebar = () => {
                                 d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h7v2H5v14h7v2zm11-4l-1.375-1.45l2.55-2.55H9v-2h8.175l-2.55-2.55L16 7l5 5z"
                             />
                         </svg>
-                        <span style={{ color: '#ff4d4f' }}> {t('title.logout')}</span>
+                        <span className='logout'> {t('title.logout')}</span>
                     </MenuItem>
                 </Menu>
             </ProSidebar>

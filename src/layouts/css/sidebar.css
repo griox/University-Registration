@@ -1,0 +1,15 @@
+.logout{
+    color: #ff4d4f;
+}
+.icon-menu {
+    margin: 10px 0 20px 0;
+    color: #e0e0e0;
+}
+.logout-item {
+    position: absolute;
+    bottom: 0px;    
+    left: 0px;
+    width: 100%;
+    border-top: 1px solid #ccc;
+    padding: 10px 20px;
+}

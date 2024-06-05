@@ -13,6 +13,7 @@ const initState = {
     img: '',
     id: '',
     dateObirth: '0/0/0',
+    darkMode: false,
 };
 
 const reducer = (state = initState, action) => {
@@ -52,7 +53,11 @@ const reducer = (state = initState, action) => {
                 ...state,
                 ...action.payload,
             };
-
+        case'theme':
+            return{
+                ...state,
+                darkMode: action.payload,
+            }
         default:
             return state;
     }

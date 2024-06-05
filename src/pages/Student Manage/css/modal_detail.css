@@ -1,14 +1,15 @@
-.Modal{
-  margin-left: 20%;
+.Modal {
+    margin-left: 20%;
 }
-.ant-descriptions-item-container .ant-descriptions-item-label{
-  color:var(--id-color)
+.ant-descriptions-item-container .ant-descriptions-item-label {
+    color: var(--id-color);
 }
-.ant-descriptions-item-container .ant-descriptions-item-content{
-  color: var(--body_color);
+.ant-descriptions-item-container .ant-descriptions-item-content {
+    color: var(--body_color);
 }
-.decription{
-  color: var(--name-colorY);
+.decription {
+    color: var(--name-colorY);
     align-items: center;
     justify-content: center;
+    display: flex;
 }

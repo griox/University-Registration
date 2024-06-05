@@ -6,4 +6,5 @@
     color: var(--name-colorY);
     align-items: center;
     justify-content: center;
+    display: flex;
 }

@@ -132,10 +132,9 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
                 ))}
             </Descriptions>
             <Spin spinning={Loading}>
-            <h4>{t('title.list')}</h4>
-                {schoolExist && !Loading ? (
+                {schoolExist ? (
                     <>
-                        
+                        <h4>{t('title.list')}</h4>
                         <Table
                             columns={columns}
                             dataSource={university}
@@ -151,7 +150,7 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
                         />
                     </>
                 ) : (
-                    <p className='description'>This student hasn't registered any school yet!</p>
+                    <h4 className="description">This student hasn't registered any school yet!</h4>
                 )}
             </Spin>
         </Modal>

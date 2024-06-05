@@ -496,7 +496,7 @@ const AddSchool = () => {
                                     showQuickJumper: true,
                                     showTotal: (total) => `${t('title.total')} ${total}`,
                                 }}
-                                scroll={{ x: 'calc(100vh - 320px)', y: 'calc(100vh - 300px)' }}
+                                scroll={{ x: 'calc(100vw - 320px)', y: 'calc(100vh - 300px)' }}
                                 components={{
                                     body: {
                                         cell: EditableCell,

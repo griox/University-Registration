@@ -10,6 +10,7 @@ html,
     font-family: 'Source Sans Pro', sans-serif;
 }
 :root {
+    --chart-color:white;
     --placeholder-color: #d2dae2;
     --input-color: #fff;
     --hover-btn: #74b9ff;
@@ -31,6 +32,7 @@ html,
     --female-color:rgb(239, 73, 101);
 }
 [data-theme="dark"] {
+    --chart-color:#141414;
     --sidebar-color:#3d3d3d;
     --placeholder-color:#ced6e0;
     --input-color:#485460;

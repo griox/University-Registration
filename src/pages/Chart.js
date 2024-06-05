@@ -7,8 +7,8 @@ import { child, get, getDatabase, ref } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../constants/constants';
 import { useTranslation } from 'react-i18next';
-import { colors } from '@mui/material';
-
+import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 const Chart = () => {
     const { t } = useTranslation('dashboard');
     const [studentTotal, setStudentTotal] = useState(0);
@@ -33,8 +33,10 @@ const Chart = () => {
     const [listUniLessRegister, setListUniLessRegister] = useState(0);
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    const darkMode = useSelector((state) => state.darkMode);
+    const theme = localStorage.setItem('status', darkMode);
     const config = {
-        
+        theme: !darkMode ? 'classic' : 'classicDark',
         data: [
             { subject: t('subj.Math'), score: mathAS },
             { subject: t('subj.English'), score: englishAS },
@@ -45,6 +47,7 @@ const Chart = () => {
         height: 400,
         xField: 'subject',
         yField: 'score',
+        text: 'subject',
         scale: {
             x: { padding: 0.4 },
             y: {
@@ -55,13 +58,16 @@ const Chart = () => {
         label: {
             text: (d) => `${d.score.toFixed(2)}`,
             textBaseline: 'bottom',
+            titleStroke: 'red',
         },
         style: {
             width: 45,
+            fill: darkMode ? '#FF8C00' : 'rgb(7, 153, 244)',
         },
     };
 
     const con = {
+        theme: !darkMode ? 'academy' : 'classicDark',
         data: [
             { type: t('data.None'), value: registZero },
             { type: t('data.One'), value: registOne },
@@ -81,7 +87,7 @@ const Chart = () => {
 
         label: {
             text: (d) => `${d.value}`,
-            position: 'outside',
+            position: 'right',
         },
         legend: {
             color: {
@@ -97,6 +103,7 @@ const Chart = () => {
     };
 
     const gen = {
+        theme: darkMode ? 'classicDark' : 'academy',
         data: [
             { gender: t('gen.Male'), value: male },
             { gender: t('gen.Female'), value: female },
@@ -112,6 +119,7 @@ const Chart = () => {
             style: {
                 fontWeight: 'bold',
                 fontSize: '50px',
+                titleStroke: 'red',
             },
         },
         legend: {

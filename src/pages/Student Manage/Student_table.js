@@ -86,7 +86,7 @@ const StudentList = () => {
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const [bell, setBell] = useState(false);
-    const [file, setFile] = useState(null);
+
     useEffect(() => {
         const fetchData = async () => {
             const studentRef = child(ref(database), 'Detail');
@@ -371,25 +371,21 @@ const StudentList = () => {
     };
     const columns = [
         {
-        title:t('ID + Name'),
-        render:(record)=>(
-            <React.Fragment>
-                {record.id}
-                <br/>
-                {record.name}
-            </React.Fragment>
-        ),
-        responsive:['xs']
-        },
-        {
-            title:t('Score '),
-            render:(record)=>(
+            title: t('ID + Name'),
+            render: (record) => (
                 <React.Fragment>
-                    {record.AverageScore}
+                    {record.id}
+                    <br />
+                    {record.name}
                 </React.Fragment>
             ),
-            responsive:['xs']
-            },
+            responsive: ['xs'],
+        },
+        {
+            title: t('Score '),
+            render: (record) => <React.Fragment>{record.AverageScore}</React.Fragment>,
+            responsive: ['xs'],
+        },
         {
             title: t('table.ID'),
             dataIndex: 'id',
@@ -403,7 +399,6 @@ const StudentList = () => {
                 </span>
             ),
             key: 'id',
-           
         },
 
         {
@@ -424,7 +419,7 @@ const StudentList = () => {
                     </>
                 );
             },
-            responsive:['sm']
+            responsive: ['sm'],
         },
 
         {
@@ -435,11 +430,10 @@ const StudentList = () => {
             ...getColumnSearchProps('email'),
             render: (text, record) => (
                 <Tooltip title={record.isRegister ? t('tooltip.account1') : t('tooltip.account2')}>
-                    <span className={ record.isRegister ? 'Registered' : 'UnRegistered' }>{text}</span>
+                    <span className={record.isRegister ? 'Registered' : 'UnRegistered'}>{text}</span>
                 </Tooltip>
             ),
             key: 'email',
-       
         },
         {
             title: t('table.Math'),
@@ -457,9 +451,9 @@ const StudentList = () => {
             key: 'LiteratureScore',
 
             sorter: (a, b) => a.LiteratureScore - b.LiteratureScore,
-            responsive:['sm']
+            responsive: ['sm'],
         },
-       
+
         {
             title: t('table.English'),
             dataIndex: 'EnglishScore',
@@ -474,7 +468,7 @@ const StudentList = () => {
             width: '10%',
             key: 'AverageScore',
             sorter: (a, b) => a.AverageScore - b.AverageScore,
-            responsive:['sm']
+            responsive: ['sm'],
         },
         {
             title: t('table.UniCode'),
@@ -490,14 +484,14 @@ const StudentList = () => {
                 }
             },
             key: 'uniCode',
-            responsive:['sm']
+            responsive: ['sm'],
         },
         {
             title: t('table.Action'),
             dataIndex: 'operation',
             width: '12%',
             fixed: 'right',
-            responsive:['sm'],
+            responsive: ['sm'],
             render: (_, record) => {
                 const editable = isEditing(record);
                 return editable ? (
@@ -518,19 +512,34 @@ const StudentList = () => {
                         >
                             <EditOutlined />
                         </Typography.Link>
-                        <Popconfirm title={t('title.delete')} onConfirm={() => handleDelete(record)} okText={t('confirm.ok1')} cancelText={t('confirm.cancel')}>
+                        <Popconfirm
+                            title={t('title.delete')}
+                            onConfirm={() => handleDelete(record)}
+                            okText={t('confirm.ok1')}
+                            cancelText={t('confirm.cancel')}
+                        >
                             <Typography.Link>
                                 <DeleteOutlined />
                             </Typography.Link>
                         </Popconfirm>
                         {!record.isRegister ? (
-                            <Popconfirm title={t('title.provide')} onConfirm={() => handleProvideAccount(record)} okText={t('confirm.ok2')} cancelText={t('confirm.cancel')}>
+                            <Popconfirm
+                                title={t('title.provide')}
+                                onConfirm={() => handleProvideAccount(record)}
+                                okText={t('confirm.ok2')}
+                                cancelText={t('confirm.cancel')}
+                            >
                                 <Typography.Link>
                                     <PlusCircleOutlined />
                                 </Typography.Link>
                             </Popconfirm>
                         ) : (
-                            <Popconfirm title={t('title.deleteacc')} onConfirm={() => handleDeleteAccount(record)} okText={t('confirm.ok1')} cancelText={t('confirm.cancel')}>
+                            <Popconfirm
+                                title={t('title.deleteacc')}
+                                onConfirm={() => handleDeleteAccount(record)}
+                                okText={t('confirm.ok1')}
+                                cancelText={t('confirm.cancel')}
+                            >
                                 <Typography.Link>
                                     <MinusCircleOutlined />
                                 </Typography.Link>
@@ -595,7 +604,6 @@ const StudentList = () => {
                     <Modal
                         title={t('title.modalsend')}
                         open={isModalOpen}
-                        // onOk={() => handleOk()}
                         onCancel={handleCancel}
                         confirmLoading={true}
                         destroyOnClose
@@ -611,7 +619,7 @@ const StudentList = () => {
                         <Input onChange={(e) => setMess(e.target.value)} />
                     </Modal>
                     <Button type="primary" onClick={showModal}>
-                        {t('button.sendnoti')} 
+                        {t('button.sendnoti')}
                     </Button>
                     
                     <ModalDetail
@@ -634,7 +642,7 @@ const StudentList = () => {
                                 dataSource={studentData}
                                 columns={mergedColumns}
                                 scroll={{
-                                    x: 'calc(100vh - 320px)',
+                                    x: 'calc(100vw - 320px)',
                                     y: 'calc(100vh - 300px)',
                                 }}
                                 rowClassName="editable-row"

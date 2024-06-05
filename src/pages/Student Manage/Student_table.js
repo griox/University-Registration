@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin, Modal, message, Upload } from 'antd';
 import './css/table.css';
 import 'antd/dist/reset.css';
-import 'antd/dist/reset.css';
 import {
     SearchOutlined,
     EditOutlined,
@@ -86,6 +85,7 @@ const StudentList = () => {
     const [searchedColumn, setSearchedColumn] = useState('');
     const [studentData, setStudentData] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [studentUnicode, setstudentUnicode] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [Loading, setLoading] = useState(true);
     const tableRef = useRef(null);
@@ -362,9 +362,9 @@ const StudentList = () => {
     };
 
     const handleIdClick = (record) => {
+        setstudentUnicode(record.uniCode!==undefined);
         setSelectedStudent(record);
         setIsModalVisible(true);
-        setLoading(true);
     };
     const temp = (x) => {
         if (x === null || x === undefined) {
@@ -635,8 +635,7 @@ const StudentList = () => {
                             setIsModalVisible(false);
                         }}
                         student={selectedStudent}
-                        Loading={Loading}
-                        setLoading={setLoading}
+                        studentUnicode ={studentUnicode}
                     />
                     <Form form={form} component={false}>
                         <Spin spinning={Loading}>

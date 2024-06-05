@@ -6,9 +6,9 @@ import { database } from '../firebaseConfig.js';
 import './css/Modal_detail.css';
 import { useTranslation } from 'react-i18next';
 
-export const Form_Detail = ({ university, loading, setLoading }) => {
+export const Form_Detail = ({ university,isRegistered }) => {
     const [student, setStudents] = useState([]);
-    const [studentExist, setStudentExist] = useState(true);
+    const [loading,setLoading]=useState(true);
     const [form] = Form.useForm();
     const student_regist = university.registeration;
     const { t } = useTranslation('detailuniversity');
@@ -104,6 +104,7 @@ export const Form_Detail = ({ university, loading, setLoading }) => {
     useEffect(() => {
         const fetchData = async () => {
             if (student_regist && typeof student_regist === 'object') {
+                setLoading(true);
                 const studentList = Object.values(student_regist).map((student) => student.id);
                 const studentsData = [];
                 for (const studentId of studentList) {
@@ -120,9 +121,7 @@ export const Form_Detail = ({ university, loading, setLoading }) => {
                 }
                 setLoading(false);
                 setStudents(studentsData);
-                setStudentExist(true);
             } else {
-                setStudentExist(false);
                 setLoading(false);
             }
         };
@@ -140,7 +139,7 @@ export const Form_Detail = ({ university, loading, setLoading }) => {
             </Descriptions>
             <Spin spinning={loading}>
                
-                {studentExist && !loading ? (
+                {isRegistered ? (
                     <>
                      <h4>{t('title.list')}</h4>
                         <Table

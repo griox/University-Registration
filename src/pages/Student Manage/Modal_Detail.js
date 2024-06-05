@@ -2,16 +2,19 @@ import React, { useState, useEffect } from 'react';
 import { get, ref, child } from 'firebase/database';
 import { Divider, Table, Descriptions, Spin, Modal } from 'antd';
 import './css/modal_detail.css';
+import 'antd/dist/reset.css';
 import { database } from '../firebaseConfig.js';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
+const ModalDetail = ({ visible, onClose, student, studentUnicode }) => {
     const [university, setUniversity] = useState([]);
+    const [loading, setLoading] = useState(true);
+    console.log(loading)
     const { t } = useTranslation('detailstudent');
-    const [schoolExist, setSchoolExist] = useState(true);
     useEffect(() => {
         const fetchData = async () => {
             if (visible && student && student.uniCode) {
+                setLoading(true);
                 const uniRegist = student.uniCode;
                 const uniDatas = [];
                 for (const uniId of uniRegist) {
@@ -27,10 +30,9 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
                     }
                 }
                 setLoading(false);
-                setSchoolExist(true);
+
                 setUniversity(uniDatas);
             } else {
-                setSchoolExist(false);
                 setLoading(false);
             }
         };
@@ -121,7 +123,10 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
             width={970}
             height={400}
             title={t('title.modal')}
-            onCancel={onClose}
+            onCancel={() => {
+                setLoading(true);
+                onClose();
+            }}
             footer={null}
         >
             <Descriptions column={3}>
@@ -131,8 +136,8 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
                     </Descriptions.Item>
                 ))}
             </Descriptions>
-            <Spin spinning={Loading}>
-                {schoolExist ? (
+            <Spin spinning={loading}>
+                {studentUnicode ? (
                     <>
                         <h4>{t('title.list')}</h4>
                         <Table
@@ -150,7 +155,7 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
                         />
                     </>
                 ) : (
-                    <h4 className="description">This student hasn't registered any school yet!</h4>
+                    <h4 className="description">This student hasn't registered any school yet !</h4>
                 )}
             </Spin>
         </Modal>

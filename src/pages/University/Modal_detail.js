@@ -139,9 +139,10 @@ export const Form_Detail = ({ university, loading, setLoading }) => {
                 ))}
             </Descriptions>
             <Spin spinning={loading}>
-                <h4>{t('title.list')}</h4>
+               
                 {studentExist && !loading ? (
                     <>
+                     <h4>{t('title.list')}</h4>
                         <Table
                             className="table"
                             rowHoverable={false}
@@ -162,7 +163,7 @@ export const Form_Detail = ({ university, loading, setLoading }) => {
                         />
                     </>
                 ) : (
-                    <p className="description">This School hasn't been registered by any students!</p>
+                    <h4 className="description">This School hasn't been registered by any students!</h4>
                 )}
             </Spin>
         </>

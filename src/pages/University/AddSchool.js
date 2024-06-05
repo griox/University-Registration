@@ -43,13 +43,6 @@ const AddSchool = () => {
     const searchInput = useRef(null);
 
     const isEditing = (record) => record.key === editingKey;
-    const checkTargetError = (record) => {
-        if (record.target < record.isRegistered) {
-            setNumberRegist('Target must not be less than Number of registration');
-        } else {
-            setNumberRegist('');
-        }
-    };
 
     const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
         const inputNode = inputType === 'number' ? <InputNumber /> : <Input  />;
@@ -487,7 +480,7 @@ const AddSchool = () => {
                                     showQuickJumper: true,
                                     showTotal: (total) => `${t('title.total')} ${total}`,
                                 }}
-                                scroll={{ x: 'calc(100vh - 320px)', y: 'calc(100vh - 300px)' }}
+                                scroll={{ x: 'calc(100vw - 320px)', y: 'calc(100vh - 300px)' }}
                                 components={{
                                     body: {
                                         cell: EditableCell,

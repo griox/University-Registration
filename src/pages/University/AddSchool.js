@@ -41,6 +41,7 @@ const AddSchool = () => {
     const [numberRegist, setNumberRegist] = useState('');
     const tableRef = useRef(null);
     const searchInput = useRef(null);
+    const [isRegistered, setIsRegistered] = useState(false);
 
     const isEditing = (record) => record.key === editingKey;
 
@@ -91,7 +92,7 @@ const AddSchool = () => {
         );
     };
     const handleSchoolDetail = (record) => {
-        setLoading(true);
+        setIsRegistered(record.isRegistered!==0);
         setDetailVisible(true);
         setSelectedUniverse(record);
     };
@@ -505,8 +506,7 @@ const AddSchool = () => {
                 <FormDetail
                     university={selectedUniverse}
                     open={isModalDetailVisible}
-                    setLoading={setLoading}
-                    loading={loading}
+                    isRegistered={isRegistered}
                 />
             </Modal>
         </div>

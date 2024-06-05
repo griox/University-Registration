@@ -25,49 +25,44 @@ import { firebaseConfig } from '../../constants/constants.js';
 import { initializeApp } from 'firebase/app';
 
 const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
+    const [error, setError] = useState(null);
     const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
-    const isMath = dataIndex === 'MathScore'
-    const isLiterature = dataIndex === 'LiteratureScore'
-    const isEnglish = dataIndex === 'EnglishScore'
+    const isMath = dataIndex === 'MathScore';
+    const isLiterature = dataIndex === 'LiteratureScore';
+    const isEnglish = dataIndex === 'EnglishScore';
+    const rules = [
+        {
+            validator: (_, value) => {
+                if (dataIndex) {
+                    if (value === '') {
+                        return Promise.reject(`Please input ${title}`);
+                    }
+                }
+                if (isMath || isEnglish || isLiterature) {
+                    if (!(value >=0 && value <= 10 )) {
+                        setError('Score must >= 0 and <= 10 and just number');
+                        return Promise.reject('Validate Error');
+                    }
+                }
+                setError(null);
+                return Promise.resolve();
+            },
+        },
+    ];
+
     return (
         <td {...restProps}>
             {editing ? (
-                <Form.Item
+                <><Form.Item
                     className="edit-cell"
                     name={dataIndex}
-                    rules={[
-                        {
-                            required: true,
-                            message: `Please Input ${title}!`,
-                        },
-                        {
-                            validator: (_, value) => {
-                                if (isMath && !(value >= 0 && value <= 10)) { // Kiểm tra nếu là cột 'target' và giá trị nhỏ hơn số đã đăng ký
-                                    return Promise.reject(new Error('Must >= 0 and <= 10 and just number'));
-                                }
-                                return Promise.resolve();
-                            },
-                        },
-                        {
-                            validator: (_, value) => {
-                                if (isEnglish && !(value >= 0 && value <= 10)) { // Kiểm tra nếu là cột 'target' và giá trị nhỏ hơn số đã đăng ký
-                                    return Promise.reject(new Error('Must >= 0 and <= 10 and just number'));
-                                }
-                                return Promise.resolve();
-                            },
-                        },
-                        {
-                            validator: (_, value) => {
-                                if (isLiterature && !(value >= 0 && value <= 10)) { // Kiểm tra nếu là cột 'target' và giá trị nhỏ hơn số đã đăng ký
-                                    return Promise.reject(new Error('Must >= 0 and <= 10 and just number'));
-                                }
-                                return Promise.resolve();
-                            },
-                        },
-                    ]}
+                    rules={rules}
                 >
                     {inputNode}
+
                 </Form.Item>
+                <Tooltip title={error} open={error ? true : false} placement="bottomRight" overlayStyle={{fontSize: '12px'}} >
+                </Tooltip></>
             ) : (
                 children
             )}
@@ -256,6 +251,7 @@ const StudentList = () => {
             await remove(child(ref(database), `Account/${emailhash}`));
             const newData = studentData.filter((item) => item.id !== record.id);
             setStudentData(newData);
+            toast.success('Delete student successfully');
         } catch (error) {
             toast.error('Error deleting data');
         }
@@ -407,8 +403,6 @@ const StudentList = () => {
                 </span>
             ),
             key: 'id',
-            fixed: 'left',
-            fixed: 'left',
            
         },
 
@@ -417,7 +411,6 @@ const StudentList = () => {
             dataIndex: 'name',
             width: '19%',
             editable: true,
-            fixed: 'left',
             fixed: 'left',
             key: 'name',
             ...getColumnSearchProps('name'),
@@ -620,6 +613,7 @@ const StudentList = () => {
                     <Button type="primary" onClick={showModal}>
                         {t('button.sendnoti')} 
                     </Button>
+                    
                     <ModalDetail
                         visible={isModalVisible}
                         onClose={() => {

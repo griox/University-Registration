@@ -86,6 +86,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
         };
         calculateAverage();
     }, [Mathscore, Englishscore, Literaturescore]);
+    
     const addStudent = async () => {
         try {
             const formattedDateOfBirth = dateOfBirth ? dateOfBirth.format('DD/MM/YYYY') : '';
@@ -140,6 +141,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
             toast.error(error);
             toast.error(error);
             toast.error('An error occurred while adding student');
+            console.log(error)
         }
     };
 
@@ -624,7 +626,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     maxLength={4}
                                     max={10}
                                     step={0.2}
-                                    className="input-num"
+                                    className="input-num-eng"
                                     onChange={(value) => setEnglishscore(value)}
                                 />
                             </Form.Item>
@@ -646,14 +648,14 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     max={10}
                                     maxLength={4}
                                     step={0.2}
-                                    className="input-num"
+                                    className="input-num-liter"
                                     onChange={(value) => setLiteraturescore(value)}
                                 />
                             </Form.Item>
                         </Col>
                         <Col span={6}>
                             <Form.Item  label={t('label.entrance')} className="form-item1">
-                                <Input className="input-num" value={averageS} disabled />
+                                <Input readOnly className="input-num-en" value={averageS} />
                             </Form.Item>
                         </Col>
                     </Row>

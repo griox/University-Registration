@@ -2,7 +2,7 @@ import React from 'react';
 import { Box } from '@mui/material';
 import Pr from '../../pages/Pr';
 
-const Profile = () => {
+const UniversityRegisting = () => {
     localStorage.setItem('Pages', JSON.stringify('PROFILE'));
 
     return (
@@ -18,4 +18,4 @@ const Profile = () => {
     );
 };
 
-export default Profile;
+export default UniversityRegisting;

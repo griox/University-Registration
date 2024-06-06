@@ -1,18 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import 'firebase/auth';
 import { child, get, getDatabase, ref, update } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
-import { Button } from 'antd';
+import { Button, Form, Input } from 'antd';
 import { useHistory } from 'react-router-dom';
 import '../../../assets/css/register.css';
 import { useDispatch } from 'react-redux';
 import { firebaseConfig } from '../../../constants/constants';
-import { encodePath, validatePasswordFormat } from '../../../commonFunctions';
+import {
+    HandleError,
+    disableButton,
+    encodePath,
+    getback,
+    language,
+    onchangeInput,
+    validatePasswordFormat,
+} from '../../../commonFunctions';
 import { useTranslation } from 'react-i18next';
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Dropdown, Space, Typography } from 'antd';
 import bcrypt from 'bcryptjs';
+import CryptoJS from 'crypto-js';
+
 const Changepass = () => {
     const { t, i18n } = useTranslation('changePassword');
     const history = useHistory();
@@ -24,120 +34,15 @@ const Changepass = () => {
     const dispatch = useDispatch();
     const salt = bcrypt.genSaltSync(10);
     const [loadingChangePass, setLoadingChangePass] = useState(false);
-    const [loadingClear, setLoadingClear] = useState(false);
-    useEffect(() => {
-        const passwordInput1 = document.querySelector('.old_pass');
-        const eyeBtn1 = document.querySelector('.eye1');
-        const passwordInput2 = document.querySelector('.new_pass');
-        const eyeBtn2 = document.querySelector('.eye2');
-        const passwordInput3 = document.querySelector('.con_pass');
-        const eyeBtn3 = document.querySelector('.eye3');
-
-        const handlePasswordInput1 = () => {
-            if (passwordInput1.value.trim() !== '') {
-                eyeBtn1.style.display = 'block';
-            } else {
-                eyeBtn1.style.display = 'none';
-                passwordInput1.setAttribute('type', 'password');
-                eyeBtn1.classList.remove('fa-eye-slash');
-                eyeBtn1.classList.add('fa-eye');
-            }
-        };
-
-        const handleEyeBtn1 = () => {
-            if (passwordInput1.type === 'password') {
-                passwordInput1.setAttribute('type', 'text');
-                eyeBtn1.classList.remove('fa-eye');
-                eyeBtn1.classList.add('fa-eye-slash');
-            } else {
-                passwordInput1.setAttribute('type', 'password');
-                eyeBtn1.classList.add('fa-eye');
-                eyeBtn1.classList.remove('fa-eye-slash');
-            }
-        };
-
-        const handlePasswordInput2 = () => {
-            if (passwordInput2.value.trim() !== '') {
-                eyeBtn2.style.display = 'block';
-            } else {
-                eyeBtn2.style.display = 'none';
-                passwordInput2.setAttribute('type', 'password');
-                eyeBtn2.classList.remove('fa-eye-slash');
-                eyeBtn2.classList.add('fa-eye');
-            }
-        };
-
-        const handleEyeBtn2 = () => {
-            if (passwordInput2.type === 'password') {
-                passwordInput2.setAttribute('type', 'text');
-                eyeBtn2.classList.remove('fa-eye');
-                eyeBtn2.classList.add('fa-eye-slash');
-            } else {
-                passwordInput2.setAttribute('type', 'password');
-                eyeBtn2.classList.add('fa-eye');
-                eyeBtn2.classList.remove('fa-eye-slash');
-            }
-        };
-
-        const handlePasswordInput3 = () => {
-            if (passwordInput3.value.trim() !== '') {
-                eyeBtn3.style.display = 'block';
-            } else {
-                eyeBtn3.style.display = 'none';
-                passwordInput3.setAttribute('type', 'password');
-                eyeBtn3.classList.remove('fa-eye-slash');
-                eyeBtn3.classList.add('fa-eye');
-            }
-        };
-
-        const handleEyeBtn3 = () => {
-            if (passwordInput3.type === 'password') {
-                passwordInput3.setAttribute('type', 'text');
-                eyeBtn3.classList.remove('fa-eye');
-                eyeBtn3.classList.add('fa-eye-slash');
-            } else {
-                passwordInput3.setAttribute('type', 'password');
-                eyeBtn3.classList.add('fa-eye');
-                eyeBtn3.classList.remove('fa-eye-slash');
-            }
-        };
-
-        passwordInput1.addEventListener('focus', handlePasswordInput1);
-        passwordInput1.addEventListener('keyup', handlePasswordInput1);
-        eyeBtn1.addEventListener('click', handleEyeBtn1);
-        passwordInput2.addEventListener('focus', handlePasswordInput2);
-        passwordInput2.addEventListener('keyup', handlePasswordInput2);
-        eyeBtn2.addEventListener('click', handleEyeBtn2);
-        passwordInput3.addEventListener('focus', handlePasswordInput3);
-        passwordInput3.addEventListener('keyup', handlePasswordInput3);
-        eyeBtn3.addEventListener('click', handleEyeBtn3);
-
-        return () => {
-            passwordInput1.removeEventListener('focus', handlePasswordInput1);
-            passwordInput1.removeEventListener('keyup', handlePasswordInput1);
-            eyeBtn1.removeEventListener('click', handleEyeBtn1);
-            passwordInput2.removeEventListener('focus', handlePasswordInput2);
-            passwordInput2.removeEventListener('keyup', handlePasswordInput2);
-            eyeBtn2.removeEventListener('click', handleEyeBtn2);
-            passwordInput3.removeEventListener('focus', handlePasswordInput3);
-            passwordInput3.removeEventListener('keyup', handlePasswordInput3);
-            eyeBtn3.removeEventListener('click', handleEyeBtn3);
-        };
-    }, []);
-
-    const clear = () => {
-        setLoadingClear(false);
-
-        setOldPass('');
-        setNewPass('');
-        setReNewPass('');
-        setLoadingClear(true);
-    };
+    const [errorOldPass, setErrorOldPass] = useState(false);
+    const [errorNewPass, setErrorNewPass] = useState(false);
+    const [errorReNewPass, setErrorReNewPass] = useState(false);
+    const secretKey = 'Tvx1234@';
 
     const handleLogout = () => {
         localStorage.setItem('Infor', JSON.stringify(''));
         localStorage.setItem('Name', '');
-        localStorage.setItem('Email', JSON.stringify(''));
+        localStorage.setItem('Email', '');
         localStorage.setItem('Role', '');
         localStorage.removeItem('userToken');
 
@@ -162,7 +67,7 @@ const Changepass = () => {
 
     const changePassWord = () => {
         setLoadingChangePass(true);
-        let temp = JSON.parse(localStorage.getItem('Email'));
+        let temp = localStorage.getItem('Email');
         if (oldPass === '') {
             toast.error('Please enter your old password');
             setLoadingChangePass(false);
@@ -198,23 +103,29 @@ const Changepass = () => {
             if (snapshot.exists()) {
                 const x = snapshot.val();
 
-                if (bcrypt.compareSync(oldPass, x.password) === true) {
-                    var newHash = bcrypt.hashSync(newPass, salt);
-                    update(ref(db, 'Account/' + temp), {
-                        password: newHash,
-                    })
-                        .then(() => {
-                            setLoadingChangePass(false);
-                            toast.success('Updated sucessfully');
-                            handleLogout();
+                try {
+                    var temp = CryptoJS.AES.decrypt(x.password, secretKey);
+                    temp = temp.toString(CryptoJS.enc.Utf8);
+                    if (temp === oldPass) {
+                        var newHash = CryptoJS.AES.encrypt(newPass, secretKey).toString();
+                        update(ref(db, 'Account/' + temp), {
+                            password: newHash,
                         })
-                        .catch((error) => {
-                            toast.error('lỗi' + error);
-                        });
-                } else {
-                    setLoadingChangePass(false);
+                            .then(() => {
+                                setLoadingChangePass(false);
+                                toast.success('Updated sucessfully');
+                                handleLogout();
+                            })
+                            .catch((error) => {
+                                toast.error('lỗi' + error);
+                            });
+                    } else {
+                        setLoadingChangePass(false);
 
-                    toast.error('Your password is correct');
+                        toast.error('Your password is not correct');
+                    }
+                } catch (error) {
+                    console.log(error.message);
                 }
             } else {
                 setLoadingChangePass(false);
@@ -228,22 +139,69 @@ const Changepass = () => {
             changePassWord();
         }
     };
+
+    const handleItem = (error, value, set, setError, string, placeholder) => {
+        return (
+            <>
+                <Form.Item
+                    name="email"
+                    validateStatus={error ? 'error' : ''}
+                    help={error ? <HandleError string={string} /> : ''}
+                    rules={[
+                        {
+                            required: true,
+                            message: 'Please input!',
+                        },
+                    ]}
+                >
+                    <Input.Password
+                        placeholder={placeholder}
+                        onChange={(e) => onchangeInput(e.target.value, set, setError)}
+                        onKeyDown={handleEnterKey}
+                        allowClear
+                        style={{
+                            border: 'none',
+                            padding: '15px',
+                            color: '#000',
+                            backgroundColor: 'blue',
+                        }}
+                        value={value}
+                        iconRender={(visible) =>
+                            visible ? (
+                                <EyeTwoTone style={{ fontSize: '20px' }} />
+                            ) : (
+                                <EyeInvisibleOutlined style={{ fontSize: '20px' }} />
+                            )
+                        }
+                    />
+                </Form.Item>
+            </>
+        );
+    };
+    const clear = () => {
+        setOldPass('');
+        setNewPass('');
+        setReNewPass('');
+    };
+    const handleButton = (loading, action, string) => {
+        return (
+            <>
+                <div className="input-box">
+                    <br />
+
+                    <Button loading={loading} className="input-submit" onClick={action} style={{}}>
+                        <span>{string}</span>
+                        <i className="bx bx-right-arrow-alt"></i>
+                    </Button>
+                </div>
+            </>
+        );
+    };
     return (
         <>
             <div className="background">
                 <div className="form-container">
-                    <div className="col col-1">
-                        <div className="image_layer">
-                            <img src="assets/login/img/FPTnew.png" className="form_img_main" alt="" />
-                        </div>
-
-                        <p className="featured">
-                            {t('title.inform changepassword')} <br /> {t('title.or')}
-                        </p>
-                        <Button onClick={() => history.goBack()} className="btn-getback">
-                            {t('button.get back')}
-                        </Button>
-                    </div>
+                    {getback(history, t('title.inform changepassword'), t('title.or'), t('button.get back'))}
 
                     <div className="col col-2">
                         <form action="">
@@ -253,48 +211,33 @@ const Changepass = () => {
                                 <div className="form-title">
                                     <span>{t('header')}</span>
                                 </div>
+
                                 <div className="form-inputs">
-                                    <div className="input-box">
-                                        <input
-                                            type="password"
-                                            className="input-field old_pass"
-                                            placeholder={t('title.old password')}
-                                            required
-                                            value={oldPass}
-                                            onChange={(e) => setOldPass(e.target.value)}
-                                            onKeyDown={handleEnterKey}
-                                        />
-                                        <i className="bx bx-lock-alt icon"></i>
-                                        <i className="fa fa-eye eye1 icon"></i>
-                                    </div>
+                                    {handleItem(
+                                        errorOldPass,
+                                        oldPass,
+                                        setOldPass,
+                                        setErrorOldPass,
+                                        'password',
+                                        'Old password',
+                                    )}
+                                    {handleItem(
+                                        errorNewPass,
+                                        newPass,
+                                        setNewPass,
+                                        setErrorNewPass,
+                                        'password',
+                                        'New password',
+                                    )}
+                                    {handleItem(
+                                        errorReNewPass,
+                                        reNewPass,
+                                        setReNewPass,
+                                        setErrorReNewPass,
+                                        'password',
+                                        'Re-enter new password',
+                                    )}
 
-                                    <div className="input-box">
-                                        <input
-                                            type="password"
-                                            className="input-field new_pass"
-                                            placeholder={t('title.new password')}
-                                            required
-                                            value={newPass}
-                                            onChange={(e) => setNewPass(e.target.value)}
-                                            onKeyDown={handleEnterKey}
-                                        />
-                                        <i className="bx bx-lock-alt icon"></i>
-                                        <i className="fa fa-eye eye2 icon"></i>
-                                    </div>
-
-                                    <div className="input-box">
-                                        <input
-                                            type="password"
-                                            className="input-field con_pass"
-                                            placeholder={t('title.re-new password')}
-                                            required
-                                            value={reNewPass}
-                                            onChange={(e) => setReNewPass(e.target.value)}
-                                            onKeyDown={handleEnterKey}
-                                        />
-                                        <i className="bx bx-lock-alt icon"></i>
-                                        <i className="fa fa-eye eye3 icon"></i>
-                                    </div>
                                     <div className="input-box">
                                         <br />
 
@@ -302,35 +245,32 @@ const Changepass = () => {
                                             loading={loadingChangePass}
                                             className="input-submit"
                                             onClick={changePassWord}
-                                        >
-                                            <span>{t('button.change')}</span>
-                                            <i className="bx bx-right-arrow-alt"></i>
-                                        </Button>
-                                    </div>
-                                    <div className="input-box">
-                                        <Button loading={loadingClear} className="input-submit" onClick={clear}>
-                                            <span>{t('button.clear')}</span>
-                                            <i className="bx bx-right-arrow-alt"></i>
-                                        </Button>
-                                    </div>
-
-                                    <div>
-                                        <Dropdown
-                                            className="drop-menu"
-                                            menu={{
-                                                items,
-                                                selectable: true,
-                                                defaultSelectedKeys: ['1'],
+                                            disabled={
+                                                disableButton(errorOldPass, oldPass) === false &&
+                                                disableButton(errorNewPass, newPass) === false &&
+                                                disableButton(errorReNewPass, reNewPass) === false
+                                                    ? false
+                                                    : true
+                                            }
+                                            style={{
+                                                color: '#fff',
+                                                backgroundColor:
+                                                    errorOldPass === false &&
+                                                    errorNewPass === false &&
+                                                    errorReNewPass === false &&
+                                                    oldPass !== '' &&
+                                                    newPass !== '' &&
+                                                    reNewPass !== ''
+                                                        ? '#003865'
+                                                        : 'rgba(255, 255, 255, 0.3)',
                                             }}
                                         >
-                                            <Typography.Link>
-                                                <Space className="title-drop">
-                                                    {t('title.language')}
-                                                    <DownOutlined />
-                                                </Space>
-                                            </Typography.Link>
-                                        </Dropdown>
+                                            <span>{'Change'}</span>
+                                            <i className="bx bx-right-arrow-alt"></i>
+                                        </Button>
                                     </div>
+                                    {handleButton(false, clear, 'Clear')}
+                                    {language(items, t('title.language'))}
                                 </div>
                             </div>
                         </form>

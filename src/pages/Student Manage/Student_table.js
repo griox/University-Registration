@@ -622,8 +622,6 @@ const StudentList = () => {
                             <Button onClick={handleCancel}>{t('button.cancel')}</Button>,
                         ]}
                     >
-                        {/* <input type="file" id="fileInput" className="avatar-input" /> */}
-
                         <Input onChange={(e) => setMess(e.target.value)} />
                     </Modal>
                     <Button type="primary" onClick={showModal}>

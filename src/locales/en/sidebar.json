@@ -5,6 +5,12 @@
         "student": "Student Managerment",
         "register": "Register Account",
         "profile": "Profile",
-        "logout": "Log out"
+        "logout": "Log out",
+        "modal": "Log out",
+        "confirm": "Are you sure want to log out ?"
+    },
+    "button": {
+        "ok": "OK",
+        "cancel": "Cancel"
     }
 }

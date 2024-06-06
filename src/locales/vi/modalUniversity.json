@@ -20,6 +20,7 @@
     },
     "warning": {
         "input": "Vui lòng nhập !",
+        "uniname": "Tên trường đại học chỉ được chứa chữ cái",
         "unicode": "Mã trường chỉ bao gồm các chữ cái "
     },
     "placeholder": {

@@ -1,6 +1,8 @@
 {
     "button": {
-        "Add": "Thêm sinh viên"
+        "Add": "Thêm sinh viên",
+        "ok": "Thêm",
+        "cancel": "Hủy"
     },
     "label": {
         "name": "Họ và tên",
@@ -29,9 +31,9 @@
         "address": "Nhập địa chỉ"
     },
     "warning": {
-        "name": "Tên trường chỉ được chứa các chữ cái và dấu cách",
+        "name": "Tên trường chỉ được chứa các chữ cái",
         "input": "Vui lòng nhập !",
-        "identify": "Mã số định danh phải có 12 chữ số và chỉ chứa số"
+        "identify": "Mã chỉ chứa kí tự chữ số và phải đủ 12 kí tự "
     },
     "tooltip": {
         "name": "Tên phải chứa các chữ cái và không có khoảng trắng",

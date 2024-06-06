@@ -20,6 +20,7 @@
     },
     "warning": {
         "input": "Please input !",
+        "uniname": "University name must be contain only letter",
         "unicode": "University code just contain only letters"
     },
     "placeholder": {

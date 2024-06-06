@@ -16,6 +16,7 @@
         "english": "Điểm Anh",
         "average": "Điểm trung bình",
         "uniinf": "Thông tin trường đại học",
-        "list": "Danh sách sinh viên đã đăng ký"
+        "list": "Danh sách sinh viên đã đăng ký",
+        "notRegist": "Chưa có sinh viên đăng ký vào trường!"
     }
 }

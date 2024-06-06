@@ -5,7 +5,8 @@
         "address": "Địa chỉ",
         "entrance": "Điểm sàn",
         "modal": "Thông tin sinh viên",
-        "list": "Danh sách các trường đã đăng ký"
+        "list": "Danh sách các trường đã đăng ký",
+        "notRegist": "Sinh viên chưa đăng ký trường nào!"
     },
     "label": {
         "id": "Mã số",

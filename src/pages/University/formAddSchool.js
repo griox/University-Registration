@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import { database } from '../firebaseConfig.js';
 import { useTranslation } from 'react-i18next';
 import '../University/css/formAddSchool.css';
-
+import { BankOutlined, InfoCircleOutlined  } from '@ant-design/icons';
 const FormAdd = ({ UniData, setUniData }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [uniName, setUniName] = useState('');
@@ -15,7 +15,6 @@ const FormAdd = ({ UniData, setUniData }) => {
     const [averageScore, setAverageScore] = useState(null);
     const [targetScore, setTargetScore] = useState(null);
     const { t } = useTranslation('modalUni');
-    // const [showSuccess, setShowSuccess] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [isFormValid, setIsFormValid] = useState(false);
 
@@ -28,8 +27,8 @@ const FormAdd = ({ UniData, setUniData }) => {
                 averageScore !== null &&
                 targetScore !== null &&
                 uniCode !== '' &&
-                validateName(uniCode) &&
-                validateUniName(uniName)
+                validateName(uniName) &&
+                validateUniCode(uniCode)
             );
         };
 
@@ -54,12 +53,13 @@ const FormAdd = ({ UniData, setUniData }) => {
         setTargetScore(null);
     };
 
-    const validateName = (name) => {
-        return /^[A-Za-zÀ-ÿ]+$/.test(name);
+    const validateUniCode = (uniCode) => {
+        return /^[a-zA-Z]+$/.test(uniCode);
     };
 
-    const validateUniCode = (code) => {
-        return /^\D+$/u.test(code);
+    const validateName = (name) => {
+        // return /^\D+$/u.test(name);
+        return /^[\p{L}\s]+$/u.test(name);
     };
 
     const handleOk = async () => {
@@ -97,7 +97,6 @@ const FormAdd = ({ UniData, setUniData }) => {
             await AddSchool();
             setIsModalVisible(false);
             resetForm();
-            toast.success('University added successfully');
         } catch (error) {
             toast.error('An error occurred while adding university');
         }
@@ -141,10 +140,6 @@ const FormAdd = ({ UniData, setUniData }) => {
           ]}
         />
       );
-      
-    function validateUniName(uniName) {
-        return /^\D+$/u.test(uniName);
-    }
 
     return (
         <>
@@ -164,7 +159,7 @@ const FormAdd = ({ UniData, setUniData }) => {
             </Modal>
             <Modal
                 title="Add a university"
-                visible={isModalVisible}
+                open={isModalVisible}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 width={700}
@@ -174,21 +169,50 @@ const FormAdd = ({ UniData, setUniData }) => {
                 <Space direction="vertical">
                     <Form layout="horizontal">
                         <Form.Item
+                            className="form-item2"
                             label={t('label.uniname')}
-                            validateStatus={!validateUniCode(uniName) && uniName ? 'error' : ''}
-                            help={!validateUniCode(uniName) && uniName ? 'Invalid university name' : ''}
+                            labelCol={{ span: 9 }} 
+                            wrapperCol={{ span: 15 }} 
+                            validateStatus={!validateName(uniName) && uniName ? 'error' : ''}
+                            help={
+                                !validateName(uniName) && uniName
+                                    ? t('warning.uniname')
+                                    : ''
+                            }
+                            name="Input"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: t('warning.input'),
+                                },
+                            ]}
                         >
                             <Input
+                                className="ip-UniName"
                                 placeholder={t('placeholder.name')}
+                                prefix={<BankOutlined className="ic-bank" />}
                                 onChange={(e) => setUniName(e.target.value)}
                                 value={uniName}
+                                allowClear
+                                suffix={
+                                    <Tooltip title={t('tooltip.name')}>
+                                        <InfoCircleOutlined className="ic-info" />
+                                    </Tooltip>
+                                }
                             />
                         </Form.Item>
 
                         <Form.Item
+                            className="form-item2"
                             label={t('label.unicode')}
-                            validateStatus={!validateName(uniCode) && uniCode ? 'error' : ''}
-                            help={!validateName(uniCode) && uniCode ? t('warning.unicode') : ''}
+                            labelCol={{ span: 9 }}
+                            wrapperCol={{ span: 15 }} 
+                            validateStatus={!validateUniCode(uniCode) && uniCode ? 'error' : ''}
+                            help={
+                                !validateUniCode(uniCode) && uniCode
+                                    ? t('warning.unicode')
+                                    : ''
+                            }
                             name="InputCode"
                             rules={[
                                 {
@@ -198,40 +222,87 @@ const FormAdd = ({ UniData, setUniData }) => {
                             ]}
                         >
                             <Input
+                                className="ip-UniCode"
                                 placeholder={t('placeholder.code')}
+                                allowClear
                                 onChange={(e) => setUniCode(e.target.value)}
                                 maxLength={6}
+                                suffix={
+                                    <Tooltip title={t('tooltip.code')}>
+                                        <InfoCircleOutlined className="ic-info" />
+                                    </Tooltip>
+                                }
                                 value={uniCode}
                             />
                         </Form.Item>
 
-                        <Form.Item label={t('label.address')}>
-                            <Input.TextArea
-                                placeholder={t('placeholder.address')}
-                                onChange={(e) => setAddress(e.target.value)}
-                                value={address}
-                            />
-                        </Form.Item>
-
-                        <Form.Item label={t('label.entrance')}>
+                        <Form.Item
+                            className="form-item2"
+                            label={t('label.entrance')}
+                            labelCol={{ span: 9 }} 
+                            wrapperCol={{ span: 15 }} 
+                            name="Entrance"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: t('warning.input'),
+                                },
+                            ]}
+                        >
                             <InputNumber
-                                placeholder={t('placeholder.entrance')}
+                                className="ip-number1"
+                                maxLength={4}
                                 value={averageScore}
                                 onChange={(value) => setAverageScore(value)}
                                 min={0}
-                                max={10}
+                                max={10.0}
                                 step={0.2}
                             />
                         </Form.Item>
 
-                        <Form.Item label={t('label.target')}>
+                        <Form.Item
+                            className="form-item2"
+                            label={t('label.target')}
+                            labelCol={{ span: 9 }} 
+                            wrapperCol={{ span: 15 }}
+                            name="Target"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: t('warning.input'),
+                                },
+                            ]}
+                        >
                             <InputNumber
-                                placeholder={t('placeholder.target')}
+                                className="ip-number2"
+                                maxLength={3}
                                 value={targetScore}
                                 onChange={(value) => setTargetScore(value)}
                                 max={500}
                                 min={0}
                                 step={100}
+                            />
+                        </Form.Item>
+
+                        <Form.Item
+                            className="form-item2"
+                            label={t('label.address')}
+                            labelCol={{ span: 9 }} 
+                            wrapperCol={{ span: 15 }} 
+                            name="TextArea"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: t('warning.input'),
+                                },
+                            ]}
+                        >
+                            <Input.TextArea
+                                className="ip-textArea"
+                                placeholder={t('placeholder.address')}
+                                allowClear
+                                onChange={(e) => setAddress(e.target.value)}
+                                value={address}
                             />
                         </Form.Item>
                     </Form>

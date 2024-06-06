@@ -172,19 +172,19 @@ export const Login = () => {
             getdt(email, password);
         }
     };
-    const loginGoogle = () => {
-        const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider).then(async (result) => {
-            console.log(result);
-            if (result.user) {
-                toast.success('User logged in successfully', {
-                    position: 'top-center',
-                });
-                // <Link to="/admin/dashboard" />;
-                window.location.href = '/admin/dashboard';
-            }
-        });
-    };
+    // const loginGoogle = () => {
+    //     const provider = new GoogleAuthProvider();
+    //     signInWithPopup(auth, provider).then(async (result) => {
+    //         console.log(result);
+    //         if (result.user) {
+    //             toast.success('User logged in successfully', {
+    //                 position: 'top-center',
+    //             });
+    //             // <Link to="/admin/dashboard" />;
+    //             window.location.href = '/admin/dashboard';
+    //         }
+    //     });
+    // };
     const onchangeEmail = (e) => {
         if (e === '') {
             setEmail(e);

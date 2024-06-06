@@ -500,7 +500,7 @@ const AddSchool = () => {
                 onCancel={handleCancel}
                 width={1000}
                 height={500}
-                style={{ marginLeft: '20%' }}
+                style={{ marginLeft: '20%',}}
                 footer={null}
             >
                 <FormDetail

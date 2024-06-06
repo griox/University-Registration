@@ -149,7 +149,7 @@ export const Form_Detail = ({ university,isRegistered }) => {
                             columns={colums}
                             scroll={{
                                 x: 900,
-                                y: 'calc(100vh - 550px)',
+                                y: 'calc(100vh - 530px)',
                             }}
                             showSorterTooltip={{
                                 target: 'sorter-icon',

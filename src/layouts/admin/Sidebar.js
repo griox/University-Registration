@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Modal } from 'antd';
+import {Chat} from '../../pages/ChatRoom/Chat'
 
 const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
     // const theme = useTheme();

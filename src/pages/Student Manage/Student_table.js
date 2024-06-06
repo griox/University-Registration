@@ -50,12 +50,19 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
         },
     ];
 
+    useEffect(() => {
+        if (!editing) {
+            setError(null);
+        }
+    }, [editing]);
+
     return (
         <td {...restProps}>
             {editing ? (
                 <><Form.Item
                     className="edit-cell"
                     name={dataIndex}
+                    open={!!error}
                     rules={rules}
                 >
                     {inputNode}

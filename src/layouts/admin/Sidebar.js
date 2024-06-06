@@ -260,8 +260,8 @@ const Sidebar = () => {
                             </>
                         )}
                     </Box>
-                    <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                        <p>Do you want to log out?</p>
+                    <Modal title= {t('title.modal')}open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText={t('button.ok')} cancelText={t('button.cancel')}>
+                        <p>{t('title.confirm')}</p>
                     </Modal>
                     <MenuItem
                         onClick={showModal}

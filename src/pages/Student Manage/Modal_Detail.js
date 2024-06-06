@@ -150,7 +150,7 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
                         />
                     </>
                 ) : (
-                    <h4 className="description">This student hasn't registered any school yet!</h4>
+                    <h4 className="description">{t('title.notRegist')}</h4>
                 )}
             </Spin>
         </Modal>

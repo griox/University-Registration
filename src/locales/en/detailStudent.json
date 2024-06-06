@@ -5,7 +5,8 @@
         "address": "Address",
         "entrance": "Entrance Score",
         "modal": "Student's Information",
-        "list": "List University Registered"
+        "list": "List University Registered",
+        "notRegist": "This student hasn't registered any school yet!"
     },
     "label": {
         "id": "ID",

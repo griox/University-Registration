@@ -163,7 +163,7 @@ export const Form_Detail = ({ university, loading, setLoading }) => {
                         />
                     </>
                 ) : (
-                    <h4 className="description">This School hasn't been registered by any students!</h4>
+                    <h4 className="description">{t('title.notRegist')}</h4>
                 )}
             </Spin>
         </>

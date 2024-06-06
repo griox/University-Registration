@@ -5,6 +5,12 @@
         "student": "Quản lí sinh viên",
         "register": "Đăng kí tài khoản",
         "profile": "Hồ sơ",
-        "logout": "Đăng xuất"
+        "logout": "Đăng xuất",
+        "modal": "Đăng xuất",
+        "confirm": "Bạn có chắc muốn đăng xuất ?"
+    },
+    "button": {
+        "ok": "Có",
+        "cancel": "Hủy"
     }
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { get, ref, child } from 'firebase/database';
-import { Divider, Table, Descriptions, Spin, Modal } from 'antd';
+import { Table, Descriptions, Spin, Modal } from 'antd';
 import './css/modal_detail.css';
 import { database } from '../firebaseConfig.js';
 import { useTranslation } from 'react-i18next';

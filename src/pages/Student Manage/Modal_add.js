@@ -39,18 +39,19 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 dateOfBirth !== '' &&
                 placeOfBirth !== '' &&
                 Identify !== '' &&
-                Mathscore !== null &&
-                Englishscore !== null &&
-                Literaturescore !== null &&
+                Mathscore !== undefined && Mathscore !== null &&
+                Englishscore !== undefined && Englishscore !== null &&
+                Literaturescore !== undefined && Literaturescore !== null &&
                 validateEmailFormat(Email) &&
                 validateFullname(Fullname) &&
                 validateIdenNumber(Identify)
             );
         };
-
+    
         // Cập nhật trạng thái hợp lệ của form
         setIsFormValid(checkFormValidity());
-    }, [Email, Fullname, enthicity, Gender, dateOfBirth, placeOfBirth, Identify,Mathscore, Englishscore,Literaturescore]);
+    }, [Email, Fullname, enthicity, Gender, dateOfBirth, placeOfBirth, Identify, Mathscore, Englishscore, Literaturescore]);
+    
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -104,7 +105,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 MathScore: Mathscore,
                 EnglishScore: Englishscore,
                 LiteratureScore: Literaturescore,
-                AverageScore: round((Mathscore + Englishscore + Literaturescore, 1)/3),
+                AverageScore: round((Mathscore + Englishscore + Literaturescore) / 3, 1),
                 Address: Address,
                 uniCode: [],
                 isRegister: 'true',
@@ -129,7 +130,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 MathScore: Mathscore,
                 EnglishScore: Englishscore,
                 LiteratureScore: Literaturescore,
-                AverageScore: round((Mathscore + Englishscore + Literaturescore, 1)/3),
+                AverageScore: round((Mathscore + Englishscore + Literaturescore) / 3, 1),
                 Address: Address,
                 uniCode: [],
                 isRegister: 'true',
@@ -138,10 +139,8 @@ const ModalAdd = ({ studentData, setStudentData }) => {
             setIsModalOpen(false);
             setShowSuccessModal(true);
         } catch (error) {
-            toast.error(error);
-            toast.error(error);
+            console.error(error)
             toast.error('An error occurred while adding student');
-            console.log(error)
         }
     };
 

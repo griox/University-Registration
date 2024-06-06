@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin, Modal, message, Upload } from 'antd';
 import './css/table.css';
 import 'antd/dist/reset.css';
-import 'antd/dist/reset.css';
 import {
     SearchOutlined,
     EditOutlined,
@@ -86,6 +85,7 @@ const StudentList = () => {
     const [searchedColumn, setSearchedColumn] = useState('');
     const [studentData, setStudentData] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [studentUnicode, setstudentUnicode] = useState(false);
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [Loading, setLoading] = useState(true);
     const tableRef = useRef(null);
@@ -362,9 +362,9 @@ const StudentList = () => {
     };
 
     const handleIdClick = (record) => {
+        setstudentUnicode(record.uniCode!==undefined);
         setSelectedStudent(record);
         setIsModalVisible(true);
-        setLoading(true);
     };
     const temp = (x) => {
         if (x === null || x === undefined) {
@@ -412,7 +412,7 @@ const StudentList = () => {
         {
             title: t('table.Name'),
             dataIndex: 'name',
-            width: '19%',
+            width: '25%',
             editable: true,
             fixed: 'left',
             key: 'name',
@@ -433,7 +433,7 @@ const StudentList = () => {
         {
             title: t('table.Email'),
             dataIndex: 'email',
-            width: '15%',
+            width: '30%',
             editable: true,
             ...getColumnSearchProps('email'),
             render: (text, record) => (
@@ -481,7 +481,7 @@ const StudentList = () => {
         {
             title: t('table.UniCode'),
             dataIndex: 'uniCode',
-            width: '13%',
+            width: '20%',
             render: (text) => {
                 if (typeof text === 'string') {
                     return text?.split(', ').join(', ');
@@ -633,8 +633,7 @@ const StudentList = () => {
                             setIsModalVisible(false);
                         }}
                         student={selectedStudent}
-                        Loading={Loading}
-                        setLoading={setLoading}
+                        studentUnicode ={studentUnicode}
                     />
                     <Form form={form} component={false}>
                         <Spin spinning={Loading}>
@@ -647,7 +646,7 @@ const StudentList = () => {
                                 dataSource={studentData}
                                 columns={mergedColumns}
                                 scroll={{
-                                    x: 'calc(100vw - 320px)',
+                                    x: 'calc(100vw - 290px)',
                                     y: 'calc(100vh - 300px)',
                                 }}
                                 rowClassName="editable-row"

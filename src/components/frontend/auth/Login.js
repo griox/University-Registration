@@ -17,8 +17,6 @@ import { useSelector } from 'react-redux';
 export const Login = () => {
     const { t, i18n } = useTranslation('login');
     const detail = useSelector((state) => state);
-    const x = detail.userToken;
-    const y = detail.password;
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

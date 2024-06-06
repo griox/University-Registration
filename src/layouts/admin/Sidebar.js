@@ -16,6 +16,8 @@ import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import InsertChartIcon from '@mui/icons-material/InsertChart';
 import InsertChartOutlinedIcon from '@mui/icons-material/InsertChartOutlined';
+import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined';
+import KeyIcon from '@mui/icons-material/Key';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
@@ -261,6 +263,14 @@ const Sidebar = () => {
                                     tooltip="Student Managerment"
                                 />
                                 <Item
+                                    title={t('title.changepass')}
+                                    to="/changepass"
+                                    iconFilled={<KeyIcon/>}
+                                    iconOutline={<KeyOutlinedIcon/>}
+                                    selected={selected}
+                                    setSelected={setSelected}
+                                    tooltip="Change password"/>
+                                <Item
                                     title={t('title.register')}
                                     to="/register"
                                     iconFilled={<AppRegistrationIcon />}
@@ -282,6 +292,14 @@ const Sidebar = () => {
                                     setSelected={setSelected}
                                     tooltip="Profile"
                                 />
+                                <Item
+                                    title={t('title.changepass')}
+                                    to="/changepass"
+                                    iconFilled={<KeyIcon/>}
+                                    iconOutline={<KeyOutlinedIcon/>}
+                                    selected={selected}
+                                    setSelected={setSelected}
+                                    tooltip="Change password"/>
                             </>
                         )}
                     </Box>

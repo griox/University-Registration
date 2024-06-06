@@ -16,17 +16,11 @@ import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import InsertChartIcon from '@mui/icons-material/InsertChart';
 import InsertChartOutlinedIcon from '@mui/icons-material/InsertChartOutlined';
-import KeyOutlinedIcon from '@mui/icons-material/KeyOutlined';
-import KeyIcon from '@mui/icons-material/Key';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Modal } from 'antd';
-import { child, get, getDatabase, ref } from 'firebase/database';
-import { encodePath } from '../../commonFunctions';
-import { initializeApp } from 'firebase/app';
-import { firebaseConfig } from '../../constants/constants';
-import CryptoJS from 'crypto-js';
+import '../css/sidebar.css';
 
 const Item = ({ title, to, iconFilled,iconOutline, selected, setSelected, tooltip }) => {
     return (
@@ -59,18 +53,15 @@ const Sidebar = () => {
     const [isCollapsed, setIsCollapsed] = useState(() => JSON.parse(localStorage.getItem('sidebarCollapsed')) || false);
     const [selected, setSelected] = useState(() => localStorage.getItem('selectedMenuItem') || 'Dashboard');
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const secretKey = 'Tvx1234@';
+
     const isInitialMountCollapsed = useRef(true);
     const isInitialMountSelected = useRef(true);
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const detail = useSelector((state) => state);
 
     useEffect(() => {
         if (isInitialMountCollapsed.current) {
             isInitialMountCollapsed.current = false;
         } else {
-            localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
+localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
         }
     }, [isCollapsed]);
 
@@ -119,18 +110,20 @@ const Sidebar = () => {
     const isAdminOrSuperAdmin =
         localStorage.getItem('Role') === 'admin' || localStorage.getItem('Role') === 'super_admin';
 
+    const dispatch = useDispatch();
     const history = useHistory();
 
     const handleLogout = () => {
         localStorage.setItem('Infor', JSON.stringify(''));
         localStorage.removeItem('isLoggedIn');
-
         localStorage.removeItem('selectedMenuItem');
         localStorage.setItem('Name', '');
-        localStorage.setItem('Email', '');
+        localStorage.setItem('Email', JSON.stringify(''));
         localStorage.setItem('Role', '');
 
-        history.push('/login');
+        dispatch({ type: 'logout' });
+
+        history.push('/');
     };
     const showModal = () => {
         setIsModalOpen(true);
@@ -146,38 +139,34 @@ const Sidebar = () => {
     };
     return (
         <Box
-        sx={{
-            '& .pro-sidebar-inner': {
-                backgroundColor: `var(--sidebar-color)`,
-                height: '100vh',
-                position: 'sticky',
-                top: '0',
-                boxShadow: '2px 0 5px rgba(0, 0, 0, 0.1)',
-            },
-            '& .pro-icon-wrapper': {
-                backgroundColor: 'transparent !important',
-            },
-            '& .pro-inner-item': {
-                padding: '5px 35px 5px 20px !important',
-                color: 'var(--icon-color)',
-            },
-            '& .pro-inner-item:hover': {
-                color: 'rgb(7, 153, 244) !important',
-            },
-            '& .pro-menu-item.active': {
-                color: '#6870fa !important',
-            },
-            }}
+            sx={{
+                '& .pro-sidebar-inner': {
+                    backgroundColor: `var(--sidebar-color)`,
+                    height: '100vh',
+                    position: 'sticky',
+                    top: '0',
+                    boxShadow: '2px 0 5px rgba(0, 0, 0, 0.1)',
+                },
+                '& .pro-icon-wrapper': {
+                    backgroundColor: 'transparent !important',
+                },
+                '& .pro-inner-item': {
+                    padding: '5px 35px 5px 20px !important',
+                    color: 'var(--icon-color)',
+                },
+                '& .pro-inner-item:hover': {
+                    color: 'rgb(7, 153, 244) !important',
+                },
+                '& .pro-menu-item.active': {
+                    color: '#6870fa !important',
+                },
+}}
         >
             <ProSidebar collapsed={isCollapsed}>
                 <Menu iconShape="square">
-                    <MenuItem
+                    <MenuItem className='icon-menu'
                         onClick={() => setIsCollapsed(!isCollapsed)}
                         icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
-                        style={{
-                            margin: '10px 0 20px 0',
-                            color: colors.grey[100],
-                        }}
                     >
                         {!isCollapsed && (
                             <Box display="flex" justifyContent="space-between" alignItems="center" ml="15px">
@@ -227,7 +216,7 @@ const Sidebar = () => {
                         <Item
                             title={t('title.dashboard')}
                             to="/admin/dashboard"
-                            iconOutline={<InsertChartOutlinedIcon />}
+iconOutline={<InsertChartOutlinedIcon />}
                             iconFilled={<InsertChartIcon />} 
                             selected={selected}
                             setSelected={setSelected}
@@ -263,14 +252,6 @@ const Sidebar = () => {
                                     tooltip="Student Managerment"
                                 />
                                 <Item
-                                    title={t('title.changepass')}
-                                    to="/changepass"
-                                    iconFilled={<KeyIcon/>}
-                                    iconOutline={<KeyOutlinedIcon/>}
-                                    selected={selected}
-                                    setSelected={setSelected}
-                                    tooltip="Change password"/>
-                                <Item
                                     title={t('title.register')}
                                     to="/register"
                                     iconFilled={<AppRegistrationIcon />}
@@ -279,6 +260,7 @@ const Sidebar = () => {
                                     setSelected={setSelected}
                                     tooltip="Register Account"
                                 />
+                               
                             </>
                         )}
                         {localStorage.getItem('Role') === 'user' && (
@@ -292,14 +274,6 @@ const Sidebar = () => {
                                     setSelected={setSelected}
                                     tooltip="Profile"
                                 />
-                                <Item
-                                    title={t('title.changepass')}
-                                    to="/changepass"
-                                    iconFilled={<KeyIcon/>}
-                                    iconOutline={<KeyOutlinedIcon/>}
-                                    selected={selected}
-                                    setSelected={setSelected}
-                                    tooltip="Change password"/>
                             </>
                         )}
                     </Box>

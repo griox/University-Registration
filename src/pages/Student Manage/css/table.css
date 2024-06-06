@@ -41,7 +41,7 @@
 }
 .ant-table-cell-fix-left {
     background-color: var(--body_background) !important;
-    position: sticky !important;
+    
 }
 .Registered {
     color: var(--registered-color);

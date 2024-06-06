@@ -412,7 +412,7 @@ const StudentList = () => {
         {
             title: t('table.Name'),
             dataIndex: 'name',
-            width: '19%',
+            width: '25%',
             editable: true,
             fixed: 'left',
             key: 'name',
@@ -433,7 +433,7 @@ const StudentList = () => {
         {
             title: t('table.Email'),
             dataIndex: 'email',
-            width: '15%',
+            width: '30%',
             editable: true,
             ...getColumnSearchProps('email'),
             render: (text, record) => (
@@ -481,7 +481,7 @@ const StudentList = () => {
         {
             title: t('table.UniCode'),
             dataIndex: 'uniCode',
-            width: '13%',
+            width: '20%',
             render: (text) => {
                 if (typeof text === 'string') {
                     return text?.split(', ').join(', ');
@@ -648,7 +648,7 @@ const StudentList = () => {
                                 dataSource={studentData}
                                 columns={mergedColumns}
                                 scroll={{
-                                    x: 'calc(100vw - 320px)',
+                                    x: 'calc(100vw - 290px)',
                                     y: 'calc(100vh - 300px)',
                                 }}
                                 rowClassName="editable-row"

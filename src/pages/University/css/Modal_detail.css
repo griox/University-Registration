@@ -2,3 +2,9 @@
     height: 100%;
     margin-right: -20px;
 }
+.description{
+    color: var(--name-colorY);
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}

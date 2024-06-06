@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import { firebaseConfig } from '../../../constants/constants';
 import {
     HandleError,
+    disableButton,
     encodePath,
     getback,
     language,
@@ -20,6 +21,8 @@ import { useTranslation } from 'react-i18next';
 import { DownOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Dropdown, Space, Typography } from 'antd';
 import bcrypt from 'bcryptjs';
+import CryptoJS from 'crypto-js';
+
 const Changepass = () => {
     const { t, i18n } = useTranslation('changePassword');
     const history = useHistory();
@@ -34,6 +37,7 @@ const Changepass = () => {
     const [errorOldPass, setErrorOldPass] = useState(false);
     const [errorNewPass, setErrorNewPass] = useState(false);
     const [errorReNewPass, setErrorReNewPass] = useState(false);
+    const secretKey = 'Tvx1234@';
 
     const handleLogout = () => {
         localStorage.setItem('Infor', JSON.stringify(''));
@@ -98,12 +102,12 @@ const Changepass = () => {
         get(child(ref(db), `Account/` + temp)).then((snapshot) => {
             if (snapshot.exists()) {
                 const x = snapshot.val();
-                console.log(oldPass, newPass, reNewPass, temp === 'PhamVanLinh@gmail.com');
 
-                console.log(bcrypt.compareSync(oldPass, x.password) === true);
                 try {
-                    if (bcrypt.compareSync(oldPass, x.password) === true) {
-                        var newHash = bcrypt.hashSync(newPass, salt);
+                    var temp = CryptoJS.AES.decrypt(x.password, secretKey);
+                    temp = temp.toString(CryptoJS.enc.Utf8);
+                    if (temp === oldPass) {
+                        var newHash = CryptoJS.AES.encrypt(newPass, secretKey).toString();
                         update(ref(db, 'Account/' + temp), {
                             password: newHash,
                         })
@@ -136,7 +140,7 @@ const Changepass = () => {
         }
     };
 
-    const handleItem = (error, value, set, setError, string) => {
+    const handleItem = (error, value, set, setError, string, placeholder) => {
         return (
             <>
                 <Form.Item
@@ -151,7 +155,7 @@ const Changepass = () => {
                     ]}
                 >
                     <Input.Password
-                        placeholder="Old Password"
+                        placeholder={placeholder}
                         onChange={(e) => onchangeInput(e.target.value, set, setError)}
                         onKeyDown={handleEnterKey}
                         allowClear
@@ -185,7 +189,7 @@ const Changepass = () => {
                 <div className="input-box">
                     <br />
 
-                    <Button loading={loading} className="input-submit" onClick={action}>
+                    <Button loading={loading} className="input-submit" onClick={action} style={{}}>
                         <span>{string}</span>
                         <i className="bx bx-right-arrow-alt"></i>
                     </Button>
@@ -209,11 +213,62 @@ const Changepass = () => {
                                 </div>
 
                                 <div className="form-inputs">
-                                    {handleItem(errorOldPass, oldPass, setOldPass, setErrorOldPass, 'password')}
-                                    {handleItem(errorNewPass, newPass, setNewPass, setErrorNewPass, 'password')}
-                                    {handleItem(errorReNewPass, reNewPass, setReNewPass, setErrorReNewPass, 'password')}
+                                    {handleItem(
+                                        errorOldPass,
+                                        oldPass,
+                                        setOldPass,
+                                        setErrorOldPass,
+                                        'password',
+                                        'Old password',
+                                    )}
+                                    {handleItem(
+                                        errorNewPass,
+                                        newPass,
+                                        setNewPass,
+                                        setErrorNewPass,
+                                        'password',
+                                        'New password',
+                                    )}
+                                    {handleItem(
+                                        errorReNewPass,
+                                        reNewPass,
+                                        setReNewPass,
+                                        setErrorReNewPass,
+                                        'password',
+                                        'Re-enter new password',
+                                    )}
 
-                                    {handleButton(loadingChangePass, changePassWord, 'Change')}
+                                    <div className="input-box">
+                                        <br />
+
+                                        <Button
+                                            loading={loadingChangePass}
+                                            className="input-submit"
+                                            onClick={changePassWord}
+                                            disabled={
+                                                disableButton(errorOldPass, oldPass) === false &&
+                                                disableButton(errorNewPass, newPass) === false &&
+                                                disableButton(errorReNewPass, reNewPass) === false
+                                                    ? false
+                                                    : true
+                                            }
+                                            style={{
+                                                color: '#fff',
+                                                backgroundColor:
+                                                    errorOldPass === false &&
+                                                    errorNewPass === false &&
+                                                    errorReNewPass === false &&
+                                                    oldPass !== '' &&
+                                                    newPass !== '' &&
+                                                    reNewPass !== ''
+                                                        ? '#003865'
+                                                        : 'rgba(255, 255, 255, 0.3)',
+                                            }}
+                                        >
+                                            <span>{'Change'}</span>
+                                            <i className="bx bx-right-arrow-alt"></i>
+                                        </Button>
+                                    </div>
                                     {handleButton(false, clear, 'Clear')}
                                     {language(items, t('title.language'))}
                                 </div>

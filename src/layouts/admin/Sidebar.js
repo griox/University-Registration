@@ -10,9 +10,14 @@ import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Modal } from 'antd';
+import { child, get, getDatabase, ref } from 'firebase/database';
+import { encodePath } from '../../commonFunctions';
+import { initializeApp } from 'firebase/app';
+import { firebaseConfig } from '../../constants/constants';
+import CryptoJS from 'crypto-js';
 
 const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
     // const theme = useTheme();
@@ -42,9 +47,12 @@ const Sidebar = () => {
     const [isCollapsed, setIsCollapsed] = useState(() => JSON.parse(localStorage.getItem('sidebarCollapsed')) || false);
     const [selected, setSelected] = useState(() => localStorage.getItem('selectedMenuItem') || 'Dashboard');
     const [isModalOpen, setIsModalOpen] = useState(false);
-
+    const secretKey = 'Tvx1234@';
     const isInitialMountCollapsed = useRef(true);
     const isInitialMountSelected = useRef(true);
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const detail = useSelector((state) => state);
 
     useEffect(() => {
         if (isInitialMountCollapsed.current) {
@@ -103,16 +111,33 @@ const Sidebar = () => {
     const history = useHistory();
 
     const handleLogout = () => {
+        const tempEmail = localStorage.getItem('userToken');
+        if (tempEmail === '') {
+            dispatch({ type: 'logout', payload: { userToken: '', password: '' } });
+        } else {
+            get(child(ref(db), `Account/` + encodePath(tempEmail))).then((snapshot) => {
+                if (snapshot.exists()) {
+                    console.log('here');
+
+                    const x = snapshot.val();
+                    var temp = CryptoJS.AES.decrypt(x.password, secretKey);
+                    temp = temp.toString(CryptoJS.enc.Utf8);
+                    dispatch({ type: 'logout', payload: { userToken: tempEmail, password: temp } });
+                }
+            });
+            console.log(detail.userToken, detail.password);
+        }
         localStorage.setItem('Infor', JSON.stringify(''));
         localStorage.removeItem('isLoggedIn');
+        // localStorage.removeItem('userToken');
+
         localStorage.removeItem('selectedMenuItem');
         localStorage.setItem('Name', '');
-        localStorage.setItem('Email', JSON.stringify(''));
+        localStorage.setItem('Email', '');
+
         localStorage.setItem('Role', '');
 
-        dispatch({ type: 'logout' });
-
-        history.push('/');
+        history.push('/login');
     };
     const showModal = () => {
         setIsModalOpen(true);
@@ -214,6 +239,14 @@ const Sidebar = () => {
                             setSelected={setSelected}
                             tooltip="Dashboard"
                         />
+                        <Item
+                            title={t('ChatRoom')}
+                            to="/admin/ChatRoom"
+                            icon={<WechatWorkOutlined />}
+                            selected={selected}
+                            setSelected={setSelected}
+                            tooltip="Chatroom"
+                        />
                         {isAdminOrSuperAdmin && (
                             <>
                                 <Item
@@ -239,14 +272,6 @@ const Sidebar = () => {
                                     selected={selected}
                                     setSelected={setSelected}
                                     tooltip="Register Account"
-                                />
-                                <Item
-                                    title={t('ChatRoom')}
-                                    to="/register"
-                                    icon={<WechatWorkOutlined />}
-                                    selected={selected}
-                                    setSelected={setSelected}
-                                    tooltip="Chatroom"
                                 />
                             </>
                         )}
@@ -275,7 +300,7 @@ const Sidebar = () => {
                             left: '0',
                             width: '100%',
                             borderTop: '1px solid #ccc',
-                            padding: '10px 20px',
+                            padding: '15px 5px',
                         }}
                     >
                         <svg

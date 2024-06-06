@@ -6,7 +6,31 @@ import { initializeApp } from 'firebase/app';
 import { child, get, getDatabase, query, ref, update } from 'firebase/database';
 import { addDoc, collection, doc, getFirestore, onSnapshot, orderBy, updateDoc } from 'firebase/firestore';
 import 'firebase/firestore';
-const Bin = () => {};
+import { encodePath } from './commonFunctions';
+import CryptoJS from 'crypto-js';
+
+const Bin = () => {
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const x = () => {
+        get(child(ref(db), `Account/`)).then((snapshot) => {
+            if (snapshot.exists()) {
+                const x = snapshot.val();
+                for (let i in x) {
+                    var temp = CryptoJS.AES.decrypt(x[i].password, 'Tvx1234@');
+                    console.log(x[i].email);
+                    // var temp=CryptoJS.AES.encrypt(x[i].password, 'Tvx1234@').toString()
+                    console.log(temp.toString(CryptoJS.enc.Utf8));
+
+                    // update(ref(db, `Account/` + encodePath(x[i].email)), {
+                    //     password: CryptoJS.AES.encrypt('Tvx1234@', 'Tvx1234@').toString(),
+                    // });
+                }
+            }
+        });
+    };
+    x();
+};
 export default Bin;
 // const Bin = () => {
 //     const [l, setL] = useState([]);

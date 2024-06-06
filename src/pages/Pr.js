@@ -114,7 +114,6 @@ function Pr() {
             title: t('table.Entrance Score'),
             dataIndex: 'score',
             key: 'score',
-            fixed: 'right',
             sorter: (a, b) => a.score - b.score,
             width: 90,
         },
@@ -122,7 +121,6 @@ function Pr() {
             title: t('table.Number of students registered'),
             dataIndex: 'isRegistered',
             key: 'isRegistered',
-            fixed: 'right',
             width: 90,
 
             sorter: (a, b) => a.isRegistered - b.isRegistered,
@@ -131,7 +129,6 @@ function Pr() {
             title: t('table.Target'),
             dataIndex: 'capacity',
             key: 'capacity',
-            fixed: 'right',
             width: 90,
 
             sorter: (a, b) => a.capacity - b.capacity,
@@ -476,7 +473,7 @@ function Pr() {
 
                                 <Space.Compact size="large">
                                     <TextArea
-                                        rows={4}
+                                        rows={2}
                                         className="g-s pr-address"
                                         value={detail.Address}
                                         onChange={(e) => handleChange(e, 'Address')}
@@ -522,12 +519,16 @@ function Pr() {
                             </div>
                             <div className="detail-item-university">
                                 <h1>{t('title.University')}: </h1>
-                                <Space size="large">
+                                <Space
+                                    style={{
+                                        width: '100%',
+                                    }}
+                                    direction="vertical"
+                                >
                                     <Select
                                         mode="multiple"
                                         maxCount={MAX_COUNT}
-                                        value={detail.uniCode}
-                                        // options={arr}
+                                        options={arr}
                                         onChange={(e) => handleSelect(e, 'uniCode')}
                                         suffixIcon={suffix}
                                         placeholder="Selected universities"
@@ -535,8 +536,9 @@ function Pr() {
                                         className="g-s university"
                                     />
                                 </Space>
+
                                 <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                                    <p>Do you want to log out?</p>
+                                    <p>Do you want to save these changes?</p>
                                 </Modal>
                                 <Spin spinning={loadingSave}>
                                     <Button type="primary" onClick={showModal} className="btn-save">

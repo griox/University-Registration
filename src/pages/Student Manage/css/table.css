@@ -27,10 +27,12 @@
     align-items: center;
     display: flex;
     flex-grow: 1;
+  
 }
 .ant-table {
     background-color: var(--body_background) !important;
     color: var(--body_color) !important;
+    
 }
 .editable-row {
     background-color: var(--body_background);
@@ -95,6 +97,7 @@
     font-weight: 500;
     color: white;
     margin-bottom: 0;
+    margin-right: 8px;
 }
 
 .ant-btn-primary:not(:disabled):not(.ant-btn-disabled):hover {

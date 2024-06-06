@@ -6,11 +6,18 @@ import { toast } from 'react-toastify';
 import { useHistory } from 'react-router-dom';
 import '../../../assets/css/register.css';
 import { firebaseConfig } from '../../../constants/constants';
-import { HandleError, encodePath, validateEmailFormat, validatePasswordFormat } from '../../../commonFunctions';
+import {
+    HandleError,
+    disableButton,
+    encodePath,
+    validateEmailFormat,
+    validatePasswordFormat,
+} from '../../../commonFunctions';
 import { DownOutlined, ExclamationCircleOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Button, Dropdown, Form, Input, Radio, Space, Tooltip, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import bcrypt from 'bcryptjs';
+import CryptoJS from 'crypto-js';
 
 const Register = () => {
     const [fullName, setFullName] = useState('');
@@ -26,6 +33,7 @@ const Register = () => {
     const { t, i18n } = useTranslation('register');
     const salt = bcrypt.genSaltSync(10);
     const [loadingRegist, setLoadingRegist] = useState(false);
+    const secretKey = 'Tvx1234@';
 
     const [value1, setValue1] = useState('User');
 
@@ -93,7 +101,7 @@ const Register = () => {
                 const y = listItem.find((item) => item.email === email);
                 if (y === null || y === undefined) {
                     if (props.againPassword === props.password) {
-                        var hash = bcrypt.hashSync(props.password, salt);
+                        var hash = CryptoJS.AES.encrypt(props.password, secretKey).toString();
                         const encodeEmail = encodePath(props.email);
                         const ip = {
                             name: props.name,
@@ -371,6 +379,27 @@ const Register = () => {
                                                         })
                                                     }
                                                     onKeyDown={handleEnterKey}
+                                                    disabled={
+                                                        fullName !== '' &&
+                                                        disableButton(errorEmail, email) === false &&
+                                                        disableButton(errorPassword, password) === false &&
+                                                        disableButton(errorAgainPassword, againPassword) === false
+                                                            ? false
+                                                            : true
+                                                    }
+                                                    style={{
+                                                        color: '#fff',
+                                                        backgroundColor:
+                                                            fullName !== '' &&
+                                                            errorEmail === false &&
+                                                            email !== '' &&
+                                                            errorPassword === false &&
+                                                            password !== '' &&
+                                                            errorAgainPassword === false &&
+                                                            againPassword !== ''
+                                                                ? '#003865'
+                                                                : 'rgba(255, 255, 255, 0.3)',
+                                                    }}
                                                 >
                                                     <span>Regist</span>
                                                 </Button>

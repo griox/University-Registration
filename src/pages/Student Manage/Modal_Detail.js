@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
     const [university, setUniversity] = useState([]);
     const { t } = useTranslation('detailstudent');
+    const [schoolExist, setSchoolExist] = useState(true);
     useEffect(() => {
         const fetchData = async () => {
             if (visible && student && student.uniCode) {
@@ -23,11 +24,14 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
                         }
                     } catch (error) {
                         toast.error('Cannot fetch data');
-                        toast.error('Cannot fetch data');
                     }
                 }
                 setLoading(false);
+                setSchoolExist(true);
                 setUniversity(uniDatas);
+            } else {
+                setSchoolExist(false);
+                setLoading(false);
             }
         };
         fetchData();
@@ -127,22 +131,27 @@ const ModalDetail = ({ visible, onClose, student, Loading, setLoading }) => {
                     </Descriptions.Item>
                 ))}
             </Descriptions>
-            <Divider />
-            <h4>{t('title.list')}</h4>
             <Spin spinning={Loading}>
-                <Table
-                    columns={columns}
-                    dataSource={university}
-                    pagination={{
-                        defaultPageSize: '10',
-                        pageSizeOptions: ['10', '20', '40', '100'],
-                        showSizeChanger: true,
-                        showQuickJumper: true,
-                        showTotal: (total) => `Total ${total} items`,
-                    }}
-                    scroll={{ x: false, y: 'calc(100vh - 580px)' }}
-                    rowHoverable={false}
-                />
+                {schoolExist ? (
+                    <>
+                        <h4>{t('title.list')}</h4>
+                        <Table
+                            columns={columns}
+                            dataSource={university}
+                            pagination={{
+                                defaultPageSize: '10',
+                                pageSizeOptions: ['10', '20', '40', '100'],
+                                showSizeChanger: true,
+                                showQuickJumper: true,
+                                showTotal: (total) => `Total ${total} items`,
+                            }}
+                            scroll={{ x: false, y: 'calc(100vh - 480px)' }}
+                            rowHoverable={false}
+                        />
+                    </>
+                ) : (
+                    <h4 className="description">This student hasn't registered any school yet!</h4>
+                )}
             </Spin>
         </Modal>
     );

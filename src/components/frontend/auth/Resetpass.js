@@ -6,13 +6,20 @@ import '../../../assets/css/login.css';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../../../constants/constants';
 import { child, get, getDatabase, ref, update } from 'firebase/database';
-import { HandleError, encodePath, onchangeInput, validatePasswordFormat } from '../../../commonFunctions';
+import {
+    HandleError,
+    disableButton,
+    encodePath,
+    onchangeInput,
+    validatePasswordFormat,
+} from '../../../commonFunctions';
 import { toast } from 'react-toastify';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 import bcrypt from 'bcryptjs';
 import { Button, Dropdown, Form, Input, Space, Tooltip, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { DownOutlined, ExclamationCircleOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import CryptoJS from 'crypto-js';
 
 export const Forgetpass = () => {
     const app = initializeApp(firebaseConfig);
@@ -22,6 +29,7 @@ export const Forgetpass = () => {
     const [reNewPass, setReNewPass] = useState('');
     const [errorReNewPass, setErrorReNewPass] = useState(false);
     const [errorNewPass, setErrorNewPass] = useState(false);
+    const secretKey = 'Tvx1234@';
 
     const salt = bcrypt.genSaltSync(10);
     const [loadingResetPass, setLoadingResetPass] = useState(false);
@@ -122,9 +130,7 @@ export const Forgetpass = () => {
                         if (y !== undefined) {
                             if (newPass === reNewPass) {
                                 try {
-                                    var hash = bcrypt.hashSync(newPass, salt);
-                                    console.log(hash);
-                                    console.log(encodeEmail);
+                                    var hash = CryptoJS.AES.encrypt(newPass, secretKey).toString();
                                     update(ref(db, `Account/` + encodeEmail), {
                                         link: '',
                                         password: hash,
@@ -280,6 +286,22 @@ export const Forgetpass = () => {
                                             className=" input-submit"
                                             onClick={() => handlePassword()}
                                             loading={loadingResetPass}
+                                            disabled={
+                                                disableButton(errorNewPass, newPass) === false &&
+                                                disableButton(errorReNewPass, reNewPass) === false
+                                                    ? false
+                                                    : true
+                                            }
+                                            style={{
+                                                color: '#fff',
+                                                backgroundColor:
+                                                    errorNewPass === false &&
+                                                    newPass !== '' &&
+                                                    errorReNewPass === false &&
+                                                    reNewPass !== ''
+                                                        ? '#003865'
+                                                        : 'rgba(255, 255, 255, 0.3)',
+                                            }}
                                         >
                                             <span>{t('button.continue')}</span>
                                             <i className="bx bx-right-arrow-alt"></i>

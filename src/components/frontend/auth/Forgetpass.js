@@ -9,7 +9,13 @@ import { DownOutlined, ExclamationCircleOutlined, EyeInvisibleOutlined, EyeTwoTo
 import { Button, Dropdown, Form, Input, Space, Tooltip, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import { HandleError, encodePath, validateEmailFormat, validatePasswordFormat } from '../../../commonFunctions';
+import {
+    HandleError,
+    disableButton,
+    encodePath,
+    validateEmailFormat,
+    validatePasswordFormat,
+} from '../../../commonFunctions';
 import { child, get, getDatabase, ref, update } from 'firebase/database';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 
@@ -177,6 +183,14 @@ export const Forgetpass = () => {
                                             loading={loadingResetPass}
                                             className="input-submit"
                                             onClick={(e) => handleEmail(e)}
+                                            disabled={disableButton(errorEmail, email) === false ? false : true}
+                                            style={{
+                                                color: '#fff',
+                                                backgroundColor:
+                                                    email === false && email !== ''
+                                                        ? '#003865'
+                                                        : 'rgba(255, 255, 255, 0.3)',
+                                            }}
                                         >
                                             <span>{t('button.continue')}</span>
                                             <i className="bx bx-right-arrow-alt"></i>

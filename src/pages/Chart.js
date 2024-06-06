@@ -7,8 +7,7 @@ import { child, get, getDatabase, ref } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../constants/constants';
 import { useTranslation } from 'react-i18next';
-import { colors } from '@mui/material';
-
+import { useSelector } from 'react-redux';
 const Chart = () => {
     const { t } = useTranslation('dashboard');
     const [studentTotal, setStudentTotal] = useState(0);
@@ -25,7 +24,6 @@ const Chart = () => {
     const [registThree, setRegistThree] = useState(0);
     const [registFour, setRegistFour] = useState(0);
     const [registFive, setRegistFive] = useState(0);
-    const [registZero, setRegistZero] = useState(0);
     const [average, setAverage] = useState(0);
     const aRef = useRef(studentTotal);
     const [loading, setLoading] = useState(true);
@@ -33,7 +31,9 @@ const Chart = () => {
     const [listUniLessRegister, setListUniLessRegister] = useState(0);
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
+    const darkMode = useSelector((state) => state.darkMode);
     const config = {
+        theme: !darkMode ? 'classic' : 'classicDark',
         data: [
             { subject: t('subj.Math'), score: mathAS },
             { subject: t('subj.English'), score: englishAS },
@@ -44,6 +44,7 @@ const Chart = () => {
         height: 400,
         xField: 'subject',
         yField: 'score',
+        text: 'subject',
         scale: {
             x: { padding: 0.4 },
             y: {
@@ -54,15 +55,17 @@ const Chart = () => {
         label: {
             text: (d) => `${d.score.toFixed(2)}`,
             textBaseline: 'bottom',
+            titleStroke: 'red',
         },
         style: {
             width: 45,
+            fill: darkMode ? '#FF8C00' : 'rgb(7, 153, 244)',
         },
     };
 
     const con = {
+        theme: !darkMode ? 'academy' : 'classicDark',
         data: [
-            { type: t('data.None'), value: registZero },
             { type: t('data.One'), value: registOne },
             { type: t('data.Two'), value: registTwo },
             { type: t('data.Three'), value: registThree },
@@ -80,7 +83,7 @@ const Chart = () => {
 
         label: {
             text: (d) => `${d.value}`,
-            position: 'outside',
+            position: 'right',
         },
         legend: {
             color: {
@@ -96,6 +99,7 @@ const Chart = () => {
     };
 
     const gen = {
+        theme: darkMode ? 'classicDark' : 'academy',
         data: [
             { gender: t('gen.Male'), value: male },
             { gender: t('gen.Female'), value: female },
@@ -111,6 +115,7 @@ const Chart = () => {
             style: {
                 fontWeight: 'bold',
                 fontSize: '50px',
+                titleStroke: 'red',
             },
         },
         legend: {
@@ -161,10 +166,9 @@ const Chart = () => {
                     var c = 0;
                     var d = 0;
                     var e = 0;
-                    var f = 0;
                     for (let i in x) {
                         if (x[i].uniCode === undefined) {
-                            f += 1;
+                            continue;
                         } else if (x[i].uniCode.length === 5) {
                             a += 1;
                         } else if (x[i].uniCode.length === 4) {
@@ -178,7 +182,6 @@ const Chart = () => {
                         }
                     }
                 }
-                setRegistZero(f);
                 setRegistOne(e);
                 setRegistTwo(d);
                 setRegistThree(c);

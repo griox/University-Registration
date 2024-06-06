@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import 'firebase/auth';
 import { ref, child, getDatabase, get } from 'firebase/database';
@@ -7,15 +7,19 @@ import { toast } from 'react-toastify';
 import { Link, Redirect } from 'react-router-dom';
 import '../../../assets/css/login.css';
 import { firebaseConfig } from '../../../constants/constants';
-import { HandleError, validateEmailFormat, validatePasswordFormat } from '../../../commonFunctions';
+import { HandleError, disableButton, encodePath, validateEmailFormat } from '../../../commonFunctions';
 import { useTranslation } from 'react-i18next';
-import { DownOutlined, ExclamationCircleOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import { Button, Dropdown, Form, Input, Space, Tooltip, Typography } from 'antd';
-import bcrypt from 'bcryptjs';
+import { DownOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import { Button, Dropdown, Form, Input, Space, Typography } from 'antd';
 import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
-
+import CryptoJS from 'crypto-js';
+import { useSelector } from 'react-redux';
 export const Login = () => {
     const { t, i18n } = useTranslation('login');
+    const detail = useSelector((state) => state);
+    const x = detail.userToken;
+    const y = detail.password;
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -25,7 +29,7 @@ export const Login = () => {
     const auth = getAuth();
     const [loadingLogin, setLoadingLogin] = useState(false);
     const [errorEmail, setErrorEmail] = useState(false);
-    const [errorPassword, setErrorPassword] = useState(false);
+    const secretKey = 'Tvx1234@';
 
     const saveOnLocal = (role) => {
         if (role === 'super_admin') {
@@ -93,31 +97,25 @@ export const Login = () => {
                     setLoadingLogin(false);
                     toast.error('Please enter your password');
                 } else {
-                    get(child(ref(db), `Account/`))
+                    get(child(ref(db), `Account/` + encodePath(email)))
                         .then((snapshot) => {
                             if (snapshot.exists()) {
                                 const x = snapshot.val();
-                                const listItem = Object.values(x).map((user) => user);
-                                const y = listItem.filter(
-                                    (item) =>
-                                        item.email === email && bcrypt.compareSync(password, item.password) === true,
-                                );
-                                if (y.length !== 0) {
-                                    for (let i in y) {
-                                        if (y[i].name !== undefined && y[i].name !== null) {
-                                            localStorage.setItem('Role', y[i].Role);
-                                            localStorage.setItem('Name', y[i].name);
-                                            localStorage.setItem('Email', y[i].email);
 
-                                            if (rememberMe === true) {
-                                                localStorage.setItem('userToken', y[i].email);
-                                            }
+                                var temp = CryptoJS.AES.decrypt(x.password, secretKey);
+                                temp = temp.toString(CryptoJS.enc.Utf8);
+                                if (temp === password) {
+                                    localStorage.setItem('Role', x.Role);
+                                    localStorage.setItem('Name', x.name);
+                                    localStorage.setItem('Email', x.email);
 
-                                            saveOnLocal(y[i].Role);
-                                        } else {
-                                            saveOnLocal(y[i].Role);
-                                        }
+                                    if (rememberMe === true) {
+                                        localStorage.setItem('userToken', x.email);
+                                    } else {
+                                        localStorage.setItem('userToken', '');
                                     }
+
+                                    saveOnLocal(x.Role);
 
                                     setIsLoggedIn(true);
                                     localStorage.setItem('isLoggedIn', 'true');
@@ -132,12 +130,12 @@ export const Login = () => {
                             } else {
                                 setLoadingLogin(false);
 
-                                toast.error('No data available');
+                                toast.error('Account not found. Please check your email and password again.');
                             }
                         })
                         .catch((error) => {
                             setLoadingLogin(false);
-
+                            console.log(error);
                             toast.error('Error');
                         });
                 }
@@ -177,21 +175,10 @@ export const Login = () => {
             setErrorEmail(false);
         }
     };
-    const onchangePassword = (e) => {
-        if (e === '') {
-            setPassword(e);
-            setErrorPassword(false);
-        } else if (validatePasswordFormat(e) === false) {
-            setPassword(e);
-            setErrorPassword(true);
-        } else {
-            setPassword(e);
-            setErrorPassword(false);
-        }
-    };
 
     return (
         <>
+            {console.log(detail.userToken, detail.password)}
             <div className="background">
                 <div className="form-container">
                     <div className="col col-1">
@@ -227,52 +214,43 @@ export const Login = () => {
                                             },
                                         ]}
                                     >
-                                        <Input
-                                            placeholder="Email"
-                                            onChange={(e) => onchangeEmail(e.target.value)}
-                                            onKeyDown={handleEnterKey}
-                                            allowClear
-                                            style={{
-                                                border: 'none',
-                                                padding: '15px',
-                                                color: '#000',
-                                                backgroundColor: 'blue',
-                                            }}
-                                            value={email}
-                                        />
+                                        <div>
+                                            <Input
+                                                placeholder="Email"
+                                                onChange={(e) => onchangeEmail(e.target.value)}
+                                                onKeyDown={handleEnterKey}
+                                                allowClear
+                                                style={{
+                                                    border: 'none',
+                                                    padding: '15px',
+                                                    color: '#000',
+                                                    backgroundColor: 'blue',
+                                                }}
+                                                value={detail.userToken !== '' ? detail.userToken : email}
+                                            />
+                                        </div>
                                     </Form.Item>
-                                    <Form.Item
-                                        name="email"
-                                        validateStatus={errorPassword ? 'error' : ''}
-                                        help={errorPassword ? <HandleError string="password" /> : ''}
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: 'Please input!',
-                                            },
-                                        ]}
-                                    >
-                                        <Input.Password
-                                            placeholder="Password"
-                                            onChange={(e) => onchangePassword(e.target.value)}
-                                            onKeyDown={handleEnterKey}
-                                            allowClear
-                                            style={{
-                                                border: 'none',
-                                                padding: '15px',
-                                                color: '#000',
-                                                backgroundColor: 'blue',
-                                            }}
-                                            value={password}
-                                            iconRender={(visible) =>
-                                                visible ? (
-                                                    <EyeTwoTone style={{ fontSize: '20px' }} />
-                                                ) : (
-                                                    <EyeInvisibleOutlined style={{ fontSize: '20px' }} />
-                                                )
-                                            }
-                                        />
-                                    </Form.Item>
+
+                                    <Input.Password
+                                        placeholder="Password"
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        onKeyDown={handleEnterKey}
+                                        allowClear
+                                        style={{
+                                            border: 'none',
+                                            padding: '15px',
+                                            color: '#000',
+                                            backgroundColor: 'blue',
+                                        }}
+                                        value={detail.password !== '' ? detail.password : password}
+                                        iconRender={(visible) =>
+                                            visible ? (
+                                                <EyeTwoTone style={{ fontSize: '20px' }} />
+                                            ) : (
+                                                <EyeInvisibleOutlined style={{ fontSize: '20px' }} />
+                                            )
+                                        }
+                                    />
 
                                     <div className="forget-pass">
                                         <div className="input-box">
@@ -289,14 +267,25 @@ export const Login = () => {
                                         className="input-submit"
                                         onClick={() => getdt(email, password)}
                                         loading={loadingLogin}
+                                        disabled={
+                                            disableButton(errorEmail, email) === false && password !== '' ? false : true
+                                        }
+                                        style={{
+                                            color: 'white',
+
+                                            backgroundColor:
+                                                errorEmail === false && password !== ''
+                                                    ? '#003865'
+                                                    : 'rgba(255, 255, 255, 0.3)',
+                                        }}
                                     >
                                         <span>{t('button.log in')}</span>
                                         <i className="bx bx-right-arrow-alt"></i>
                                     </Button>
-                                    <Button className="input-submit" onClick={loginGoogle} loading={loadingLogin}>
+                                    {/* <Button className="input-submit" onClick={loginGoogle} loading={loadingLogin}>
                                         <span>{'Đăng nhập với google'}</span>
                                         <i className="bx bx-right-arrow-alt"></i>
-                                    </Button>
+                                    </Button> */}
 
                                     <div>
                                         <Dropdown

@@ -351,6 +351,9 @@
     transition: 0.3s;
 }
 
+.disable {
+    background-color: grey;
+}
 .input-submit:hover {
     gap: 15px;
 }

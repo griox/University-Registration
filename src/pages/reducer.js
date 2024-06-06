@@ -13,6 +13,9 @@ const initState = {
     img: '',
     id: '',
     dateObirth: '0/0/0',
+    darkMode: false,
+    password: '',
+    userToken: '',
 };
 
 const reducer = (state = initState, action) => {
@@ -25,13 +28,15 @@ const reducer = (state = initState, action) => {
                 Address: '',
                 enthicity: '',
                 idenNum: '',
-                email: '',
+                email: state.email,
                 EnglishScore: 0,
                 MathScore: 0,
                 LiteratureScore: 0,
                 uniCode: [],
                 img: '',
                 id: '',
+                password: action.payload.password,
+                userToken: action.payload.userToken,
             };
         case 'update':
             const { propertyName, newValue } = action.payload;
@@ -52,7 +57,11 @@ const reducer = (state = initState, action) => {
                 ...state,
                 ...action.payload,
             };
-
+        case 'theme':
+            return {
+                ...state,
+                darkMode: action.payload,
+            };
         default:
             return state;
     }

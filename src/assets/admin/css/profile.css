@@ -6,7 +6,7 @@
     width: 100%;
     height: calc(100vh - 80px);
     overflow: scroll;
-    background-color: #f2f2f2;
+    background-color: var(--content-color);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -67,6 +67,18 @@
     justify-content: space-between;
     gap: 10px;
 }
+.detail-item-input {
+    width: 30%;
+
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.detail-item-input h1 {
+    margin: 0;
+    width: auto;
+    font-size: 15px;
+}
 .detail-item h1 {
     margin: 0;
     width: auto;
@@ -91,7 +103,7 @@ h1 {
 
 .g-s {
     height: 30px;
-    width: 250px;
+    width: 200px;
     font-size: 14px;
 }
 
@@ -115,6 +127,7 @@ h1 {
     grid-template-columns: 33% 64.5%;
     column-gap: 2.5%;
     margin: 20px;
+    position: fixed;
 }
 
 input[type='file'] {
@@ -130,10 +143,11 @@ input[type='button'] {
     column-gap: 10px;
 }
 .pr-input {
+    width: 100%;
     height: auto;
     display: flex;
     justify-content: space-between;
-    column-gap: 50px;
+    column-gap: 5%;
 }
 .avatar {
     width: 150px;
@@ -186,13 +200,14 @@ input[type='button'] {
     color: 'rgba(0,0,0,.45)';
 }
 .university {
-    width: 535px;
     height: auto;
     cursor: pointer;
 }
 
 .pr-score {
-    width: 100px;
+    height: 30px;
+    width: 40%;
+    font-size: 14px;
 }
 
 .pr-ID {
@@ -217,6 +232,7 @@ input[type='button'] {
     width: 300x;
 }
 .detail-item-university {
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;

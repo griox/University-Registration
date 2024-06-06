@@ -85,7 +85,6 @@ export const Forgetpass = () => {
         localStorage.setItem('Name', '');
         localStorage.setItem('Email', JSON.stringify(''));
         localStorage.setItem('Role', '');
-        localStorage.removeItem('userToken');
         toast.success('Your password has been reset');
         history.push('/Login');
     };

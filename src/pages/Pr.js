@@ -483,59 +483,49 @@ function Pr() {
                         </div>
                         <div className="col2">
                             <div className="pr-input">
-                                <div className="detail-item">
+                                <div className="detail-item-input">
                                     <h1>{t('title.MathScore')}: </h1>
-                                    <Space.Compact size="large">
-                                        <Input
-                                            className="g-s pr-score"
-                                            value={detail.MathScore}
-                                            onChange={(e) => handleChange(e, 'email')}
-                                            disabled={true}
-                                        />
-                                    </Space.Compact>
+                                    <Input
+                                        className=" pr-score"
+                                        value={detail.MathScore}
+                                        onChange={(e) => handleChange(e, 'email')}
+                                        disabled={true}
+                                    />
                                 </div>
-                                <div className="detail-item">
+                                <div className="detail-item-input">
                                     <h1>{t('title.EnglishScore')}: </h1>
-                                    <Space.Compact size="large">
-                                        <Input
-                                            className="g-s pr-score"
-                                            value={detail.EnglishScore}
-                                            onChange={(e) => handleChange(e, 'email')}
-                                            disabled={true}
-                                        />
-                                    </Space.Compact>
+                                    <Input
+                                        className="pr-score"
+                                        value={detail.EnglishScore}
+                                        onChange={(e) => handleChange(e, 'email')}
+                                        disabled={true}
+                                    />
                                 </div>
-                                <div className="detail-item">
+                                <div className="detail-item-input">
                                     <h1>{t('title.LiteratureScore')}: </h1>
-                                    <Space.Compact size="large">
-                                        <Input
-                                            className="g-s pr-score"
-                                            value={detail.LiteratureScore}
-                                            onChange={(e) => handleChange(e, 'email')}
-                                            disabled={true}
-                                        />
-                                    </Space.Compact>
+                                    <Input
+                                        className=" pr-score"
+                                        value={detail.LiteratureScore}
+                                        onChange={(e) => handleChange(e, 'email')}
+                                        disabled={true}
+                                    />
                                 </div>
                             </div>
                             <div className="detail-item-university">
                                 <h1>{t('title.University')}: </h1>
-                                <Space
-                                    style={{
-                                        width: '100%',
-                                    }}
-                                    direction="vertical"
-                                >
-                                    <Select
-                                        mode="multiple"
-                                        maxCount={MAX_COUNT}
-                                        options={arr}
-                                        onChange={(e) => handleSelect(e, 'uniCode')}
-                                        suffixIcon={suffix}
-                                        placeholder="Selected universities"
-                                        showSearch
-                                        className="g-s university"
-                                    />
-                                </Space>
+
+                                <Select
+                                    mode="multiple"
+                                    maxCount={MAX_COUNT}
+                                    options={arr}
+                                    onChange={(e) => handleSelect(e, 'uniCode')}
+                                    suffixIcon={suffix}
+                                    placeholder="Selected universities"
+                                    showSearch
+                                    className="g-s university"
+                                    style={{ width: '80%' }}
+                                    value={detail.uniCode}
+                                />
 
                                 <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
                                     <p>Do you want to save these changes?</p>

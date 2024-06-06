@@ -14,8 +14,6 @@ const initState = {
     id: '',
     dateObirth: '0/0/0',
     darkMode: false,
-    password: '',
-    userToken: '',
 };
 
 const reducer = (state = initState, action) => {
@@ -35,8 +33,6 @@ const reducer = (state = initState, action) => {
                 uniCode: [],
                 img: '',
                 id: '',
-                password: action.payload.password,
-                userToken: action.payload.userToken,
             };
         case 'update':
             const { propertyName, newValue } = action.payload;

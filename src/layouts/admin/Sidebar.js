@@ -4,36 +4,42 @@ import { Box, IconButton, Typography, useTheme, Tooltip, Avatar } from '@mui/mat
 import { Link } from 'react-router-dom';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { tokens } from '../../theme';
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import { WechatWorkOutlined, SignatureOutlined, SolutionOutlined } from '@ant-design/icons';
 import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
+import ContactsIcon from '@mui/icons-material/Contacts';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
+import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
+import ChatIcon from '@mui/icons-material/Chat';
+import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
+import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
+import InsertChartIcon from '@mui/icons-material/InsertChart';
+import InsertChartOutlinedIcon from '@mui/icons-material/InsertChartOutlined';
 import { useTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Modal } from 'antd';
-import { child, get, getDatabase, ref } from 'firebase/database';
-import { encodePath } from '../../commonFunctions';
-import { initializeApp } from 'firebase/app';
-import { firebaseConfig } from '../../constants/constants';
-import CryptoJS from 'crypto-js';
+import '../css/sidebar.css';
 
-const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
-    // const theme = useTheme();
-    // const colors = tokens(theme.palette.mode);
+const Item = ({ title, to, iconFilled,iconOutline, selected, setSelected, tooltip }) => {
     return (
         <Tooltip title={tooltip} placement="right" arrow>
-            <MenuItem
+            <MenuItem 
                 active={selected === title}
                 style={{
-                    // color: selected === title ? '#4e57d4' : colors.grey[100],
                     backgroundColor: selected === title ? 'var(--border-color)' : 'transparent',
                 }}
                 onClick={() => setSelected(title)}
-                icon={icon}
+                icon={
+                    selected === title ? 
+                    React.cloneElement(iconFilled, { sx: { color: 'var(--color-active)' } }) : 
+                    React.cloneElement(iconOutline, { sx: { color: 'var(--icon-color)' } })
+                }
             >
-                <Typography>{title}</Typography>
+                <Typography style={{color: selected === title ? 'var(--color-active)' : 'var(--icon-color)', fontWeight: '600'}}>
+                    {title}
+                </Typography>
                 <Link to={to} />
             </MenuItem>
         </Tooltip>
@@ -47,18 +53,15 @@ const Sidebar = () => {
     const [isCollapsed, setIsCollapsed] = useState(() => JSON.parse(localStorage.getItem('sidebarCollapsed')) || false);
     const [selected, setSelected] = useState(() => localStorage.getItem('selectedMenuItem') || 'Dashboard');
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const secretKey = 'Tvx1234@';
+
     const isInitialMountCollapsed = useRef(true);
     const isInitialMountSelected = useRef(true);
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-    const detail = useSelector((state) => state);
 
     useEffect(() => {
         if (isInitialMountCollapsed.current) {
             isInitialMountCollapsed.current = false;
         } else {
-            localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
+localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
         }
     }, [isCollapsed]);
 
@@ -107,19 +110,20 @@ const Sidebar = () => {
     const isAdminOrSuperAdmin =
         localStorage.getItem('Role') === 'admin' || localStorage.getItem('Role') === 'super_admin';
 
+    const dispatch = useDispatch();
     const history = useHistory();
 
     const handleLogout = () => {
         localStorage.setItem('Infor', JSON.stringify(''));
         localStorage.removeItem('isLoggedIn');
-
         localStorage.removeItem('selectedMenuItem');
         localStorage.setItem('Name', '');
-        localStorage.setItem('Email', '');
-
+        localStorage.setItem('Email', JSON.stringify(''));
         localStorage.setItem('Role', '');
 
-        history.push('/login');
+        dispatch({ type: 'logout' });
+
+        history.push('/');
     };
     const showModal = () => {
         setIsModalOpen(true);
@@ -151,22 +155,18 @@ const Sidebar = () => {
                     color: 'var(--icon-color)',
                 },
                 '& .pro-inner-item:hover': {
-                    color: '#868dfb !important',
+                    color: 'rgb(7, 153, 244) !important',
                 },
                 '& .pro-menu-item.active': {
                     color: '#6870fa !important',
                 },
-            }}
+}}
         >
             <ProSidebar collapsed={isCollapsed}>
                 <Menu iconShape="square">
-                    <MenuItem
+                    <MenuItem className='icon-menu'
                         onClick={() => setIsCollapsed(!isCollapsed)}
                         icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
-                        style={{
-                            margin: '10px 0 20px 0',
-                            color: colors.grey[100],
-                        }}
                     >
                         {!isCollapsed && (
                             <Box display="flex" justifyContent="space-between" alignItems="center" ml="15px">
@@ -216,7 +216,8 @@ const Sidebar = () => {
                         <Item
                             title={t('title.dashboard')}
                             to="/admin/dashboard"
-                            icon={<HomeOutlinedIcon />}
+iconOutline={<InsertChartOutlinedIcon />}
+                            iconFilled={<InsertChartIcon />} 
                             selected={selected}
                             setSelected={setSelected}
                             tooltip="Dashboard"
@@ -224,7 +225,8 @@ const Sidebar = () => {
                         <Item
                             title={t('ChatRoom')}
                             to="/admin/ChatRoom"
-                            icon={<WechatWorkOutlined />}
+                            iconFilled={<ChatIcon />}
+                            iconOutline={<ChatOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
                             tooltip="Chatroom"
@@ -234,7 +236,8 @@ const Sidebar = () => {
                                 <Item
                                     title={t('title.university')}
                                     to="/admin/university"
-                                    icon={<SchoolIcon />}
+                                    iconFilled={<SchoolIcon />}
+                                    iconOutline={<SchoolOutlinedIcon />}
                                     selected={selected}
                                     setSelected={setSelected}
                                     tooltip="University Managerment"
@@ -242,7 +245,8 @@ const Sidebar = () => {
                                 <Item
                                     title={t('title.student')}
                                     to="/admin/student"
-                                    icon={<SolutionOutlined />}
+                                    iconFilled={<AssignmentIndIcon />}
+                                    iconOutline={<AssignmentIndOutlinedIcon />}
                                     selected={selected}
                                     setSelected={setSelected}
                                     tooltip="Student Managerment"
@@ -250,11 +254,13 @@ const Sidebar = () => {
                                 <Item
                                     title={t('title.register')}
                                     to="/register"
-                                    icon={<SignatureOutlined />}
+                                    iconFilled={<AppRegistrationIcon />}
+                                    iconOutline={<AppRegistrationIcon />}
                                     selected={selected}
                                     setSelected={setSelected}
                                     tooltip="Register Account"
                                 />
+                               
                             </>
                         )}
                         {localStorage.getItem('Role') === 'user' && (
@@ -262,7 +268,8 @@ const Sidebar = () => {
                                 <Item
                                     title={t('title.profile')}
                                     to="/admin/profile"
-                                    icon={<ContactsOutlinedIcon />}
+                                    iconFilled={<ContactsIcon />}
+                                    iconOutline={<ContactsOutlinedIcon />}
                                     selected={selected}
                                     setSelected={setSelected}
                                     tooltip="Profile"
@@ -270,8 +277,8 @@ const Sidebar = () => {
                             </>
                         )}
                     </Box>
-                    <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                        <p>Do you want to log out?</p>
+                    <Modal title= {t('title.modal')}open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText={t('button.ok')} cancelText={t('button.cancel')}>
+                        <p>{t('title.confirm')}</p>
                     </Modal>
                     <MenuItem
                         onClick={showModal}

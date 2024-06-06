@@ -10,10 +10,14 @@ import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Modal } from 'antd';
-import {Chat} from '../../pages/ChatRoom/Chat'
+import { child, get, getDatabase, ref } from 'firebase/database';
+import { encodePath } from '../../commonFunctions';
+import { initializeApp } from 'firebase/app';
+import { firebaseConfig } from '../../constants/constants';
+import CryptoJS from 'crypto-js';
 
 const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
     // const theme = useTheme();
@@ -43,9 +47,12 @@ const Sidebar = () => {
     const [isCollapsed, setIsCollapsed] = useState(() => JSON.parse(localStorage.getItem('sidebarCollapsed')) || false);
     const [selected, setSelected] = useState(() => localStorage.getItem('selectedMenuItem') || 'Dashboard');
     const [isModalOpen, setIsModalOpen] = useState(false);
-
+    const secretKey = 'Tvx1234@';
     const isInitialMountCollapsed = useRef(true);
     const isInitialMountSelected = useRef(true);
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const detail = useSelector((state) => state);
 
     useEffect(() => {
         if (isInitialMountCollapsed.current) {
@@ -100,20 +107,19 @@ const Sidebar = () => {
     const isAdminOrSuperAdmin =
         localStorage.getItem('Role') === 'admin' || localStorage.getItem('Role') === 'super_admin';
 
-    const dispatch = useDispatch();
     const history = useHistory();
 
     const handleLogout = () => {
         localStorage.setItem('Infor', JSON.stringify(''));
         localStorage.removeItem('isLoggedIn');
+
         localStorage.removeItem('selectedMenuItem');
         localStorage.setItem('Name', '');
-        localStorage.setItem('Email', JSON.stringify(''));
+        localStorage.setItem('Email', '');
+
         localStorage.setItem('Role', '');
 
-        dispatch({ type: 'logout' });
-
-        history.push('/');
+        history.push('/login');
     };
     const showModal = () => {
         setIsModalOpen(true);
@@ -249,7 +255,6 @@ const Sidebar = () => {
                                     setSelected={setSelected}
                                     tooltip="Register Account"
                                 />
-                               
                             </>
                         )}
                         {localStorage.getItem('Role') === 'user' && (
@@ -277,7 +282,7 @@ const Sidebar = () => {
                             left: '0',
                             width: '100%',
                             borderTop: '1px solid #ccc',
-                            padding: '10px 20px',
+                            padding: '15px 5px',
                         }}
                     >
                         <svg

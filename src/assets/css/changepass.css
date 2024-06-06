@@ -154,7 +154,8 @@
 .col-2 {
     position: relative;
     width: 45%;
-    padding: 20px;
+    padding: 0 20px 40px;
+
     overflow: hidden;
 }
 
@@ -303,6 +304,9 @@
 
 .input-submit:hover {
     gap: 15px;
+}
+.ant-btn:hover {
+    background-color: bisque;
 }
 
 .input-field {

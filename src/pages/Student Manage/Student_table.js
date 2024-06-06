@@ -362,7 +362,7 @@ const StudentList = () => {
     };
 
     const handleIdClick = (record) => {
-        setstudentUnicode(record.uniCode!==undefined);
+        setstudentUnicode(record.uniCode !== undefined);
         setSelectedStudent(record);
         setIsModalVisible(true);
     };
@@ -497,7 +497,7 @@ const StudentList = () => {
         {
             title: t('table.Action'),
             dataIndex: 'operation',
-            width: '12%',
+            width: '16%',
             fixed: 'right',
             responsive: ['sm'],
             render: (_, record) => {
@@ -622,8 +622,6 @@ const StudentList = () => {
                             <Button onClick={handleCancel}>{t('button.cancel')}</Button>,
                         ]}
                     >
-                        {/* <input type="file" id="fileInput" className="avatar-input" /> */}
-
                         <Input onChange={(e) => setMess(e.target.value)} />
                     </Modal>
                     <Button type="primary" onClick={showModal}>
@@ -635,7 +633,7 @@ const StudentList = () => {
                             setIsModalVisible(false);
                         }}
                         student={selectedStudent}
-                        studentUnicode ={studentUnicode}
+                        studentUnicode={studentUnicode}
                     />
                     <Form form={form} component={false}>
                         <Spin spinning={Loading}>

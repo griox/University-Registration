@@ -3,46 +3,48 @@
 html,
 .app,
 .content {
-    height: 100%;
+    height: 100%;   
     width: 100%;
     margin: 0;
     padding: 0;
     font-family: 'Source Sans Pro', sans-serif;
 }
 :root {
-    --chart-color:white;
+    --background-para: #F8EFBA;
+    --chart-color: white;
     --placeholder-color: #d2dae2;
     --input-color: #fff;
-    --hover-btn: #74b9ff;
+    --hover-btn: #003865;
     --icon-color: black;
     --body_background: white;
-    --sidebar-color:#f1f2f6;
-    --navbar-color:white;
-    --content-color:white;
-    --btn-color:rgb(7, 153, 244);
-    --header-background:#f1f2f6;
-    --body_color:#333;
-    --registered-color:green;
-    --unregistered-color:red;
-    --border-color:#dfe4ea;
-    --name-colorY:#FF8C00 ;
-    --name-colorN:black;
-    --id-color:blue;
-    --male-color:rgb(6, 26, 205);
-    --female-color:rgb(239, 73, 101);
+    --sidebar-color: #f1f2f6;
+    --navbar-color: white;
+    --content-color: white;
+    --btn-color: rgb(7, 153, 244);
+    --header-background: #f1f2f6;
+    --body_color: #333;
+    --registered-color: green;
+    --unregistered-color: red;
+    --border-color: #dfe4ea;
+    --name-colorY: #ff8c00;
+    --name-colorN: black;
+    --id-color: blue;
+    --male-color: rgb(6, 26, 205);
+    --female-color: rgb(239, 73, 101);
 }
-[data-theme="dark"] {
-    --chart-color:#141414;
-    --sidebar-color:#3d3d3d;
-    --placeholder-color:#ced6e0;
-    --input-color:#485460;
-    --hover-btn:#FF8C00;
-    --icon-color:#ff7f50;
-    --body_background:#3d3d3d;
-    --content-color:#2f3640;
-    --btn-color:#ff7f50;
-    --navbar-color:#353b48;
-    --header-background:#4b4b4b;
+[data-theme='dark'] {
+    --background-para:#485460;
+    --chart-color: #141414;
+    --sidebar-color: #3d3d3d;
+    --placeholder-color: #ced6e0;
+    --input-color: #485460;
+    --hover-btn: #ff8c00;
+    --icon-color: #ff7f50;
+    --body_background: #3d3d3d;
+    --content-color: #2f3640;
+    --btn-color: #ff7f50;
+    --navbar-color: #353b48;
+    --header-background: #4b4b4b;
     --body_color: white;
     --registered-color: greenyellow;
     --unregistered-color: #ff4757;
@@ -111,9 +113,9 @@ html,
     width: 100%;
     text-align: center;
 }
-.ant-input-outlined[disabled]{
-    color:var(--placeholder-color) !important;
+.ant-input-outlined[disabled] {
+    color: var(--placeholder-color) !important;
 }
-.css-hxopmt{
+.css-hxopmt {
     padding: 18px !important;
 }

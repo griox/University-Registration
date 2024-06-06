@@ -2,13 +2,14 @@ import { get, ref, child } from 'firebase/database';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Descriptions, Table, Form, Spin } from 'antd';
+import {WarningFilled} from '@ant-design/icons'
 import { database } from '../firebaseConfig.js';
 import './css/Modal_detail.css';
 import { useTranslation } from 'react-i18next';
 
-export const Form_Detail = ({ university,isRegistered }) => {
+export const Form_Detail = ({ university, isRegistered }) => {
     const [student, setStudents] = useState([]);
-    const [loading,setLoading]=useState(true);
+    const [loading, setLoading] = useState(true);
     const [form] = Form.useForm();
     const student_regist = university.registeration;
     const { t } = useTranslation('detailuniversity');
@@ -138,10 +139,9 @@ export const Form_Detail = ({ university,isRegistered }) => {
                 ))}
             </Descriptions>
             <Spin spinning={loading}>
-               
                 {isRegistered ? (
                     <>
-                     <h4>{t('title.list')}</h4>
+                        <h4>{t('title.list')}</h4>
                         <Table
                             className="table"
                             rowHoverable={false}
@@ -162,7 +162,8 @@ export const Form_Detail = ({ university,isRegistered }) => {
                         />
                     </>
                 ) : (
-                    <h4 className="description">This School hasn't been registered by any students!</h4>
+                    <h4 className="description">This School hasn't been registered by any students  <WarningFilled /></h4>
+                   
                 )}
             </Spin>
         </>

@@ -8,7 +8,6 @@ import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../constants/constants';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
 const Chart = () => {
     const { t } = useTranslation('dashboard');
     const [studentTotal, setStudentTotal] = useState(0);
@@ -25,7 +24,6 @@ const Chart = () => {
     const [registThree, setRegistThree] = useState(0);
     const [registFour, setRegistFour] = useState(0);
     const [registFive, setRegistFive] = useState(0);
-    const [registZero, setRegistZero] = useState(0);
     const [average, setAverage] = useState(0);
     const aRef = useRef(studentTotal);
     const [loading, setLoading] = useState(true);
@@ -34,7 +32,6 @@ const Chart = () => {
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const darkMode = useSelector((state) => state.darkMode);
-    const theme = localStorage.setItem('status', darkMode);
     const config = {
         theme: !darkMode ? 'classic' : 'classicDark',
         data: [
@@ -58,7 +55,11 @@ const Chart = () => {
         label: {
             text: (d) => `${d.score.toFixed(2)}`,
             textBaseline: 'bottom',
-            titleStroke: 'red',
+            
+        },
+        axis:{
+            fill:'pink',
+            labelFill: 'red',
         },
         style: {
             width: 45,
@@ -69,7 +70,6 @@ const Chart = () => {
     const con = {
         theme: !darkMode ? 'academy' : 'classicDark',
         data: [
-            { type: t('data.None'), value: registZero },
             { type: t('data.One'), value: registOne },
             { type: t('data.Two'), value: registTwo },
             { type: t('data.Three'), value: registThree },
@@ -120,6 +120,7 @@ const Chart = () => {
                 fontWeight: 'bold',
                 fontSize: '50px',
                 titleStroke: 'red',
+                fill: '#fff'
             },
         },
         legend: {
@@ -170,10 +171,9 @@ const Chart = () => {
                     var c = 0;
                     var d = 0;
                     var e = 0;
-                    var f = 0;
                     for (let i in x) {
                         if (x[i].uniCode === undefined) {
-                            f += 1;
+                            continue;
                         } else if (x[i].uniCode.length === 5) {
                             a += 1;
                         } else if (x[i].uniCode.length === 4) {
@@ -187,7 +187,6 @@ const Chart = () => {
                         }
                     }
                 }
-                setRegistZero(f);
                 setRegistOne(e);
                 setRegistTwo(d);
                 setRegistThree(c);

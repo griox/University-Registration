@@ -11,14 +11,15 @@
         "EnglishScore": "Điểm anh",
         "LiteratureScore": "Điểm văn",
         "University": "Trường đại học",
-        "ID": "ID"
+        "ID": "ID",
+        "DateOfBirth": "Ngày sinh"
     },
     "table": {
         "Code": "Mã trường",
         "Name": "Tên trường",
         "Entrance Score": "Điểm đầu vào",
         "Target": "Chỉ tiêu",
-        "Number of students registered": "Số lượng đã đăng kí",
+        "Number of students registered": "Đã đăng kí",
         "Action": "Hành động"
     },
     "button": {

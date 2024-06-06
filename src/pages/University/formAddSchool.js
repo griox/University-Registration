@@ -15,8 +15,6 @@ const FormAdd = ({ UniData, setUniData }) => {
     const [averageScore, setAverageScore] = useState(null);
     const [targetScore, setTargetScore] = useState(null);
     const { t } = useTranslation('modalUni');
-    // const [showSuccess, setShowSuccess] = useState(false);
-    const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [isFormValid, setIsFormValid] = useState(false);
 
     useEffect(() => {
@@ -68,7 +66,7 @@ const FormAdd = ({ UniData, setUniData }) => {
             return;
         }
 
-        if (!validateName(uniName)) {
+        if (!validateUniName(uniName)) {
             toast.error('Invalid name');
             return;
         }
@@ -102,11 +100,6 @@ const FormAdd = ({ UniData, setUniData }) => {
             toast.error('An error occurred while adding university');
         }
     };
-
-    const handleReload = () => {
-        window.location.reload()
-    }
-
     const AddSchool = async () => {
         const uniRef = ref(database, `University/${uniCode}`);
         await set(uniRef, {
@@ -125,23 +118,10 @@ const FormAdd = ({ UniData, setUniData }) => {
             isRegistered: 0,
             target: targetScore,
         };
-        setUniData = [...UniData, newUni];
-        setShowSuccessModal(true);
+        setUniData([...UniData, newUni]);
+       
     };
 
-    const Success = () => (
-        <Result
-          status="success"
-          title={<div className='result-title'>{t('title.success')}</div>}
-          style={{width: '100%', height: 'auto'}}
-          extra={[
-            <Button type="primary" onClick={handleReload} style={{width: '100px', height: 'auto'}}>
-              {t('title.reload')}
-            </Button>,
-          ]}
-        />
-      );
-      
     function validateUniName(uniName) {
         return /^\D+$/u.test(uniName);
     }
@@ -152,30 +132,19 @@ const FormAdd = ({ UniData, setUniData }) => {
                 {t('button.Add')}
             </Button>
             <Modal
-            className="custom-modal"
-                style={{height: '200px'}}
-                width={500}
-                open={showSuccessModal}
-                footer={null}
-                closable={false}
-                onCancel={() => setShowSuccessModal(false)}
-            >
-                <Success />
-            </Modal>
-            <Modal
                 title="Add a university"
-                visible={isModalVisible}
+                open={isModalVisible}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 width={700}
                 destroyOnClose
-                okButtonProps={{disabled: !isFormValid}}
+                okButtonProps={{ disabled: !isFormValid }}
             >
                 <Space direction="vertical">
                     <Form layout="horizontal">
                         <Form.Item
                             label={t('label.uniname')}
-                            validateStatus={!validateUniCode(uniName) && uniName ? 'error' : ''}
+                            validateStatus={!validateUniName(uniName) && uniName ? 'error' : ''}
                             help={!validateUniCode(uniName) && uniName ? 'Invalid university name' : ''}
                         >
                             <Input

@@ -146,7 +146,7 @@ body {
 .col-2 {
     position: relative;
     width: 45%;
-    padding: 20px;
+    padding: 0 20px 40px;
     overflow: hidden;
 }
 
@@ -210,7 +210,7 @@ body {
 }
 
 .form-title {
-    margin: 20px 0;
+    margin: 30px 0 10px;
     color: #fff;
     font-size: 28px;
     font-weight: 600;
@@ -224,7 +224,13 @@ body {
     position: relative;
     width: 100%;
 }
-
+.register-checkbox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 20px;
+}
 .input-box input:not([type='checkbox']) {
     display: block;
     margin-bottom: 15px;

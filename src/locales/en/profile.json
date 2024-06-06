@@ -11,14 +11,15 @@
         "EnglishScore": "EnglishScore",
         "LiteratureScore": "LiteratureScore",
         "University": "University",
-        "ID": "ID"
+        "ID": "ID",
+        "DateOfBirth": "Date of birth"
     },
     "table": {
         "Code": "Code",
         "Name": "Name",
         "Entrance Score": "Etrance Score",
         "Target": "Target",
-        "Number of students registered": "Number of students registered",
+        "Number of students registered": "Registered",
         "Action": "Action"
     },
     "button": {

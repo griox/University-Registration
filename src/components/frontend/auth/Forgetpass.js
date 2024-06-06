@@ -5,11 +5,17 @@ import { Link } from 'react-router-dom';
 import '../../../assets/css/login.css';
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../../../constants/constants';
-import { DownOutlined } from '@ant-design/icons';
-import { Button, Dropdown, Space, Typography } from 'antd';
+import { DownOutlined, ExclamationCircleOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import { Button, Dropdown, Form, Input, Space, Tooltip, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
-import { encodePath } from '../../../commonFunctions';
+import {
+    HandleError,
+    disableButton,
+    encodePath,
+    validateEmailFormat,
+    validatePasswordFormat,
+} from '../../../commonFunctions';
 import { child, get, getDatabase, ref, update } from 'firebase/database';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 
@@ -19,6 +25,7 @@ export const Forgetpass = () => {
     const database = getAuth(app);
     const db = getDatabase(app);
     const [email, setEmail] = useState('');
+    const [errorEmail, setErrorEmail] = useState(false);
     const [loadingResetPass, setLoadingResetPass] = useState(false);
     const makeid = (length) => {
         let result = '';
@@ -37,6 +44,10 @@ export const Forgetpass = () => {
         setLoadingResetPass(true);
         if (email === '') {
             toast.error('Please enter your email');
+            setLoadingResetPass(false);
+            setEmail('');
+        } else if (validateEmailFormat(email) === false) {
+            toast.error('Your email is not formal');
             setLoadingResetPass(false);
             setEmail('');
         } else {
@@ -97,6 +108,19 @@ export const Forgetpass = () => {
             handleEmail(e);
         }
     };
+
+    const onchangeEmail = (e) => {
+        if (e === '') {
+            setEmail(e);
+            setErrorEmail(false);
+        } else if (validateEmailFormat(e) === false) {
+            setEmail(e);
+            setErrorEmail(true);
+        } else {
+            setEmail(e);
+            setErrorEmail(false);
+        }
+    };
     return (
         <>
             <div className="background">
@@ -128,24 +152,45 @@ export const Forgetpass = () => {
                                     <span>{t('header')}</span>
                                 </div>
                                 <div className="form-inputs">
-                                    <div className="input-box">
-                                        <input
-                                            type="text"
-                                            className="input-field"
-                                            placeholder="Email"
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            value={email === '' ? '' : email}
+                                    <Form.Item
+                                        name="email"
+                                        validateStatus={errorEmail ? 'error' : ''}
+                                        help={errorEmail ? <HandleError string="email" /> : ''}
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Please input!',
+                                            },
+                                        ]}
+                                    >
+                                        <Input
+                                            placeholder="Enter Student's email"
+                                            onChange={(e) => onchangeEmail(e.target.value)}
                                             onKeyDown={handleEnterKey}
+                                            allowClear
+                                            style={{
+                                                border: 'none',
+                                                padding: '15px',
+                                                color: '#000',
+                                                backgroundColor: 'blue',
+                                            }}
+                                            value={email}
                                         />
-
-                                        <i className="bx bx-envelope icon"></i>
-                                    </div>
+                                    </Form.Item>
 
                                     <div className="input-box">
                                         <Button
                                             loading={loadingResetPass}
                                             className="input-submit"
-                                            onClick={() => handleEmail()}
+                                            onClick={(e) => handleEmail(e)}
+                                            disabled={disableButton(errorEmail, email) === false ? false : true}
+                                            style={{
+                                                color: '#fff',
+                                                backgroundColor:
+                                                    email === false && email !== ''
+                                                        ? '#003865'
+                                                        : 'rgba(255, 255, 255, 0.3)',
+                                            }}
                                         >
                                             <span>{t('button.continue')}</span>
                                             <i className="bx bx-right-arrow-alt"></i>

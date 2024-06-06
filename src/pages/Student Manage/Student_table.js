@@ -22,6 +22,7 @@ import { database } from '../firebaseConfig.js';
 import { addDoc, collection, getFirestore } from 'firebase/firestore';
 import { firebaseConfig } from '../../constants/constants.js';
 import { initializeApp } from 'firebase/app';
+import { HandleErrorEdit } from '../../commonFunctions.js';
 
 const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
     const [error, setError] = useState(null);
@@ -29,18 +30,19 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
     const isMath = dataIndex === 'MathScore';
     const isLiterature = dataIndex === 'LiteratureScore';
     const isEnglish = dataIndex === 'EnglishScore';
+    
     const rules = [
         {
             validator: (_, value) => {
                 if (dataIndex) {
                     if (value === '') {
-                        return Promise.reject(`Please input ${title}`);
+                        return Promise.reject(`Please input`);
                     }
                 }
                 if (isMath || isEnglish || isLiterature) {
                     if (!(value >=0 && value <= 10 )) {
                         setError('Score must >= 0 and <= 10 and just number');
-                        return Promise.reject('Validate Error');
+                        return Promise.reject('Invalid value');
                     }
                 }
                 setError(null);
@@ -58,7 +60,8 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
     return (
         <td {...restProps}>
             {editing ? (
-                <><Form.Item
+                <>
+                <Form.Item
                     className="edit-cell"
                     name={dataIndex}
                     open={!!error}
@@ -67,8 +70,10 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
                     {inputNode}
 
                 </Form.Item>
-                <Tooltip title={error} open={error ? true : false} placement="bottomRight" overlayStyle={{fontSize: '12px'}} >
-                </Tooltip></>
+                {error && (
+                        <HandleErrorEdit errorMessage={error} />
+                )}
+                </>
             ) : (
                 children
             )}
@@ -621,8 +626,6 @@ const StudentList = () => {
                             <Button onClick={handleCancel}>{t('button.cancel')}</Button>,
                         ]}
                     >
-                        {/* <input type="file" id="fileInput" className="avatar-input" /> */}
-
                         <Input onChange={(e) => setMess(e.target.value)} />
                     </Modal>
                     <Button type="primary" onClick={showModal}>

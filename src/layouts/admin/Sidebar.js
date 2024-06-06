@@ -5,19 +5,24 @@ import { Link } from 'react-router-dom';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { tokens } from '../../theme';
 import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
+import ContactsIcon from '@mui/icons-material/Contacts';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import SchoolIcon from '@mui/icons-material/School';
+import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
 import ChatIcon from '@mui/icons-material/Chat';
+import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import InsertChartIcon from '@mui/icons-material/InsertChart';
+import InsertChartOutlinedIcon from '@mui/icons-material/InsertChartOutlined';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { Modal } from 'antd';
 import '../css/sidebar.css';
 
-const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
+const Item = ({ title, to, iconFilled,iconOutline, selected, setSelected, tooltip }) => {
     return (
         <Tooltip title={tooltip} placement="right" arrow>
             <MenuItem 
@@ -26,9 +31,15 @@ const Item = ({ title, to, icon, selected, setSelected, tooltip }) => {
                     backgroundColor: selected === title ? 'var(--border-color)' : 'transparent',
                 }}
                 onClick={() => setSelected(title)}
-                icon={icon}
+                icon={
+                    selected === title ? 
+                    React.cloneElement(iconFilled, { sx: { color: 'var(--color-active)' } }) : 
+                    React.cloneElement(iconOutline, { sx: { color: 'var(--icon-color)' } })
+                }
             >
-                <Typography>{title}</Typography>
+                <Typography style={{color: selected === title ? 'var(--color-active)' : 'var(--icon-color)', fontWeight: '600'}}>
+                    {title}
+                </Typography>
                 <Link to={to} />
             </MenuItem>
         </Tooltip>
@@ -144,7 +155,7 @@ const Sidebar = () => {
                     color: 'var(--icon-color)',
                 },
                 '& .pro-inner-item:hover': {
-                    color: '#868dfb !important',
+                    color: 'rgb(7, 153, 244) !important',
                 },
                 '& .pro-menu-item.active': {
                     color: '#6870fa !important',
@@ -205,7 +216,8 @@ const Sidebar = () => {
                         <Item
                             title={t('title.dashboard')}
                             to="/admin/dashboard"
-                            icon={<InsertChartIcon />}
+                            iconOutline={<InsertChartOutlinedIcon />}
+                            iconFilled={<InsertChartIcon />} 
                             selected={selected}
                             setSelected={setSelected}
                             tooltip="Dashboard"
@@ -213,7 +225,8 @@ const Sidebar = () => {
                         <Item
                             title={t('ChatRoom')}
                             to="/admin/ChatRoom"
-                            icon={<ChatIcon />}
+                            iconFilled={<ChatIcon />}
+                            iconOutline={<ChatOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
                             tooltip="Chatroom"
@@ -223,7 +236,8 @@ const Sidebar = () => {
                                 <Item
                                     title={t('title.university')}
                                     to="/admin/university"
-                                    icon={<SchoolIcon />}
+                                    iconFilled={<SchoolIcon />}
+                                    iconOutline={<SchoolOutlinedIcon />}
                                     selected={selected}
                                     setSelected={setSelected}
                                     tooltip="University Managerment"
@@ -231,7 +245,8 @@ const Sidebar = () => {
                                 <Item
                                     title={t('title.student')}
                                     to="/admin/student"
-                                    icon={<AssignmentIndIcon />}
+                                    iconFilled={<AssignmentIndIcon />}
+                                    iconOutline={<AssignmentIndOutlinedIcon />}
                                     selected={selected}
                                     setSelected={setSelected}
                                     tooltip="Student Managerment"
@@ -239,7 +254,8 @@ const Sidebar = () => {
                                 <Item
                                     title={t('title.register')}
                                     to="/register"
-                                    icon={<AppRegistrationIcon/>}
+                                    iconFilled={<AppRegistrationIcon />}
+                                    iconOutline={<AppRegistrationIcon />}
                                     selected={selected}
                                     setSelected={setSelected}
                                     tooltip="Register Account"
@@ -252,7 +268,8 @@ const Sidebar = () => {
                                 <Item
                                     title={t('title.profile')}
                                     to="/admin/profile"
-                                    icon={<ContactsOutlinedIcon />}
+                                    iconFilled={<ContactsIcon />}
+                                    iconOutline={<ContactsOutlinedIcon />}
                                     selected={selected}
                                     setSelected={setSelected}
                                     tooltip="Profile"
@@ -266,6 +283,14 @@ const Sidebar = () => {
                     <MenuItem
                         onClick={showModal}
                         className="logout-item"
+                        style={{
+                            position: 'absolute',
+                            bottom: '0',
+                            left: '0',
+                            width: '100%',
+                            borderTop: '1px solid #ccc',
+                            padding: '15px 5px',
+                        }}
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -279,7 +304,7 @@ const Sidebar = () => {
                                 d="M5 21q-.825 0-1.412-.587T3 19V5q0-.825.588-1.412T5 3h7v2H5v14h7v2zm11-4l-1.375-1.45l2.55-2.55H9v-2h8.175l-2.55-2.55L16 7l5 5z"
                             />
                         </svg>
-                        <span className='logout'> {t('title.logout')}</span>
+                        <span style={{ color: '#ff4d4f' }}> {t('title.logout')}</span>
                     </MenuItem>
                 </Menu>
             </ProSidebar>

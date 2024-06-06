@@ -9,6 +9,7 @@ import FormAdd from './formAddSchool';
 import { database } from '../firebaseConfig.js';
 import './css/AddSchool.css';
 import { useTranslation } from 'react-i18next';
+import { HandleErrorEdit } from '../../commonFunctions.js';
 
 const AddSchool = () => {
     useEffect(() => {
@@ -42,7 +43,7 @@ const AddSchool = () => {
     const tableRef = useRef(null);
     const searchInput = useRef(null);
     const [isRegistered, setIsRegistered] = useState(false);
-
+    
     const isEditing = (record) => record.key === editingKey;
 
     const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
@@ -56,31 +57,31 @@ const AddSchool = () => {
                 validator: (_, value) => {
                     if (dataIndex) {
                         if (value === '') {
-                            return Promise.reject(`Please input ${title}`);
+                            return Promise.reject(`Please input`);
                         }
                     }
                     if (isTarget) {
                         if (value < record.isRegistered) {
                             setError('Target must be greater than or equal to Num of registered');
-                            return Promise.reject('Validate Error');
+                            return Promise.reject('Invalid value');
                         }
                         if (!/^\d+$/.test(value)) {
                             setError('Target must contain only numbers');
-                            return Promise.reject('Validate Error');
+                            return Promise.reject('Invalid value');
                         }
-                        if (!(value >= 100 && value <= 1000)) {
-                            setError('Target must be >= 100 and <= 1000');
-                            return Promise.reject('Validate Error');
+                        if (!(value <= 1000)) {
+                            setError('Target must be <= 1000');
+                            return Promise.reject('Invalid value');
                         }
                     }
                     if (isUniCode && !/^[a-zA-Z]+$/.test(value)) {
                         setError('UniCode must contain letters only');
-                        return Promise.reject('Validate Error');
+                        return Promise.reject('Invalid value');
                     }
                     if (isEntrance) {
                         if (!(value > 0 && value <= 10 )) {
                             setError('Entrance Score must be > 0 and <= 10');
-                            return Promise.reject('Validate Error');
+                            return Promise.reject('Invalid value');
                         }
                     }
                     setError(null);
@@ -88,20 +89,29 @@ const AddSchool = () => {
                 },
             },
         ];
+
+        useEffect(() => {
+            if (!editing) {
+                setError(null);
+            }
+        }, [editing]);
     
         return (
             <td {...restProps}>
                 {editing ? (
-                    <><Form.Item
-                        className="form-editCell"
-                        name={dataIndex}
-                        rules={rules}
-                    >
-                        {inputNode}
+                    <> 
+                        <Form.Item
+                            className="form-editCell"
+                            name={dataIndex}
+                            rules={rules}
+                        >
+                            {inputNode}
 
-                    </Form.Item>
-                    <Tooltip title={error} open={error ? true : false} placement="bottomRight" overlayStyle={{fontSize: '12px'}} >
-                    </Tooltip></>
+                        </Form.Item>
+                        {error && (
+                            <HandleErrorEdit errorMessage={error} />
+                        )}
+                    </>
                 ) : (
                     children
                 )}
@@ -109,7 +119,7 @@ const AddSchool = () => {
         );
     };
     const handleSchoolDetail = (record) => {
-        setIsRegistered(record.isRegistered!==0);
+        setIsRegistered(record.isRegistered !== 0);
         setDetailVisible(true);
         setSelectedUniverse(record);
     };
@@ -355,16 +365,16 @@ const AddSchool = () => {
 
     const columns = [
         {
-            title:t('Name + Unicode'),
-            render:(record)=>(
+            title: t('Name + Unicode'),
+            render: (record) => (
                 <React.Fragment>
                     {record.uniCode}
-                    <br/>
+                    <br />
                     {record.nameU}
                 </React.Fragment>
             ),
-            responsive:['xs']
-            },
+            responsive: ['xs'],
+        },
         {
             title: t('table.Name'),
             dataIndex: 'nameU',
@@ -373,10 +383,11 @@ const AddSchool = () => {
             fixed: 'left',
             editable: true,
             ...getColumnSearchProps('nameU'),
-            render: (text, record) => (
-                <Typography.Link onClick={() => handleSchoolDetail(record)}>{text}</Typography.Link>
-            ),
-            responsive:['sm']
+            render: (text, record) => {
+                console.log('record', record.isRegistered);
+                return <Typography.Link onClick={() => handleSchoolDetail(record)}>{text}</Typography.Link>;
+            },
+            responsive: ['sm'],
         },
         {
             title: t('table.UniCode'),
@@ -390,7 +401,7 @@ const AddSchool = () => {
                 </Tooltip>
             ),
             key: 'uniCode',
-            responsive:['sm']
+            responsive: ['sm'],
         },
         {
             title: t('table.Address'),
@@ -399,7 +410,7 @@ const AddSchool = () => {
             editable: true,
             width: '20%',
             key: 'address',
-            responsive:['sm']
+            responsive: ['sm'],
         },
         {
             title: t('table.Entrance Score'),
@@ -408,7 +419,7 @@ const AddSchool = () => {
             editable: true,
             sorter: (a, b) => a.averageS - b.averageS,
             key: 'averageS',
-            responsive:['sm']
+            responsive: ['sm'],
         },
         {
             title: t('table.Number of registration'),
@@ -419,7 +430,7 @@ const AddSchool = () => {
                 setNumberRegist(record);
                 return record.isRegistered;
             },
-            responsive:['sm']
+            responsive: ['sm'],
         },
         {
             title: t('table.Target'),
@@ -428,14 +439,14 @@ const AddSchool = () => {
             editable: true,
             sorter: (a, b) => a.targets - b.targets,
             key: 'target',
-            responsive:['sm']
+            responsive: ['sm'],
         },
         {
             title: t('table.Action'),
             dataIndex: 'operation',
             width: '12%',
             fixed: 'right',
-            responsive:['sm'],
+            responsive: ['sm'],
             render: (_, record) => {
                 const editable = isEditing(record);
                 return editable ? (
@@ -450,7 +461,12 @@ const AddSchool = () => {
                         <Typography.Link className="typolink" disabled={editingKey !== ''} onClick={() => edit(record)}>
                             <EditOutlined />
                         </Typography.Link>
-                        <Popconfirm title={t('title.delete')} onConfirm={() => handleDelete(record)} okText={t('confirm.ok')} cancelText={t('confirm.cancel')} >
+                        <Popconfirm
+                            title={t('title.delete')}
+                            onConfirm={() => handleDelete(record)}
+                            okText={t('confirm.ok')}
+                            cancelText={t('confirm.cancel')}
+                        >
                             <Typography.Link>
                                 <DeleteOutlined />
                             </Typography.Link>
@@ -520,11 +536,7 @@ const AddSchool = () => {
                 style={{ marginLeft: '20%' }}
                 footer={null}
             >
-                <FormDetail
-                    university={selectedUniverse}
-                    open={isModalDetailVisible}
-                    isRegistered={isRegistered}
-                />
+                <FormDetail university={selectedUniverse} open={isModalDetailVisible} isRegistered={isRegistered} />
             </Modal>
         </div>
     );

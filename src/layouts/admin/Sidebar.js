@@ -107,29 +107,11 @@ const Sidebar = () => {
     const isAdminOrSuperAdmin =
         localStorage.getItem('Role') === 'admin' || localStorage.getItem('Role') === 'super_admin';
 
-    const dispatch = useDispatch();
     const history = useHistory();
 
     const handleLogout = () => {
-        const tempEmail = localStorage.getItem('userToken');
-        if (tempEmail === '') {
-            dispatch({ type: 'logout', payload: { userToken: '', password: '' } });
-        } else {
-            get(child(ref(db), `Account/` + encodePath(tempEmail))).then((snapshot) => {
-                if (snapshot.exists()) {
-                    console.log('here');
-
-                    const x = snapshot.val();
-                    var temp = CryptoJS.AES.decrypt(x.password, secretKey);
-                    temp = temp.toString(CryptoJS.enc.Utf8);
-                    dispatch({ type: 'logout', payload: { userToken: tempEmail, password: temp } });
-                }
-            });
-            console.log(detail.userToken, detail.password);
-        }
         localStorage.setItem('Infor', JSON.stringify(''));
         localStorage.removeItem('isLoggedIn');
-        // localStorage.removeItem('userToken');
 
         localStorage.removeItem('selectedMenuItem');
         localStorage.setItem('Name', '');

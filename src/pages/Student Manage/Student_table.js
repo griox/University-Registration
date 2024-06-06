@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin, Modal, message, Upload } from 'antd';
+import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin, Modal } from 'antd';
 import './css/table.css';
 import 'antd/dist/reset.css';
 import {
@@ -22,54 +22,58 @@ import { database } from '../firebaseConfig.js';
 import { addDoc, collection, getFirestore } from 'firebase/firestore';
 import { firebaseConfig } from '../../constants/constants.js';
 import { initializeApp } from 'firebase/app';
+import { HandleErrorEdit } from '../../commonFunctions.js';
 
 const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
+    const [error, setError] = useState(null);
     const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
     const isMath = dataIndex === 'MathScore';
     const isLiterature = dataIndex === 'LiteratureScore';
     const isEnglish = dataIndex === 'EnglishScore';
+    
+    const rules = [
+        {
+            validator: (_, value) => {
+                if (dataIndex) {
+                    if (value === '') {
+                        return Promise.reject(`Please input`);
+                    }
+                }
+                if (isMath || isEnglish || isLiterature) {
+                    if (!(value >=0 && value <= 10 )) {
+                        setError('Score must >= 0 and <= 10 and just number');
+                        return Promise.reject('Invalid value');
+                    }
+                }
+                setError(null);
+                return Promise.resolve();
+            },
+        },
+    ];
+
+    useEffect(() => {
+        if (!editing) {
+            setError(null);
+        }
+    }, [editing]);
+
     return (
         <td {...restProps}>
             {editing ? (
+                <>
                 <Form.Item
                     className="edit-cell"
                     name={dataIndex}
-                    rules={[
-                        {
-                            required: true,
-                            message: `Please Input ${title}!`,
-                        },
-                        {
-                            validator: (_, value) => {
-                                if (isMath && !(value >= 0 && value <= 10)) {
-                                    // Kiểm tra nếu là cột 'target' và giá trị nhỏ hơn số đã đăng ký
-                                    return Promise.reject(new Error('Must >= 0 and <= 10 and just number'));
-                                }
-                                return Promise.resolve();
-                            },
-                        },
-                        {
-                            validator: (_, value) => {
-                                if (isEnglish && !(value >= 0 && value <= 10)) {
-                                    // Kiểm tra nếu là cột 'target' và giá trị nhỏ hơn số đã đăng ký
-                                    return Promise.reject(new Error('Must >= 0 and <= 10 and just number'));
-                                }
-                                return Promise.resolve();
-                            },
-                        },
-                        {
-                            validator: (_, value) => {
-                                if (isLiterature && !(value >= 0 && value <= 10)) {
-                                    // Kiểm tra nếu là cột 'target' và giá trị nhỏ hơn số đã đăng ký
-                                    return Promise.reject(new Error('Must >= 0 and <= 10 and just number'));
-                                }
-                                return Promise.resolve();
-                            },
-                        },
-                    ]}
+                    open={!!error}
+                    rules={rules}
                 >
                     {inputNode}
+
                 </Form.Item>
+                {error && (
+                        <HandleErrorEdit errorMessage={error} />
+                )}
+                </>
             ) : (
                 children
             )}
@@ -195,7 +199,6 @@ const StudentList = () => {
                         }}
                     >
                         {t('button.filter')}
-                        {t('button.filter')}
                     </Button>
                     <Button type="link" size="small" onClick={() => close()}>
                         {t('button.close')}
@@ -260,6 +263,7 @@ const StudentList = () => {
             await remove(child(ref(database), `Account/${emailhash}`));
             const newData = studentData.filter((item) => item.id !== record.id);
             setStudentData(newData);
+            toast.success('Delete student successfully');
         } catch (error) {
             toast.error('Error deleting data');
         }
@@ -627,6 +631,7 @@ const StudentList = () => {
                     <Button type="primary" onClick={showModal}>
                         {t('button.sendnoti')}
                     </Button>
+                    
                     <ModalDetail
                         visible={isModalVisible}
                         onClose={() => {

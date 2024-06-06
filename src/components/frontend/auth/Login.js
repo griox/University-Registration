@@ -10,17 +10,16 @@ import { firebaseConfig } from '../../../constants/constants';
 import { HandleError, disableButton, encodePath, validateEmailFormat } from '../../../commonFunctions';
 import { useTranslation } from 'react-i18next';
 import { DownOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import { Button, Dropdown, Form, Input, Space, Spin, Typography } from 'antd';
+import { Button, Dropdown, Form, Input, Space, Typography } from 'antd';
 import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
 import CryptoJS from 'crypto-js';
 import { useSelector } from 'react-redux';
 export const Login = () => {
     const { t, i18n } = useTranslation('login');
     const detail = useSelector((state) => state);
-    const x = detail.userToken;
-    const y = detail.password;
-    const [email, setEmail] = useState(x);
-    const [password, setPassword] = useState(y);
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
     const app = initializeApp(firebaseConfig);
@@ -29,32 +28,7 @@ export const Login = () => {
     const [loadingLogin, setLoadingLogin] = useState(false);
     const [errorEmail, setErrorEmail] = useState(false);
     const secretKey = 'Tvx1234@';
-    const [loginSpin, setLoginSpin] = useState(false);
-    useEffect(() => {
-        const fetch = () => {
-            setLoginSpin(true);
-            const tempEmail = localStorage.getItem('userToken');
-            if (tempEmail !== null) {
-                setEmail(tempEmail);
-                localStorage.removeItem('userToken');
-                get(child(ref(db), `Account/` + encodePath(tempEmail))).then((snapshot) => {
-                    if (snapshot.exists()) {
-                        const x = snapshot.val();
-                        var temp = CryptoJS.AES.decrypt(x.password, secretKey);
-                        temp = temp.toString(CryptoJS.enc.Utf8);
-                        setPassword(temp);
-                        setLoginSpin(false);
-                    } else {
-                        setLoginSpin(false);
-                    }
-                });
-            } else {
-                setLoginSpin(false);
-            }
-        };
-        const timer = setTimeout(fetch, 5);
-        return () => clearTimeout(timer);
-    }, [db]);
+
     const saveOnLocal = (role) => {
         if (role === 'super_admin') {
             get(child(ref(db), 'Super_Admin/')).then((snapshot) => {
@@ -135,6 +109,8 @@ export const Login = () => {
 
                                     if (rememberMe === true) {
                                         localStorage.setItem('userToken', x.email);
+                                    } else {
+                                        localStorage.setItem('userToken', '');
                                     }
 
                                     saveOnLocal(x.Role);
@@ -200,6 +176,7 @@ export const Login = () => {
 
     return (
         <>
+            {console.log(detail.userToken, detail.password)}
             <div className="background">
                 <div className="form-container">
                     <div className="col col-1">
@@ -210,7 +187,7 @@ export const Login = () => {
                         <p className="featured">
                             {t('title.inform login')} <br /> {t('title.or')}
                         </p>
-                        <Link to="/login">
+                        <Link to="/">
                             <Button className="btn-getback">
                                 <span>{t('button.get back')}</span>
                             </Button>
@@ -224,57 +201,54 @@ export const Login = () => {
                                     <span>{t('header')}</span>
                                 </div>
                                 <div className="form-inputs">
-                                    <Spin spinning={loginSpin}>
-                                        <Form.Item
-                                            name="email"
-                                            validateStatus={errorEmail ? 'error' : ''}
-                                            help={errorEmail ? <HandleError string="email" /> : ''}
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    message: 'Please input!',
-                                                },
-                                            ]}
-                                        >
-                                            <div>
-                                                <Input
-                                                    placeholder="Email"
-                                                    onChange={(e) => onchangeEmail(e.target.value)}
-                                                    onKeyDown={handleEnterKey}
-                                                    allowClear
-                                                    style={{
-                                                        border: 'none',
-                                                        padding: '15px',
-                                                        color: '#000',
-                                                        backgroundColor: 'blue',
-                                                    }}
-                                                    value={email}
-                                                />
-                                            </div>
-                                        </Form.Item>
-                                    </Spin>
-                                    <Spin spinning={loginSpin}>
-                                        <Input.Password
-                                            placeholder="Password"
-                                            onChange={(e) => setPassword(e.target.value)}
-                                            onKeyDown={handleEnterKey}
-                                            allowClear
-                                            style={{
-                                                border: 'none',
-                                                padding: '15px',
-                                                color: '#000',
-                                                backgroundColor: 'blue',
-                                            }}
-                                            value={password}
-                                            iconRender={(visible) =>
-                                                visible ? (
-                                                    <EyeTwoTone style={{ fontSize: '20px' }} />
-                                                ) : (
-                                                    <EyeInvisibleOutlined style={{ fontSize: '20px' }} />
-                                                )
-                                            }
-                                        />
-                                    </Spin>
+                                    <Form.Item
+                                        name="email"
+                                        validateStatus={errorEmail ? 'error' : ''}
+                                        help={errorEmail ? <HandleError string="email" /> : ''}
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Please input!',
+                                            },
+                                        ]}
+                                    >
+                                        <div>
+                                            <Input
+                                                placeholder="Email"
+                                                onChange={(e) => onchangeEmail(e.target.value)}
+                                                onKeyDown={handleEnterKey}
+                                                allowClear
+                                                style={{
+                                                    border: 'none',
+                                                    padding: '15px',
+                                                    color: '#000',
+                                                    backgroundColor: 'blue',
+                                                }}
+                                                value={detail.userToken !== '' ? detail.userToken : email}
+                                            />
+                                        </div>
+                                    </Form.Item>
+
+                                    <Input.Password
+                                        placeholder="Password"
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        onKeyDown={handleEnterKey}
+                                        allowClear
+                                        style={{
+                                            border: 'none',
+                                            padding: '15px',
+                                            color: '#000',
+                                            backgroundColor: 'blue',
+                                        }}
+                                        value={detail.password !== '' ? detail.password : password}
+                                        iconRender={(visible) =>
+                                            visible ? (
+                                                <EyeTwoTone style={{ fontSize: '20px' }} />
+                                            ) : (
+                                                <EyeInvisibleOutlined style={{ fontSize: '20px' }} />
+                                            )
+                                        }
+                                    />
 
                                     <div className="forget-pass">
                                         <div className="input-box">

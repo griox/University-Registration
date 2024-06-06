@@ -9,6 +9,7 @@ import '../Student Manage/css/modal_add.css';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { database } from '../firebaseConfig.js';
+import CryptoJS from 'crypto-js';
 
 const ModalAdd = ({ studentData, setStudentData }) => {
     const [Fullname, setFullname] = useState('');
@@ -27,7 +28,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     const { t } = useTranslation('modalStudent');
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const [isFormValid, setIsFormValid] = useState(false);
-
+    const secretKey = 'Tvx1234@';
     useEffect(() => {
         // Hàm kiểm tra tính hợp lệ của form
         const checkFormValidity = () => {
@@ -50,7 +51,18 @@ const ModalAdd = ({ studentData, setStudentData }) => {
 
         // Cập nhật trạng thái hợp lệ của form
         setIsFormValid(checkFormValidity());
-    }, [Email, Fullname, enthicity, Gender, dateOfBirth, placeOfBirth, Identify,Mathscore, Englishscore,Literaturescore]);
+    }, [
+        Email,
+        Fullname,
+        enthicity,
+        Gender,
+        dateOfBirth,
+        placeOfBirth,
+        Identify,
+        Mathscore,
+        Englishscore,
+        Literaturescore,
+    ]);
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -80,7 +92,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     useEffect(() => {
         const calculateAverage = () => {
             if (Mathscore !== null && Englishscore !== null && Literaturescore !== null) {
-                const totalScore = round((Mathscore + Englishscore + Literaturescore),1)/3;
+                const totalScore = round(Mathscore + Englishscore + Literaturescore, 1) / 3;
                 setAverageS(totalScore.toFixed(1));
             }
         };
@@ -90,9 +102,9 @@ const ModalAdd = ({ studentData, setStudentData }) => {
         try {
             const formattedDateOfBirth = dateOfBirth ? dateOfBirth.format('DD/MM/YYYY') : '';
             const newID = await generateID();
-            const studentRef = ref(database, `Detail/${newID}`); 
+            const studentRef = ref(database, `Detail/${newID}`);
             await set(studentRef, {
-                id: newID, 
+                id: newID,
                 email: Email,
                 name: Fullname,
                 enthicity: enthicity,
@@ -103,21 +115,22 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 MathScore: Mathscore,
                 EnglishScore: Englishscore,
                 LiteratureScore: Literaturescore,
-                AverageScore: round((Mathscore + Englishscore + Literaturescore, 1)/3),
+                AverageScore: round((Mathscore + Englishscore + Literaturescore, 1) / 3),
                 Address: Address,
                 uniCode: [],
                 isRegister: 'true',
             });
             const encodeEmail = encodeEmails(Email);
             const accountRef = ref(database, `Account/${encodeEmail}`);
+            var hash = CryptoJS.AES.encrypt('Tvx1234@', secretKey).toString();
             await set(accountRef, {
                 email: Email,
-                password: 'Tvx1234@',
+                password: hash,
                 name: Fullname,
                 Role: 'user',
             });
             const newData = {
-                id: newID, 
+                id: newID,
                 email: Email,
                 name: Fullname,
                 enthicity: enthicity,
@@ -128,7 +141,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 MathScore: Mathscore,
                 EnglishScore: Englishscore,
                 LiteratureScore: Literaturescore,
-                AverageScore: round((Mathscore + Englishscore + Literaturescore, 1)/3),
+                AverageScore: round((Mathscore + Englishscore + Literaturescore, 1) / 3),
                 Address: Address,
                 uniCode: [],
                 isRegister: 'true',
@@ -357,45 +370,45 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     const dateFormat = 'DD/MM/YYYY';
 
     const handleReload = () => {
-        window.location.reload()
-    }
+        window.location.reload();
+    };
     const Success = () => (
         <Result
-          status="success"
-          title={<div className='result-title'>{t('title.success')}</div>}
-          style={{width: '100%', height: 'auto'}}
-          extra={[
-            <Button type="primary" onClick={handleReload} style={{width: '100px', height: 'auto'}}>
-              {t('title.reload')}
-            </Button>,
-          ]}
+            status="success"
+            title={<div className="result-title">{t('title.success')}</div>}
+            style={{ width: '100%', height: 'auto' }}
+            extra={[
+                <Button type="primary" onClick={handleReload} style={{ width: '100px', height: 'auto' }}>
+                    {t('title.reload')}
+                </Button>,
+            ]}
         />
-      );
+    );
 
     return (
         <>
-            <Button className='btn-add' type="primary" onClick={showModal}>
+            <Button className="btn-add" type="primary" onClick={showModal}>
                 {t('button.Add')}
             </Button>
             <Modal
-            className="custom-modal"
-            style={{height: '200px'}}
-            width={500}
-            open={showSuccessModal}
-            footer={null}
-            closable={false}
-            onCancel={() => setShowSuccessModal(false)}
+                className="custom-modal"
+                style={{ height: '200px' }}
+                width={500}
+                open={showSuccessModal}
+                footer={null}
+                closable={false}
+                onCancel={() => setShowSuccessModal(false)}
             >
                 <Success />
             </Modal>
             <Modal
-                title= {t('title.modal')}
+                title={t('title.modal')}
                 open={isModalOpen}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 width={700}
                 destroyOnClose
-                okButtonProps={{disabled: !isFormValid}}
+                okButtonProps={{ disabled: !isFormValid }}
             >
                 <Form layout="vertical">
                     <Row gutter={16}>
@@ -464,7 +477,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     maxDate={dayjs('31/12/2004', dateFormat)}
                                     format="DD/MM/YYYY"
                                     onChange={(value) => setDateOfBirth(value)}
-                                    placeholder=''
+                                    placeholder=""
                                 />
                             </Form.Item>
                         </Col>
@@ -472,7 +485,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             <Form.Item label={t('label.pofb')} className="form-item1">
                                 <Select
                                     initialvalues="Khánh Hòa"
-                                    defaultValue={"Khánh Hòa"}
+                                    defaultValue={'Khánh Hòa'}
                                     options={cities}
                                     showSearch
                                     onChange={(value) => setPlaceOfBirth(value)}
@@ -481,7 +494,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         </Col>
                     </Row>
                     <Form.Item
-                          label={t('label.email')}
+                        label={t('label.email')}
                         name="email"
                         className="form-item1"
                         validateStatus={!validateEmailFormat(Email) && Email ? 'error' : ''}
@@ -508,7 +521,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                     <Row gutter={16}>
                         <Col span={12}>
                             <Form.Item
-                                  label={t('label.identify')}
+                                label={t('label.identify')}
                                 name="identify"
                                 className="form-item1"
                                 validateStatus={!validateIdenNumber(Identify) && Identify ? 'error' : ''}
@@ -534,7 +547,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         </Col>
                         <Col span={12}>
                             <Form.Item
-                               label={t('label.ethnicity')}
+                                label={t('label.ethnicity')}
                                 name="ethnicity"
                                 className="form-item1"
                                 rules={[
@@ -546,7 +559,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             >
                                 <Select
                                     initialvalues="Kinh"
-                                    defaultValue={"Kinh"}
+                                    defaultValue={'Kinh'}
                                     options={enthicities}
                                     onChange={(value) => setEnthicity(value)}
                                     showSearch
@@ -646,7 +659,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             </Form.Item>
                         </Col>
                         <Col span={6}>
-                            <Form.Item  label={t('label.entrance')} className="form-item1">
+                            <Form.Item label={t('label.entrance')} className="form-item1">
                                 <Input readOnly className="input-num" value={averageS} />
                             </Form.Item>
                         </Col>

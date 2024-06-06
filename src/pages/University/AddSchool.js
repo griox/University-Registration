@@ -41,6 +41,8 @@ const AddSchool = () => {
     const [, setNumberRegist] = useState('');
     const tableRef = useRef(null);
     const searchInput = useRef(null);
+    const [isRegistered, setIsRegistered] = useState(false);
+
     const isEditing = (record) => record.key === editingKey;
 
     const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
@@ -107,7 +109,7 @@ const AddSchool = () => {
         );
     };
     const handleSchoolDetail = (record) => {
-        setLoading(true);
+        setIsRegistered(record.isRegistered!==0);
         setDetailVisible(true);
         setSelectedUniverse(record);
     };
@@ -496,7 +498,7 @@ const AddSchool = () => {
                                     showQuickJumper: true,
                                     showTotal: (total) => `${t('title.total')} ${total}`,
                                 }}
-                                scroll={{ x: 'calc(100vw - 320px)', y: 'calc(100vh - 300px)' }}
+                                scroll={{ x: 'calc(100vw - 290px)', y: 'calc(100vh - 300px)' }}
                                 components={{
                                     body: {
                                         cell: EditableCell,
@@ -521,8 +523,7 @@ const AddSchool = () => {
                 <FormDetail
                     university={selectedUniverse}
                     open={isModalDetailVisible}
-                    setLoading={setLoading}
-                    loading={loading}
+                    isRegistered={isRegistered}
                 />
             </Modal>
         </div>

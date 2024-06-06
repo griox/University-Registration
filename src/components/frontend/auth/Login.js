@@ -210,7 +210,7 @@ export const Login = () => {
                         <p className="featured">
                             {t('title.inform login')} <br /> {t('title.or')}
                         </p>
-                        <Link to="/login">
+                        <Link to="/">
                             <Button className="btn-getback">
                                 <span>{t('button.get back')}</span>
                             </Button>

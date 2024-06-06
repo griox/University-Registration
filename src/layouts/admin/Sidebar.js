@@ -123,7 +123,7 @@ localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
 
         dispatch({ type: 'logout' });
 
-        history.push('/');
+        history.push('/login');
     };
     const showModal = () => {
         setIsModalOpen(true);
@@ -216,7 +216,7 @@ localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
                         <Item
                             title={t('title.dashboard')}
                             to="/admin/dashboard"
-iconOutline={<InsertChartOutlinedIcon />}
+                            iconOutline={<InsertChartOutlinedIcon />}
                             iconFilled={<InsertChartIcon />} 
                             selected={selected}
                             setSelected={setSelected}
@@ -278,7 +278,7 @@ iconOutline={<InsertChartOutlinedIcon />}
                         )}
                     </Box>
                     <Modal title= {t('title.modal')}open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText={t('button.ok')} cancelText={t('button.cancel')}>
-                        <p>{t('title.confirm')}</p>
+                        <p style={{color: 'var(--name-colorN)'}}>{t('title.confirm')}</p>
                     </Modal>
                     <MenuItem
                         onClick={showModal}

@@ -2,6 +2,7 @@ import { get, ref, child } from 'firebase/database';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import { Descriptions, Table, Form, Spin } from 'antd';
+import {WarningFilled} from '@ant-design/icons'
 import { database } from '../firebaseConfig.js';
 import './css/Modal_detail.css';
 import { useTranslation } from 'react-i18next';
@@ -148,7 +149,7 @@ export const Form_Detail = ({ university, isRegistered }) => {
                             columns={colums}
                             scroll={{
                                 x: 900,
-                                y: 'calc(100vh - 550px)',
+                                y: 'calc(100vh - 530px)',
                             }}
                             showSorterTooltip={{
                                 target: 'sorter-icon',
@@ -161,7 +162,8 @@ export const Form_Detail = ({ university, isRegistered }) => {
                         />
                     </>
                 ) : (
-                    <h4 className="description">{t('title.notRegist')}</h4>
+                    <h4 className="description">This School hasn't been registered by any students  <WarningFilled /></h4>
+                   
                 )}
             </Spin>
         </>

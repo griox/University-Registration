@@ -13,6 +13,7 @@ import { collection, doc, getFirestore, onSnapshot, orderBy, updateDoc } from 'f
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../../constants/constants';
 import { query } from 'firebase/database';
+import { Chat } from '../../pages/ChatRoom/Chat';
 const Navbar = () => {
     const [iconLoading, setIconLoading] = useState(false);
     const { t, i18n } = useTranslation('navbar');
@@ -214,6 +215,7 @@ const Navbar = () => {
                             </Badge>
                         </div>
                     )}
+                    <Chat />
                     <Dropdown overlay={languageMenu} trigger={['click']} placement="bottomRight">
                         <Space className="title-drop1" style={{ cursor: 'pointer', padding: '15px' }}>
                             {selectedLanguage}

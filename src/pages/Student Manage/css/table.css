@@ -130,6 +130,7 @@
 
 .ant-table-wrapper .ant-table-pagination.ant-pagination {
     color: var(--body_color) !important;
+    margin-top: 15px !important;
 }
 
 .ant-pagination-jump-next .ant-pagination-item-container .ant-pagination-item-ellipsis {
@@ -295,4 +296,10 @@
 }
 .ant-popconfirm .ant-popconfirm-message .ant-popconfirm-title {
     color: var(--body_color) !important;
+}
+.ant-table-wrapper .ant-table-filter-trigger{
+    color: var(--body_color) !important;
+}
+.ant-modal .ant-modal-body{
+    color:var(--body_color) !important;
 }

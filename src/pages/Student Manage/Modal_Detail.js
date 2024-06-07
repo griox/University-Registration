@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { WarningFilled } from '@ant-design/icons';
 import { get, ref, child } from 'firebase/database';
 import { Table, Descriptions, Spin, Modal } from 'antd';
 import './css/modal_detail.css';
@@ -9,7 +10,6 @@ import { toast } from 'react-toastify';
 const ModalDetail = ({ visible, onClose, student, studentUnicode }) => {
     const [university, setUniversity] = useState([]);
     const [loading, setLoading] = useState(true);
-    console.log(loading)
     const { t } = useTranslation('detailstudent');
     useEffect(() => {
         const fetchData = async () => {
@@ -155,7 +155,10 @@ const ModalDetail = ({ visible, onClose, student, studentUnicode }) => {
                         />
                     </>
                 ) : (
-                    <h4 className="description">{t('title.notRegist')}</h4>
+                    <h4 className="description">
+                        This student hasn't registered any school yet
+                        <WarningFilled style={{ marginLeft: '5px' }} />
+                    </h4>
                 )}
             </Spin>
         </Modal>

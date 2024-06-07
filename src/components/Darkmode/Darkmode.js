@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loadBundle } from 'firebase/firestore';
 const DarkMode = () => {
     const dispatch = useDispatch();
-    const darkMode = useSelector((state) => state);
     const setDarkMode = () => {
         document.querySelector('body').setAttribute('data-theme', 'dark');
         localStorage.setItem('selectedTheme', 'dark');
@@ -13,6 +12,7 @@ const DarkMode = () => {
     const setLightMode = () => {
         document.querySelector('body').setAttribute('data-theme', 'light');
         localStorage.setItem('selectedTheme', 'light');
+    
     };
     const selectedTheme = localStorage.getItem('selectedTheme');
     if (selectedTheme === 'dark') {

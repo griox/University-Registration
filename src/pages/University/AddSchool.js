@@ -263,6 +263,7 @@ const AddSchool = () => {
                 const updatedRow = {
                     ...newData[index],
                     target: parseInt(newData[index].target),
+                    uniCode: row.uniCode,
                 };
 
                 newData[index] = updatedRow;
@@ -270,6 +271,7 @@ const AddSchool = () => {
                 setEditingKey('');
 
                 await update(ref(database, `University/${key}`), updatedRow);
+                await
                 toast.success('Data updated successfully');
             } else {
                 newData.push(row);
@@ -376,31 +378,30 @@ const AddSchool = () => {
             responsive: ['xs'],
         },
         {
-            title: t('table.Name'),
-            dataIndex: 'nameU',
-            key: 'nameU',
-            width: '30%',
-            fixed: 'left',
-            editable: true,
-            ...getColumnSearchProps('nameU'),
-            render: (text, record) => {
-                console.log('record', record.isRegistered);
-                return <Typography.Link onClick={() => handleSchoolDetail(record)}>{text}</Typography.Link>;
-            },
-            responsive: ['sm'],
-        },
-        {
             title: t('table.UniCode'),
             dataIndex: 'uniCode',
+            key: 'uniCode',
             width: '13%',
+            fixed: 'left',
             editable: true,
             ...getColumnSearchProps('uniCode'),
+            render: (text, record) => {
+                return <Typography.Link  className='idOnclick' onClick={() => handleSchoolDetail(record)}>{text}</Typography.Link>;
+            },
+            responsive: ['sm'],
+           
+        },
+        {
+            title: t('table.Name'),
+            dataIndex: 'nameU',
+            width: '26%',
+            ...getColumnSearchProps('nameU'),
             render: (text, record) => (
                 <Tooltip title={record.isRegistered === record.target ? t('tooltip.full') : t('tooltip.notfull')}>
                     <span className={record.isRegistered === record.target ? 'uniYes' : 'uniNo'}>{text}</span>
                 </Tooltip>
             ),
-            key: 'uniCode',
+            key: 'nameU',
             responsive: ['sm'],
         },
         {

@@ -37,6 +37,7 @@ const Changepass = () => {
     const [errorOldPass, setErrorOldPass] = useState(false);
     const [errorNewPass, setErrorNewPass] = useState(false);
     const [errorReNewPass, setErrorReNewPass] = useState(false);
+
     const secretKey = 'Tvx1234@';
 
     const handleLogout = () => {
@@ -162,7 +163,8 @@ const Changepass = () => {
                         style={{
                             border: 'none',
                             padding: '15px',
-                            color: '#000',
+                            color: (localStorage.getItem('selectedTheme') || 'light') === 'light' ? '#000' : '#fff',
+
                             backgroundColor: 'blue',
                         }}
                         value={value}

@@ -34,6 +34,7 @@ const Register = () => {
     const salt = bcrypt.genSaltSync(10);
     const [loadingRegist, setLoadingRegist] = useState(false);
     const secretKey = 'Tvx1234@';
+    const theme = useState(localStorage.getItem('selectedTheme') || 'light');
 
     const [value1, setValue1] = useState('User');
 
@@ -225,7 +226,11 @@ const Register = () => {
                                             style={{
                                                 border: 'none',
                                                 padding: '10px',
-                                                color: '#000',
+                                                color:
+                                                    (localStorage.getItem('selectedTheme') || 'light') === 'light'
+                                                        ? '#000'
+                                                        : '#fff',
+
                                                 backgroundColor: 'blue',
                                             }}
                                             value={fullName}
@@ -250,7 +255,11 @@ const Register = () => {
                                             style={{
                                                 border: 'none',
                                                 padding: '10px',
-                                                color: '#000',
+                                                color:
+                                                    (localStorage.getItem('selectedTheme') || 'light') === 'light'
+                                                        ? '#000'
+                                                        : '#fff',
+
                                                 backgroundColor: 'blue',
                                             }}
                                             value={email}
@@ -276,7 +285,11 @@ const Register = () => {
                                             style={{
                                                 border: 'none',
                                                 padding: '10px',
-                                                color: '#000',
+                                                color:
+                                                    (localStorage.getItem('selectedTheme') || 'light') === 'light'
+                                                        ? '#000'
+                                                        : '#fff',
+
                                                 backgroundColor: 'blue',
                                             }}
                                             value={password}
@@ -308,7 +321,11 @@ const Register = () => {
                                             style={{
                                                 border: 'none',
                                                 padding: '10px',
-                                                color: '#000',
+                                                color:
+                                                    (localStorage.getItem('selectedTheme') || 'light') === 'light'
+                                                        ? '#000'
+                                                        : '#fff',
+
                                                 backgroundColor: 'blue',
                                             }}
                                             value={againPassword}

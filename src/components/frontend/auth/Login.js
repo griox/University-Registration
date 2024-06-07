@@ -13,14 +13,11 @@ import { DownOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icon
 import { Button, Dropdown, Form, Input, Space, Spin, Typography } from 'antd';
 import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
 import CryptoJS from 'crypto-js';
-import { useSelector } from 'react-redux';
 export const Login = () => {
     const { t, i18n } = useTranslation('login');
-    const detail = useSelector((state) => state);
-    const x = detail.userToken;
-    const y = detail.password;
-    const [email, setEmail] = useState(x);
-    const [password, setPassword] = useState(y);
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
     const app = initializeApp(firebaseConfig);
@@ -30,6 +27,7 @@ export const Login = () => {
     const [errorEmail, setErrorEmail] = useState(false);
     const secretKey = 'Tvx1234@';
     const [loginSpin, setLoginSpin] = useState(false);
+
     useEffect(() => {
         const fetch = () => {
             setLoginSpin(true);
@@ -84,8 +82,7 @@ export const Login = () => {
                     const x = snapshot.val();
                     for (let item in x) {
                         if (x[item].email === email) {
-                            const temp = x[item];
-                            localStorage.setItem('Infor', JSON.stringify(temp));
+                            localStorage.setItem('Infor', JSON.stringify(x[item]));
                         }
                     }
                 }
@@ -245,8 +242,11 @@ export const Login = () => {
                                                     style={{
                                                         border: 'none',
                                                         padding: '15px',
-                                                        color: '#000',
-                                                        backgroundColor: 'blue',
+                                                        color:
+                                                            (localStorage.getItem('selectedTheme') || 'light') ===
+                                                            'light'
+                                                                ? '#000'
+                                                                : '#fff',
                                                     }}
                                                     value={email}
                                                 />
@@ -262,8 +262,10 @@ export const Login = () => {
                                             style={{
                                                 border: 'none',
                                                 padding: '15px',
-                                                color: '#000',
-                                                backgroundColor: 'blue',
+                                                color:
+                                                    (localStorage.getItem('selectedTheme') || 'light') === 'light'
+                                                        ? '#000'
+                                                        : '#fff',
                                             }}
                                             value={password}
                                             iconRender={(visible) =>
@@ -298,9 +300,9 @@ export const Login = () => {
                                             color: 'white',
 
                                             backgroundColor:
-                                                errorEmail === false && password !== ''
-                                                    ? '#003865'
-                                                    : 'rgba(255, 255, 255, 0.3)',
+                                                password === '' || email === '' || errorEmail === true
+                                                    ? 'rgba(255, 255, 255, 0.3)'
+                                                    : '#003865',
                                         }}
                                     >
                                         <span>{t('button.log in')}</span>

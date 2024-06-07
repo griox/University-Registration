@@ -350,29 +350,30 @@ const AddSchool = () => {
             responsive: ['xs'],
         },
         {
-            title: t('table.Name'),
-            dataIndex: 'nameU',
-            key: 'nameU',
-            width: '30%',
-            fixed: 'left',
-            editable: true,
-            ...getColumnSearchProps('nameU'),
-            render: (text, record) => {
-                return <Typography.Link onClick={() => handleSchoolDetail(record)}>{text}</Typography.Link>;
-            },
-            responsive: ['sm'],
-        },
-        {
             title: t('table.UniCode'),
             dataIndex: 'uniCode',
+            key: 'uniCode',
             width: '13%',
+            fixed: 'left',
+            editable: true,
             ...getColumnSearchProps('uniCode'),
+            render: (text, record) => {
+                return <Typography.Link  className='idOnclick' onClick={() => handleSchoolDetail(record)}>{text}</Typography.Link>;
+            },
+            responsive: ['sm'],
+           
+        },
+        {
+            title: t('table.Name'),
+            dataIndex: 'nameU',
+            width: '26%',
+            ...getColumnSearchProps('nameU'),
             render: (text, record) => (
-                <Tooltip title={record.isRegistered === record.target ? 'This school is full' : ''}>
+                <Tooltip title={record.isRegistered === record.target ? 'Enough Target' : 'Not Enough Target'}>
                     <span className={record.isRegistered === record.target ? 'uniYes' : 'uniNo'}>{text}</span>
                 </Tooltip>
             ),
-            key: 'uniCode',
+            key: 'nameU',
             responsive: ['sm'],
         },
         {

@@ -10,7 +10,6 @@ import { toast } from 'react-toastify';
 const ModalDetail = ({ visible, onClose, student, studentUnicode }) => {
     const [university, setUniversity] = useState([]);
     const [loading, setLoading] = useState(true);
-    console.log(loading);
     const { t } = useTranslation('detailstudent');
     useEffect(() => {
         const fetchData = async () => {

@@ -23,8 +23,8 @@ html,
     --btn-color: rgb(7, 153, 244);
     --header-background: #f1f2f6;
     --body_color: #333;
-    --registered-color: green;
-    --unregistered-color: red;
+    --registered-color: #62a659;
+    --unregistered-color:  #e46162;
     --border-color: #dfe4ea;
     --name-colorY: #ff8c00;
     --name-colorN: black;

@@ -56,3 +56,6 @@
 .ant-typography:hover{
     color:var(--hover-btn) !important;
 }
+.idOnclick{
+   text-decoration:underline !important;
+}

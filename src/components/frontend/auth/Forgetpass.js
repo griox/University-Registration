@@ -30,6 +30,8 @@ export const Forgetpass = () => {
     const [email, setEmail] = useState('');
     const [errorEmail, setErrorEmail] = useState(false);
     const [loadingResetPass, setLoadingResetPass] = useState(false);
+    const theme = useState(localStorage.getItem('selectedTheme') || 'light');
+
     const makeid = (length) => {
         let result = '';
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -177,8 +179,10 @@ export const Forgetpass = () => {
                                             style={{
                                                 border: 'none',
                                                 padding: '15px',
-                                                color: '#000',
-                                                backgroundColor: 'blue',
+                                                color:
+                                                    (localStorage.getItem('selectedTheme') || 'light') === 'light'
+                                                        ? '#000'
+                                                        : '#fff',
                                             }}
                                             value={email}
                                         />
@@ -193,7 +197,7 @@ export const Forgetpass = () => {
                                             style={{
                                                 color: '#fff',
                                                 backgroundColor:
-                                                    email === false && email !== ''
+                                                    errorEmail === false && email !== ''
                                                         ? '#003865'
                                                         : 'rgba(255, 255, 255, 0.3)',
                                             }}

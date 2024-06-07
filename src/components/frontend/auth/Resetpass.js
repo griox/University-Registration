@@ -33,8 +33,8 @@ export const Forgetpass = () => {
     const [errorReNewPass, setErrorReNewPass] = useState(false);
     const [errorNewPass, setErrorNewPass] = useState(false);
     const secretKey = 'Tvx1234@';
+    const theme = useState(localStorage.getItem('selectedTheme') || 'light');
 
-    const salt = bcrypt.genSaltSync(10);
     const [loadingResetPass, setLoadingResetPass] = useState(false);
     const { t, i18n } = useTranslation('resetpassword');
     const [link, setLink] = useState(null);
@@ -239,7 +239,11 @@ export const Forgetpass = () => {
                                                 style={{
                                                     border: 'none',
                                                     padding: '15px',
-                                                    color: '#000',
+                                                    color:
+                                                        (localStorage.getItem('selectedTheme') || 'light') === 'light'
+                                                            ? '#000'
+                                                            : '#fff',
+
                                                     backgroundColor: 'blue',
                                                 }}
                                                 value={errorNewPass}
@@ -274,7 +278,11 @@ export const Forgetpass = () => {
                                                 style={{
                                                     border: 'none',
                                                     padding: '15px',
-                                                    color: '#000',
+                                                    color:
+                                                        (localStorage.getItem('selectedTheme') || 'light') === 'light'
+                                                            ? '#000'
+                                                            : '#fff',
+
                                                     backgroundColor: 'blue',
                                                 }}
                                                 value={errorReNewPass}

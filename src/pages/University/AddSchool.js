@@ -512,6 +512,7 @@ const AddSchool = () => {
                                     pageSizeOptions: ['10', '20', '40', '100'],
                                     showSizeChanger: true,
                                     showQuickJumper: true,
+                                    marginTop: 20,
                                     showTotal: (total) => `${t('title.total')} ${total}`,
                                 }}
                                 scroll={{ x: 'calc(100vw - 290px)', y: 'calc(100vh - 300px)' }}

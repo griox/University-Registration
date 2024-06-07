@@ -22,22 +22,27 @@ import { useHistory } from 'react-router-dom';
 import { Modal } from 'antd';
 import '../css/sidebar.css';
 
-const Item = ({ title, to, iconFilled,iconOutline, selected, setSelected, tooltip }) => {
+const Item = ({ title, to, iconFilled, iconOutline, selected, setSelected, tooltip }) => {
     return (
         <Tooltip title={tooltip} placement="right" arrow>
-            <MenuItem 
+            <MenuItem
                 active={selected === title}
                 style={{
                     backgroundColor: selected === title ? 'var(--border-color)' : 'transparent',
                 }}
                 onClick={() => setSelected(title)}
                 icon={
-                    selected === title ? 
-                    React.cloneElement(iconFilled, { sx: { color: 'var(--color-active)' } }) : 
-                    React.cloneElement(iconOutline, { sx: { color: 'var(--icon-color)' } })
+                    selected === title
+                        ? React.cloneElement(iconFilled, { sx: { color: 'var(--color-active)' } })
+                        : React.cloneElement(iconOutline, { sx: { color: 'var(--icon-color)' } })
                 }
             >
-                <Typography style={{color: selected === title ? 'var(--color-active)' : 'var(--icon-color)', fontWeight: '600'}}>
+                <Typography
+                    style={{
+                        color: selected === title ? 'var(--color-active)' : 'var(--icon-color)',
+                        fontWeight: '600',
+                    }}
+                >
                     {title}
                 </Typography>
                 <Link to={to} />
@@ -61,7 +66,7 @@ const Sidebar = () => {
         if (isInitialMountCollapsed.current) {
             isInitialMountCollapsed.current = false;
         } else {
-localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
+            localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
         }
     }, [isCollapsed]);
 
@@ -160,11 +165,12 @@ localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
                 '& .pro-menu-item.active': {
                     color: '#6870fa !important',
                 },
-}}
+            }}
         >
             <ProSidebar collapsed={isCollapsed}>
                 <Menu iconShape="square">
-                    <MenuItem className='icon-menu'
+                    <MenuItem
+                        className="icon-menu"
                         onClick={() => setIsCollapsed(!isCollapsed)}
                         icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
                     >
@@ -217,7 +223,7 @@ localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
                             title={t('title.dashboard')}
                             to="/admin/dashboard"
                             iconOutline={<InsertChartOutlinedIcon />}
-                            iconFilled={<InsertChartIcon />} 
+                            iconFilled={<InsertChartIcon />}
                             selected={selected}
                             setSelected={setSelected}
                             tooltip="Dashboard"
@@ -260,25 +266,27 @@ localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
                                     setSelected={setSelected}
                                     tooltip="Register Account"
                                 />
-                               
                             </>
                         )}
-                        {localStorage.getItem('Role') === 'user' && (
-                            <>
-                                <Item
-                                    title={t('title.profile')}
-                                    to="/admin/profile"
-                                    iconFilled={<ContactsIcon />}
-                                    iconOutline={<ContactsOutlinedIcon />}
-                                    selected={selected}
-                                    setSelected={setSelected}
-                                    tooltip="Profile"
-                                />
-                            </>
-                        )}
+                        <Item
+                            title={t('title.profile')}
+                            to="/admin/profile"
+                            iconFilled={<ContactsIcon />}
+                            iconOutline={<ContactsOutlinedIcon />}
+                            selected={selected}
+                            setSelected={setSelected}
+                            tooltip="Profile"
+                        />
                     </Box>
-                    <Modal title= {t('title.modal')}open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText={t('button.ok')} cancelText={t('button.cancel')}>
-                        <p style={{color: 'var(--name-colorN)'}}>{t('title.confirm')}</p>
+                    <Modal
+                        title={t('title.modal')}
+                        open={isModalOpen}
+                        onOk={handleOk}
+                        onCancel={handleCancel}
+                        okText={t('button.ok')}
+                        cancelText={t('button.cancel')}
+                    >
+                        <p>{t('title.confirm')}</p>
                     </Modal>
                     <MenuItem
                         onClick={showModal}

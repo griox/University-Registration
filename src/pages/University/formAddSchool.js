@@ -169,7 +169,7 @@ const FormAdd = ({ UniData, setUniData }) => {
                 footer={[
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <div style={{display: 'flex', alignItems: 'center', fontSize: '12px', fontWeight: '550'}}>
-                            <p>Những thông tin có đánh dấu <span style={{color: 'red'}}>*</span> là bắt buộc nhập. </p>
+                            <p>{t('title.warning1')}<span style={{color: 'red'}}>*</span>{t('title.warning2')} </p>
                         </div>
                         <div style={{justifyContent: 'right'}}>
                             <Button key="back" onClick={handleCancel}>

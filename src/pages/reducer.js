@@ -33,6 +33,8 @@ const reducer = (state = initState, action) => {
                 uniCode: [],
                 img: '',
                 id: '',
+                dateObirth: '2024-01-01',
+                darkMode: false,
             };
         case 'update':
             const { propertyName, newValue } = action.payload;

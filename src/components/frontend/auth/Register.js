@@ -16,6 +16,7 @@ import {
 import { DownOutlined, ExclamationCircleOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Button, Dropdown, Form, Input, Radio, Space, Tooltip, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { locales } from '../../../translation/i18n';
 import bcrypt from 'bcryptjs';
 import CryptoJS from 'crypto-js';
 
@@ -31,25 +32,30 @@ const Register = () => {
     const db = getDatabase(app);
     const history = useHistory();
     const { t, i18n } = useTranslation('register');
+    const currentLanguage = locales[i18n.language === 'vi' ? 'vi' : 'en'];
+    const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage === 'Tiếng anh' ? 'Tiếng anh' : 'English');
     const salt = bcrypt.genSaltSync(10);
     const [loadingRegist, setLoadingRegist] = useState(false);
     const secretKey = 'Tvx1234@';
 
     const [value1, setValue1] = useState('User');
 
-    const handleLanguage = (lng) => {
+    const handleLanguage = (lng, label) => {
         i18n.changeLanguage(lng);
+        setSelectedLanguage(label);
     };
     const items = [
         {
             key: '1',
-            label: 'English',
-            onClick: () => handleLanguage('en'),
+            label: currentLanguage === 'Tiếng việt' ? 'Tiếng anh' : 'English',
+            icon: <img width="20" height="20" src="https://img.icons8.com/color/48/usa.png" alt="usa" />,
+            onClick: () => handleLanguage('en', currentLanguage === 'VietNam' ? 'English' : 'English'),
         },
         {
             key: '2',
-            label: 'Tiếng Việt',
-            onClick: () => handleLanguage('vi'),
+            label: currentLanguage === 'Tiếng việt' ? 'Tiếng việt' : 'Vietnam',
+            icon: <img width="20" height="20" src="https://img.icons8.com/color/48/vietnam.png" alt="vietnam" />,
+            onClick: () => handleLanguage('vi', currentLanguage === 'Tiếng việt' ? 'Tiếng việt' : 'Vietnam'),
         },
     ];
 
@@ -330,19 +336,19 @@ const Register = () => {
                                             columnGap: '20px',
                                         }}
                                     >
-                                        <h1 style={{ fontSize: '15px', marginTop: '5px', color: '#fff' }}>
-                                            Regist for
+                                        <h1 style={{ fontSize: '14px', marginTop: '5px', color: '#fff' }}>
+                                           {t('title.role')}
                                         </h1>
                                         <Radio.Group
                                             name="radiogroup"
                                             defaultValue={value1}
                                             onChange={(e) => setValue1(e.target.value)}
                                         >
-                                            <Radio value={'Admin'} style={{ color: '#fff' }}>
-                                                Admin
+                                            <Radio value={'Admin'} style={{ color: '#fff', fontSize: '14px' }}>
+                                                {t('title.admin')}
                                             </Radio>
-                                            <Radio value={'User'} style={{ color: '#fff' }}>
-                                                User
+                                            <Radio value={'User'} style={{ color: '#fff',  fontSize: '14px' }}>
+                                                {t('title.user')}
                                             </Radio>
                                         </Radio.Group>
                                     </div>
@@ -401,7 +407,7 @@ const Register = () => {
                                                                 : 'rgba(255, 255, 255, 0.3)',
                                                     }}
                                                 >
-                                                    <span>Regist</span>
+                                                    <span>{t('button.regist')}</span>
                                                 </Button>
                                             </>
                                         )}
@@ -414,7 +420,7 @@ const Register = () => {
 
                                     <div>
                                         <Dropdown
-                                            className="drop-menu"
+                                            className="drop-menu1"
                                             menu={{
                                                 items,
                                                 selectable: true,
@@ -423,7 +429,8 @@ const Register = () => {
                                         >
                                             <Typography.Link>
                                                 <Space className="title-drop">
-                                                    {t('title.language')}
+                                                    {/* {t('title.language')} */}
+                                                    {selectedLanguage}
                                                     <DownOutlined />
                                                 </Space>
                                             </Typography.Link>

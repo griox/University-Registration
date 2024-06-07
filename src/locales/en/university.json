@@ -29,5 +29,9 @@
     "confirm": {
         "ok": "Delete",
         "cancel": "Cancel"
+    },
+    "tooltip": {
+        "full": "This school is full",
+        "notfull": "This school is ready for regist"
     }
 }

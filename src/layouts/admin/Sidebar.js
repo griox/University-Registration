@@ -155,7 +155,7 @@ localStorage.setItem('sidebarCollapsed', JSON.stringify(isCollapsed));
                     color: 'var(--icon-color)',
                 },
                 '& .pro-inner-item:hover': {
-                    color: 'rgb(7, 153, 244) !important',
+                    color: 'rgb(7, 153, 244) !important'
                 },
                 '& .pro-menu-item.active': {
                     color: '#6870fa !important',

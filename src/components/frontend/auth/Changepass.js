@@ -18,6 +18,7 @@ import {
     validatePasswordFormat,
 } from '../../../commonFunctions';
 import { useTranslation } from 'react-i18next';
+import { locales } from '../../../translation/i18n';
 import { DownOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Dropdown, Space, Typography } from 'antd';
 import bcrypt from 'bcryptjs';
@@ -25,6 +26,8 @@ import CryptoJS from 'crypto-js';
 
 const Changepass = () => {
     const { t, i18n } = useTranslation('changePassword');
+    const currentLanguage = locales[i18n.language === 'vi' ? 'vi' : 'en'];
+    const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage === 'Tiếng anh' ? 'Tiếng anh' : 'English');
     const history = useHistory();
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
@@ -49,19 +52,22 @@ const Changepass = () => {
         dispatch({ type: 'logout' });
         history.push('/Login');
     };
-    const handleLanguage = (lng) => {
+    const handleLanguage = (lng, label) => {
         i18n.changeLanguage(lng);
+        setSelectedLanguage(label);
     };
     const items = [
         {
             key: '1',
-            label: 'English',
-            onClick: () => handleLanguage('en'),
+            label: currentLanguage === 'Tiếng việt' ? 'Tiếng anh' : 'English',
+            icon: <img width="20" height="20" src="https://img.icons8.com/color/48/usa.png" alt="usa" />,
+            onClick: () => handleLanguage('en', currentLanguage === 'VietNam' ? 'English' : 'English'),
         },
         {
             key: '2',
-            label: 'Tiếng Việt',
-            onClick: () => handleLanguage('vi'),
+            label: currentLanguage === 'Tiếng việt' ? 'Tiếng việt' : 'Vietnam',
+            icon: <img width="20" height="20" src="https://img.icons8.com/color/48/vietnam.png" alt="vietnam" />,
+            onClick: () => handleLanguage('vi', currentLanguage === 'Tiếng việt' ? 'Tiếng việt' : 'Vietnam'),
         },
     ];
 
@@ -270,7 +276,25 @@ const Changepass = () => {
                                         </Button>
                                     </div>
                                     {handleButton(false, clear, 'Clear')}
-                                    {language(items, t('title.language'))}
+                                    {/* {language(items, t('title.language'))} */}
+                                    <div>
+                                        <Dropdown
+                                            className="drop-menu"
+                                            menu={{
+                                                items,
+                                                selectable: true,
+                                                defaultSelectedKeys: ['1'],
+                                            }}
+                                        >
+                                            <Typography.Link>
+                                                <Space className="title-drop">
+                                                    {/* {t('title.language')} */}
+                                                    {selectedLanguage}
+                                                    <DownOutlined />
+                                                </Space>
+                                            </Typography.Link>
+                                        </Dropdown>
+                                    </div>
                                 </div>
                             </div>
                         </form>

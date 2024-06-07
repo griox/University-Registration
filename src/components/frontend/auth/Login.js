@@ -9,13 +9,19 @@ import '../../../assets/css/login.css';
 import { firebaseConfig } from '../../../constants/constants';
 import { HandleError, disableButton, encodePath, validateEmailFormat } from '../../../commonFunctions';
 import { useTranslation } from 'react-i18next';
+import { locales } from '../../../translation/i18n';
 import { DownOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Button, Dropdown, Form, Input, Space, Spin, Typography } from 'antd';
 import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
 import CryptoJS from 'crypto-js';
+import { useSelector } from 'react-redux';
 export const Login = () => {
     const { t, i18n } = useTranslation('login');
-
+    const currentLanguage = locales[i18n.language === 'vi' ? 'vi' : 'en'];
+    const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage === 'Tiếng anh' ? 'Tiếng anh' : 'English');
+    const detail = useSelector((state) => state);
+    const x = detail.userToken;
+    const y = detail.password;
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -89,19 +95,22 @@ export const Login = () => {
             });
         }
     };
-    const handleLanguage = (lng) => {
+    const handleLanguage = (lng, label) => {
         i18n.changeLanguage(lng);
+        setSelectedLanguage(label);
     };
     const items = [
         {
             key: '1',
-            label: 'English',
-            onClick: () => handleLanguage('en'),
+            label: currentLanguage === 'Tiếng việt' ? 'Tiếng anh' : 'English',
+            icon: <img width="20" height="20" src="https://img.icons8.com/color/48/usa.png" alt="usa" />,
+            onClick: () => handleLanguage('en', currentLanguage === 'VietNam' ? 'English' : 'English'),
         },
         {
             key: '2',
-            label: 'Tiếng Việt',
-            onClick: () => handleLanguage('vi'),
+            label: currentLanguage === 'Tiếng việt' ? 'Tiếng việt' : 'Vietnam',
+            icon: <img width="20" height="20" src="https://img.icons8.com/color/48/vietnam.png" alt="vietnam" />,
+            onClick: () => handleLanguage('vi', currentLanguage === 'Tiếng việt' ? 'Tiếng việt' : 'Vietnam'),
         },
     ];
     const getdt = (email, password) => {
@@ -169,19 +178,19 @@ export const Login = () => {
             getdt(email, password);
         }
     };
-    const loginGoogle = () => {
-        const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider).then(async (result) => {
-            console.log(result);
-            if (result.user) {
-                toast.success('User logged in successfully', {
-                    position: 'top-center',
-                });
-                // <Link to="/admin/dashboard" />;
-                window.location.href = '/admin/dashboard';
-            }
-        });
-    };
+    // const loginGoogle = () => {
+    //     const provider = new GoogleAuthProvider();
+    //     signInWithPopup(auth, provider).then(async (result) => {
+    //         console.log(result);
+    //         if (result.user) {
+    //             toast.success('User logged in successfully', {
+    //                 position: 'top-center',
+    //             });
+    //             // <Link to="/admin/dashboard" />;
+    //             window.location.href = '/admin/dashboard';
+    //         }
+    //     });
+    // };
     const onchangeEmail = (e) => {
         if (e === '') {
             setEmail(e);
@@ -207,7 +216,7 @@ export const Login = () => {
                         <p className="featured">
                             {t('title.inform login')} <br /> {t('title.or')}
                         </p>
-                        <Link to="/login">
+                        <Link to="/">
                             <Button className="btn-getback">
                                 <span>{t('button.get back')}</span>
                             </Button>
@@ -324,7 +333,8 @@ export const Login = () => {
                                         >
                                             <Typography.Link>
                                                 <Space className="title-drop">
-                                                    {t('title.language')}
+                                                    {/* {t('title.language')} */}
+                                                    {selectedLanguage}
                                                     <DownOutlined />
                                                 </Space>
                                             </Typography.Link>

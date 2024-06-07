@@ -18,11 +18,14 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 import bcrypt from 'bcryptjs';
 import { Button, Dropdown, Form, Input, Space, Tooltip, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { locales } from '../../../translation/i18n';
 import { DownOutlined, ExclamationCircleOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import CryptoJS from 'crypto-js';
 
 export const Forgetpass = () => {
     const app = initializeApp(firebaseConfig);
+    const currentLanguage = locales[i18n.language === 'vi' ? 'vi' : 'en'];
+    const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage === 'Tiếng anh' ? 'Tiếng anh' : 'English');
     const db = getDatabase(app);
     const history = useHistory();
     const [newPass, setNewPass] = useState('');
@@ -35,16 +38,23 @@ export const Forgetpass = () => {
     const [loadingResetPass, setLoadingResetPass] = useState(false);
     const { t, i18n } = useTranslation('resetpassword');
     const [link, setLink] = useState(null);
+    
+    const handleLanguage = (lng, label) => {
+        i18n.changeLanguage(lng);
+        setSelectedLanguage(label);
+    };
     const items = [
         {
             key: '1',
-            label: 'English',
-            onClick: () => handleLanguage('en'),
+            label: currentLanguage === 'Tiếng việt' ? 'Tiếng anh' : 'English',
+            icon: <img width="20" height="20" src="https://img.icons8.com/color/48/usa.png" alt="usa" />,
+            onClick: () => handleLanguage('en', currentLanguage === 'VietNam' ? 'English' : 'English'),
         },
         {
             key: '2',
-            label: 'Tiếng Việt',
-            onClick: () => handleLanguage('vi'),
+            label: currentLanguage === 'Tiếng việt' ? 'Tiếng việt' : 'Vietnam',
+            icon: <img width="20" height="20" src="https://img.icons8.com/color/48/vietnam.png" alt="vietnam" />,
+            onClick: () => handleLanguage('vi', currentLanguage === 'Tiếng việt' ? 'Tiếng việt' : 'Vietnam'),
         },
     ];
     useEffect(() => {
@@ -164,9 +174,6 @@ export const Forgetpass = () => {
                     toast.error('Your request was invalid');
                 });
         }
-    };
-    const handleLanguage = (lng) => {
-        i18n.changeLanguage(lng);
     };
     const handleEnterKey = (e) => {
         if (e.key === 'Enter') {
@@ -324,7 +331,8 @@ export const Forgetpass = () => {
                                             >
                                                 <Typography.Link>
                                                     <Space className="title-drop">
-                                                        {t('title.language')}
+                                                        {/* {t('title.language')} */}
+                                                        {selectedLanguage}
                                                         <DownOutlined />
                                                     </Space>
                                                 </Typography.Link>

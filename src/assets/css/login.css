@@ -372,6 +372,11 @@
     cursor: pointer;
 }
 .drop-menu .title-drop {
+    margin-top: 20px;
+    color: white;
+}
+/* regist css */
+.drop-menu1 .title-drop{
     color: white;
 }
 @media (max-width: 892px) {

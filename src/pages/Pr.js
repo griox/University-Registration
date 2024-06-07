@@ -14,6 +14,7 @@ import { ethnicities, firebaseConfig, gender, provinces } from '../constants/con
 import { useTranslation } from 'react-i18next';
 import Highlighter from 'react-highlight-words';
 import dayjs from 'dayjs';
+import '../commonFunctions.css'
 const { TextArea } = Input;
 const MAX_COUNT = 5;
 
@@ -56,15 +57,15 @@ function Pr() {
                     <Button
                         type="primary"
                         onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
-                        icon={<SearchOutlined />}
+                        icon={<SearchOutlined/>} 
                         size="small"
                         className="getColumnSearchProps-Button"
                     >
-                        Search
+                        {t('button.search')}
                     </Button>
 
-                    <Button type="link" size="small" onClick={() => close()}>
-                        Close
+                    <Button type="link" size="small" onClick={() => close()} className="getColumnClose-Button">
+                        {t('button.close')}
                     </Button>
                 </Space>
             </div>
@@ -465,8 +466,8 @@ function Pr() {
                                         className="avatar-input"
                                     />
                                 </div>
-                                <Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                                    <p>Do you want to save these changes?</p>
+                                <Modal title={t('title.modalsave')} open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText={t('button.ok')} cancelText={t('button.cancel')}>
+                                    <p style={{color: 'var(--name-colorN)'}}>{t('title.saveedit')}</p>
                                 </Modal>
                                 <Spin spinning={loadingSave}>
                                     <Button type="primary" onClick={showModal} className="btn-save">
@@ -797,8 +798,8 @@ function Pr() {
                                         value={detail.uniCode}
                                     />
 
-                                    <Modal open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-                                        <p>Do you want to save these changes?</p>
+                                        <Modal title={t('title.modalsave')} open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText={t('button.ok')} cancelText={t('button.cancel')}>
+                                        <p style={{color: 'var(--name-colorN)'}}>{t('title.saveedit')}</p>
                                     </Modal>
                                     <Spin spinning={loadingSave}>
                                         <Button type="primary" onClick={showModal} className="btn-save">

@@ -396,7 +396,7 @@ const AddSchool = () => {
             editable: true,
             ...getColumnSearchProps('uniCode'),
             render: (text, record) => (
-                <Tooltip title={record.isRegistered === record.target ? 'This school is full' : ''}>
+                <Tooltip title={record.isRegistered === record.target ? t('tooltip.full') : t('tooltip.notfull')}>
                     <span className={record.isRegistered === record.target ? 'uniYes' : 'uniNo'}>{text}</span>
                 </Tooltip>
             ),
@@ -512,6 +512,7 @@ const AddSchool = () => {
                                     pageSizeOptions: ['10', '20', '40', '100'],
                                     showSizeChanger: true,
                                     showQuickJumper: true,
+                                    marginTop: 20,
                                     showTotal: (total) => `${t('title.total')} ${total}`,
                                 }}
                                 scroll={{ x: 'calc(100vw - 290px)', y: 'calc(100vh - 300px)' }}

@@ -7,7 +7,10 @@
         "re-password": "Nhập lại mật khẩu",
         "inform register": "Vui lòng ĐĂNG KÍ để tiếp tục",
         "or": "hoặc",
-        "language": "Ngôn ngữ"
+        "language": "Ngôn ngữ",
+        "role": "Đăng kí",
+        "admin": "Quản trị viên",
+        "user": "Người dùng"
     },
     "button": {
         "user": "Người dùng",

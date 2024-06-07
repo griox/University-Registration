@@ -28,5 +28,9 @@
     "confirm": {
         "ok": "Xóa",
         "cancel": "Hủy"
+    },
+    "tooltip": {
+        "full": "Trường này đã đủ chỉ tiêu",
+        "notfull": "Trường này sẵn sàng để đăng kí"
     }
 }

@@ -30,7 +30,8 @@ html,
     --name-colorN: black;
     --id-color: blue;
     --male-color: rgb(6, 26, 205);
-    --female-color: rgb(239, 73, 101);
+    --female-color: rgb(239, 73, 101); 
+    --menu-color: black;
 }
 [data-theme='dark'] {
     --chart-color: #141414;
@@ -55,7 +56,7 @@ html,
     --male-color: #25ccf7;
     --female-color: #fda7df;
     --droplng: #ff7f50;
-    
+    --menu-color: #FF7F50;
 }
 .app {
     display: flex;

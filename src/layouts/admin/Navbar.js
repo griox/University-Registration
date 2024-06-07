@@ -206,7 +206,7 @@ const Navbar = () => {
                             <Badge count={l.length}>
                                 <Space>
                                     <BellOutlined
-                                        style={{ fontSize: '30px' }}
+                                        style={{ fontSize: '30px', color: 'var(--body_color)' }}
                                         spin={iconLoading}
                                         onClick={showModal}
                                     ></BellOutlined>

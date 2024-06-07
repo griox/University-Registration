@@ -7,7 +7,10 @@
         "re-password": "Re-Password",
         "inform register": "Please REGISTER to continue",
         "or": "or",
-        "language": "Language"
+        "language": "Language",
+        "role": "Regist for ",
+        "admin": "Admin",
+        "user": "User"
     },
     "button": {
         "user": "User",

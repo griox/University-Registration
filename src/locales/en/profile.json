@@ -7,12 +7,14 @@
         "Ethnicity": "Ethnicity",
         "CCCD": "CCCD",
         "Email": "Email",
-        "MathScore": "MathScore",
-        "EnglishScore": "EnglishScore",
-        "LiteratureScore": "LiteratureScore",
+        "MathScore": "Math Score",
+        "EnglishScore": "English Score",
+        "LiteratureScore": "Literature Score",
         "University": "University",
         "ID": "ID",
-        "DateOfBirth": "Date of birth"
+        "DateOfBirth": "Date of birth",
+        "modalsave": "Save Edit",
+        "saveedit": "Do you want to save these changes ?"
     },
     "table": {
         "Code": "Code",
@@ -24,6 +26,10 @@
     },
     "button": {
         "Save": "Save",
-        "Add": "Add"
+        "Add": "Add",
+        "ok": "Save",
+        "cancel": "Cancel",
+        "search": "Search",
+        "close": "Close"
     }
 }

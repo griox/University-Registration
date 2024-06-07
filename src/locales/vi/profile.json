@@ -12,7 +12,9 @@
         "LiteratureScore": "Điểm văn",
         "University": "Trường đại học",
         "ID": "ID",
-        "DateOfBirth": "Ngày sinh"
+        "DateOfBirth": "Ngày sinh",
+        "modalsave": "Lưu các chỉnh sửa",
+        "saveedit": "Bạn có muốn lưu những thay đổi này ?"
     },
     "table": {
         "Code": "Mã trường",
@@ -24,6 +26,10 @@
     },
     "button": {
         "Save": "Lưu",
-        "Add": "Thêm"
+        "Add": "Thêm",
+        "ok": "Lưu",
+        "cancel": "Hủy",
+        "search": "Tìm kiếm",
+        "close": "Đóng"
     }
 }

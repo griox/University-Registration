@@ -11,7 +11,7 @@
     },
     "button": {
         "Add": "Thêm mới ",
-        "search": "Tìm kiếm",
+        "search": "Tìm",
         "reset": "Đặt lại",
         "filter": "Bộ lọc",
         "close": "Đóng"
@@ -28,5 +28,9 @@
     "confirm": {
         "ok": "Xóa",
         "cancel": "Hủy"
+    },
+    "tooltip": {
+        "full": "Trường này đã đủ chỉ tiêu",
+        "notfull": "Trường này sẵn sàng để đăng kí"
     }
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { WarningFilled } from '@ant-design/icons';
 import { get, ref, child } from 'firebase/database';
-import { Divider, Table, Descriptions, Spin, Modal } from 'antd';
+import { Table, Descriptions, Spin, Modal } from 'antd';
 import './css/modal_detail.css';
 import 'antd/dist/reset.css';
 import { database } from '../firebaseConfig.js';

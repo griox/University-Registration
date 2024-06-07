@@ -9,7 +9,6 @@ import '../Student Manage/css/modal_add.css';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { database } from '../firebaseConfig.js';
-import CryptoJS from 'crypto-js';
 
 const ModalAdd = ({ studentData, setStudentData }) => {
     const [Fullname, setFullname] = useState('');
@@ -39,9 +38,9 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 dateOfBirth !== '' &&
                 placeOfBirth !== '' &&
                 Identify !== '' &&
-                Mathscore !== null &&
-                Englishscore !== null &&
-                Literaturescore !== null &&
+                Mathscore !== undefined && Mathscore !== null &&
+                Englishscore !== undefined && Englishscore !== null &&
+                Literaturescore !== undefined && Literaturescore !== null &&
                 validateEmailFormat(Email) &&
                 validateFullname(Fullname) &&
                 validateIdenNumber(Identify)
@@ -88,19 +87,20 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     useEffect(() => {
         const calculateAverage = () => {
             if (Mathscore !== null && Englishscore !== null && Literaturescore !== null) {
-                const totalScore = round(Mathscore + Englishscore + Literaturescore, 1) / 3;
+                const totalScore = round((Mathscore + Englishscore + Literaturescore),1)/3;
                 setAverageS(totalScore.toFixed(1));
             }
         };
         calculateAverage();
     }, [Mathscore, Englishscore, Literaturescore]);
+    
     const addStudent = async () => {
         try {
             const formattedDateOfBirth = dateOfBirth ? dateOfBirth.format('DD/MM/YYYY') : '';
             const newID = await generateID();
-            const studentRef = ref(database, `Detail/${newID}`);
+            const studentRef = ref(database, `Detail/${newID}`); 
             await set(studentRef, {
-                id: newID,
+                id: newID, 
                 email: Email,
                 name: Fullname,
                 enthicity: enthicity,
@@ -118,15 +118,14 @@ const ModalAdd = ({ studentData, setStudentData }) => {
             });
             const encodeEmail = encodeEmails(Email);
             const accountRef = ref(database, `Account/${encodeEmail}`);
-            var hash = CryptoJS.AES.encrypt('Tvx1234@', secretKey).toString();
             await set(accountRef, {
                 email: Email,
-                password: hash,
+                password: 'Tvx1234@',
                 name: Fullname,
                 Role: 'user',
             });
             const newData = {
-                id: newID,
+                id: newID, 
                 email: Email,
                 name: Fullname,
                 enthicity: enthicity,
@@ -238,7 +237,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     }
 
     function validateFullname(name) {
-        return /^[A-Za-zÀ-ÿ]+$/.test(name);
+        return /^[A-Za-z]+$/.test(name);
     }
     function validateIdenNumber(idenNum) {
         return idenNum.length === 12 && /^[0-9]+$/.test(idenNum);
@@ -365,7 +364,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     const dateFormat = 'DD/MM/YYYY';
     return (
         <>
-            <Button className="btn-add" type="primary" onClick={showModal}>
+            <Button className='btn-add' type="primary" onClick={showModal}>
                 {t('button.Add')}
             </Button>
             <Modal title={t('title.modal')} open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={700}>
@@ -377,19 +376,23 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 label={t('label.name')}
                                 name="name"
                                 validateStatus={!validateFullname(Fullname) && Fullname ? 'error' : ''}
+                                help= {!validateFullname(Fullname) && Fullname
+                                    ? t('warning.name')
+                                    : ''
+                                }
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Please input!',
+                                        message: t('warning.input'),
                                     },
                                 ]}
                             >
                                 <Input
-                                    placeholder="Enter Student's name"
+                                    placeholder={t('placeholder.name')}
                                     prefix={<UserOutlined className="icon" />}
                                     onChange={(e) => setFullname(e.target.value)}
                                     suffix={
-                                        <Tooltip title="Name must contain letters and no space ">
+                                        <Tooltip title= {t('tooltip.name')}>
                                             <InfoCircleOutlined className="icon" />
                                         </Tooltip>
                                     }
@@ -405,7 +408,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Please input!',
+                                        message: t('warning.input'),
                                     },
                                 ]}
                             >
@@ -426,7 +429,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Please input!',
+                                        message: t('warning.input'),
                                     },
                                 ]}
                             >
@@ -436,7 +439,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     maxDate={dayjs('31/12/2004', dateFormat)}
                                     format="DD/MM/YYYY"
                                     onChange={(value) => setDateOfBirth(value)}
-                                    placeholder=""
+                                    placeholder=''
                                 />
                             </Form.Item>
                         </Col>
@@ -444,7 +447,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             <Form.Item label={t('label.pofb')} className="form-item1">
                                 <Select
                                     initialvalues="Khánh Hòa"
-                                    defaultValue={'Khánh Hòa'}
+                                    defaultValue={"Khánh Hòa"}
                                     options={cities}
                                     showSearch
                                     onChange={(value) => setPlaceOfBirth(value)}
@@ -453,7 +456,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         </Col>
                     </Row>
                     <Form.Item
-                        label={t('label.email')}
+                          label={t('label.email')}
                         name="email"
                         className="form-item1"
                         validateStatus={!validateEmailFormat(Email) && Email ? 'error' : ''}
@@ -461,15 +464,15 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input!',
+                                message: t('warning.input'),
                             },
                         ]}
                     >
                         <Input
-                            placeholder="Enter Student's email"
+                            placeholder={t('placeholder.email')}
                             prefix={<MailOutlined className="icon" />}
                             suffix={
-                                <Tooltip title="Email must contain @example">
+                                <Tooltip title={t('tooltip.email')}>
                                     <InfoCircleOutlined className="icon" />
                                 </Tooltip>
                             }
@@ -480,19 +483,19 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                     <Row gutter={16}>
                         <Col span={12}>
                             <Form.Item
-                                label={t('label.identify')}
+                                  label={t('label.identify')}
                                 name="identify"
                                 className="form-item1"
                                 validateStatus={!validateIdenNumber(Identify) && Identify ? 'error' : ''}
                                 help={
                                     !validateIdenNumber(Identify) && Identify
-                                        ? 'Identify number must be 12 digits and contain only number '
+                                        ? t('warning.identify')
                                         : ''
                                 }
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Please input!',
+                                        message: t('warning.input'),
                                     },
                                 ]}
                             >
@@ -506,19 +509,19 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         </Col>
                         <Col span={12}>
                             <Form.Item
-                                label={t('label.ethnicity')}
+                               label={t('label.ethnicity')}
                                 name="ethnicity"
                                 className="form-item1"
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Please input!',
+                                        message: t('warning.input'),
                                     },
                                 ]}
                             >
                                 <Select
                                     initialvalues="Kinh"
-                                    defaultValue={'Kinh'}
+                                    defaultValue={"Kinh"}
                                     options={enthicities}
                                     onChange={(value) => setEnthicity(value)}
                                     showSearch
@@ -535,7 +538,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Please input!',
+                                        message: t('warning.input'),
                                     },
                                 ]}
                             >
@@ -543,7 +546,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     showCount
                                     maxLength={100}
                                     allowClear
-                                    placeholder="Student's Address"
+                                    placeholder={t('placeholder.address')}
                                     onChange={(e) => setAddress(e.target.value)}
                                     value={Address}
                                 />
@@ -559,7 +562,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Please input!',
+                                        message: t('warning.input'),
                                     },
                                 ]}
                             >
@@ -581,7 +584,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Please input!',
+                                        message: t('warning.input'),
                                     },
                                 ]}
                             >
@@ -590,7 +593,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     maxLength={4}
                                     max={10}
                                     step={0.2}
-                                    className="input-num"
+                                    className="input-num-eng"
                                     onChange={(value) => setEnglishscore(value)}
                                 />
                             </Form.Item>
@@ -603,7 +606,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Please input!',
+                                        message: t('warning.input'),
                                     },
                                 ]}
                             >
@@ -612,14 +615,14 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     max={10}
                                     maxLength={4}
                                     step={0.2}
-                                    className="input-num"
+                                    className="input-num-liter"
                                     onChange={(value) => setLiteraturescore(value)}
                                 />
                             </Form.Item>
                         </Col>
                         <Col span={6}>
-                            <Form.Item label={t('label.entrance')} className="form-item1">
-                                <Input readOnly className="input-num" value={averageS} />
+                            <Form.Item  label={t('label.entrance')} className="form-item1">
+                                <Input readOnly className="input-num-en" value={averageS} />
                             </Form.Item>
                         </Col>
                     </Row>

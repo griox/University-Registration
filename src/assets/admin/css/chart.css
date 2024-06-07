@@ -131,11 +131,6 @@
     color: var(--registered-color);
 }
 
-.number-below-green {
-    color: green;
-    font-weight: 500;
-}
-
 .content-chart-icon-red {
     font-size: 40px;
     color: var(--unregistered-color);
@@ -147,5 +142,6 @@
 }
 .number-below-green {
     font-size: 40px;
+    font-weight: 500;
     color: var(--registered-color);
 }

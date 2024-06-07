@@ -1,10 +1,17 @@
 {
     "title": {
         "dashboard": "Dashboard",
-        "university": "University Managerment",
-        "student": "Student Managerment",
+        "university": "University Management ",
+        "student": "Student Management",
         "register": "Register Account",
         "profile": "Profile",
-        "logout": "Log out"
+        "logout": "Log out",
+        "modal": "Log out",
+        "confirm": "Are you sure want to log out ?",
+        "changepass": "Change password"
+    },
+    "button": {
+        "ok": "OK",
+        "cancel": "Cancel"
     }
 }

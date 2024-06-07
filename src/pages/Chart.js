@@ -115,7 +115,7 @@ const Chart = () => {
         height: 250,
         marginBottom: 65,
         label: {
-            text: (d) => `${d.gender}\n${d.value}`,
+            text: (d) => `${d.value}`,
             style: {
                 fontWeight: 'bold',
                 fontSize: '50px',

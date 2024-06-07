@@ -9,6 +9,7 @@ import FormAdd from './formAddSchool';
 import { database } from '../firebaseConfig.js';
 import './css/AddSchool.css';
 import { useTranslation } from 'react-i18next';
+import { HandleErrorEdit } from '../../commonFunctions.js';
 
 const AddSchool = () => {
     useEffect(() => {
@@ -38,52 +39,79 @@ const AddSchool = () => {
     const [searchedColumn, setSearchedColumn] = useState('');
     const [, setPagination] = useState({ current: 1, pageSize: 5 });
     const [loading, setLoading] = useState(true);
-    const [numberRegist, setNumberRegist] = useState('');
+    const [, setNumberRegist] = useState('');
     const tableRef = useRef(null);
     const searchInput = useRef(null);
     const [isRegistered, setIsRegistered] = useState(false);
-
+    
     const isEditing = (record) => record.key === editingKey;
 
     const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
+        const [error, setError] = useState(null);
         const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
         const isTarget = dataIndex === 'target';
         const isUniCode = dataIndex === 'uniCode';
+        const isEntrance = dataIndex === 'averageS';
         const rules = [
             {
-                required: true,
-                message: `Please Input ${title}!`,
-            },
-            {
                 validator: (_, value) => {
-                    if (isTarget && value < record.isRegistered) {
-                        // Kiểm tra nếu là cột 'target' và giá trị nhỏ hơn số đã đăng ký
-                        return Promise.reject(new Error('Target must be greater than or equal to Num of registered'));
+                    if (dataIndex) {
+                        if (value === '') {
+                            return Promise.reject(`Please input`);
+                        }
                     }
-                    if (isTarget && !/^\d+$/.test(value)) {
-                        // Kiểm tra nếu là cột 'target' và không chứa ký tự nào ngoại trừ số
-                        return Promise.reject(new Error('Target must contain only numbers'));
+                    if (isTarget) {
+                        if (value < record.isRegistered) {
+                            setError('Target must be greater than or equal to Num of registered');
+                            return Promise.reject('Invalid value');
+                        }
+                        if (!/^\d+$/.test(value)) {
+                            setError('Target must contain only numbers');
+                            return Promise.reject('Invalid value');
+                        }
+                        if (!(value <= 1000)) {
+                            setError('Target must be <= 1000');
+                            return Promise.reject('Invalid value');
+                        }
                     }
-                    return Promise.resolve();
-                },
-            },
-            {
-                validator: (_, value) => {
-                    if (isUniCode && !/^\S+$/.test(value)) {
-                        // Kiểm tra nếu là cột 'uniCode' và không chứa ký tự số
-                        return Promise.reject(new Error('UniCode must not contain digits'));
+                    if (isUniCode && !/^[a-zA-Z]+$/.test(value)) {
+                        setError('UniCode must contain letters only');
+                        return Promise.reject('Invalid value');
                     }
+                    if (isEntrance) {
+                        if (!(value > 0 && value <= 10 )) {
+                            setError('Entrance Score must be > 0 and <= 10');
+                            return Promise.reject('Invalid value');
+                        }
+                    }
+                    setError(null);
                     return Promise.resolve();
                 },
             },
         ];
 
+        useEffect(() => {
+            if (!editing) {
+                setError(null);
+            }
+        }, [editing]);
+    
         return (
             <td {...restProps}>
                 {editing ? (
-                    <Form.Item className="form-editCell" name={dataIndex} rules={rules}>
-                        {inputNode}
-                    </Form.Item>
+                    <> 
+                        <Form.Item
+                            className="form-editCell"
+                            name={dataIndex}
+                            rules={rules}
+                        >
+                            {inputNode}
+
+                        </Form.Item>
+                        {error && (
+                            <HandleErrorEdit errorMessage={error} />
+                        )}
+                    </>
                 ) : (
                     children
                 )}
@@ -211,6 +239,7 @@ const AddSchool = () => {
                 }
                 if (row.averageS > 10 || row.averageS < 0) {
                     toast.error('Invalid Entrance Score Format');
+                    return;
                 }
                 if (row.uniCode !== item.uniCode) {
                     const uniCodeExists = await checkUniCodeExistence(row.uniCode);
@@ -306,7 +335,6 @@ const AddSchool = () => {
                         }}
                     >
                         {t('button.filter')}
-                        {t('button.filter')}
                     </Button>
                     <Button type="link" size="small" onClick={() => close()}>
                         {t('button.close')}
@@ -369,7 +397,7 @@ const AddSchool = () => {
             width: '26%',
             ...getColumnSearchProps('nameU'),
             render: (text, record) => (
-                <Tooltip title={record.isRegistered === record.target ? 'Enough Target' : 'Not Enough Target'}>
+                <Tooltip title={record.isRegistered === record.target ? t('tooltip.full') : t('tooltip.notfull')}>
                     <span className={record.isRegistered === record.target ? 'uniYes' : 'uniNo'}>{text}</span>
                 </Tooltip>
             ),
@@ -485,6 +513,7 @@ const AddSchool = () => {
                                     pageSizeOptions: ['10', '20', '40', '100'],
                                     showSizeChanger: true,
                                     showQuickJumper: true,
+                                    marginTop: 20,
                                     showTotal: (total) => `${t('title.total')} ${total}`,
                                 }}
                                 scroll={{ x: 'calc(100vw - 290px)', y: 'calc(100vh - 300px)' }}

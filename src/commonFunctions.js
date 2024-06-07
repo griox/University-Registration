@@ -3,6 +3,10 @@ import { Button, Dropdown, Input, Space, Tooltip, Typography } from 'antd';
 import { useRef, useState } from 'react';
 import Highlighter from 'react-highlight-words';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom';
+import { MenuItem } from 'react-pro-sidebar';
+import { Link } from 'react-router-dom';
+import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
+import ContactsIcon from '@mui/icons-material/Contacts';
 
 export const GetColumnSearchProps = (dataIndex) => {
     const searchInput = useRef(null);
@@ -140,6 +144,21 @@ export const HandleError = (props) => {
                 placement="bottom"
             >
                 <ExclamationCircleOutlined style={{ marginLeft: '5px' }} />
+            </Tooltip>
+        </div>
+    );
+};
+
+export const HandleErrorEdit = ({ errorMessage }) => {
+    return (
+        <div>
+            <Tooltip
+                title={errorMessage}
+                color={'red'}
+                key={'red'}
+                placement="bottom"
+            >
+                <ExclamationCircleOutlined style={{ marginLeft: '5px', color: '#f5554a' }} />
             </Tooltip>
         </div>
     );

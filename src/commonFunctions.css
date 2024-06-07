@@ -1,12 +1,16 @@
 .getColumnSearchProps {
-    padding: 8;
+    padding: 8px;
+
 }
 .getColumnSearchProps-Input {
-    margin-bottom: 8;
+    margin-bottom: 8px;
     display: 'block';
 }
 .getColumnSearchProps-Button {
-    width: 90;
+    width: 100px;
+}
+.getColumnClose-Button {
+    width: 80px;
 }
 .getColumnSearchProps-filterIcon {
     color: #1677ff;

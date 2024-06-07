@@ -8,6 +8,7 @@ import { firebaseConfig } from '../../../constants/constants';
 import { DownOutlined, ExclamationCircleOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Button, Dropdown, Form, Input, Space, Tooltip, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { locales } from '../../../translation/i18n';
 import { toast } from 'react-toastify';
 import {
     HandleError,
@@ -21,12 +22,16 @@ import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 
 export const Forgetpass = () => {
     const { t, i18n } = useTranslation('fogetpassword');
+    const currentLanguage = locales[i18n.language === 'vi' ? 'vi' : 'en'];
+    const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage === 'Tiếng anh' ? 'Tiếng anh' : 'English');
     const app = initializeApp(firebaseConfig);
     const database = getAuth(app);
     const db = getDatabase(app);
     const [email, setEmail] = useState('');
     const [errorEmail, setErrorEmail] = useState(false);
     const [loadingResetPass, setLoadingResetPass] = useState(false);
+    const theme = useState(localStorage.getItem('selectedTheme') || 'light');
+
     const makeid = (length) => {
         let result = '';
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -88,19 +93,22 @@ export const Forgetpass = () => {
                 });
         }
     };
-    const handleLanguage = (lng) => {
+    const handleLanguage = (lng, label) => {
         i18n.changeLanguage(lng);
+        setSelectedLanguage(label);
     };
     const items = [
         {
             key: '1',
-            label: 'English',
-            onClick: () => handleLanguage('en'),
+            label: currentLanguage === 'Tiếng việt' ? 'Tiếng anh' : 'English',
+            icon: <img width="20" height="20" src="https://img.icons8.com/color/48/usa.png" alt="usa" />,
+            onClick: () => handleLanguage('en', currentLanguage === 'VietNam' ? 'English' : 'English'),
         },
         {
             key: '2',
-            label: 'Tiếng Việt',
-            onClick: () => handleLanguage('vi'),
+            label: currentLanguage === 'Tiếng việt' ? 'Tiếng việt' : 'Vietnam',
+            icon: <img width="20" height="20" src="https://img.icons8.com/color/48/vietnam.png" alt="vietnam" />,
+            onClick: () => handleLanguage('vi', currentLanguage === 'Tiếng việt' ? 'Tiếng việt' : 'Vietnam'),
         },
     ];
     const handleEnterKey = async (e) => {
@@ -171,8 +179,6 @@ export const Forgetpass = () => {
                                             style={{
                                                 border: 'none',
                                                 padding: '15px',
-                                                color: '#000',
-                                                backgroundColor: 'blue',
                                             }}
                                             value={email}
                                         />
@@ -187,8 +193,8 @@ export const Forgetpass = () => {
                                             style={{
                                                 color: '#fff',
                                                 backgroundColor:
-                                                    email === false && email !== ''
-                                                        ? '#003865'
+                                                    errorEmail === false && email !== ''
+                                                        ? ''
                                                         : 'rgba(255, 255, 255, 0.3)',
                                             }}
                                         >
@@ -208,7 +214,8 @@ export const Forgetpass = () => {
                                         >
                                             <Typography.Link>
                                                 <Space className="title-drop">
-                                                    {t('title.language')}
+                                                    {/* {t('title.language')} */}
+                                                    {selectedLanguage}
                                                     <DownOutlined />
                                                 </Space>
                                             </Typography.Link>

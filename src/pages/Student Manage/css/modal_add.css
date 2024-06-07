@@ -1,11 +1,24 @@
 .form-item1 {
     font-weight: 600;
 }
-.input-num {
-    width: 50%;
+.input-entrance {
+    width: 108px;
+}
+.input-num-eng {
+    width: 107px;
+}
+.input-num-liter {
+    width: 125px;
+}
+.input-num-en {
+    width: 107px;
 }
 .icon {
     color: rgba(0, 0, 0, 0.45);
+}
+.btn-add {
+    margin-right: 10px;
+    margin-left: 7px;
 }
 .Date {
     width: 318px;
@@ -73,7 +86,7 @@
 
 input:-webkit-autofill {
     -webkit-background-clip: text;
-    /* -webkit-text-fill-color: #ffffff; */
+    /* -webkit-text-fill-color: #000; */
     transition: background-color 5000s ease-in-out 0s;
     box-shadow: inset 0 0 20px 20px var(--input-color);
 }

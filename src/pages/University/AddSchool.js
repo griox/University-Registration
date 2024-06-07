@@ -396,7 +396,7 @@ const AddSchool = () => {
             editable: true,
             ...getColumnSearchProps('uniCode'),
             render: (text, record) => (
-                <Tooltip title={record.isRegistered === record.target ? 'This school is full' : ''}>
+                <Tooltip title={record.isRegistered === record.target ? t('tooltip.full') : t('tooltip.notfull')}>
                     <span className={record.isRegistered === record.target ? 'uniYes' : 'uniNo'}>{text}</span>
                 </Tooltip>
             ),

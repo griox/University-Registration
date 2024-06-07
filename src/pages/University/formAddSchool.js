@@ -102,9 +102,9 @@ const FormAdd = ({ UniData, setUniData }) => {
         }
     };
 
-    const handleReload = () => {
-        window.location.reload()
-    }
+    // const handleReload = () => {
+    //     window.location.reload()
+    // }
 
     const AddSchool = async () => {
         const uniRef = ref(database, `University/${uniCode}`);
@@ -128,18 +128,19 @@ const FormAdd = ({ UniData, setUniData }) => {
         setShowSuccessModal(true);
     };
 
-    const Success = () => (
+    const Success = () => {
+        useEffect(() => {
+            window.location.reload()
+        }, []);
+        
+        return (
         <Result
           status="success"
           title={<div className='result-title'>{t('title.success')}</div>}
-          style={{width: '100%', height: 'auto'}}
-          extra={[
-            <Button type="primary" onClick={handleReload} style={{width: '100px', height: 'auto'}}>
-              {t('title.reload')}
-            </Button>,
-          ]}
-        />
-      );
+          style={{width: '100%', height: 'auto'}}>
+        </Result>
+        );
+    };
 
     return (
         <>
@@ -165,6 +166,22 @@ const FormAdd = ({ UniData, setUniData }) => {
                 width={700}
                 destroyOnClose
                 okButtonProps={{disabled: !isFormValid}}
+                footer={[
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <div style={{display: 'flex', alignItems: 'center', fontSize: '12px', fontWeight: '550'}}>
+                            <p>Những thông tin có đánh dấu <span style={{color: 'red'}}>*</span> là bắt buộc nhập. </p>
+                        </div>
+                        <div style={{justifyContent: 'right'}}>
+                            <Button key="back" onClick={handleCancel}>
+                                Cancel
+                            </Button>
+                            <Button key="submit" type="primary" disabled={!isFormValid} onClick={handleOk}>
+                                Submit
+                            </Button>
+                        </div>
+                    </div>
+                    
+                  ]}
             >
                 <Space direction="vertical">
                     <Form layout="horizontal">
@@ -251,6 +268,7 @@ const FormAdd = ({ UniData, setUniData }) => {
                         >
                             <InputNumber
                                 className="ip-number1"
+                                placeholder='Entrance score'
                                 maxLength={4}
                                 value={averageScore}
                                 onChange={(value) => setAverageScore(value)}
@@ -275,6 +293,7 @@ const FormAdd = ({ UniData, setUniData }) => {
                         >
                             <InputNumber
                                 className="ip-number2"
+                                placeholder='Target'
                                 maxLength={3}
                                 value={targetScore}
                                 onChange={(value) => setTargetScore(value)}

@@ -13,7 +13,9 @@
         "ok": "Thêm",
         "cancel": "Hủy",
         "success": "Thêm Trường thành công",
-        "reload": "Làm mới"
+        "reload": "Làm mới",
+        "warning1": "Những thông tin có đánh dấu ",
+        "warning2": "là bắt buộc"
     },
     "toast": {
         "addsuccess": "Đã thêm trường thành công"

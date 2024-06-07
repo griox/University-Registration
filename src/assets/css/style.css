@@ -3,13 +3,14 @@
 html,
 .app,
 .content {
-    height: 100%;
+    height: 100%;   
     width: 100%;
     margin: 0;
     padding: 0;
     font-family: 'Source Sans Pro', sans-serif;
 }
 :root {
+    --background-para: #F8EFBA;
     --chart-color: white;
     --placeholder-color: #d2dae2;
     --input-color: #fff;
@@ -23,8 +24,8 @@ html,
     --btn-color: rgb(7, 153, 244);
     --header-background: #f1f2f6;
     --body_color: #333;
-    --registered-color: green;
-    --unregistered-color: red;
+    --registered-color: #62a659;
+    --unregistered-color:  #e46162;
     --border-color: #dfe4ea;
     --name-colorY: #ff8c00;
     --name-colorN: black;
@@ -34,6 +35,7 @@ html,
     --menu-color: black;
 }
 [data-theme='dark'] {
+    --background-para:#485460;
     --chart-color: #141414;
     --sidebar-color: #3d3d3d;
     --placeholder-color: #ced6e0;

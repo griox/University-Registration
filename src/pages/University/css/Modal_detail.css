@@ -7,4 +7,5 @@
     align-items: center;
     justify-content: center;
     display: flex;
+    background-color: var(--background-para);
 }

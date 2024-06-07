@@ -55,7 +55,11 @@ const Chart = () => {
         label: {
             text: (d) => `${d.score.toFixed(2)}`,
             textBaseline: 'bottom',
-            titleStroke: 'red',
+            
+        },
+        axis:{
+            fill:'pink',
+            labelFill: 'red',
         },
         style: {
             width: 45,
@@ -116,6 +120,7 @@ const Chart = () => {
                 fontWeight: 'bold',
                 fontSize: '50px',
                 titleStroke: 'red',
+                fill: '#fff'
             },
         },
         legend: {

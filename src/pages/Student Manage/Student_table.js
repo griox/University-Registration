@@ -302,11 +302,58 @@ const StudentList = () => {
     function validateEmailFormat(email) {
         return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(email);
     }
-    const save = async (key) => {
+    const updateUniCode = async (record, averagescore, id) => {
+        try {
+            if (record.uniCode !== undefined) {
+                for (const uniCode in record.uniCode) {
+                    const uniRef = ref(database, `University/${record.uniCode[uniCode]}`);
+                    const studentRef = ref(database, `Detail/${id}`);
+                    const snapshot1 = await get(studentRef);
+                    const snapshot = await get(uniRef);
+                    if (snapshot.exists()&& snapshot1.exists()) {
+                       
+                        const uniData = snapshot.val();
+                        const studentData = snapshot1.val();
+                        console.log(averagescore, uniData.averageS);
+                        if (averagescore < uniData.averageS) {
+                            const newRegisteration = uniData.registeration.filter((item) => item.id !== id);
+                            console.log(newRegisteration);
+                            const newUniCode = studentData.uniCode.filter((item2) => item2 !== uniCode);
+                            console.log(newUniCode);
+                            await update(studentRef, { uniCode: newUniCode });
+                            const updatedIsRegistered = Math.max(0, uniData.isRegistered - 1);
+                            await update(uniRef, {
+                                isRegistered: updatedIsRegistered,
+                                registeration: newRegisteration,
+                            });
+                            
+                        }
+                    }
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    const checkEmailExistence = async (newEmail) => {
+        try {
+            const snapshot = await get(child(ref(database), 'Detail'));
+            if (snapshot.exists()) {
+                const emails = snapshot.val();
+                const emailsExists = Object.values(emails).some((student) => student.email === newEmail);
+                return emailsExists;
+            }
+            return false;
+        } catch (error) {
+            toast.error('Error checking email existence');
+            return false;
+        }
+    };
+    const save = async (record) => {
         try {
             const row = await form.validateFields();
             const newData = [...studentData];
-            const index = newData.findIndex((item) => key === item.key);
+            const index = newData.findIndex((item) => record.key === item.key);
 
             if (index > -1) {
                 const item = newData[index];
@@ -314,9 +361,17 @@ const StudentList = () => {
                     toast.error('Score must not be less or equal to 10');
                     return;
                 }
+
                 if (!validateEmailFormat(row.email)) {
                     toast.error('Invalid Email Format');
                     return;
+                }
+                if (row.email !== item.email) {
+                    const emailsExists = await checkEmailExistence(row.email);
+                    if (emailsExists) {
+                        toast.error('This email has already exists');
+                        return;
+                    }
                 }
                 newData.splice(index, 1, {
                     ...item,
@@ -334,27 +389,31 @@ const StudentList = () => {
                 const literatureScore = updatedRow['LiteratureScore'] || 0;
                 const englishScore = updatedRow['EnglishScore'] || 0;
                 const averageScore = (mathScore + literatureScore + englishScore) / 3;
-
+                if (
+                    row.MathScore < item.MathScore ||
+                    row.EnglishScore < item.EnglishScore ||
+                    row.LiteratureScore < item.LiteratureScore
+                ) {
+                    updateUniCode(record, averageScore, record.key);
+                }
                 updatedRow['AverageScore'] = Math.round(averageScore * 10) / 10;
 
                 newData[index] = updatedRow;
                 setStudentData(newData);
                 setEditingKey('');
 
-                await update(ref(database, `Detail/${key}`), updatedRow);
+                await update(ref(database, `Detail/${record.key}`), updatedRow);
                 toast.success('Data updated successfully');
             } else {
                 newData.push(row);
                 setStudentData(newData);
                 setEditingKey('');
-                handleFieldChange(key, Object.keys(row)[0], row[Object.keys(row)[0]]);
-
-                await set(ref(database, `Detail/${key}`), row);
-                await set(ref(database, `Detail/${key}`), row);
+                handleFieldChange(record.key, Object.keys(row)[0], row[Object.keys(row)[0]]);
+                await set(ref(database, `Detail/${record.key}`), row);
                 toast.success('Data added to Firebase successfully');
             }
         } catch (errInfo) {
-            toast.error('Validate Failed');
+            console.error('Validate Failed', errInfo);
         }
     };
     const renderNameWithGender = (record) => {
@@ -366,7 +425,7 @@ const StudentList = () => {
     };
 
     const handleIdClick = (record) => {
-        setstudentUnicode(record.uniCode!==undefined);
+        setstudentUnicode(record.uniCode !== undefined);
         setSelectedStudent(record);
         setIsModalVisible(true);
     };
@@ -416,7 +475,7 @@ const StudentList = () => {
         {
             title: t('table.Name'),
             dataIndex: 'name',
-            width: '25%',
+            width: '27%',
             editable: true,
             fixed: 'left',
             key: 'name',
@@ -501,14 +560,14 @@ const StudentList = () => {
         {
             title: t('table.Action'),
             dataIndex: 'operation',
-            width: '12%',
+            width: '16%',
             fixed: 'right',
             responsive: ['sm'],
             render: (_, record) => {
                 const editable = isEditing(record);
                 return editable ? (
                     <span>
-                        <Typography.Link className="Typo_link" onClick={() => save(record.key)}>
+                        <Typography.Link className="Typo_link" onClick={() => save(record)}>
                             {t('button.edit')}
                         </Typography.Link>
                         <Typography.Link className="Typo_link" onClick={cancel}>
@@ -638,7 +697,7 @@ const StudentList = () => {
                             setIsModalVisible(false);
                         }}
                         student={selectedStudent}
-                        studentUnicode ={studentUnicode}
+                        studentUnicode={studentUnicode}
                     />
                     <Form form={form} component={false}>
                         <Spin spinning={Loading}>

@@ -26,8 +26,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     const [averageS, setAverageS] = useState(null);
     const { t } = useTranslation('modalStudent');
     const [showSuccessModal, setShowSuccessModal] = useState(false);
-    const [isFormValid, setIsFormValid] = useState(false);
-
+    const secretKey = 'Tvx1234@';
     useEffect(() => {
         // Hàm kiểm tra tính hợp lệ của form
         const checkFormValidity = () => {
@@ -47,11 +46,18 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 validateIdenNumber(Identify)
             );
         };
-    
-        // Cập nhật trạng thái hợp lệ của form
-        setIsFormValid(checkFormValidity());
-    }, [Email, Fullname, enthicity, Gender, dateOfBirth, placeOfBirth, Identify, Mathscore, Englishscore, Literaturescore]);
-    
+    }, [
+        Email,
+        Fullname,
+        enthicity,
+        Gender,
+        dateOfBirth,
+        placeOfBirth,
+        Identify,
+        Mathscore,
+        Englishscore,
+        Literaturescore,
+    ]);
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -105,7 +111,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 MathScore: Mathscore,
                 EnglishScore: Englishscore,
                 LiteratureScore: Literaturescore,
-                AverageScore: round((Mathscore + Englishscore + Literaturescore) / 3, 1),
+                AverageScore: averageS,
                 Address: Address,
                 uniCode: [],
                 isRegister: 'true',
@@ -130,16 +136,16 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 MathScore: Mathscore,
                 EnglishScore: Englishscore,
                 LiteratureScore: Literaturescore,
-                AverageScore: round((Mathscore + Englishscore + Literaturescore) / 3, 1),
+                AverageScore: averageS,
                 Address: Address,
                 uniCode: [],
                 isRegister: 'true',
             };
             setStudentData([...studentData, newData]);
+            toast.success('Adding new student successfuly');
             setIsModalOpen(false);
             setShowSuccessModal(true);
         } catch (error) {
-            console.error(error)
             toast.error('An error occurred while adding student');
         }
     };
@@ -356,50 +362,12 @@ const ModalAdd = ({ studentData, setStudentData }) => {
 
     const { TextArea } = Input;
     const dateFormat = 'DD/MM/YYYY';
-
-    const handleReload = () => {
-        window.location.reload()
-    }
-    const Success = () => (
-        <Result
-          status="success"
-          title={<div className='result-title'>{t('title.success')}</div>}
-          style={{width: '100%', height: 'auto'}}
-          extra={[
-            <Button type="primary" onClick={handleReload} style={{width: '100px', height: 'auto'}}>
-              {t('title.reload')}
-            </Button>,
-          ]}
-        />
-      );
-
     return (
         <>
             <Button className='btn-add' type="primary" onClick={showModal}>
                 {t('button.Add')}
             </Button>
-            <Modal
-            className="custom-modal"
-            style={{height: '200px'}}
-            width={500}
-            open={showSuccessModal}
-            footer={null}
-            closable={false}
-            onCancel={() => setShowSuccessModal(false)}
-            >
-                <Success />
-            </Modal>
-            <Modal
-                title= {t('title.modal')}
-                open={isModalOpen}
-                onOk={handleOk}
-                onCancel={handleCancel}
-                width={700}
-                destroyOnClose
-                okButtonProps={{disabled: !isFormValid}}
-                okText= {t('button.ok')}
-                cancelText={t('button.cancel')}
-            >
+            <Modal title={t('title.modal')} open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={700}>
                 <Form layout="vertical">
                     <Row gutter={16}>
                         <Col span={12}>

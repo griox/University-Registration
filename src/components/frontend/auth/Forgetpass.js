@@ -179,10 +179,6 @@ export const Forgetpass = () => {
                                             style={{
                                                 border: 'none',
                                                 padding: '15px',
-                                                color:
-                                                    (localStorage.getItem('selectedTheme') || 'light') === 'light'
-                                                        ? '#000'
-                                                        : '#fff',
                                             }}
                                             value={email}
                                         />
@@ -198,7 +194,7 @@ export const Forgetpass = () => {
                                                 color: '#fff',
                                                 backgroundColor:
                                                     errorEmail === false && email !== ''
-                                                        ? '#003865'
+                                                        ? ''
                                                         : 'rgba(255, 255, 255, 0.3)',
                                             }}
                                         >

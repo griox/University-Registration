@@ -31,7 +31,7 @@
         "cancel": "Cancel"
     },
     "tooltip": {
-        "full": "This school is full",
+        "full": "This school is full of registeration",
         "notfull": "This school is ready for regist"
     }
 }

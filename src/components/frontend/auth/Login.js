@@ -251,11 +251,6 @@ export const Login = () => {
                                                     style={{
                                                         border: 'none',
                                                         padding: '15px',
-                                                        color:
-                                                            (localStorage.getItem('selectedTheme') || 'light') ===
-                                                            'light'
-                                                                ? '#000'
-                                                                : '#fff',
                                                     }}
                                                     value={email}
                                                 />
@@ -271,10 +266,6 @@ export const Login = () => {
                                             style={{
                                                 border: 'none',
                                                 padding: '15px',
-                                                color:
-                                                    (localStorage.getItem('selectedTheme') || 'light') === 'light'
-                                                        ? '#000'
-                                                        : '#fff',
                                             }}
                                             value={password}
                                             iconRender={(visible) =>
@@ -311,7 +302,7 @@ export const Login = () => {
                                             backgroundColor:
                                                 password === '' || email === '' || errorEmail === true
                                                     ? 'rgba(255, 255, 255, 0.3)'
-                                                    : '#003865',
+                                                    : '',
                                         }}
                                     >
                                         <span>{t('button.log in')}</span>

@@ -169,7 +169,6 @@ const Changepass = () => {
                         style={{
                             border: 'none',
                             padding: '15px',
-                            color: (localStorage.getItem('selectedTheme') || 'light') === 'light' ? '#000' : '#fff',
 
                             backgroundColor: 'blue',
                         }}
@@ -269,7 +268,7 @@ const Changepass = () => {
                                                     oldPass !== '' &&
                                                     newPass !== '' &&
                                                     reNewPass !== ''
-                                                        ? '#003865'
+                                                        ? ''
                                                         : 'rgba(255, 255, 255, 0.3)',
                                             }}
                                         >

@@ -38,7 +38,7 @@ export const Forgetpass = () => {
     const [loadingResetPass, setLoadingResetPass] = useState(false);
     const { t, i18n } = useTranslation('resetpassword');
     const [link, setLink] = useState(null);
-    
+
     const handleLanguage = (lng, label) => {
         i18n.changeLanguage(lng);
         setSelectedLanguage(label);
@@ -239,12 +239,6 @@ export const Forgetpass = () => {
                                                 style={{
                                                     border: 'none',
                                                     padding: '15px',
-                                                    color:
-                                                        (localStorage.getItem('selectedTheme') || 'light') === 'light'
-                                                            ? '#000'
-                                                            : '#fff',
-
-                                                    backgroundColor: 'blue',
                                                 }}
                                                 value={errorNewPass}
                                                 iconRender={(visible) =>
@@ -278,12 +272,6 @@ export const Forgetpass = () => {
                                                 style={{
                                                     border: 'none',
                                                     padding: '15px',
-                                                    color:
-                                                        (localStorage.getItem('selectedTheme') || 'light') === 'light'
-                                                            ? '#000'
-                                                            : '#fff',
-
-                                                    backgroundColor: 'blue',
                                                 }}
                                                 value={errorReNewPass}
                                                 iconRender={(visible) =>
@@ -313,7 +301,7 @@ export const Forgetpass = () => {
                                                     newPass !== '' &&
                                                     errorReNewPass === false &&
                                                     reNewPass !== ''
-                                                        ? '#003865'
+                                                        ? ''
                                                         : 'rgba(255, 255, 255, 0.3)',
                                             }}
                                         >

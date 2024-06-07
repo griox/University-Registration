@@ -232,12 +232,6 @@ const Register = () => {
                                             style={{
                                                 border: 'none',
                                                 padding: '10px',
-                                                color:
-                                                    (localStorage.getItem('selectedTheme') || 'light') === 'light'
-                                                        ? '#000'
-                                                        : '#fff',
-
-                                                backgroundColor: 'blue',
                                             }}
                                             value={fullName}
                                         />
@@ -261,12 +255,6 @@ const Register = () => {
                                             style={{
                                                 border: 'none',
                                                 padding: '10px',
-                                                color:
-                                                    (localStorage.getItem('selectedTheme') || 'light') === 'light'
-                                                        ? '#000'
-                                                        : '#fff',
-
-                                                backgroundColor: 'blue',
                                             }}
                                             value={email}
                                         />
@@ -291,10 +279,6 @@ const Register = () => {
                                             style={{
                                                 border: 'none',
                                                 padding: '10px',
-                                                color:
-                                                    (localStorage.getItem('selectedTheme') || 'light') === 'light'
-                                                        ? '#000'
-                                                        : '#fff',
 
                                                 backgroundColor: 'blue',
                                             }}
@@ -327,10 +311,6 @@ const Register = () => {
                                             style={{
                                                 border: 'none',
                                                 padding: '10px',
-                                                color:
-                                                    (localStorage.getItem('selectedTheme') || 'light') === 'light'
-                                                        ? '#000'
-                                                        : '#fff',
 
                                                 backgroundColor: 'blue',
                                             }}
@@ -354,7 +334,7 @@ const Register = () => {
                                         }}
                                     >
                                         <h1 style={{ fontSize: '14px', marginTop: '5px', color: '#fff' }}>
-                                           {t('title.role')}
+                                            {t('title.role')}
                                         </h1>
                                         <Radio.Group
                                             name="radiogroup"
@@ -364,7 +344,7 @@ const Register = () => {
                                             <Radio value={'Admin'} style={{ color: '#fff', fontSize: '14px' }}>
                                                 {t('title.admin')}
                                             </Radio>
-                                            <Radio value={'User'} style={{ color: '#fff',  fontSize: '14px' }}>
+                                            <Radio value={'User'} style={{ color: '#fff', fontSize: '14px' }}>
                                                 {t('title.user')}
                                             </Radio>
                                         </Radio.Group>
@@ -420,7 +400,7 @@ const Register = () => {
                                                             password !== '' &&
                                                             errorAgainPassword === false &&
                                                             againPassword !== ''
-                                                                ? '#003865'
+                                                                ? ''
                                                                 : 'rgba(255, 255, 255, 0.3)',
                                                     }}
                                                 >

@@ -14,7 +14,7 @@ import { ethnicities, firebaseConfig, gender, provinces } from '../constants/con
 import { useTranslation } from 'react-i18next';
 import Highlighter from 'react-highlight-words';
 import dayjs from 'dayjs';
-import '../commonFunctions.css'
+import '../commonFunctions.css';
 const { TextArea } = Input;
 const MAX_COUNT = 5;
 
@@ -57,7 +57,7 @@ function Pr() {
                     <Button
                         type="primary"
                         onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
-                        icon={<SearchOutlined/>} 
+                        icon={<SearchOutlined />}
                         size="small"
                         className="getColumnSearchProps-Button"
                     >
@@ -301,11 +301,11 @@ function Pr() {
                 toast.error(error.message, 'Error');
             });
     };
-    const save = () => {
+    const save = async () => {
         setLoadingSave(true);
         const per = JSON.parse(localStorage.getItem('Infor'));
         if (localStorage.getItem('Role') === 'super_admin') {
-            update(ref(db, 'Super_Admin/' + per.id), {
+            await update(ref(db, 'Super_Admin/' + per.id), {
                 name: detail.name,
                 gender: detail.gender,
                 placeOBirth: detail.placeOBirth,
@@ -315,7 +315,7 @@ function Pr() {
                 email: detail.email,
                 dateObirth: detail.dateObirth,
             }).then(() => handleSubmit(per.id));
-            get(child(ref(db), `Super_Admin/${per.id}/`))
+            await get(child(ref(db), `Super_Admin/${per.id}/`))
                 .then((snapshot) => {
                     if (snapshot.exists()) {
                         const x = snapshot.val();
@@ -326,9 +326,10 @@ function Pr() {
                         toast.error('No data available');
                     }
                 })
-                .then(() => setLoadingSave(false));
+                .then(() => setLoadingSave(false))
+                .then(() => toast.success('Updated sucessfully'));
         } else if (localStorage.getItem('Role') === 'admin') {
-            update(ref(db, 'Admin/' + per.id), {
+            await update(ref(db, 'Admin/' + per.id), {
                 name: detail.name,
                 gender: detail.gender,
                 placeOBirth: detail.placeOBirth,
@@ -338,7 +339,7 @@ function Pr() {
                 email: detail.email,
                 dateObirth: detail.dateObirth,
             }).then(() => handleSubmit(per.id));
-            get(child(ref(db), `Admin/${per.id}/`))
+            await get(child(ref(db), `Admin/${per.id}/`))
                 .then((snapshot) => {
                     if (snapshot.exists()) {
                         const x = snapshot.val();
@@ -349,9 +350,10 @@ function Pr() {
                         toast.error('No data available');
                     }
                 })
-                .then(() => setLoadingSave(false));
+                .then(() => setLoadingSave(false))
+                .then(() => toast.success('Updated sucessfully'));
         } else {
-            update(ref(db, 'Detail/' + per.id), {
+            await update(ref(db, 'Detail/' + per.id), {
                 name: detail.name,
                 gender: detail.gender,
                 placeOBirth: detail.placeOBirth,
@@ -364,14 +366,14 @@ function Pr() {
             })
                 .then(() => handleSubmit(per.id))
                 .then(() => {
-                    detail.uniCode.forEach((item) => {
+                    detail.uniCode.forEach(async (item) => {
                         if (per.uniCode.includes(item) === false) {
-                            get(child(ref(db), `University/` + item)).then((snapshot) => {
+                            await get(child(ref(db), `University/` + item)).then(async (snapshot) => {
                                 if (snapshot.exists()) {
                                     const x = snapshot.val();
 
                                     const n = detail.email.replace(/\./g, ',');
-                                    update(ref(db, 'University/' + item), {
+                                    await update(ref(db, 'University/' + item), {
                                         isRegistered: x.isRegistered + 1,
                                     });
                                     update(ref(db, `University/${item}/registeration`), {
@@ -382,9 +384,9 @@ function Pr() {
                         }
                     });
 
-                    (per.uniCode === undefined ? [] : per.uniCode).forEach((item) => {
+                    (per.uniCode === undefined ? [] : per.uniCode).forEach(async (item) => {
                         if (detail.uniCode.includes(item) === false) {
-                            get(child(ref(db), `University/` + item)).then((snapshot) => {
+                            await get(child(ref(db), `University/` + item)).then((snapshot) => {
                                 if (snapshot.exists()) {
                                     const x = snapshot.val();
 
@@ -403,7 +405,7 @@ function Pr() {
                         }
                     });
                 });
-            get(child(ref(db), `Detail/${per.id}/`))
+            await get(child(ref(db), `Detail/${per.id}/`))
                 .then((snapshot) => {
                     if (snapshot.exists()) {
                         const x = snapshot.val();
@@ -414,10 +416,9 @@ function Pr() {
                         toast.error('No data available');
                     }
                 })
-                .then(() => setLoadingSave(false));
+                .then(() => setLoadingSave(false))
+                .then(() => toast.success('Updated sucessfully'));
         }
-
-        toast.success('Updated sucessfully');
     };
     const showModal = () => {
         setIsModalOpen(true);
@@ -466,14 +467,21 @@ function Pr() {
                                         className="avatar-input"
                                     />
                                 </div>
-                                <Modal title={t('title.modalsave')} open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText={t('button.ok')} cancelText={t('button.cancel')}>
-                                    <p style={{color: 'var(--name-colorN)'}}>{t('title.saveedit')}</p>
+                                <Modal
+                                    title={t('title.modalsave')}
+                                    open={isModalOpen}
+                                    onOk={handleOk}
+                                    onCancel={handleCancel}
+                                    okText={t('button.ok')}
+                                    cancelText={t('button.cancel')}
+                                >
+                                    <p style={{ color: 'var(--name-colorN)' }}>{t('title.saveedit')}</p>
                                 </Modal>
-                                <Spin spinning={loadingSave}>
-                                    <Button type="primary" onClick={showModal} className="btn-save">
-                                        <span>{t('button.Save')}</span>
-                                    </Button>
-                                </Spin>
+                                <Button type="primary" onClick={showModal} className="btn-save" loading={loadingSave}>
+                                    <span style={{ display: loadingSave === true ? 'none' : '' }}>
+                                        {t('button.Save')}
+                                    </span>
+                                </Button>
                             </div>
                             <div>
                                 <div className="pr-admin-input">
@@ -798,14 +806,26 @@ function Pr() {
                                         value={detail.uniCode}
                                     />
 
-                                        <Modal title={t('title.modalsave')} open={isModalOpen} onOk={handleOk} onCancel={handleCancel} okText={t('button.ok')} cancelText={t('button.cancel')}>
-                                        <p style={{color: 'var(--name-colorN)'}}>{t('title.saveedit')}</p>
+                                    <Modal
+                                        title={t('title.modalsave')}
+                                        open={isModalOpen}
+                                        onOk={handleOk}
+                                        onCancel={handleCancel}
+                                        okText={t('button.ok')}
+                                        cancelText={t('button.cancel')}
+                                    >
+                                        <p style={{ color: 'var(--name-colorN)' }}>{t('title.saveedit')}</p>
                                     </Modal>
-                                    <Spin spinning={loadingSave}>
-                                        <Button type="primary" onClick={showModal} className="btn-save">
-                                            <span>{t('button.Save')}</span>
-                                        </Button>
-                                    </Spin>
+                                    <Button
+                                        type="primary"
+                                        onClick={showModal}
+                                        className="btn-save"
+                                        loading={loadingSave}
+                                    >
+                                        <span style={{ display: loadingSave === true ? 'none' : '' }}>
+                                            {t('button.Save')}
+                                        </span>
+                                    </Button>
                                 </div>
                                 <div className="table">
                                     <Spin spinning={loadingTable} style={{ margin: '0', padding: '0' }}>

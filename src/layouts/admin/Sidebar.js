@@ -172,7 +172,7 @@ const Sidebar = () => {
                     <MenuItem
                         className="icon-menu"
                         onClick={() => setIsCollapsed(!isCollapsed)}
-                        icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
+                        icon={isCollapsed ? <MenuOutlinedIcon style={{color: 'var(--menu-color)'}} /> : undefined}
                     >
                         {!isCollapsed && (
                             <Box display="flex" justifyContent="space-between" alignItems="center" ml="15px">
@@ -185,7 +185,7 @@ const Sidebar = () => {
                                     />
                                 </Typography>
                                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                                    <MenuOutlinedIcon />
+                                    <MenuOutlinedIcon style={{color: 'var(--menu-color)'}} />
                                 </IconButton>
                             </Box>
                         )}
@@ -286,7 +286,7 @@ const Sidebar = () => {
                         okText={t('button.ok')}
                         cancelText={t('button.cancel')}
                     >
-                        <p>{t('title.confirm')}</p>
+                        <p style={{color: 'var(--name-colorN)'}}>{t('title.confirm')}</p>
                     </Modal>
                     <MenuItem
                         onClick={showModal}

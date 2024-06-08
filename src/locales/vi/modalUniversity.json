@@ -15,7 +15,8 @@
         "success": "Thêm Trường thành công",
         "reload": "Làm mới",
         "warning1": "Những thông tin có đánh dấu ",
-        "warning2": "là bắt buộc"
+        "warning2": "là bắt buộc",
+        "modaladd": "Thêm Trường đại học"
     },
     "toast": {
         "addsuccess": "Đã thêm trường thành công"

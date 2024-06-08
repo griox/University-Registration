@@ -4,7 +4,7 @@ import { ref, child, get, set } from 'firebase/database';
 import { toast } from 'react-toastify';
 import { Button, Modal, Select, InputNumber, DatePicker, Form } from 'antd';
 import { InfoCircleOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
-import { Input, Tooltip, Row, Col, Result } from 'antd';
+import { Input, Tooltip, Row, Col } from 'antd';
 import '../Student Manage/css/modal_add.css';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
@@ -25,8 +25,9 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     const [Literaturescore, setLiteraturescore] = useState(null);
     const [averageS, setAverageS] = useState(null);
     const { t } = useTranslation('modalStudent');
-    const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [isFormValid, setIsFormValid] = useState(false);
     const secretKey = 'Tvx1234@';
+    
     useEffect(() => {
         // Hàm kiểm tra tính hợp lệ của form
         const checkFormValidity = () => {
@@ -38,6 +39,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 dateOfBirth !== '' &&
                 placeOfBirth !== '' &&
                 Identify !== '' &&
+                Address !== '' &&
                 Mathscore !== undefined && Mathscore !== null &&
                 Englishscore !== undefined && Englishscore !== null &&
                 Literaturescore !== undefined && Literaturescore !== null &&
@@ -46,6 +48,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 validateIdenNumber(Identify)
             );
         };
+        setIsFormValid(checkFormValidity());
     }, [
         Email,
         Fullname,
@@ -54,6 +57,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
         dateOfBirth,
         placeOfBirth,
         Identify,
+        Address,
         Mathscore,
         Englishscore,
         Literaturescore,
@@ -144,7 +148,6 @@ const ModalAdd = ({ studentData, setStudentData }) => {
             setStudentData([...studentData, newData]);
             toast.success('Adding new student successfuly');
             setIsModalOpen(false);
-            setShowSuccessModal(true);
         } catch (error) {
             toast.error('An error occurred while adding student');
         }
@@ -367,7 +370,14 @@ const ModalAdd = ({ studentData, setStudentData }) => {
             <Button className='btn-add' type="primary" onClick={showModal}>
                 {t('button.Add')}
             </Button>
-            <Modal title={t('title.modal')} open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={700}>
+            <Modal 
+                title={t('title.modal')}  
+                open={isModalOpen} 
+                onOk={handleOk} 
+                onCancel={handleCancel} 
+                width={700}
+                destroyOnClose
+                okButtonProps={{ disabled: ! isFormValid}}>
                 <Form layout="vertical">
                     <Row gutter={16}>
                         <Col span={12}>
@@ -375,17 +385,17 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 className="form-item1"
                                 label={t('label.name')}
                                 name="name"
-                                validateStatus={!validateFullname(Fullname) && Fullname ? 'error' : ''}
-                                help= {!validateFullname(Fullname) && Fullname
-                                    ? t('warning.name')
-                                    : ''
-                                }
                                 rules={[
                                     {
                                         required: true,
                                         message: t('warning.input'),
                                     },
                                 ]}
+                                validateStatus={!validateFullname(Fullname) && Fullname ? 'error' : ''}
+                                help= {!validateFullname(Fullname) && Fullname
+                                    ? t('warning.name')
+                                    : ''
+                                }
                             >
                                 <Input
                                     placeholder={t('placeholder.name')}
@@ -501,6 +511,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             >
                                 <Input
                                     onChange={(e) => setIdentify(e.target.value)}
+                                    placeholder= {t('placeholder.identify')}
                                     showCount
                                     maxLength={12}
                                     value={Identify}

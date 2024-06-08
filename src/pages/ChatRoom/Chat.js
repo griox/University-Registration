@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Select } from 'antd';
 import styled from 'styled-components';
-
 // Define StyledSelect outside the component
 const StyledSelect = styled.div`
   display: ${localStorage.getItem('selectedMenuItem') === 'ChatRoom' ? 'block' : 'none'};

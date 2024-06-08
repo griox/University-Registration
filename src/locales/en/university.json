@@ -33,5 +33,9 @@
     "tooltip": {
         "full": "This school is full of registeration",
         "notfull": "This school is ready for regist"
+    },
+    "warning": {
+        "title": "Invalid value",
+        "input": "Please input !"
     }
 }

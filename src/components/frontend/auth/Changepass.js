@@ -225,24 +225,24 @@ const Changepass = () => {
                                         oldPass,
                                         setOldPass,
                                         setErrorOldPass,
-                                        'password',
-                                        'Old password',
+                                        t('placeholder.pass'),
+                                        t('placeholder.oldpass'),
                                     )}
                                     {handleItem(
                                         errorNewPass,
                                         newPass,
                                         setNewPass,
                                         setErrorNewPass,
-                                        'password',
-                                        'New password',
+                                        t('placeholder.pass'),
+                                        t('placeholder.newpass'),
                                     )}
                                     {handleItem(
                                         errorReNewPass,
                                         reNewPass,
                                         setReNewPass,
                                         setErrorReNewPass,
-                                        'password',
-                                        'Re-enter new password',
+                                        t('placeholder.pass'),
+                                        t('placeholder.renewpass'),
                                     )}
 
                                     <div className="input-box">
@@ -272,11 +272,11 @@ const Changepass = () => {
                                                         : 'rgba(255, 255, 255, 0.3)',
                                             }}
                                         >
-                                            <span>{'Change'}</span>
+                                            <span>{t('button.change')}</span>
                                             <i className="bx bx-right-arrow-alt"></i>
                                         </Button>
                                     </div>
-                                    {handleButton(false, clear, 'Clear')}
+                                    {handleButton(false, clear, t('button.clear'))}
                                     {/* {language(items, t('title.language'))} */}
                                     <div>
                                         <Dropdown
@@ -289,7 +289,6 @@ const Changepass = () => {
                                         >
                                             <Typography.Link>
                                                 <Space className="title-drop">
-                                                    {/* {t('title.language')} */}
                                                     {selectedLanguage}
                                                     <DownOutlined />
                                                 </Space>

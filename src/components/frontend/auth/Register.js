@@ -225,7 +225,7 @@ const Register = () => {
                                         ]}
                                     >
                                         <Input
-                                            placeholder="Full name"
+                                            placeholder= {t('placeholder.fullname')}
                                             onChange={(e) => setFullName(e.target.value)}
                                             onKeyDown={handleEnterKey}
                                             allowClear
@@ -248,7 +248,7 @@ const Register = () => {
                                         ]}
                                     >
                                         <Input
-                                            placeholder="Email"
+                                            placeholder= {t('placeholder.email')}
                                             onChange={(e) => onchangeEmail(e.target.value)}
                                             onKeyDown={handleEnterKey}
                                             allowClear
@@ -272,7 +272,7 @@ const Register = () => {
                                         ]}
                                     >
                                         <Input.Password
-                                            placeholder="Password"
+                                            placeholder= {t('placeholder.password')}
                                             onChange={(e) => onchangePassword(e.target.value)}
                                             onKeyDown={handleEnterKey}
                                             allowClear
@@ -304,7 +304,7 @@ const Register = () => {
                                         ]}
                                     >
                                         <Input.Password
-                                            placeholder="Re-enter password"
+                                            placeholder= {t('placeholder.repass')}
                                             onChange={(e) => onchangeAgainPassword(e.target.value)}
                                             onKeyDown={handleEnterKey}
                                             allowClear

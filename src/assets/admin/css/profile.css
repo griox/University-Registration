@@ -290,7 +290,7 @@ input[type='button'] {
     font-size: 16px;
 }
 .ant-table-wrapper .ant-table-pagination.ant-pagination {
-    margin: 0;
+    margin: 30px;
 }
 .col2 .table {
     margin: 0;

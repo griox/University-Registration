@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Button, Form, Input, InputNumber, Space, Tooltip, Result } from 'antd';
+import { Modal, Button, Form, Input, InputNumber, Space, Tooltip } from 'antd';
 import 'firebase/auth';
 import { ref, get, set } from 'firebase/database';
 import { toast } from 'react-toastify';
@@ -26,7 +26,7 @@ const FormAdd = ({ UniData, setUniData }) => {
                 averageScore !== null &&
                 targetScore !== null &&
                 uniCode !== '' &&
-                validateName(uniName) &&
+                validateUniName(uniName) &&
                 validateUniCode(uniCode)
             );
         };
@@ -56,9 +56,8 @@ const FormAdd = ({ UniData, setUniData }) => {
         return /^[a-zA-Z]+$/.test(uniCode);
     };
 
-    const validateName = (name) => {
-        // return /^\D+$/u.test(name);
-        return /^[\p{L}\s]+$/u.test(name);
+    const validateUniName = (uniName) => {
+        return /^[\p{L}\s]+$/u.test(uniName);
     };
 
     const handleOk = async () => {
@@ -94,6 +93,7 @@ const FormAdd = ({ UniData, setUniData }) => {
 
         try {
             await AddSchool();
+            toast.success('Adding new school successfuly');
             setIsModalVisible(false);
             resetForm();
         } catch (error) {
@@ -122,47 +122,36 @@ const FormAdd = ({ UniData, setUniData }) => {
        
     };
 
-    function validateUniName(uniName) {
-        return /^\D+$/u.test(uniName);
-    }
-
     return (
         <>
             <Button className="btn-addUni" type="primary" onClick={showModal}>
                 {t('button.Add')}
             </Button>
             <Modal
-                title="Add a university"
+                title= {t('title.modaladd')}
                 open={isModalVisible}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 width={700}
                 destroyOnClose
-                okButtonProps={{disabled: !isFormValid}}
-                footer={[
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <div style={{display: 'flex', alignItems: 'center', fontSize: '12px', fontWeight: '550'}}>
-                            <p>{t('title.warning1')}<span style={{color: 'red'}}>*</span>{t('title.warning2')} </p>
-                        </div>
-                        <div style={{justifyContent: 'right'}}>
-                            <Button key="back" onClick={handleCancel}>
-                                Cancel
-                            </Button>
-                            <Button key="submit" type="primary" disabled={!isFormValid} onClick={handleOk}>
-                                Submit
-                            </Button>
-                        </div>
-                    </div>
-                    
-                  ]}
+                okButtonProps={{ disabled: !isFormValid }}
             >
                 <Space direction="vertical">
                     <Form layout="horizontal">
                         <Form.Item
                             className="form-item2"
                             label={t('label.uniname')}
+                            labelCol={{ span: 9 }}
+                            wrapperCol={{ span: 15 }}
+                            name="uniname"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: t('warning.input')
+                                }
+                            ]}
                             validateStatus={!validateUniName(uniName) && uniName ? 'error' : ''}
-                            help={!validateUniCode(uniName) && uniName ? 'Invalid university name' : ''}
+                            help={!validateUniName(uniName) && uniName ? t('warning.uniname') : ''}
                         >
                             <Input
                                 className="ip-UniName"
@@ -228,7 +217,7 @@ const FormAdd = ({ UniData, setUniData }) => {
                         >
                             <InputNumber
                                 className="ip-number1"
-                                placeholder='Entrance score'
+                                placeholder={t('placeholder.entrance')}
                                 maxLength={4}
                                 value={averageScore}
                                 onChange={(value) => setAverageScore(value)}
@@ -253,7 +242,7 @@ const FormAdd = ({ UniData, setUniData }) => {
                         >
                             <InputNumber
                                 className="ip-number2"
-                                placeholder='Target'
+                                placeholder={t('placeholder.target')}
                                 maxLength={3}
                                 value={targetScore}
                                 onChange={(value) => setTargetScore(value)}

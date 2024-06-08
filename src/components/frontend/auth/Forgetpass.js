@@ -172,7 +172,7 @@ export const Forgetpass = () => {
                                         ]}
                                     >
                                         <Input
-                                            placeholder="Enter Student's email"
+                                            placeholder={t('placeholder.email')}
                                             onChange={(e) => onchangeEmail(e.target.value)}
                                             onKeyDown={handleEnterKey}
                                             allowClear

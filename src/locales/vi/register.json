@@ -18,5 +18,11 @@
         "clear": "Xóa",
         "get back": "Quay lại",
         "regist": "Đăng kí"
+    },
+    "placeholder": {
+        "fullname": "Họ và tên",
+        "email": "Email",
+        "password": "Mật khẩu",
+        "repass": "Nhập lại mật khẩu"   
     }
 }

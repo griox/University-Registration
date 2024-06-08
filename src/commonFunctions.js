@@ -7,6 +7,7 @@ import { MenuItem } from 'react-pro-sidebar';
 import { Link } from 'react-router-dom';
 import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
 import ContactsIcon from '@mui/icons-material/Contacts';
+import { useTranslation } from 'react-i18next';
 
 export const GetColumnSearchProps = (dataIndex) => {
     const searchInput = useRef(null);
@@ -150,6 +151,7 @@ export const HandleError = (props) => {
 };
 
 export const HandleErrorEdit = ({ errorMessage }) => {
+    const { t } = useTranslation('university');
     return (
         <div>
             <Tooltip
@@ -158,7 +160,8 @@ export const HandleErrorEdit = ({ errorMessage }) => {
                 key={'red'}
                 placement="bottom"
             >
-                <ExclamationCircleOutlined style={{ marginLeft: '5px', color: '#f5554a' }} />
+                <span style={{color: 'red',fontSize: '13px'}}>{t('warning.title')}</span>
+                <ExclamationCircleOutlined style={{ marginLeft: '5px', color: '#f5554a',fontWeight: 'bold' }} />
             </Tooltip>
         </div>
     );

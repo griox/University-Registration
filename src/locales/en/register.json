@@ -18,5 +18,11 @@
         "clear": "Clear",
         "get back": "Get back",
         "regist": "Regist"
+    },
+    "placeholder": {
+        "fullname": "Full name",
+        "email": "Email",
+        "password": "Password",
+        "repass": "Re-enter password"   
     }
 }

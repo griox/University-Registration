@@ -244,7 +244,7 @@ export const Login = () => {
                                         >
                                             <div>
                                                 <Input
-                                                    placeholder="Email"
+                                                    placeholder={t('placeholder.email')}
                                                     onChange={(e) => onchangeEmail(e.target.value)}
                                                     onKeyDown={handleEnterKey}
                                                     allowClear
@@ -259,7 +259,7 @@ export const Login = () => {
                                     </Spin>
                                     <Spin spinning={loginSpin}>
                                         <Input.Password
-                                            placeholder="Password"
+                                            placeholder={t('placeholder.pass')}
                                             onChange={(e) => setPassword(e.target.value)}
                                             onKeyDown={handleEnterKey}
                                             allowClear

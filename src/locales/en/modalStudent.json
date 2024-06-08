@@ -29,10 +29,11 @@
         "name": "Enter Student's name",
         "email": "Enter Student's email",
         "address": "Student's Address",
-        "date": "Select date"
+        "date": "Select date",
+        "identify": "Enter Identify number"
     },
     "warning": {
-        "name": "University Name must contain only letters",
+        "name": "Student Name must contain only letters and no space",
         "input": "Please input !",
         "identify": "Identify number must be 12 digits and contain only number "
     },

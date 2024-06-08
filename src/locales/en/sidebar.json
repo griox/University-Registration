@@ -8,10 +8,19 @@
         "logout": "Log out",
         "modal": "Log out",
         "confirm": "Are you sure want to log out ?",
-        "changepass": "Change password"
+        "changepass": "Change password",
+        "chat": "Chatroom"
     },
     "button": {
         "ok": "OK",
         "cancel": "Cancel"
+    },
+    "tooltip": {
+        "dashboard": "Dashboard",
+        "chatroom": "Chatroom",
+        "uni": "University Management",
+        "student": "Student Management",
+        "regist": "Register Account",
+        "profile": "Profile"
     }
 }

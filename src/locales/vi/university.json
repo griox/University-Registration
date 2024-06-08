@@ -32,5 +32,9 @@
     "tooltip": {
         "full": "Trường này đã đủ chỉ tiêu",
         "notfull": "Trường này sẵn sàng để đăng kí"
+    },
+    "warning": {
+        "title": "Giá trị không hợp lệ",
+        "input": "Vui lòng nhập !"
     }
 }

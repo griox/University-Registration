@@ -226,16 +226,16 @@ const Sidebar = () => {
                             iconFilled={<InsertChartIcon />}
                             selected={selected}
                             setSelected={setSelected}
-                            tooltip="Dashboard"
+                            tooltip= {t('tooltip.dashboard')}
                         />
                         <Item
-                            title={t('ChatRoom')}
+                            title={t('title.chat')}
                             to="/admin/ChatRoom"
                             iconFilled={<ChatIcon />}
                             iconOutline={<ChatOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
-                            tooltip="Chatroom"
+                            tooltip= {t('tooltip.chatroom')}
                         />
                         {isAdminOrSuperAdmin && (
                             <>
@@ -246,7 +246,7 @@ const Sidebar = () => {
                                     iconOutline={<SchoolOutlinedIcon />}
                                     selected={selected}
                                     setSelected={setSelected}
-                                    tooltip="University Managerment"
+                                    tooltip= {t('tooltip.uni')}
                                 />
                                 <Item
                                     title={t('title.student')}
@@ -255,7 +255,7 @@ const Sidebar = () => {
                                     iconOutline={<AssignmentIndOutlinedIcon />}
                                     selected={selected}
                                     setSelected={setSelected}
-                                    tooltip="Student Managerment"
+                                    tooltip= {t('tooltip.student')}
                                 />
                                 <Item
                                     title={t('title.register')}
@@ -264,7 +264,7 @@ const Sidebar = () => {
                                     iconOutline={<AppRegistrationIcon />}
                                     selected={selected}
                                     setSelected={setSelected}
-                                    tooltip="Register Account"
+                                    tooltip= {t('tooltip.regist')}
                                 />
                             </>
                         )}
@@ -275,7 +275,7 @@ const Sidebar = () => {
                             iconOutline={<ContactsOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
-                            tooltip="Profile"
+                            tooltip= {t('tooltip.profile')}
                         />
                     </Box>
                     <Modal

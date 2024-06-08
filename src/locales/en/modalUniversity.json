@@ -13,7 +13,11 @@
         "ok": "Add",
         "cancel": "Cancel",
         "success": "Successfully Added a University",
-        "reload": "Reload"
+        "reload": "Reload",
+        "warning1": "Information marked",
+        "warning2": "is required",
+        "modaladd": "Add a university"
+       
     },
     "toast": {
         "addsuccess": "Added a university"
@@ -24,7 +28,7 @@
         "unicode": "University code just contain only letters"
     },
     "placeholder": {
-        "name": "Enter University's name",
+        "name": "Enter University name",
         "code": "Uni's Code",
         "address": "Uni's address",
         "entrance": "Input entrance score",

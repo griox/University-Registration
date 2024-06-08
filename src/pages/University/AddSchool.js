@@ -56,32 +56,34 @@ const AddSchool = () => {
             {
                 validator: (_, value) => {
                     if (dataIndex) {
-                        if (value === '') {
-                            return Promise.reject(`Please input`);
+                        if (value === '' || value === null) {
+                            return Promise.reject(t('warning.input'));
                         }
                     }
-                    if (isTarget) {
-                        if (value < record.isRegistered) {
-                            setError('Target must be greater than or equal to Num of registered');
-                            return Promise.reject('Invalid value');
+                    if (value !== '' && value !== null) {
+                        if (isTarget) {
+                            if (value < record.isRegistered) {
+                                setError('Target must be greater than or equal to Num of registered');
+                                return <HandleErrorEdit />;
+                            }
+                            if (!/^\d+$/.test(value)) {
+                                setError('Target must contain only numbers');
+                                return <HandleErrorEdit />;
+                            }
+                            if (!(value <= 1000)) {
+                                setError('Target must be <= 1000');
+                                return <HandleErrorEdit />;
+                            }
                         }
-                        if (!/^\d+$/.test(value)) {
-                            setError('Target must contain only numbers');
-                            return Promise.reject('Invalid value');
+                        if (isUniCode && !/^[a-zA-Z]+$/.test(value)) {
+                            setError('UniCode must contain letters only');
+                            return <HandleErrorEdit />;
                         }
-                        if (!(value <= 1000)) {
-                            setError('Target must be <= 1000');
-                            return Promise.reject('Invalid value');
-                        }
-                    }
-                    if (isUniCode && !/^[a-zA-Z]+$/.test(value)) {
-                        setError('UniCode must contain letters only');
-                        return Promise.reject('Invalid value');
-                    }
-                    if (isEntrance) {
-                        if (!(value > 0 && value <= 10 )) {
-                            setError('Entrance Score must be > 0 and <= 10');
-                            return Promise.reject('Invalid value');
+                        if (isEntrance) {
+                            if (!(value > 0 && value <= 10 )) {
+                                setError('Entrance Score must be > 0 and <= 10');
+                                return <HandleErrorEdit />;
+                            }
                         }
                     }
                     setError(null);
@@ -118,6 +120,7 @@ const AddSchool = () => {
             </td>
         );
     };
+
     const handleSchoolDetail = (record) => {
         setIsRegistered(record.isRegistered !== 0);
         setDetailVisible(true);
@@ -416,7 +419,7 @@ const AddSchool = () => {
         {
             title: t('table.Entrance Score'),
             dataIndex: 'averageS',
-            width: '12%',
+            width: '20%',
             editable: true,
             sorter: (a, b) => a.averageS - b.averageS,
             key: 'averageS',
@@ -425,7 +428,7 @@ const AddSchool = () => {
         {
             title: t('table.Number of registration'),
             dataIndex: 'isRegistered',
-            width: '13%',
+            width: '20%',
             key: 'isRegistered',
             render: (_, record) => {
                 setNumberRegist(record);
@@ -436,7 +439,7 @@ const AddSchool = () => {
         {
             title: t('table.Target'),
             dataIndex: 'target',
-            width: '10%',
+            width: '15%',
             editable: true,
             sorter: (a, b) => a.targets - b.targets,
             key: 'target',

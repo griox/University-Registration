@@ -1,13 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Button, Input, Select, Space, Table, Skeleton, Spin, DatePicker, Tooltip, Modal } from 'antd';
+import { Button, Input, Select, Space, Table, Skeleton, Spin, DatePicker, Tooltip, Modal, Form } from 'antd';
 import '../assets/admin/css/profile.css';
 import 'firebase/auth';
 import { ref, child, getDatabase, get, update } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { CameraOutlined, DownOutlined, InfoCircleOutlined, SearchOutlined } from '@ant-design/icons';
-import { Avatar } from '@mui/material';
+import {
+    CameraOutlined,
+    DownOutlined,
+    ExclamationCircleOutlined,
+    InfoCircleOutlined,
+    SearchOutlined,
+} from '@ant-design/icons';
+import { Avatar, colors } from '@mui/material';
 import { storage } from './firebaseConfig';
 import { getDownloadURL, uploadBytes, ref as storageRef } from 'firebase/storage';
 import { ethnicities, firebaseConfig, gender, provinces } from '../constants/constants';
@@ -28,6 +34,7 @@ function Pr() {
     const db = getDatabase(app);
     const [arr, setArr] = useState([]);
     const detail = useSelector((state) => state);
+    console.log('detail', detail);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
     const [loadingSave, setLoadingSave] = useState(false);
@@ -36,6 +43,7 @@ function Pr() {
     const [image, setImage] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [date, setDate] = useState(detail.dateObirth);
+    const [errorCCCD, setErrorCCCD] = useState(false);
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
@@ -115,13 +123,13 @@ function Pr() {
             dataIndex: 'score',
             key: 'score',
             sorter: (a, b) => a.score - b.score,
-            width: 90,
+            width: 150,
         },
         {
             title: t('table.Number of students registered'),
             dataIndex: 'isRegistered',
             key: 'isRegistered',
-            width: 90,
+            width: 150,
 
             sorter: (a, b) => a.isRegistered - b.isRegistered,
         },
@@ -129,7 +137,7 @@ function Pr() {
             title: t('table.Target'),
             dataIndex: 'capacity',
             key: 'capacity',
-            width: 90,
+            width: 150,
 
             sorter: (a, b) => a.capacity - b.capacity,
         },
@@ -204,6 +212,27 @@ function Pr() {
 
     const handleChange = (e, propertyName) => {
         const newValue = e.target.value;
+        if (propertyName === 'idenNum') {
+            if (newValue.length < 12) {
+                setErrorCCCD(true);
+                return;
+            }
+            if (newValue.match(/[a-z]+/) !== null) {
+                setErrorCCCD(true);
+                return;
+            }
+            if (newValue.match(/[A-Z]+/) !== null) {
+                setErrorCCCD(true);
+                return;
+            }
+
+            if (newValue.match(/[$@#&!.]+/) !== null) {
+                setErrorCCCD(true);
+                return;
+            } else {
+                setErrorCCCD(false);
+            }
+        }
         dispatch({ type: 'update', payload: { propertyName, newValue } });
     };
     const handleSelect = (e, propertyName) => {
@@ -436,6 +465,7 @@ function Pr() {
         const propertyName = 'dateObirth';
         dispatch({ type: 'update', payload: { propertyName, newValue } });
     };
+
     return (
         <div className="pr-container">
             {loading ? (
@@ -477,22 +507,41 @@ function Pr() {
                                 >
                                     <p style={{ color: 'var(--name-colorN)' }}>{t('title.saveedit')}</p>
                                 </Modal>
-                                <Button type="primary" onClick={showModal} className="btn-save" loading={loadingSave}>
+                                <Button
+                                    type="primary"
+                                    onClick={showModal}
+                                    className="btn-save"
+                                    loading={loadingSave}
+                                    disabled={
+                                        (detail.name !== '' &&
+                                            detail.gender !== '' &&
+                                            detail.placeOBirth !== '' &&
+                                            detail.Address !== '' &&
+                                            detail.enthicity &&
+                                            errorCCCD !== true &&
+                                            detail.idenNum !== '' &&
+                                            detail.email !== '') === true
+                                            ? false
+                                            : true
+                                    }
+                                >
                                     <span style={{ display: loadingSave === true ? 'none' : '' }}>
                                         {t('button.Save')}
                                     </span>
                                 </Button>
                             </div>
-                            <div>
+                            <div className="pr-admin-frame">
                                 <div className="pr-admin-input">
-                                    <div className="detail-item-admin">
+                                    <div className="detail-item-admin disabled">
                                         <h1>{t('title.ID')}: </h1>
                                         <Space.Compact size="large">
                                             <Input
+                                                placeholder="ID"
                                                 disabled
                                                 className="admin-g-s "
                                                 value={detail.id}
                                                 onChange={(e) => handleChange(e, 'id')}
+                                                // style={{backgroundColor:''}}
                                             />
                                         </Space.Compact>
                                     </div>
@@ -500,6 +549,7 @@ function Pr() {
                                         <h1>{t('title.name')}: </h1>
                                         <Space.Compact size="large">
                                             <Input
+                                                placeholder={t('title.phName')}
                                                 className="admin-g-s "
                                                 value={detail.name}
                                                 onChange={(e) => handleChange(e, 'name')}
@@ -507,24 +557,20 @@ function Pr() {
                                         </Space.Compact>
                                     </div>
                                     <div className="detail-item-admin">
-                                        <h1>{t('title.DateOfBirth')}: </h1>
-                                        <Space.Compact size="mid">
-                                            <Space.Compact size="mid">
-                                                <DatePicker
-                                                    className="admin-g-s "
-                                                    defaultValue={dayjs(detail.item, 'YYYY-MM-DD')}
-                                                    // onChange={handleDate}
-                                                    onChange={(e) => handleSelect(e, 'dateObirth')}
-                                                    format="YYYY-MM-DD"
-                                                />
-                                                {/* <DatePicker
+                                        <h1>{t('title.DateOfBirth')}:</h1>
+                                        <DatePicker
+                                            placeholder={t('title.phDateOfBirth')}
+                                            className="admin-g-s "
+                                            defaultValue={dayjs(detail.dateObirth, 'DD/MM/YYYY')}
+                                            onChange={(e) => handleSelect(e, 'dateObirth')}
+                                            format="DD-MM-YYYY"
+                                        />
+                                        {/* <DatePicker
                                             className="admin-g-s pr-date-picker"
                                             selected={dayjs(detail.dateObirth, 'DD-MM-YYYY')}
                                             onChange={handleDate}
                                             format="DD-MM-YYYY"
                                         /> */}
-                                            </Space.Compact>
-                                        </Space.Compact>
                                     </div>
                                     <div className="detail-item-admin">
                                         <h1>{t('title.Gender')}: </h1>
@@ -532,7 +578,7 @@ function Pr() {
                                             <Space.Compact>
                                                 <Select
                                                     showSearch
-                                                    placeholder="Choose your gender"
+                                                    placeholder={t('title.phGender')}
                                                     options={gender}
                                                     className="admin-g-s "
                                                     value={detail.gender}
@@ -547,6 +593,7 @@ function Pr() {
 
                                         <Space.Compact size="large">
                                             <Select
+                                                placeholder={t('title.phPlaceOfBirth')}
                                                 size={size}
                                                 showSearch
                                                 options={provinces}
@@ -560,6 +607,7 @@ function Pr() {
                                         <h1>{t('title.Email')}: </h1>
                                         <Space.Compact size="large">
                                             <Input
+                                                placeholder={t('title.phEmail')}
                                                 className="admin-g-s "
                                                 value={detail.email}
                                                 onChange={(e) => handleChange(e, 'email')}
@@ -574,6 +622,7 @@ function Pr() {
                                     <div className="detail-item-admin">
                                         <h1>{t('title.Ethnicity')}: </h1>
                                         <Select
+                                            placeholder={t('titile.phEthnicity')}
                                             options={ethnicities}
                                             onChange={(e) => handleSelect(e, 'enthicity')}
                                             showSearch
@@ -585,13 +634,45 @@ function Pr() {
                                         <h1>CCCD: </h1>
 
                                         <Space.Compact size="large">
-                                            <Input
-                                                className="admin-g-s"
-                                                value={detail.idenNum}
-                                                onChange={(e) => handleChange(e, 'idenNum')}
-                                                showCount
-                                                maxLength={12}
-                                            />
+                                            <Form.Item
+                                                name="email"
+                                                validateStatus={errorCCCD ? 'error' : ''}
+                                                help={
+                                                    errorCCCD ? (
+                                                        <div>
+                                                            <span>Invalid template </span>
+                                                            <Tooltip
+                                                                title={'Please enter only and must 12 number '}
+                                                                color={'red'}
+                                                                key={'red'}
+                                                                placement="bottom"
+                                                            >
+                                                                <ExclamationCircleOutlined
+                                                                    style={{ marginLeft: '5px' }}
+                                                                />
+                                                            </Tooltip>
+                                                        </div>
+                                                    ) : (
+                                                        ''
+                                                    )
+                                                }
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                        message: 'Please input!',
+                                                    },
+                                                ]}
+                                            >
+                                                <Input
+                                                    placeholder={t('title.phCCCD')}
+                                                    className="admin-g-s"
+                                                    defaultValue={detail.idenNum}
+                                                    value={detail.idenNum}
+                                                    onChange={(e) => handleChange(e, 'idenNum')}
+                                                    showCount
+                                                    maxLength={12}
+                                                />
+                                            </Form.Item>
                                         </Space.Compact>
                                     </div>
                                 </div>
@@ -601,7 +682,7 @@ function Pr() {
                                     <Space.Compact size="large">
                                         <TextArea
                                             rows={4}
-                                            placeholder="Enter your address"
+                                            placeholder={t('title.phAddress')}
                                             className=" pr-admin-address"
                                             value={detail.Address}
                                             onChange={(e) => handleChange(e, 'Address')}
@@ -637,12 +718,12 @@ function Pr() {
                                         />
                                     </div>
                                 </div>
-                                <div className="detail-item">
+                                <div className="detail-item disabled">
                                     <h1>{t('title.ID')}: </h1>
                                     <Space.Compact size="large">
                                         <Input
                                             disabled
-                                            className="g-s pr-ID"
+                                            className="g-s pr-ID "
                                             value={detail.id}
                                             onChange={(e) => handleChange(e, 'id')}
                                         />
@@ -652,6 +733,7 @@ function Pr() {
                                     <h1>{t('title.name')}: </h1>
                                     <Space.Compact size="large">
                                         <Input
+                                            placeholder={t('title.phName')}
                                             className="g-s pr-st-name"
                                             value={detail.name}
                                             onChange={(e) => handleChange(e, 'name')}
@@ -659,15 +741,17 @@ function Pr() {
                                     </Space.Compact>
                                 </div>
                                 <div className="detail-item">
-                                    <h1>{t('title.DateOfBirth')}: </h1>
+                                    <h1>{t('title.DateOfBirth')}: abcd </h1>
                                     <Space.Compact size="mid">
                                         <Space.Compact size="mid">
+                                            {console.log('log here', detail.dateObirth)}
                                             <DatePicker
+                                                placeholder={t('title.phDateOfBirth')}
                                                 className="g-s pr-date-picker"
-                                                defaultValue={dayjs(detail.item, 'YYYY-MM-DD')}
+                                                defaultValue={dayjs(detail.dateObirth, 'DD/MM/YYYY')}
                                                 // onChange={handleDate}
                                                 onChange={(e) => handleSelect(e, 'dateObirth')}
-                                                format="YYYY-MM-DD"
+                                                format="DD-MM-YYYY"
                                             />
                                             {/* <DatePicker
                                             className="g-s pr-date-picker"
@@ -683,8 +767,8 @@ function Pr() {
                                     <Space.Compact size="large">
                                         <Space.Compact>
                                             <Select
+                                                placeholder={t('title.phGender')}
                                                 showSearch
-                                                placeholder="Choose your gender"
                                                 options={gender}
                                                 className="g-s pr-gender"
                                                 value={detail.gender}
@@ -699,6 +783,7 @@ function Pr() {
 
                                     <Space.Compact size="large">
                                         <Select
+                                            placeholder={t('title.phPlaceOfBirth')}
                                             size={size}
                                             showSearch
                                             options={provinces}
@@ -712,6 +797,7 @@ function Pr() {
                                     <h1>{t('title.Email')}: </h1>
                                     <Space.Compact size="large">
                                         <Input
+                                            placeholder={t('title.phEmail')}
                                             className="g-s pr-email"
                                             value={detail.email}
                                             onChange={(e) => handleChange(e, 'email')}
@@ -726,6 +812,7 @@ function Pr() {
                                 <div className="detail-item">
                                     <h1>{t('title.Ethnicity')}: </h1>
                                     <Select
+                                        placeholder={t('title.phEthnicity')}
                                         options={ethnicities}
                                         onChange={(e) => handleSelect(e, 'enthicity')}
                                         showSearch
@@ -737,13 +824,44 @@ function Pr() {
                                     <h1>CCCD: </h1>
 
                                     <Space.Compact size="large">
-                                        <Input
-                                            className="g-s pr-CCCD"
-                                            value={detail.idenNum}
-                                            onChange={(e) => handleChange(e, 'idenNum')}
-                                            showCount
-                                            maxLength={12}
-                                        />
+                                        <Form.Item
+                                            name="email"
+                                            validateStatus={errorCCCD ? 'error' : ''}
+                                            help={
+                                                errorCCCD ? (
+                                                    <div>
+                                                        <span>Invalid template </span>
+                                                        <Tooltip
+                                                            title={'Please enter only and must 12 number'}
+                                                            color={'red'}
+                                                            key={'red'}
+                                                            placement="bottom"
+                                                            style={{ color: 'red' }}
+                                                        >
+                                                            <ExclamationCircleOutlined style={{ marginLeft: '5px' }} />
+                                                        </Tooltip>
+                                                    </div>
+                                                ) : (
+                                                    ''
+                                                )
+                                            }
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Please input!',
+                                                },
+                                            ]}
+                                        >
+                                            <Input
+                                                placeholder={t('title.phCCCD')}
+                                                className="g-s pr-CCCD"
+                                                defaultValue={detail.idenNum}
+                                                value={detail.idenNum}
+                                                onChange={(e) => handleChange(e, 'idenNum')}
+                                                showCount
+                                                maxLength={12}
+                                            />
+                                        </Form.Item>
                                     </Space.Compact>
                                 </div>
 
@@ -752,6 +870,7 @@ function Pr() {
 
                                     <Space.Compact size="large">
                                         <TextArea
+                                            placeholder={t('title.phAddress')}
                                             rows={2}
                                             className="g-s pr-address"
                                             value={detail.Address}
@@ -762,7 +881,7 @@ function Pr() {
                             </div>
                             <div className="col2">
                                 <div className="pr-input">
-                                    <div className="detail-item-input">
+                                    <div className="detail-item-input disabled">
                                         <h1>{t('title.MathScore')}: </h1>
                                         <Input
                                             className=" pr-score"
@@ -771,7 +890,7 @@ function Pr() {
                                             disabled={true}
                                         />
                                     </div>
-                                    <div className="detail-item-input">
+                                    <div className="detail-item-input disabled">
                                         <h1>{t('title.EnglishScore')}: </h1>
                                         <Input
                                             className="pr-score"
@@ -780,7 +899,7 @@ function Pr() {
                                             disabled={true}
                                         />
                                     </div>
-                                    <div className="detail-item-input">
+                                    <div className="detail-item-input disabled">
                                         <h1>{t('title.LiteratureScore')}: </h1>
                                         <Input
                                             className=" pr-score"
@@ -799,7 +918,7 @@ function Pr() {
                                         options={arr}
                                         onChange={(e) => handleSelect(e, 'uniCode')}
                                         suffixIcon={suffix}
-                                        placeholder="Selected universities"
+                                        placeholder={t('title.phUniversities')}
                                         showSearch
                                         className="g-s university"
                                         style={{ width: '80%' }}
@@ -821,6 +940,18 @@ function Pr() {
                                         onClick={showModal}
                                         className="btn-save"
                                         loading={loadingSave}
+                                        disabled={
+                                            (detail.name !== '' &&
+                                                detail.gender !== '' &&
+                                                detail.placeOBirth !== '' &&
+                                                detail.Address !== '' &&
+                                                detail.enthicity &&
+                                                errorCCCD !== true &&
+                                                detail.idenNum !== '' &&
+                                                detail.email !== '') === true
+                                                ? false
+                                                : true
+                                        }
                                     >
                                         <span style={{ display: loadingSave === true ? 'none' : '' }}>
                                             {t('button.Save')}

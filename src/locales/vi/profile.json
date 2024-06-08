@@ -1,6 +1,6 @@
 {
     "title": {
-        "name": "Tên học sinh",
+        "name": "Họ và Tên",
         "Gender": "Giới tính",
         "Place of birth": "Nơi sinh",
         "Address": "Địa chỉ",
@@ -14,7 +14,16 @@
         "ID": "ID",
         "DateOfBirth": "Ngày sinh",
         "modalsave": "Lưu các chỉnh sửa",
-        "saveedit": "Bạn có muốn lưu những thay đổi này ?"
+        "saveedit": "Bạn có muốn lưu những thay đổi này ?",
+        "phName": "Nhập họ tên",
+        "phDateOfBirth": "Chọn ngày sinh",
+        "phPlaceOfBirth": "Nhập nơi sinh",
+        "phGender": "Chọn giới tính",
+        "phEmail": "Nhập email",
+        "phEthnicity": "Chọn dân tộc",
+        "phCCCD": "Nhập CCCD",
+        "phAddress": "Nhập email",
+        "phUniversities": "Chọn trường đại học"
     },
     "table": {
         "Code": "Mã trường",

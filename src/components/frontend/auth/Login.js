@@ -148,7 +148,7 @@ export const Login = () => {
                                     setIsLoggedIn(true);
                                     localStorage.setItem('isLoggedIn', 'true');
                                     setLoadingLogin(false);
-
+                                    localStorage.setItem('selectedMenuItem', 'Dashboard');
                                     <Link to="/admin/dashboard" />;
                                 } else {
                                     setLoadingLogin(false);

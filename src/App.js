@@ -20,12 +20,17 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
     const userToken = localStorage.getItem('userToken');
+    const handleRemember = () => {
+        localStorage.setItem('selectedMenuItem', 'Dashboard');
+        console.log(userToken);
+        return Masterlayout;
+    };
     return (
         <Provider store={store}>
             <div className="App">
                 <Router>
                     <Switch>
-                        <Route exact path="/" component={userToken !== null ? Masterlayout : Home} />
+                        <Route exact path="/" component={userToken !== null ? handleRemember() : Home} />
                         <Route path="/login" component={Login} />
                         <Route path="/register" component={Register} />
                         <Route path="/forgetpass" component={forgetpass} />

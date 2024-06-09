@@ -289,10 +289,9 @@ const AddSchool = () => {
             setPagination(pagination);
         }
     };
-
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-            <div className="filter" onKeyDown={(e) => e.stopPropagation()}>
+            <div className="getColumnSearchProps" onKeyDown={(e) => e.stopPropagation()}>
                 <Input
                     className="search"
                     ref={searchInput}
@@ -303,7 +302,7 @@ const AddSchool = () => {
                 />
                 <Space>
                     <Button
-                        className="all-btn-filter"
+                        className="getColumnSearchProps-Button"
                         type="primary"
                         onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                         icon={<SearchOutlined />}
@@ -311,33 +310,16 @@ const AddSchool = () => {
                     >
                         {t('button.search')}
                     </Button>
-                    <Button
-                        className="all-btn-filter"
-                        onClick={() => clearFilters && handleReset(clearFilters)}
-                        size="small"
-                    >
-                        {t('button.reset')}
-                    </Button>
-                    <Button
-                        type="link"
-                        size="small"
-                        onClick={() => {
-                            confirm({
-                                closeDropdown: false,
-                            });
-                            setSearchText(selectedKeys[0]);
-                            setSearchedColumn(dataIndex);
-                        }}
-                    >
-                        {t('button.filter')}
-                    </Button>
-                    <Button type="link" size="small" onClick={() => close()}>
+
+                    <Button type="link" size="small" onClick={() => close()} className="getColumnClose-Button">
                         {t('button.close')}
                     </Button>
                 </Space>
             </div>
         ),
-        filterIcon: () => <SearchOutlined className="ic-search" />,
+        filterIcon: (filtered) => (
+            <SearchOutlined className={filtered ? 'getColumnSearchProps-filterIcon' : undefined} />
+        ),
         onFilter: (value, record) => record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
         onFilterDropdownOpenChange: (visible) => {
             if (visible) {

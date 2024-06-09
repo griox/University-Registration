@@ -303,3 +303,9 @@
 .ant-modal .ant-modal-body{
     color:var(--body_color) !important;
 }
+.ant-form-item .ant-form-item-explain{
+    color: var(--unregistered-color)
+}
+.ant-btn-primary:disabled{
+    color: var(--body_color)
+}

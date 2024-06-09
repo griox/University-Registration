@@ -134,7 +134,6 @@ const FormAdd = ({ UniData, setUniData }) => {
             <Modal
                 title="Add a university"
                 open={isModalVisible}
-                open={isModalVisible}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 width={700}
@@ -147,7 +146,7 @@ const FormAdd = ({ UniData, setUniData }) => {
                             className="form-item2"
                             label={t('label.uniname')}
                             validateStatus={!validateUniName(uniName) && uniName ? 'error' : ''}
-                            help={!validateUniCode(uniName) && uniName ? 'Invalid university name' : ''}
+                            help={!validateUniName(uniName) && uniName ? 'Invalid university name' : ''}
                         >
                             <Input
                                 className="ip-UniName"

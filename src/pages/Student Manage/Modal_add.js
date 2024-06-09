@@ -12,7 +12,7 @@ import { database } from '../firebaseConfig.js';
 
 const ModalAdd = ({ studentData, setStudentData }) => {
     const [Fullname, setFullname] = useState('');
-    const [Gender, setGender] = useState('Female');
+    const [Gender, setGender] = useState('');
     const [Email, setEmail] = useState('');
     const [Identify, setIdentify] = useState('');
     const [Address, setAddress] = useState('');
@@ -24,8 +24,11 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     const [Englishscore, setEnglishscore] = useState(null);
     const [Literaturescore, setLiteraturescore] = useState(null);
     const [averageS, setAverageS] = useState(null);
+    const [isFormValid, setIsFormValid] = useState(false);
+    const [emailExist,setEmailExists] =useState(false);
+    const [IdenExists,setIdenExists] = useState(false);
     const { t } = useTranslation('modalStudent');
-    const [showSuccessModal, setShowSuccessModal] = useState(false);
+
     const secretKey = 'Tvx1234@';
     useEffect(() => {
         // Hàm kiểm tra tính hợp lệ của form
@@ -38,14 +41,20 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 dateOfBirth !== '' &&
                 placeOfBirth !== '' &&
                 Identify !== '' &&
-                Mathscore !== undefined && Mathscore !== null &&
-                Englishscore !== undefined && Englishscore !== null &&
-                Literaturescore !== undefined && Literaturescore !== null &&
+                Mathscore !== undefined &&
+                Mathscore !== null &&
+                Englishscore !== undefined &&
+                Englishscore !== null &&
+                Literaturescore !== undefined &&
+                Literaturescore !== null &&
                 validateEmailFormat(Email) &&
                 validateFullname(Fullname) &&
-                validateIdenNumber(Identify)
+                validateIdenNumber(Identify)&&
+                !checkEmail(Email) && 
+                !checkIden(Identify)
             );
         };
+        setIsFormValid(checkFormValidity());
     }, [
         Email,
         Fullname,
@@ -87,20 +96,20 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     useEffect(() => {
         const calculateAverage = () => {
             if (Mathscore !== null && Englishscore !== null && Literaturescore !== null) {
-                const totalScore = round((Mathscore + Englishscore + Literaturescore),1)/3;
+                const totalScore = round(Mathscore + Englishscore + Literaturescore, 1) / 3;
                 setAverageS(totalScore.toFixed(1));
             }
         };
         calculateAverage();
     }, [Mathscore, Englishscore, Literaturescore]);
-    
+
     const addStudent = async () => {
         try {
             const formattedDateOfBirth = dateOfBirth ? dateOfBirth.format('DD/MM/YYYY') : '';
             const newID = await generateID();
-            const studentRef = ref(database, `Detail/${newID}`); 
+            const studentRef = ref(database, `Detail/${newID}`);
             await set(studentRef, {
-                id: newID, 
+                id: newID,
                 email: Email,
                 name: Fullname,
                 enthicity: enthicity,
@@ -125,7 +134,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 Role: 'user',
             });
             const newData = {
-                id: newID, 
+                id: newID,
                 email: Email,
                 name: Fullname,
                 enthicity: enthicity,
@@ -144,78 +153,49 @@ const ModalAdd = ({ studentData, setStudentData }) => {
             setStudentData([...studentData, newData]);
             toast.success('Adding new student successfuly');
             setIsModalOpen(false);
-            setShowSuccessModal(true);
         } catch (error) {
             toast.error('An error occurred while adding student');
         }
     };
-
+    const checkEmail = async (Email) => {
+        const snapshot = await get(child(ref(database), `Detail/`));
+        if (snapshot.exists()) {
+            const students = snapshot.val();
+            const emailExists = Object.values(students).some((user) => user.email === Email);
+            setEmailExists(emailExists);
+        }
+        return false; // Nếu không có email tồn tại, trả về false
+    };
+    const checkIden = async(Identify)=>{
+        const snapshot = await get(child(ref(database), `Detail/`));
+        if (snapshot.exists()) {
+            const students = snapshot.val();
+            const idenExists = Object.values(students).some((user) => user.idenNum === Identify);
+            setIdenExists(idenExists);
+        }
+        return false; // Nếu không có email tồn tại, trả về false
+    }
+    const handleEmail =(e)=>{
+        const {value}=e.target;
+        setEmail(value);
+        checkEmail(value);
+    }
+    const handleIden =(e)=>{
+        const {value} = e.target;
+        setIdentify(value);
+        checkIden(value);
+    }
     const handleOk = async () => {
-        let hasError = false;
-
-        if (
-            Fullname === '' ||
-            Address === '' ||
-            dateOfBirth === '' ||
-            Mathscore === null ||
-            Englishscore === null ||
-            Literaturescore === null ||
-            Email === '' ||
-            Identify === ''
-        ) {
-            toast.error('please fill in all information');
-            hasError = true;
-        } else if (!validateFullname(Fullname)) {
-            toast.error('Invalid name');
-            hasError = true;
-        }
-
-        if (Email !== '') {
-            if (!validateEmailFormat(Email)) {
-                toast.error('Invalid Email');
-                hasError = true;
-            } else {
-                const snapshot = await get(child(ref(database), `Detail/`));
-                if (snapshot.exists()) {
-                    const students = snapshot.val();
-                    const emailExists = Object.values(students).some((user) => user.email === Email);
-                    if (emailExists) {
-                        toast.error('This email has already exists');
-                        hasError = true;
-                    }
-                }
-            }
-        }
-
-        if (Identify !== '') {
-            if (!validateIdenNumber(Identify)) {
-                toast.error('Invalid identify');
-                hasError = true;
-            } else {
-                const snapshot = await get(child(ref(database), `Detail/`));
-                if (snapshot.exists()) {
-                    const Infors = snapshot.val();
-                    const IdenExists = Object.values(Infors).some((user) => user.idenNum === Identify);
-                    if (IdenExists) {
-                        toast.error('This identify number has already exists');
-                        hasError = true;
-                    }
-                }
-            }
-        }
-
-        if (!hasError) {
-            addStudent();
-            setFullname('');
-            setEmail('');
-            setDateOfBirth('');
-            setAddress('');
-            setPlaceOfBirth('');
-            setIdentify('');
-            setMathscore(null);
-            setEnglishscore(null);
-            setLiteraturescore(null);
-        }
+        addStudent();
+        setFullname('');
+        setEmail('');
+        setDateOfBirth('');
+        setAddress('');
+        setPlaceOfBirth('');
+        setIdentify('');
+        setMathscore(null);
+        setEnglishscore(null);
+        setLiteraturescore(null);
     };
 
     const handleCancel = () => {
@@ -359,15 +339,21 @@ const ModalAdd = ({ studentData, setStudentData }) => {
         { value: 'Hà Nội', label: 'Hà Nội' },
         { value: 'Hồ Chí Minh', label: 'Hồ Chí Minh' },
     ];
-
     const { TextArea } = Input;
     const dateFormat = 'DD/MM/YYYY';
     return (
         <>
-            <Button className='btn-add' type="primary" onClick={showModal}>
+            <Button className="btn-add" type="primary" onClick={showModal}>
                 {t('button.Add')}
             </Button>
-            <Modal title={t('title.modal')} open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={700}>
+            <Modal
+                title={t('title.modal')}
+                open={isModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                width={700}
+                okButtonProps={{ disabled: !isFormValid }}
+            >
                 <Form layout="vertical">
                     <Row gutter={16}>
                         <Col span={12}>
@@ -376,10 +362,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 label={t('label.name')}
                                 name="name"
                                 validateStatus={!validateFullname(Fullname) && Fullname ? 'error' : ''}
-                                help= {!validateFullname(Fullname) && Fullname
-                                    ? t('warning.name')
-                                    : ''
-                                }
+                                help={!validateFullname(Fullname) && Fullname ? t('warning.name') : ''}
                                 rules={[
                                     {
                                         required: true,
@@ -392,7 +375,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     prefix={<UserOutlined className="icon" />}
                                     onChange={(e) => setFullname(e.target.value)}
                                     suffix={
-                                        <Tooltip title= {t('tooltip.name')}>
+                                        <Tooltip title={t('tooltip.name')}>
                                             <InfoCircleOutlined className="icon" />
                                         </Tooltip>
                                     }
@@ -439,7 +422,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     maxDate={dayjs('31/12/2004', dateFormat)}
                                     format="DD/MM/YYYY"
                                     onChange={(value) => setDateOfBirth(value)}
-                                    placeholder=''
+                                    placeholder=""
                                 />
                             </Form.Item>
                         </Col>
@@ -447,7 +430,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             <Form.Item label={t('label.pofb')} className="form-item1">
                                 <Select
                                     initialvalues="Khánh Hòa"
-                                    defaultValue={"Khánh Hòa"}
+                                    defaultValue={'Khánh Hòa'}
                                     options={cities}
                                     showSearch
                                     onChange={(value) => setPlaceOfBirth(value)}
@@ -456,11 +439,17 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         </Col>
                     </Row>
                     <Form.Item
-                          label={t('label.email')}
+                        label={t('label.email')}
                         name="email"
                         className="form-item1"
                         validateStatus={!validateEmailFormat(Email) && Email ? 'error' : ''}
-                        help={validateEmailFormat(Email) && Email ? ' ' : ''}
+                        help={
+                            Email && !validateEmailFormat(Email)
+                                ? t('warning.email')
+                                : emailExist
+                                ? t('warning.emailExists')
+                                : ''
+                        }
                         rules={[
                             {
                                 required: true,
@@ -476,22 +465,18 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     <InfoCircleOutlined className="icon" />
                                 </Tooltip>
                             }
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={handleEmail}
                             allowClear
                         />
                     </Form.Item>
                     <Row gutter={16}>
                         <Col span={12}>
                             <Form.Item
-                                  label={t('label.identify')}
+                                label={t('label.identify')}
                                 name="identify"
                                 className="form-item1"
                                 validateStatus={!validateIdenNumber(Identify) && Identify ? 'error' : ''}
-                                help={
-                                    !validateIdenNumber(Identify) && Identify
-                                        ? t('warning.identify')
-                                        : ''
-                                }
+                                help={!validateIdenNumber(Identify) && Identify ? t('warning.identify') : (IdenExists ? t('warning.idenexist'):'')}
                                 rules={[
                                     {
                                         required: true,
@@ -500,7 +485,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 ]}
                             >
                                 <Input
-                                    onChange={(e) => setIdentify(e.target.value)}
+                                    onChange={handleIden}
                                     showCount
                                     maxLength={12}
                                     value={Identify}
@@ -509,7 +494,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                         </Col>
                         <Col span={12}>
                             <Form.Item
-                               label={t('label.ethnicity')}
+                                label={t('label.ethnicity')}
                                 name="ethnicity"
                                 className="form-item1"
                                 rules={[
@@ -521,7 +506,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             >
                                 <Select
                                     initialvalues="Kinh"
-                                    defaultValue={"Kinh"}
+                                    defaultValue={'Kinh'}
                                     options={enthicities}
                                     onChange={(value) => setEnthicity(value)}
                                     showSearch
@@ -621,7 +606,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                             </Form.Item>
                         </Col>
                         <Col span={6}>
-                            <Form.Item  label={t('label.entrance')} className="form-item1">
+                            <Form.Item label={t('label.entrance')} className="form-item1">
                                 <Input readOnly className="input-num-en" value={averageS} />
                             </Form.Item>
                         </Col>

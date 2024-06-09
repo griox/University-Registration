@@ -39,7 +39,6 @@ const AddSchool = () => {
     const [searchedColumn, setSearchedColumn] = useState('');
     const [, setPagination] = useState({ current: 1, pageSize: 5 });
     const [loading, setLoading] = useState(true);
-    const [, setNumberRegist] = useState('');
     const tableRef = useRef(null);
     const searchInput = useRef(null);
     const [isRegistered, setIsRegistered] = useState(false);
@@ -121,9 +120,11 @@ const AddSchool = () => {
     };
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        console.log('start');
         confirm();
         setSearchText(selectedKeys[0]);
         setSearchedColumn(dataIndex);
+        console.log('end');
     };
     const handleReset = (clearFilters) => {
         clearFilters();
@@ -409,7 +410,6 @@ const AddSchool = () => {
             width: '20%',
             key: 'isRegistered',
             render: (_, record) => {
-                setNumberRegist(record);
                 return record.isRegistered;
             },
             responsive: ['sm'],
@@ -426,7 +426,7 @@ const AddSchool = () => {
         {
             title: t('table.Action'),
             dataIndex: 'operation',
-            width: '15%',
+            width: '18%',
             fixed: 'right',
             responsive: ['sm'],
             render: (_, record) => {

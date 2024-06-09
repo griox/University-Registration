@@ -358,11 +358,17 @@ input[type='button'] {
 }
 
 .detail-item :where(.css-dev-only-do-not-override-1okl62o).ant-picker-outlined {
-    border: 1px solid var(--border-color);
+    background-color: var(--input-color);
 }
+.detail-item :where(.css-dev-only-do-not-override-1okl62o).ant-picker-outlined:hover {
+    border: 1px solid #0dcaf0;
+}
+
 .detail-item-admin :where(.css-dev-only-do-not-override-1okl62o).ant-picker-outlined {
-    border: none;
+    border: 1px solid var(--border-color);
+    background-color: var(--input-color);
 }
+
 .disabled .ant-input-outlined {
     background-color: var(--input-color-disabled) !important;
     border-color: var(--border-color);
@@ -375,4 +381,10 @@ input[type='button'] {
     color: var(--body_color_disabled) !important;
 }
 
+:where(.css-dev-only-do-not-override-1okl62o).ant-picker-dropdown .ant-picker-header button {
+    color: var(--body_color);
+}
+.ant-picker-clear > * {
+    color: var(--placeholder-color);
+}
 /* //ầ */

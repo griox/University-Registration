@@ -75,10 +75,11 @@
     border-color: var(--hover-btn);
 }
 .ant-input-number-input {
+    background-color: var(--input-color) !important;
     color: var(--body_color) !important;
 }
 .ant-input-number-outlined .ant-input-number-handler-wrap .ant-input-number-handler-down {
-    order-block-start: 1px solid var(--border-color);
+    border-block-start: 1px solid var(--border-color);
 }
 .ant-input-number .ant-input-number-handler-wrap {
     background-color: var(--border-color);

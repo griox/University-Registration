@@ -292,18 +292,16 @@ const AddSchool = () => {
 
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-            <div className="filter" onKeyDown={(e) => e.stopPropagation()}>
+            <div className="search-column" onKeyDown={(e) => e.stopPropagation()}>
                 <Input
-                    className="search"
                     ref={searchInput}
-                    placeholder={t('placeholder.search')}
+                    placeholder={`Search ${dataIndex}`}
                     value={selectedKeys[0]}
                     onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
                 />
                 <Space>
                     <Button
-                        className="all-btn-filter"
                         type="primary"
                         onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                         icon={<SearchOutlined />}
@@ -311,11 +309,7 @@ const AddSchool = () => {
                     >
                         {t('button.search')}
                     </Button>
-                    <Button
-                        className="all-btn-filter"
-                        onClick={() => clearFilters && handleReset(clearFilters)}
-                        size="small"
-                    >
+                    <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small">
                         {t('button.reset')}
                     </Button>
                     <Button
@@ -337,8 +331,20 @@ const AddSchool = () => {
                 </Space>
             </div>
         ),
-        filterIcon: () => <SearchOutlined className="ic-search" />,
-        onFilter: (value, record) => record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+        filterIcon: (filtered) => (
+            <SearchOutlined
+                style={{
+                    color: filtered ? '#1677ff' : undefined,
+                }}
+            />
+        ),
+        onFilter: (value, record) => {
+            const dataIndexValue = record[dataIndex];
+            if (dataIndexValue) {
+                return dataIndexValue.toString().toLowerCase().includes(value.toLowerCase());
+            }
+            return false;
+        },
         onFilterDropdownOpenChange: (visible) => {
             if (visible) {
                 setTimeout(() => searchInput.current?.select(), 100);
@@ -359,6 +365,7 @@ const AddSchool = () => {
                 text
             ),
     });
+    
 
     const columns = [
         {

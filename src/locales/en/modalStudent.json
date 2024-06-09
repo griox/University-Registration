@@ -35,7 +35,9 @@
     "warning": {
         "name": "Student Name must contain only letters and no space",
         "input": "Please input !",
-        "identify": "Identify number must be 12 digits and contain only number "
+        "identify": "Identify number must be 12 digits and contain only number ",
+        "email": "Invalid email",
+        "emailExists":"This Email has already Exist"
     },
     "tooltip": {
         "name": "Name must contain letters and no space",

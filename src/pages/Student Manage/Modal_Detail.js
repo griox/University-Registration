@@ -156,7 +156,7 @@ const ModalDetail = ({ visible, onClose, student, studentUnicode }) => {
                     </>
                 ) : (
                     <h4 className="description">
-                        This student hasn't registered any school yet
+                        {t('title.notRegist')}
                         <WarningFilled style={{ marginLeft: '5px' }} />
                     </h4>
                 )}

@@ -1,37 +1,36 @@
-
 /* button */
-.btn-addUni{
+.btn-addUni {
     margin-left: 9px;
 }
-.ip-textArea{
+.ip-textArea {
     width: 393px;
 }
-.ip-number1{
+.ip-number1 {
     width: 186px;
 }
 .ip-number1 input::placeholder {
-    color: var(--placeholder-color) !important; 
+    color: var(--placeholder-color) !important;
 }
 .ip-number2 input::placeholder {
-    color: var(--placeholder-color) !important; 
+    color: var(--placeholder-color) !important;
 }
-.ip-number2{
+.ip-number2 {
     width: 186px;
 }
-.ip-UniName{
+.ip-UniName {
     width: 392px;
 }
-.ip-UniCode{
+.ip-UniCode {
     width: 185px;
 }
 .custom-ok-button.ant-btn[disabled] {
-     color: var(--name-colorN);
-}
-/* icon */
-.ic-bank{
     color: var(--name-colorN);
 }
-.ic-info{
+/* icon */
+.ic-bank {
+    color: var(--name-colorN);
+}
+.ic-info {
     color: var(--name-colorN);
 }
 
@@ -40,7 +39,7 @@
 }
 .form-item2 .ant-form-item-label {
     white-space: nowrap; /* Giữ cho văn bản không bị xuống dòng */
-    text-align: left; 
+    text-align: left;
 }
 
 .form-item2 .ant-form-item-control {
@@ -52,4 +51,14 @@
     font-size: 16px;
     font-weight: 500;
     color: var(--name-colorN);
+}
+.ant-modal-footer :where(.css-dev-only-do-not-override-1okl62o).ant-btn-default {
+    border: none;
+}
+
+:where(.css-dev-only-do-not-override-1okl62o).ant-input-affix-wrapper .ant-input-clear-icon {
+    color: var(--placeholder-color) !important;
+}
+.custom-ok-button.ant-btn[disabled] {
+    color: vaR(--ok-color);
 }

@@ -43,7 +43,7 @@ const AddSchool = () => {
     const tableRef = useRef(null);
     const searchInput = useRef(null);
     const [isRegistered, setIsRegistered] = useState(false);
-    
+
     const isEditing = (record) => record.key === editingKey;
 
     const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
@@ -80,7 +80,7 @@ const AddSchool = () => {
                             return <HandleErrorEdit />;
                         }
                         if (isEntrance) {
-                            if (!(value > 0 && value <= 10 )) {
+                            if (!(value > 0 && value <= 10)) {
                                 setError('Entrance Score must be > 0 and <= 10');
                                 return <HandleErrorEdit />;
                             }
@@ -97,22 +97,15 @@ const AddSchool = () => {
                 setError(null);
             }
         }, [editing]);
-    
+
         return (
             <td {...restProps}>
                 {editing ? (
-                    <> 
-                        <Form.Item
-                            className="form-editCell"
-                            name={dataIndex}
-                            rules={rules}
-                        >
+                    <>
+                        <Form.Item className="form-editCell" name={dataIndex} rules={rules}>
                             {inputNode}
-
                         </Form.Item>
-                        {error && (
-                            <HandleErrorEdit errorMessage={error} />
-                        )}
+                        {error && <HandleErrorEdit errorMessage={error} />}
                     </>
                 ) : (
                     children
@@ -274,8 +267,7 @@ const AddSchool = () => {
                 setEditingKey('');
 
                 await update(ref(database, `University/${key}`), updatedRow);
-                await
-                toast.success('Data updated successfully');
+                await toast.success('Data updated successfully');
             } else {
                 newData.push(row);
                 setUniData(newData);
@@ -380,23 +372,12 @@ const AddSchool = () => {
             ),
             responsive: ['xs'],
         },
-        {
-            title: t('table.Name'),
-            dataIndex: 'nameU',
-            width: '26%',
-            editable: true,
-            ...getColumnSearchProps('nameU'),
-            render: (text, record) => {
-                return <Typography.Link  className='idOnclick' onClick={() => handleSchoolDetail(record)}>{text}</Typography.Link>;
-            },
-            key: 'nameU',
-            responsive: ['sm'],
-        },
+
         {
             title: t('table.UniCode'),
             dataIndex: 'uniCode',
             key: 'uniCode',
-            width: '13%',
+            width: '20%',
             fixed: 'left',
             ...getColumnSearchProps('uniCode'),
             render: (text, record) => (
@@ -405,14 +386,29 @@ const AddSchool = () => {
                 </Tooltip>
             ),
             responsive: ['sm'],
-           
+        },
+        {
+            title: t('table.Name'),
+            dataIndex: 'nameU',
+            width: '26%',
+            editable: true,
+            ...getColumnSearchProps('nameU'),
+            render: (text, record) => {
+                return (
+                    <Typography.Link className="idOnclick" onClick={() => handleSchoolDetail(record)}>
+                        {text}
+                    </Typography.Link>
+                );
+            },
+            key: 'nameU',
+            responsive: ['sm'],
         },
         {
             title: t('table.Address'),
             dataIndex: 'address',
             filterSearch: true,
             editable: true,
-            width: '20%',
+            width: '40%',
             key: 'address',
             responsive: ['sm'],
         },
@@ -448,7 +444,7 @@ const AddSchool = () => {
         {
             title: t('table.Action'),
             dataIndex: 'operation',
-            width: '12%',
+            width: '15%',
             fixed: 'right',
             responsive: ['sm'],
             render: (_, record) => {

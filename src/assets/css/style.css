@@ -10,6 +10,7 @@ html,
     font-family: 'Source Sans Pro', sans-serif;
 }
 :root {
+    --ok-color: rgba(0, 0, 0, 0.25);
     --background-para: #f8efba;
     --chart-color: white;
     --placeholder-color: #d2dae2;
@@ -38,6 +39,7 @@ html,
     --menu-color: black;
 }
 [data-theme='dark'] {
+    --ok-color: #fff;
     --background-para: #485460;
     --chart-color: #141414;
     --sidebar-color: #3d3d3d;

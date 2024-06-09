@@ -30,7 +30,7 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
     const isMath = dataIndex === 'MathScore';
     const isLiterature = dataIndex === 'LiteratureScore';
     const isEnglish = dataIndex === 'EnglishScore';
-    
+
     const rules = [
         {
             validator: (_, value) => {
@@ -40,9 +40,9 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
                     }
                 }
                 if (isMath || isEnglish || isLiterature) {
-                    if (!(value >=0 && value <= 10 && value === ' ')) {
+                    if (!(value >= 0 && value <= 10 && value === ' ')) {
                         setError('Score must >= 0 and <= 10, just number');
-                        return <HandleErrorEdit/>;
+                        return <HandleErrorEdit />;
                     }
                 }
                 setError(null);
@@ -61,18 +61,10 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
         <td {...restProps}>
             {editing ? (
                 <>
-                <Form.Item
-                    className="edit-cell"
-                    name={dataIndex}
-                    open={!!error}
-                    rules={rules}
-                >
-                    {inputNode}
-
-                </Form.Item>
-                {error && (
-                        <HandleErrorEdit errorMessage={error} />
-                )}
+                    <Form.Item className="edit-cell" name={dataIndex} open={!!error} rules={rules}>
+                        {inputNode}
+                    </Form.Item>
+                    {error && <HandleErrorEdit errorMessage={error} />}
                 </>
             ) : (
                 children
@@ -213,7 +205,13 @@ const StudentList = () => {
                 }}
             />
         ),
-        onFilter: (value, record) => record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+        onFilter: (value, record) => {
+            const dataIndexValue = record[dataIndex];
+            if (dataIndexValue) {
+                return dataIndexValue.toString().toLowerCase().includes(value.toLowerCase());
+            }
+            return false;
+        },
         onFilterDropdownOpenChange: (visible) => {
             if (visible) {
                 setTimeout(() => searchInput.current?.select(), 100);
@@ -234,6 +232,7 @@ const StudentList = () => {
                 text
             ),
     });
+
     function encodeEmails(email) {
         return email.replace('.', ',');
     }
@@ -310,23 +309,23 @@ const StudentList = () => {
                     const studentRef = ref(database, `Detail/${id}`);
                     const snapshot1 = await get(studentRef);
                     const snapshot = await get(uniRef);
-                    if (snapshot.exists()&& snapshot1.exists()) {
-                       
+
+                    if (snapshot.exists() && snapshot1.exists()) {
                         const uniData = snapshot.val();
                         const studentData = snapshot1.val();
-                        console.log(averagescore, uniData.averageS);
+
                         if (averagescore < uniData.averageS) {
-                            const newRegisteration = uniData.registeration.filter((item) => item.id !== id);
-                            console.log(newRegisteration);
-                            const newUniCode = studentData.uniCode.filter((item2) => item2 !== uniCode);
-                            console.log(newUniCode);
-                            await update(studentRef, { uniCode: newUniCode });
+                            const updatedRegisteration = { ...uniData.registeration }; // Tạo một bản sao của đối tượng registeration
+                            delete updatedRegisteration[id]; // Xóa đối tượng với id tương ứng
+                            console.log('du lieu da duoc xoa');
                             const updatedIsRegistered = Math.max(0, uniData.isRegistered - 1);
                             await update(uniRef, {
                                 isRegistered: updatedIsRegistered,
-                                registeration: newRegisteration,
+                                registeration: updatedRegisteration, // Ghi đè dữ liệu mới lên registeration
                             });
-                            
+
+                            const newUniCode = studentData.uniCode.filter((item) => item !== uniCode);
+                            await update(studentRef, { uniCode: newUniCode });
                         }
                     }
                 }
@@ -335,6 +334,7 @@ const StudentList = () => {
             console.log(error);
         }
     };
+
     const checkEmailExistence = async (newEmail) => {
         try {
             const snapshot = await get(child(ref(database), 'Detail'));
@@ -461,7 +461,7 @@ const StudentList = () => {
             title: t('table.ID'),
             dataIndex: 'id',
 
-            width: '10%',
+            width: '20%',
             fixed: 'left',
             ...getColumnSearchProps('id'),
             render: (_, record) => (
@@ -475,7 +475,7 @@ const StudentList = () => {
         {
             title: t('table.Name'),
             dataIndex: 'name',
-            width: '27%',
+            width: '30%',
             editable: true,
             fixed: 'left',
             key: 'name',
@@ -496,7 +496,7 @@ const StudentList = () => {
         {
             title: t('table.Email'),
             dataIndex: 'email',
-            width: '30%',
+            width: '33%',
             editable: true,
             ...getColumnSearchProps('email'),
             render: (text, record) => (
@@ -509,7 +509,7 @@ const StudentList = () => {
         {
             title: t('table.Math'),
             dataIndex: 'MathScore',
-            width: '10%',
+            width: '17%',
             editable: true,
             sorter: (a, b) => a.MathScore - b.MathScore,
             key: 'MathScore',
@@ -517,7 +517,7 @@ const StudentList = () => {
         {
             title: t('table.Literature'),
             dataIndex: 'LiteratureScore',
-            width: '11%',
+            width: '25%',
             editable: true,
             key: 'LiteratureScore',
 
@@ -528,7 +528,7 @@ const StudentList = () => {
         {
             title: t('table.English'),
             dataIndex: 'EnglishScore',
-            width: '10%',
+            width: '20%',
             editable: true,
             key: 'EnglishScore',
             sorter: (a, b) => a.EnglishScore - b.EnglishScore,
@@ -536,7 +536,7 @@ const StudentList = () => {
         {
             title: t('table.Total Score'),
             dataIndex: 'AverageScore',
-            width: '10%',
+            width: '20%',
             key: 'AverageScore',
             sorter: (a, b) => a.AverageScore - b.AverageScore,
             responsive: ['sm'],
@@ -544,7 +544,7 @@ const StudentList = () => {
         {
             title: t('table.UniCode'),
             dataIndex: 'uniCode',
-            width: '20%',
+            width: '40%',
             render: (text) => {
                 if (typeof text === 'string') {
                     return text?.split(', ').join(', ');
@@ -560,7 +560,7 @@ const StudentList = () => {
         {
             title: t('table.Action'),
             dataIndex: 'operation',
-            width: '16%',
+            width: '30%',
             fixed: 'right',
             responsive: ['sm'],
             render: (_, record) => {
@@ -690,7 +690,7 @@ const StudentList = () => {
                     <Button type="primary" onClick={showModal}>
                         {t('button.sendnoti')}
                     </Button>
-                    
+
                     <ModalDetail
                         visible={isModalVisible}
                         onClose={() => {
@@ -711,7 +711,7 @@ const StudentList = () => {
                                 columns={mergedColumns}
                                 scroll={{
                                     x: 'calc(100vw - 290px)',
-                                    y: 'calc(100vh - 300px)',
+                                    y: 'calc(100vh - 280px)',
                                 }}
                                 rowClassName="editable-row"
                                 showSorterTooltip={{

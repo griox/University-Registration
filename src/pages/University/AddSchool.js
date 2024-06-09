@@ -29,6 +29,7 @@ const AddSchool = () => {
         };
         fetchData();
     }, []);
+
     const { t } = useTranslation('university');
     const [isModalDetailVisible, setDetailVisible] = useState(false);
     const [selectedUniverse, setSelectedUniverse] = useState(null);
@@ -292,18 +293,16 @@ const AddSchool = () => {
     };
     const getColumnSearchProps = (dataIndex) => ({
         filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
-            <div className="getColumnSearchProps" onKeyDown={(e) => e.stopPropagation()}>
+            <div className="search-column" onKeyDown={(e) => e.stopPropagation()}>
                 <Input
-                    className="search"
                     ref={searchInput}
-                    placeholder={t('placeholder.search')}
+                    placeholder={`Search ${dataIndex}`}
                     value={selectedKeys[0]}
                     onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
                     onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
                 />
                 <Space>
                     <Button
-                        className="getColumnSearchProps-Button"
                         type="primary"
                         onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
                         icon={<SearchOutlined />}
@@ -311,17 +310,42 @@ const AddSchool = () => {
                     >
                         {t('button.search')}
                     </Button>
-
-                    <Button type="link" size="small" onClick={() => close()} className="getColumnClose-Button">
+                    <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small">
+                        {t('button.reset')}
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            confirm({
+                                closeDropdown: false,
+                            });
+                            setSearchText(selectedKeys[0]);
+                            setSearchedColumn(dataIndex);
+                        }}
+                    >
+                        {t('button.filter')}
+                    </Button>
+                    <Button type="link" size="small" onClick={() => close()}>
                         {t('button.close')}
                     </Button>
                 </Space>
             </div>
         ),
         filterIcon: (filtered) => (
-            <SearchOutlined className={filtered ? 'getColumnSearchProps-filterIcon' : undefined} />
+            <SearchOutlined
+                style={{
+                    color: filtered ? '#1677ff' : undefined,
+                }}
+            />
         ),
-        onFilter: (value, record) => record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+        onFilter: (value, record) => {
+            const dataIndexValue = record[dataIndex];
+            if (dataIndexValue) {
+                return dataIndexValue.toString().toLowerCase().includes(value.toLowerCase());
+            }
+            return false;
+        },
         onFilterDropdownOpenChange: (visible) => {
             if (visible) {
                 setTimeout(() => searchInput.current?.select(), 100);

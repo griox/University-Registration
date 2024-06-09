@@ -3,10 +3,10 @@
         "ID": "ID",
         "Name": "Name",
         "Email": "Email",
-        "Math": "Math Score",
-        "Literature": "Literature Score",
-        "English": "English Score",
-        "Total Score": "Total Score",
+        "Math": "Math ",
+        "Literature": "Literature",
+        "English": "English ",
+        "Total Score": "Average ",
         "UniCode": "Registed Universities",
         "Action": "Action"
     },
@@ -22,7 +22,7 @@
         "send": "Send"
     },
     "title": {
-        "delete": "Sure to delete ?",
+        "delete": "Confirm Delete ?",
         "provide": "Provide Account ?",
         "deleteacc": "Delete Account ?",
         "total": "Total",

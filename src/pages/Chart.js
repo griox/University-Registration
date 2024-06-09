@@ -55,10 +55,9 @@ const Chart = () => {
         label: {
             text: (d) => `${d.score.toFixed(2)}`,
             textBaseline: 'bottom',
-            
         },
-        axis:{
-            fill:'pink',
+        axis: {
+            fill: 'pink',
             labelFill: 'red',
         },
         style: {
@@ -120,7 +119,7 @@ const Chart = () => {
                 fontWeight: 'bold',
                 fontSize: '50px',
                 titleStroke: 'red',
-                fill: '#fff'
+                fill: '#fff',
             },
         },
         legend: {
@@ -298,7 +297,7 @@ const Chart = () => {
                                             className="number-below-green"
                                             title={
                                                 'Number of Universities has more than 50% registration: ' +
-                                                { listUniMoreRegister }
+                                                listUniMoreRegister
                                             }
                                         >
                                             {listUniMoreRegister}
@@ -310,7 +309,7 @@ const Chart = () => {
                                             className="number-below-red"
                                             title={
                                                 'Number of Universities has less than 50% registration: ' +
-                                                { listUniLessRegister }
+                                                listUniLessRegister
                                             }
                                         >
                                             {listUniLessRegister}

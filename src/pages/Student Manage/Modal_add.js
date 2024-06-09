@@ -4,7 +4,7 @@ import { ref, child, get, set } from 'firebase/database';
 import { toast } from 'react-toastify';
 import { Button, Modal, Select, InputNumber, DatePicker, Form } from 'antd';
 import { InfoCircleOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
-import { Input, Tooltip, Row, Col, Result } from 'antd';
+import { Input, Tooltip, Row, Col } from 'antd';
 import '../Student Manage/css/modal_add.css';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
@@ -30,6 +30,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     const { t } = useTranslation('modalStudent');
 
     const secretKey = 'Tvx1234@';
+    
     useEffect(() => {
         // Hàm kiểm tra tính hợp lệ của form
         const checkFormValidity = () => {
@@ -55,6 +56,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
             );
         };
         setIsFormValid(checkFormValidity());
+        setIsFormValid(checkFormValidity());
     }, [
         Email,
         Fullname,
@@ -63,6 +65,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
         dateOfBirth,
         placeOfBirth,
         Identify,
+        Address,
         Mathscore,
         Englishscore,
         Literaturescore,
@@ -369,6 +372,11 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                         message: t('warning.input'),
                                     },
                                 ]}
+                                validateStatus={!validateFullname(Fullname) && Fullname ? 'error' : ''}
+                                help= {!validateFullname(Fullname) && Fullname
+                                    ? t('warning.name')
+                                    : ''
+                                }
                             >
                                 <Input
                                     placeholder={t('placeholder.name')}

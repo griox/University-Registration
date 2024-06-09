@@ -10,11 +10,11 @@
     display: block;
 }
 .Layout {
-    display: flex; 
+    display: flex;
     flex-grow: 1;
     overflow-x: hidden;
 }
-.table{
+.table {
     max-width: 100%;
 }
 /* button filter */
@@ -23,20 +23,20 @@
 }
 
 .ic-search {
-    color: '#1677ff';
+    color: '#000';
 }
-.LayoutUni{
+.LayoutUni {
     justify-content: center;
     align-items: center;
     display: flex;
     flex-grow: 1;
 }
-.rowUni{
+.rowUni {
     background-color: var(--body_background);
-    color: var(--body_color); 
-    border-bottom: 1px solid var(--border-color) !important 
+    color: var(--body_color);
+    border-bottom: 1px solid var(--border-color) !important;
 }
-.typolink{
+.typolink {
     margin-right: 8px;
 }
 
@@ -47,15 +47,18 @@
 .uniYes {
     color: var(--registered-color);
 }
-.uniNo{
-    color:var(--unregistered-color);
+.uniNo {
+    color: var(--unregistered-color);
 }
-.ant-descriptions .ant-descriptions-title{
-    color:var(--body_color) !important;
+.ant-descriptions .ant-descriptions-title {
+    color: var(--body_color) !important;
 }
-.ant-typography:hover{
-    color:var(--hover-btn) !important;
+.ant-typography:hover {
+    color: var(--hover-btn) !important;
 }
-.idOnclick{
-   text-decoration:underline !important;
+.idOnclick {
+    text-decoration: underline !important;
+}
+.ant-input-outlined:hover {
+    border-color: #000;
 }

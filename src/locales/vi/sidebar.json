@@ -8,10 +8,19 @@
         "logout": "Đăng xuất",
         "modal": "Đăng xuất",
         "confirm": "Bạn có chắc muốn đăng xuất ?",
-        "changepass": "Thay đổi mật khẩu"
+        "changepass": "Thay đổi mật khẩu",
+        "chat": "Trò chuyện"
     },
     "button": {
         "ok": "Có",
         "cancel": "Hủy"
+    },
+    "tooltip": {
+        "dashboard": "Bảng điều khiển",
+        "chatroom": "Trò chuyện",
+        "uni": "Quản lí trường đại học",
+        "student": "Quản lí sinh viên",
+        "regist": "Đăng kí tài khoản",
+        "profile": "Trang thông tin"
     }
 }

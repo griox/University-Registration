@@ -5,7 +5,7 @@
         "UniCode": "Mã trường",
         "Address": "Địa chỉ",
         "Entrance Score": "Điểm đầu vào",
-        "Number of registration": "Số lượng đăng kí",
+        "Number of registration": "Đã đăng kí",
         "Target": "Chỉ tiêu",
         "Action": "Hành động"
     },
@@ -32,5 +32,9 @@
     "tooltip": {
         "full": "Trường này đã đủ chỉ tiêu",
         "notfull": "Trường này sẵn sàng để đăng kí"
+    },
+    "warning": {
+        "title": "Giá trị không hợp lệ",
+        "input": "Vui lòng nhập !"
     }
 }

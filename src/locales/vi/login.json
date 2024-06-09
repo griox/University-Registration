@@ -12,5 +12,9 @@
     "button": {
         "log in": "Đăng nhập",
         "get back": "Quay lại"
+    },
+    "placeholder": {
+        "email": "Email",
+        "pass": "Mật khẩu"
     }
 }

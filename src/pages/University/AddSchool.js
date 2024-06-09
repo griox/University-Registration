@@ -43,7 +43,7 @@ const AddSchool = () => {
     const tableRef = useRef(null);
     const searchInput = useRef(null);
     const [isRegistered, setIsRegistered] = useState(false);
-    
+
     const isEditing = (record) => record.key === editingKey;
 
     const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
@@ -56,32 +56,34 @@ const AddSchool = () => {
             {
                 validator: (_, value) => {
                     if (dataIndex) {
-                        if (value === '') {
-                            return Promise.reject(`Please input`);
+                        if (value === '' || value === null) {
+                            return Promise.reject(t('warning.input'));
                         }
                     }
-                    if (isTarget) {
-                        if (value < record.isRegistered) {
-                            setError('Target must be greater than or equal to Num of registered');
-                            return Promise.reject('Invalid value');
+                    if (value !== '' && value !== null) {
+                        if (isTarget) {
+                            if (value < record.isRegistered) {
+                                setError('Target must be greater than or equal to Num of registered');
+                                return <HandleErrorEdit />;
+                            }
+                            if (!/^\d+$/.test(value)) {
+                                setError('Target must contain only numbers');
+                                return <HandleErrorEdit />;
+                            }
+                            if (!(value <= 1000)) {
+                                setError('Target must be <= 1000');
+                                return <HandleErrorEdit />;
+                            }
                         }
-                        if (!/^\d+$/.test(value)) {
-                            setError('Target must contain only numbers');
-                            return Promise.reject('Invalid value');
+                        if (isUniCode && !/^[a-zA-Z]+$/.test(value)) {
+                            setError('UniCode must contain letters only');
+                            return <HandleErrorEdit />;
                         }
-                        if (!(value <= 1000)) {
-                            setError('Target must be <= 1000');
-                            return Promise.reject('Invalid value');
-                        }
-                    }
-                    if (isUniCode && !/^[a-zA-Z]+$/.test(value)) {
-                        setError('UniCode must contain letters only');
-                        return Promise.reject('Invalid value');
-                    }
-                    if (isEntrance) {
-                        if (!(value > 0 && value <= 10 )) {
-                            setError('Entrance Score must be > 0 and <= 10');
-                            return Promise.reject('Invalid value');
+                        if (isEntrance) {
+                            if (!(value > 0 && value <= 10)) {
+                                setError('Entrance Score must be > 0 and <= 10');
+                                return <HandleErrorEdit />;
+                            }
                         }
                     }
                     setError(null);
@@ -95,22 +97,15 @@ const AddSchool = () => {
                 setError(null);
             }
         }, [editing]);
-    
+
         return (
             <td {...restProps}>
                 {editing ? (
-                    <> 
-                        <Form.Item
-                            className="form-editCell"
-                            name={dataIndex}
-                            rules={rules}
-                        >
+                    <>
+                        <Form.Item className="form-editCell" name={dataIndex} rules={rules}>
                             {inputNode}
-
                         </Form.Item>
-                        {error && (
-                            <HandleErrorEdit errorMessage={error} />
-                        )}
+                        {error && <HandleErrorEdit errorMessage={error} />}
                     </>
                 ) : (
                     children
@@ -118,6 +113,7 @@ const AddSchool = () => {
             </td>
         );
     };
+
     const handleSchoolDetail = (record) => {
         setIsRegistered(record.isRegistered !== 0);
         setDetailVisible(true);
@@ -271,8 +267,7 @@ const AddSchool = () => {
                 setEditingKey('');
 
                 await update(ref(database, `University/${key}`), updatedRow);
-                await
-                toast.success('Data updated successfully');
+                await toast.success('Data updated successfully');
             } else {
                 newData.push(row);
                 setUniData(newData);
@@ -384,30 +379,34 @@ const AddSchool = () => {
             ),
             responsive: ['xs'],
         },
+
         {
             title: t('table.UniCode'),
             dataIndex: 'uniCode',
             key: 'uniCode',
-            width: '13%',
+            width: '20%',
             fixed: 'left',
             ...getColumnSearchProps('uniCode'),
-            render: (text, record) => {
-                return <Typography.Link  className='idOnclick' onClick={() => handleSchoolDetail(record)}>{text}</Typography.Link>;
-            },
-            responsive: ['sm'],
-           
-        },
-        {
-            title: t('table.Name'),
-            dataIndex: 'nameU',
-            width: '26%',
-            editable:true,
-            ...getColumnSearchProps('nameU'),
             render: (text, record) => (
                 <Tooltip title={record.isRegistered === record.target ? t('tooltip.full') : t('tooltip.notfull')}>
                     <span className={record.isRegistered === record.target ? 'uniYes' : 'uniNo'}>{text}</span>
                 </Tooltip>
             ),
+            responsive: ['sm'],
+        },
+        {
+            title: t('table.Name'),
+            dataIndex: 'nameU',
+            width: '26%',
+            editable: true,
+            ...getColumnSearchProps('nameU'),
+            render: (text, record) => {
+                return (
+                    <Typography.Link className="idOnclick" onClick={() => handleSchoolDetail(record)}>
+                        {text}
+                    </Typography.Link>
+                );
+            },
             key: 'nameU',
             responsive: ['sm'],
         },
@@ -416,14 +415,14 @@ const AddSchool = () => {
             dataIndex: 'address',
             filterSearch: true,
             editable: true,
-            width: '20%',
+            width: '40%',
             key: 'address',
             responsive: ['sm'],
         },
         {
             title: t('table.Entrance Score'),
             dataIndex: 'averageS',
-            width: '17%',
+            width: '20%',
             editable: true,
             sorter: (a, b) => a.averageS - b.averageS,
             key: 'averageS',
@@ -432,7 +431,7 @@ const AddSchool = () => {
         {
             title: t('table.Number of registration'),
             dataIndex: 'isRegistered',
-            width: '18%',
+            width: '20%',
             key: 'isRegistered',
             render: (_, record) => {
                 setNumberRegist(record);
@@ -443,7 +442,7 @@ const AddSchool = () => {
         {
             title: t('table.Target'),
             dataIndex: 'target',
-            width: '10%',
+            width: '15%',
             editable: true,
             sorter: (a, b) => a.targets - b.targets,
             key: 'target',
@@ -452,7 +451,7 @@ const AddSchool = () => {
         {
             title: t('table.Action'),
             dataIndex: 'operation',
-            width: '12%',
+            width: '15%',
             fixed: 'right',
             responsive: ['sm'],
             render: (_, record) => {

@@ -35,14 +35,14 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
         {
             validator: (_, value) => {
                 if (dataIndex) {
-                    if (value === '') {
+                    if (value === '' || value === null) {
                         return Promise.reject(`Please input`);
                     }
                 }
                 if (isMath || isEnglish || isLiterature) {
-                    if (!(value >=0 && value <= 10 )) {
-                        setError('Score must >= 0 and <= 10 and just number');
-                        return Promise.reject('Invalid value');
+                    if (!(value >=0 && value <= 10 && value === ' ')) {
+                        setError('Score must >= 0 and <= 10, just number');
+                        return <HandleErrorEdit/>;
                     }
                 }
                 setError(null);

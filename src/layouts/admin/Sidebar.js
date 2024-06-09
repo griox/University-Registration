@@ -160,7 +160,7 @@ const Sidebar = () => {
                     color: 'var(--icon-color)',
                 },
                 '& .pro-inner-item:hover': {
-                    color: 'rgb(7, 153, 244) !important'
+                    color: 'rgb(7, 153, 244) !important',
                 },
                 '& .pro-menu-item.active': {
                     color: '#6870fa !important',
@@ -172,7 +172,7 @@ const Sidebar = () => {
                     <MenuItem
                         className="icon-menu"
                         onClick={() => setIsCollapsed(!isCollapsed)}
-                        icon={isCollapsed ? <MenuOutlinedIcon style={{color: 'var(--menu-color)'}} /> : undefined}
+                        icon={isCollapsed ? <MenuOutlinedIcon style={{ color: 'var(--menu-color)' }} /> : undefined}
                     >
                         {!isCollapsed && (
                             <Box display="flex" justifyContent="space-between" alignItems="center" ml="15px">
@@ -185,7 +185,7 @@ const Sidebar = () => {
                                     />
                                 </Typography>
                                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                                    <MenuOutlinedIcon style={{color: 'var(--menu-color)'}} />
+                                    <MenuOutlinedIcon style={{ color: 'var(--menu-color)' }} />
                                 </IconButton>
                             </Box>
                         )}
@@ -226,16 +226,16 @@ const Sidebar = () => {
                             iconFilled={<InsertChartIcon />}
                             selected={selected}
                             setSelected={setSelected}
-                            tooltip="Dashboard"
+                            tooltip= {t('tooltip.dashboard')}
                         />
                         <Item
-                            title={t('ChatRoom')}
+                            title={t('title.chat')}
                             to="/admin/ChatRoom"
                             iconFilled={<ChatIcon />}
                             iconOutline={<ChatOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
-                            tooltip="Chatroom"
+                            tooltip= {t('tooltip.chatroom')}
                         />
                         {isAdminOrSuperAdmin && (
                             <>
@@ -246,7 +246,7 @@ const Sidebar = () => {
                                     iconOutline={<SchoolOutlinedIcon />}
                                     selected={selected}
                                     setSelected={setSelected}
-                                    tooltip="University Managerment"
+                                    tooltip= {t('tooltip.uni')}
                                 />
                                 <Item
                                     title={t('title.student')}
@@ -255,7 +255,7 @@ const Sidebar = () => {
                                     iconOutline={<AssignmentIndOutlinedIcon />}
                                     selected={selected}
                                     setSelected={setSelected}
-                                    tooltip="Student Managerment"
+                                    tooltip= {t('tooltip.student')}
                                 />
                                 <Item
                                     title={t('title.register')}
@@ -264,7 +264,7 @@ const Sidebar = () => {
                                     iconOutline={<AppRegistrationIcon />}
                                     selected={selected}
                                     setSelected={setSelected}
-                                    tooltip="Register Account"
+                                    tooltip= {t('tooltip.regist')}
                                 />
                             </>
                         )}
@@ -275,7 +275,7 @@ const Sidebar = () => {
                             iconOutline={<ContactsOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
-                            tooltip="Profile"
+                            tooltip= {t('tooltip.profile')}
                         />
                     </Box>
                     <Modal
@@ -286,7 +286,7 @@ const Sidebar = () => {
                         okText={t('button.ok')}
                         cancelText={t('button.cancel')}
                     >
-                        <p style={{color: 'var(--name-colorN)'}}>{t('title.confirm')}</p>
+                        <p style={{ color: 'var(--name-colorN)' }}>{t('title.confirm')}</p>
                     </Modal>
                     <MenuItem
                         onClick={showModal}

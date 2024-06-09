@@ -6,7 +6,7 @@
         "UniCode": "UniCode",
         "Address": "Address",
         "Entrance Score": "Entrance score",
-        "Number of registration": "Number of registration",
+        "Number of registration": "Registration",
         "Target": "Target",
         "Action": "Action"
     },
@@ -33,5 +33,9 @@
     "tooltip": {
         "full": "This school is full of registeration",
         "notfull": "This school is ready for regist"
+    },
+    "warning": {
+        "title": "Invalid value",
+        "input": "Please input !"
     }
 }

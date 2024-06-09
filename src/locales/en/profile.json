@@ -1,6 +1,6 @@
 {
     "title": {
-        "name": "Student name",
+        "name": "Name",
         "Gender": "Gender",
         "Place of birth": "Place of birth",
         "Address": "Address",
@@ -14,7 +14,16 @@
         "ID": "ID",
         "DateOfBirth": "Date of birth",
         "modalsave": "Save Edit",
-        "saveedit": "Do you want to save these changes ?"
+        "saveedit": "Do you want to save these changes ?",
+        "phName": "Enter full name",
+        "phDateOfBirth": "Choose birth date",
+        "phGender": "Choose gender",
+        "phEmail": "Enter email",
+        "phPlaceOfBirth": "Enter birth place",
+        "phUniversities": "Selected universities",
+        "phEthnicity": "Choose  ethnicity",
+        "phCCCD": "Enter iden numbers",
+        "phAddress": "Enter address"
     },
     "table": {
         "Code": "Code",

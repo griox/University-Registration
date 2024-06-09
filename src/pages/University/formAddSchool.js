@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import { database } from '../firebaseConfig.js';
 import { useTranslation } from 'react-i18next';
 import '../University/css/formAddSchool.css';
-import { BankOutlined, InfoCircleOutlined  } from '@ant-design/icons';
+import { BankOutlined, InfoCircleOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 const FormAdd = ({ UniData, setUniData }) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [uniName, setUniName] = useState('');
@@ -16,7 +16,11 @@ const FormAdd = ({ UniData, setUniData }) => {
     const [targetScore, setTargetScore] = useState(null);
     const { t } = useTranslation('modalUni');
     const [isFormValid, setIsFormValid] = useState(false);
-
+    const [tempAverageScore, setTempAverageScore] = useState('');
+    const [errorAverageScore, setErrorAverageScore] = useState(false);
+    const [tempTarget, setTempTarget] = useState('');
+    const [errorTarget, setErrorTarget] = useState(false);
+    const [errorUnicode, setErrorUnicode] = useState(false);
     useEffect(() => {
         // Hàm kiểm tra tính hợp lệ của form
         const checkFormValidity = () => {
@@ -61,7 +65,7 @@ const FormAdd = ({ UniData, setUniData }) => {
     };
 
     const handleOk = async () => {
-        if (!uniName || !uniCode || !address || averageScore === null || targetScore === null) {
+        if (!uniName || !uniCode || !address || tempAverageScore === '' || tempTarget === '') {
             toast.error('Please fill in all information');
             return;
         }
@@ -119,22 +123,77 @@ const FormAdd = ({ UniData, setUniData }) => {
             target: targetScore,
         };
         setUniData([...UniData, newUni]);
-       
     };
+    const checkInValidTarget = (number) => {
+        if (number.match(/[a-z]+/) !== null) {
+            setErrorTarget(true);
+            return;
+        }
+        if (number.match(/[A-Z]+/) !== null) {
+            setErrorTarget(true);
 
+            return;
+        }
+
+        if (number.match(/[$@#&!-]+/) !== null) {
+            setErrorTarget(true);
+
+            return;
+        }
+
+        setErrorTarget(false);
+
+        setTargetScore(parseFloat(number));
+        setTempTarget(number);
+    };
+    const checkInvalidAverageScore = (number) => {
+        if (number.match(/[a-z]+/) !== null) {
+            setErrorAverageScore(true);
+            return;
+        }
+        if (number.match(/[A-Z]+/) !== null) {
+            setErrorAverageScore(true);
+
+            return;
+        }
+
+        if (number.match(/[$@#&!-]+/) !== null) {
+            setErrorAverageScore(true);
+
+            return;
+        }
+        if (parseFloat(number) < 0 || parseFloat(number) > 10) {
+            setErrorAverageScore(true);
+
+            return;
+        }
+        setErrorAverageScore(false);
+
+        setAverageScore(parseFloat(number));
+        setTempAverageScore(number);
+    };
+    const checkExist = (value) => {
+        const exists = UniData.some((element) => element.uniCode === value);
+        if (exists) {
+            setErrorUnicode(true);
+        } else {
+            setErrorUnicode(false);
+            setUniCode(value);
+        }
+    };
     return (
         <>
             <Button className="btn-addUni" type="primary" onClick={showModal}>
                 {t('button.Add')}
             </Button>
             <Modal
-                title= {t('title.modaladd')}
+                title={t('title.modaladd')}
                 open={isModalVisible}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 width={700}
                 destroyOnClose
-                okButtonProps={{ disabled: !isFormValid, className: 'custom-ok-button'  }}
+                okButtonProps={{ disabled: !isFormValid, className: 'custom-ok-button' }}
             >
                 <Space direction="vertical">
                     <Form layout="horizontal">
@@ -147,8 +206,8 @@ const FormAdd = ({ UniData, setUniData }) => {
                             rules={[
                                 {
                                     required: true,
-                                    message: t('warning.input')
-                                }
+                                    message: t('warning.input'),
+                                },
                             ]}
                             validateStatus={!validateUniName(uniName) && uniName ? 'error' : ''}
                             help={!validateUniName(uniName) && uniName ? t('warning.uniname') : ''}
@@ -172,12 +231,18 @@ const FormAdd = ({ UniData, setUniData }) => {
                             className="form-item2"
                             label={t('label.unicode')}
                             labelCol={{ span: 9 }}
-                            wrapperCol={{ span: 15 }} 
+                            wrapperCol={{ span: 15 }}
                             validateStatus={!validateUniCode(uniCode) && uniCode ? 'error' : ''}
                             help={
-                                !validateUniCode(uniCode) && uniCode
-                                    ? t('warning.unicode')
-                                    : ''
+                                !validateUniCode(uniCode) && uniCode ? (
+                                    t('warning.unicode')
+                                ) : errorUnicode === true ? (
+                                    <div>
+                                        <span style={{ color: 'red' }}>Unicode has exist</span>
+                                    </div>
+                                ) : (
+                                    ''
+                                )
                             }
                             name="InputCode"
                             rules={[
@@ -191,8 +256,7 @@ const FormAdd = ({ UniData, setUniData }) => {
                                 className="ip-UniCode"
                                 placeholder={t('placeholder.code')}
                                 allowClear
-                                onChange={(e) => setUniCode(e.target.value)}
-                                maxLength={6}
+                                onChange={(e) => checkExist(e.target.value)}
                                 suffix={
                                     <Tooltip title={t('tooltip.code')}>
                                         <InfoCircleOutlined className="ic-info" />
@@ -205,9 +269,28 @@ const FormAdd = ({ UniData, setUniData }) => {
                         <Form.Item
                             className="form-item2"
                             label={t('label.entrance')}
-                            labelCol={{ span: 9 }} 
-                            wrapperCol={{ span: 15 }} 
+                            labelCol={{ span: 9 }}
+                            wrapperCol={{ span: 15 }}
                             name="Entrance"
+                            validateStatus={errorAverageScore ? 'error' : ''}
+                            help={
+                                errorAverageScore ? (
+                                    <div>
+                                        <span>Invalid template </span>
+                                        <Tooltip
+                                            title={'Please enter only number and >=0 and <=10'}
+                                            color={'red'}
+                                            key={'red'}
+                                            placement="bottom"
+                                            style={{ color: 'red' }}
+                                        >
+                                            <ExclamationCircleOutlined style={{ marginLeft: '5px' }} />
+                                        </Tooltip>
+                                    </div>
+                                ) : (
+                                    ''
+                                )
+                            }
                             rules={[
                                 {
                                     required: true,
@@ -215,24 +298,39 @@ const FormAdd = ({ UniData, setUniData }) => {
                                 },
                             ]}
                         >
-                            <InputNumber
+                            <Input
                                 className="ip-number1"
                                 placeholder={t('placeholder.entrance')}
-                                maxLength={4}
-                                value={averageScore}
-                                onChange={(value) => setAverageScore(value)}
-                                min={0}
-                                max={10.0}
-                                step={0.2}
+                                value={tempAverageScore}
+                                onChange={(value) => checkInvalidAverageScore(value.target.value)}
                             />
                         </Form.Item>
 
                         <Form.Item
                             className="form-item2"
                             label={t('label.target')}
-                            labelCol={{ span: 9 }} 
+                            labelCol={{ span: 9 }}
                             wrapperCol={{ span: 15 }}
                             name="Target"
+                            validateStatus={errorTarget ? 'error' : ''}
+                            help={
+                                errorTarget ? (
+                                    <div>
+                                        <span>Invalid template </span>
+                                        <Tooltip
+                                            title={'Please enter only number'}
+                                            color={'red'}
+                                            key={'red'}
+                                            placement="bottom"
+                                            style={{ color: 'red' }}
+                                        >
+                                            <ExclamationCircleOutlined style={{ marginLeft: '5px' }} />
+                                        </Tooltip>
+                                    </div>
+                                ) : (
+                                    ''
+                                )
+                            }
                             rules={[
                                 {
                                     required: true,
@@ -240,23 +338,19 @@ const FormAdd = ({ UniData, setUniData }) => {
                                 },
                             ]}
                         >
-                            <InputNumber
+                            <Input
                                 className="ip-number2"
                                 placeholder={t('placeholder.target')}
-                                maxLength={3}
-                                value={targetScore}
-                                onChange={(value) => setTargetScore(value)}
-                                max={500}
-                                min={0}
-                                step={100}
+                                value={tempTarget}
+                                onChange={(value) => checkInValidTarget(value.target.value)}
                             />
                         </Form.Item>
 
                         <Form.Item
                             className="form-item2"
                             label={t('label.address')}
-                            labelCol={{ span: 9 }} 
-                            wrapperCol={{ span: 15 }} 
+                            labelCol={{ span: 9 }}
+                            wrapperCol={{ span: 15 }}
                             name="TextArea"
                             rules={[
                                 {

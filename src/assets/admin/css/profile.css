@@ -360,7 +360,9 @@ input[type='button'] {
 .detail-item :where(.css-dev-only-do-not-override-1okl62o).ant-picker-outlined {
     border: 1px solid var(--border-color);
 }
-
+.detail-item-admin :where(.css-dev-only-do-not-override-1okl62o).ant-picker-outlined {
+    border: none;
+}
 .disabled .ant-input-outlined {
     background-color: var(--input-color-disabled) !important;
     border-color: var(--border-color);

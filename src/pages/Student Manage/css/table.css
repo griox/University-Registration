@@ -27,12 +27,10 @@
     align-items: center;
     display: flex;
     flex-grow: 1;
-  
 }
 .ant-table {
     background-color: var(--body_background) !important;
     color: var(--body_color) !important;
-    
 }
 .editable-row {
     background-color: var(--body_background);
@@ -41,7 +39,6 @@
 }
 .ant-table-cell-fix-left {
     background-color: var(--body_background) !important;
-    
 }
 .Registered {
     color: var(--registered-color);
@@ -149,7 +146,6 @@
 }
 
 .ant-input-outlined:focus {
-    border-color: var(--border-color);
     background-color: var(--input-color);
 }
 .ant-table-wrapper .ant-table-thead th.ant-table-column-has-sorters:hover {
@@ -297,9 +293,9 @@
 .ant-popconfirm .ant-popconfirm-message .ant-popconfirm-title {
     color: var(--body_color) !important;
 }
-.ant-table-wrapper .ant-table-filter-trigger{
+.ant-table-wrapper .ant-table-filter-trigger {
     color: var(--body_color) !important;
 }
-.ant-modal .ant-modal-body{
-    color:var(--body_color) !important;
+.ant-modal .ant-modal-body {
+    color: var(--body_color) !important;
 }

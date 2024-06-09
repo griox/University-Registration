@@ -9,6 +9,12 @@
 .ip-number1{
     width: 186px;
 }
+.ip-number1 input::placeholder {
+    color: var(--placeholder-color) !important; 
+}
+.ip-number2 input::placeholder {
+    color: var(--placeholder-color) !important; 
+}
 .ip-number2{
     width: 186px;
 }
@@ -18,12 +24,15 @@
 .ip-UniCode{
     width: 185px;
 }
+.custom-ok-button.ant-btn[disabled] {
+     color: var(--name-colorN);
+}
 /* icon */
 .ic-bank{
-    color: rgb(0, 0, 0);
+    color: var(--name-colorN);
 }
 .ic-info{
-    color: rgb(0, 0, 0);
+    color: var(--name-colorN);
 }
 
 .form-item2 {

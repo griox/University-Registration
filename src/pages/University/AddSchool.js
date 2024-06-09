@@ -381,31 +381,31 @@ const AddSchool = () => {
             responsive: ['xs'],
         },
         {
+            title: t('table.Name'),
+            dataIndex: 'nameU',
+            width: '26%',
+            editable: true,
+            ...getColumnSearchProps('nameU'),
+            render: (text, record) => {
+                return <Typography.Link  className='idOnclick' onClick={() => handleSchoolDetail(record)}>{text}</Typography.Link>;
+            },
+            key: 'nameU',
+            responsive: ['sm'],
+        },
+        {
             title: t('table.UniCode'),
             dataIndex: 'uniCode',
             key: 'uniCode',
             width: '13%',
             fixed: 'left',
-            editable: true,
             ...getColumnSearchProps('uniCode'),
-            render: (text, record) => {
-                return <Typography.Link  className='idOnclick' onClick={() => handleSchoolDetail(record)}>{text}</Typography.Link>;
-            },
-            responsive: ['sm'],
-           
-        },
-        {
-            title: t('table.Name'),
-            dataIndex: 'nameU',
-            width: '26%',
-            ...getColumnSearchProps('nameU'),
             render: (text, record) => (
                 <Tooltip title={record.isRegistered === record.target ? t('tooltip.full') : t('tooltip.notfull')}>
                     <span className={record.isRegistered === record.target ? 'uniYes' : 'uniNo'}>{text}</span>
                 </Tooltip>
             ),
-            key: 'nameU',
             responsive: ['sm'],
+           
         },
         {
             title: t('table.Address'),

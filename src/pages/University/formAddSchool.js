@@ -134,7 +134,7 @@ const FormAdd = ({ UniData, setUniData }) => {
                 onCancel={handleCancel}
                 width={700}
                 destroyOnClose
-                okButtonProps={{ disabled: !isFormValid }}
+                okButtonProps={{ disabled: !isFormValid, className: 'custom-ok-button'  }}
             >
                 <Space direction="vertical">
                     <Form layout="horizontal">

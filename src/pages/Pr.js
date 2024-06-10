@@ -396,7 +396,8 @@ function Pr() {
                 .then(() => handleSubmit(per.id))
                 .then(() => {
                     detail.uniCode.forEach(async (item) => {
-                        if (per.uniCode.includes(item) === false) {
+                        const l = per.uniCode === undefined ? [] : per.uniCode;
+                        if (l.includes(item) === false) {
                             await get(child(ref(db), `University/` + item)).then(async (snapshot) => {
                                 if (snapshot.exists()) {
                                     const x = snapshot.val();

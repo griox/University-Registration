@@ -13,11 +13,10 @@ import {
     validateEmailFormat,
     validatePasswordFormat,
 } from '../../../commonFunctions';
-import { DownOutlined, ExclamationCircleOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import { Button, Dropdown, Form, Input, Radio, Space, Tooltip, Typography } from 'antd';
+import { DownOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import { Button, Dropdown, Form, Input, Radio, Space, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { locales } from '../../../translation/i18n';
-import bcrypt from 'bcryptjs';
 import CryptoJS from 'crypto-js';
 
 const Register = () => {
@@ -34,10 +33,8 @@ const Register = () => {
     const { t, i18n } = useTranslation('register');
     const currentLanguage = locales[i18n.language === 'vi' ? 'vi' : 'en'];
     const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage === 'Tiếng anh' ? 'Tiếng anh' : 'English');
-    const salt = bcrypt.genSaltSync(10);
     const [loadingRegist, setLoadingRegist] = useState(false);
     const secretKey = 'Tvx1234@';
-    const theme = useState(localStorage.getItem('selectedTheme') || 'light');
 
     const [value1, setValue1] = useState('User');
 
@@ -225,7 +222,7 @@ const Register = () => {
                                         ]}
                                     >
                                         <Input
-                                            placeholder= {t('placeholder.fullname')}
+                                            placeholder={t('placeholder.fullname')}
                                             onChange={(e) => setFullName(e.target.value)}
                                             onKeyDown={handleEnterKey}
                                             allowClear
@@ -248,7 +245,7 @@ const Register = () => {
                                         ]}
                                     >
                                         <Input
-                                            placeholder= {t('placeholder.email')}
+                                            placeholder={t('placeholder.email')}
                                             onChange={(e) => onchangeEmail(e.target.value)}
                                             onKeyDown={handleEnterKey}
                                             allowClear
@@ -272,7 +269,7 @@ const Register = () => {
                                         ]}
                                     >
                                         <Input.Password
-                                            placeholder= {t('placeholder.password')}
+                                            placeholder={t('placeholder.password')}
                                             onChange={(e) => onchangePassword(e.target.value)}
                                             onKeyDown={handleEnterKey}
                                             allowClear
@@ -304,7 +301,7 @@ const Register = () => {
                                         ]}
                                     >
                                         <Input.Password
-                                            placeholder= {t('placeholder.repass')}
+                                            placeholder={t('placeholder.repass')}
                                             onChange={(e) => onchangeAgainPassword(e.target.value)}
                                             onKeyDown={handleEnterKey}
                                             allowClear

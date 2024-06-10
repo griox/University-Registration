@@ -154,14 +154,9 @@ export const HandleErrorEdit = ({ errorMessage }) => {
     const { t } = useTranslation('university');
     return (
         <div>
-            <Tooltip
-                title={errorMessage}
-                color={'red'}
-                key={'red'}
-                placement="bottom"
-            >
-                <span style={{color: 'red',fontSize: '13px'}}>{t('warning.title')}</span>
-                <ExclamationCircleOutlined style={{ marginLeft: '5px', color: '#f5554a',fontWeight: 'bold' }} />
+            <Tooltip title={errorMessage} color={'red'} key={'red'} placement="bottom">
+                <span style={{ color: 'red', fontSize: '13px' }}>{t('warning.title')}</span>
+                <ExclamationCircleOutlined style={{ marginLeft: '5px', color: '#f5554a', fontWeight: 'bold' }} />
             </Tooltip>
         </div>
     );

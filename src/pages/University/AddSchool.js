@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Button, Space, Modal, Spin } from 'antd';
-import { SearchOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { SearchOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { toast } from 'react-toastify';
 import Highlighter from 'react-highlight-words';
 import { get, ref, child, remove, update, set } from 'firebase/database';
@@ -101,12 +101,27 @@ const AddSchool = () => {
         return (
             <td {...restProps}>
                 {editing ? (
-                    <>
+                    <div>
                         <Form.Item className="form-editCell" name={dataIndex} rules={rules}>
                             {inputNode}
                         </Form.Item>
-                        {error && <HandleErrorEdit errorMessage={error} />}
-                    </>
+                        {error && (
+                            <div>
+                                <Tooltip
+                                    title={error}
+                                    color={'red'}
+                                    key={'red'}
+                                    placement="bottom"
+                                    style={{ display: 'flex' }}
+                                >
+                                    <span style={{ color: 'red', fontSize: '13px' }}>{t('warning.title')}</span>
+                                    <ExclamationCircleOutlined
+                                        style={{ marginLeft: '5px', color: '#f5554a', fontWeight: 'bold' }}
+                                    />
+                                </Tooltip>
+                            </div>
+                        )}
+                    </div>
                 ) : (
                     children
                 )}
@@ -149,15 +164,35 @@ const AddSchool = () => {
     const handleDelete = async (record) => {
         try {
             if (record.registeration !== undefined) {
-                for (const student in record.registeration) {
-                    const studentRef = ref(database, `Detail/${record.registeration[student].id}`);
-                    const snapshot = await get(studentRef);
+                get(child(ref(database), `University/${record.uniCode}/registeration`)).then((snapshot) => {
                     if (snapshot.exists()) {
-                        const studentData = snapshot.val();
-                        const newArray = studentData.uniCode.filter((item) => item !== record.uniCode);
-                        await update(studentRef, { uniCode: newArray });
+                        const x = snapshot.val();
+
+                        for (let i in x) {
+                            const temp = x[i].id;
+                            let z = null;
+                            get(child(ref(database), `Detail/${temp}/uniCode`)).then((snapshot) => {
+                                if (snapshot.exists()) {
+                                    const y = snapshot.val();
+                                    const listItem = Object.values(y).map((user) => user);
+                                    z = listItem.filter((item) => item !== record.uniCode);
+                                    update(ref(database, `Detail/${temp}/`), {
+                                        uniCode: z,
+                                    });
+                                }
+                            });
+                        }
                     }
-                }
+                });
+                // for (const student in record.registeration) {
+                //     const studentRef = ref(database, `Detail/${record.registeration[student].id}`);
+                //     const snapshot = await get(studentRef);
+                //     if (snapshot.exists()) {
+                //         const studentData = snapshot.val();
+                //         const newArray = studentData.uniCode.filter((item) => item !== record.uniCode);
+                //         await update(studentRef, { uniCode: newArray });
+                //     }
+                // }
             }
             await remove(child(ref(database), `University/${record.uniCode}`));
             const newUni = UniData.filter((item) => item.uniCode !== record.uniCode);
@@ -191,23 +226,6 @@ const AddSchool = () => {
         }
     };
 
-    const checkUniCodeExistence = async (newUniCode) => {
-        try {
-            const snapshot = await get(child(ref(database), 'University'));
-            if (snapshot.exists()) {
-                const universities = snapshot.val();
-                const uniCodeExists = Object.values(universities).some(
-                    (uni) => uni.uniCode === newUniCode.toLowerCase(),
-                );
-                return uniCodeExists;
-            }
-            return false;
-        } catch (error) {
-            toast.error('Error checking uniCode existence');
-            return false;
-        }
-    };
-
     const checkNameExistence = async (newName) => {
         try {
             const snapshot = await get(child(ref(database), 'University'));
@@ -226,9 +244,11 @@ const AddSchool = () => {
     const save = async (key) => {
         try {
             const row = await form.validateFields();
+            console.log(row);
             const newData = [...UniData];
             const index = newData.findIndex((item) => key === item.key);
-
+            console.log(index, key);
+            let sum = null;
             if (index > -1) {
                 const item = newData[index];
                 if (row.target < item.isRegistered) {
@@ -239,19 +259,42 @@ const AddSchool = () => {
                     toast.error('Invalid Entrance Score Format');
                     return;
                 }
-                if (row.uniCode !== item.uniCode) {
-                    const uniCodeExists = await checkUniCodeExistence(row.uniCode);
-                    if (uniCodeExists) {
-                        toast.error('This uniCode already exists');
-                        return;
-                    }
-                }
+
                 if (row.nameU !== item.nameU) {
                     const uniNameExists = await checkNameExistence(row.nameU);
                     if (uniNameExists) {
                         toast.error('This Name already exists');
                         return;
                     }
+                }
+                if (row.averageS > item.averageS) {
+                    await get(child(ref(database), `University/${key}/registeration/`)).then((snapshot) => {
+                        if (snapshot.exists()) {
+                            let x = snapshot.val();
+
+                            for (let i in x) {
+                                const temp = x[i].id;
+                                get(child(ref(database), `Detail/${temp}/`)).then((snapshot) => {
+                                    if (snapshot.exists()) {
+                                        let z = x[i].uniCode === undefined ? [] : x[i].uniCode;
+
+                                        const y = snapshot.val();
+                                        if (y.AverageScore < row.averageS) {
+                                            console.log(y);
+                                            const m = y.uniCode === undefined ? [] : y.uniCode;
+                                            z = m.filter((item) => item !== key);
+                                            update(ref(database, `Detail/${temp}/`), {
+                                                uniCode: z,
+                                            });
+                                            delete x[i];
+                                        }
+                                    }
+                                });
+                            }
+                            const listItem = Object.values(x).map((user) => user);
+                            sum = listItem.length;
+                        }
+                    });
                 }
                 newData.splice(index, 1, {
                     ...item,
@@ -261,9 +304,12 @@ const AddSchool = () => {
                 const updatedRow = {
                     ...newData[index],
                     target: parseInt(newData[index].target),
-                    uniCode: row.uniCode,
+                    nameU: row.nameU,
+                    address: row.address,
+                    averageS: row.averageS,
+                    isRegistered: sum,
                 };
-
+                console.log(updatedRow);
                 newData[index] = updatedRow;
                 setUniData(newData);
                 setEditingKey('');
@@ -441,7 +487,7 @@ const AddSchool = () => {
         {
             title: t('table.Target'),
             dataIndex: 'target',
-            width: '15%',
+            width: '20%',
             editable: true,
             sorter: (a, b) => a.targets - b.targets,
             key: 'target',

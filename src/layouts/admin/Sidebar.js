@@ -145,6 +145,7 @@ const Sidebar = () => {
     return (
         <Box
             sx={{
+                position: 'sticky',
                 '& .pro-sidebar-inner': {
                     backgroundColor: `var(--sidebar-color)`,
                     height: '100vh',
@@ -226,7 +227,7 @@ const Sidebar = () => {
                             iconFilled={<InsertChartIcon />}
                             selected={selected}
                             setSelected={setSelected}
-                            tooltip= {t('tooltip.dashboard')}
+                            tooltip={t('tooltip.dashboard')}
                         />
                         <Item
                             title={t('title.chat')}
@@ -235,7 +236,7 @@ const Sidebar = () => {
                             iconOutline={<ChatOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
-                            tooltip= {t('tooltip.chatroom')}
+                            tooltip={t('tooltip.chatroom')}
                         />
                         {isAdminOrSuperAdmin && (
                             <>
@@ -246,7 +247,7 @@ const Sidebar = () => {
                                     iconOutline={<SchoolOutlinedIcon />}
                                     selected={selected}
                                     setSelected={setSelected}
-                                    tooltip= {t('tooltip.uni')}
+                                    tooltip={t('tooltip.uni')}
                                 />
                                 <Item
                                     title={t('title.student')}
@@ -255,7 +256,7 @@ const Sidebar = () => {
                                     iconOutline={<AssignmentIndOutlinedIcon />}
                                     selected={selected}
                                     setSelected={setSelected}
-                                    tooltip= {t('tooltip.student')}
+                                    tooltip={t('tooltip.student')}
                                 />
                                 <Item
                                     title={t('title.register')}
@@ -264,7 +265,7 @@ const Sidebar = () => {
                                     iconOutline={<AppRegistrationIcon />}
                                     selected={selected}
                                     setSelected={setSelected}
-                                    tooltip= {t('tooltip.regist')}
+                                    tooltip={t('tooltip.regist')}
                                 />
                             </>
                         )}
@@ -275,7 +276,7 @@ const Sidebar = () => {
                             iconOutline={<ContactsOutlinedIcon />}
                             selected={selected}
                             setSelected={setSelected}
-                            tooltip= {t('tooltip.profile')}
+                            tooltip={t('tooltip.profile')}
                         />
                     </Box>
                     <Modal

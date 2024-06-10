@@ -391,3 +391,7 @@ input[type='button'] {
     border-color: var(--border-color);
 }
 /* //ầ */
+
+.detail-item-university :where(.css-dev-only-do-not-override-1okl62o).ant-select .ant-select-selection-placeholder {
+    color: var(--body_color);
+}

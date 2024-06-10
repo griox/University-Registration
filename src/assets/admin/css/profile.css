@@ -361,7 +361,7 @@ input[type='button'] {
     background-color: var(--input-color);
 }
 .detail-item :where(.css-dev-only-do-not-override-1okl62o).ant-picker-outlined:hover {
-    border: 1px solid #0dcaf0;
+    border: 1px solid var(--hover-btn);
 }
 
 .detail-item-admin :where(.css-dev-only-do-not-override-1okl62o).ant-picker-outlined {
@@ -386,5 +386,8 @@ input[type='button'] {
 }
 .ant-picker-clear > * {
     color: var(--placeholder-color);
+}
+:where(.css-dev-only-do-not-override-1okl62o).ant-picker-outlined {
+    border-color: var(--border-color);
 }
 /* //ầ */

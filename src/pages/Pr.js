@@ -153,6 +153,22 @@ function Pr() {
                         detail.uniCode.length === 5 ||
                         record.capacity === record.isRegistered
                     }
+                    style={{
+                        color:
+                            detail.uniCode.includes(record.code) ||
+                            detail.uniCode.length === 5 ||
+                            record.capacity === record.isRegistered
+                                ? '#B7B7B7'
+                                : '#fff',
+                        backgroundColor:
+                            detail.uniCode.includes(record.code) ||
+                            detail.uniCode.length === 5 ||
+                            record.capacity === record.isRegistered
+                                ? '#596275'
+                                : localStorage.getItem('selectedTheme') === 'dark'
+                                ? '#FF7F50'
+                                : '#0799F4',
+                    }}
                 >
                     {t('button.Add')}
                 </Button>
@@ -742,26 +758,30 @@ function Pr() {
                                     </Space.Compact>
                                 </div>
                                 <div className="detail-item">
-                                    <h1>{t('title.DateOfBirth')}: abcd </h1>
-                                    <Space.Compact size="mid">
-                                        <Space.Compact size="mid">
-                                            {console.log('log here', detail.dateObirth)}
-                                            <DatePicker
-                                                placeholder={t('title.phDateOfBirth')}
-                                                className="g-s pr-date-picker"
-                                                defaultValue={dayjs(detail.dateObirth, 'DD/MM/YYYY')}
-                                                // onChange={handleDate}
-                                                onChange={(e) => handleSelect(e, 'dateObirth')}
-                                                format="DD-MM-YYYY"
-                                            />
-                                            {/* <DatePicker
+                                    <h1>{t('title.DateOfBirth')}: </h1>
+                                    {console.log('log here', detail.dateObirth)}
+                                    <DatePicker
+                                        placeholder={t('title.phDateOfBirth')}
+                                        className="g-s pr-date-picker"
+                                        defaultValue={dayjs(detail.dateObirth, 'DD/MM/YYYY')}
+                                        // onChange={handleDate}
+                                        onChange={(e) => handleSelect(e, 'dateObirth')}
+                                        format="DD-MM-YYYY"
+                                        style={{
+                                            border:
+                                                localStorage.getItem('selectedTheme') === 'dark'
+                                                    ? '1px solid #596275'
+                                                    : '1px solid #DFE4EA',
+                                            backgroundColor:
+                                                localStorage.getItem('selectedTheme') === 'dark' ? '#485460' : '#fff',
+                                        }}
+                                    />
+                                    {/* <DatePicker
                                             className="g-s pr-date-picker"
                                             selected={dayjs(detail.dateObirth, 'DD-MM-YYYY')}
                                             onChange={handleDate}
                                             format="DD-MM-YYYY"
                                         /> */}
-                                        </Space.Compact>
-                                    </Space.Compact>
                                 </div>
                                 <div className="detail-item">
                                     <h1>{t('title.Gender')}: </h1>
@@ -830,14 +850,14 @@ function Pr() {
                                             validateStatus={errorCCCD ? 'error' : ''}
                                             help={
                                                 errorCCCD ? (
-                                                    <div>
+                                                    <div style={{ margin: '0' }}>
                                                         <span>Invalid template </span>
                                                         <Tooltip
                                                             title={'Please enter only and must 12 number'}
                                                             color={'red'}
                                                             key={'red'}
                                                             placement="bottom"
-                                                            style={{ color: 'red' }}
+                                                            style={{ color: 'red', margin: '0' }}
                                                         >
                                                             <ExclamationCircleOutlined style={{ marginLeft: '5px' }} />
                                                         </Tooltip>
@@ -919,10 +939,24 @@ function Pr() {
                                         options={arr}
                                         onChange={(e) => handleSelect(e, 'uniCode')}
                                         suffixIcon={suffix}
-                                        placeholder={t('title.phUniversities')}
+                                        placeholder={
+                                            <span
+                                                style={{
+                                                    color:
+                                                        localStorage.getItem('selectedTheme') === 'dark'
+                                                            ? '#fff'
+                                                            : '#000',
+                                                }}
+                                            >
+                                                {t('title.phUniversities')}
+                                            </span>
+                                        }
                                         showSearch
                                         className="g-s university"
-                                        style={{ width: '80%' }}
+                                        style={{
+                                            width: '80%',
+                                            color: localStorage.getItem('selectedTheme') === 'dark' ? '#fff' : '#000',
+                                        }}
                                         value={detail.uniCode}
                                     />
 

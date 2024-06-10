@@ -468,7 +468,7 @@ const AddSchool = () => {
         {
             title: t('table.Entrance Score'),
             dataIndex: 'averageS',
-            width: '20%',
+            width: '25%',
             editable: true,
             sorter: (a, b) => a.averageS - b.averageS,
             key: 'averageS',

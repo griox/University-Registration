@@ -323,7 +323,7 @@ input[type='button'] {
 
 .table :where(.css-dev-only-do-not-override-1okl62o).ant-btn-default:disabled,
 :where(.css-dev-only-do-not-override-1okl62o).ant-btn-default.ant-btn-disabled {
-    color: var(--body_color_disabled);
+    color: var(--body_color_disabled) !important;
     background-color: var(--input-color-disabled) !important;
 }
 .detail-item-university
@@ -361,7 +361,7 @@ input[type='button'] {
     background-color: var(--input-color);
 }
 .detail-item :where(.css-dev-only-do-not-override-1okl62o).ant-picker-outlined:hover {
-    border: 1px solid var(--hover-btn);
+    border: 1px solid #0dcaf0;
 }
 
 .detail-item-admin :where(.css-dev-only-do-not-override-1okl62o).ant-picker-outlined {
@@ -382,16 +382,12 @@ input[type='button'] {
 }
 
 :where(.css-dev-only-do-not-override-1okl62o).ant-picker-dropdown .ant-picker-header button {
-    color: var(--body_color);
+    color: var(--body_color) !important;
 }
 .ant-picker-clear > * {
-    color: var(--placeholder-color);
+    color: var(--placeholder-color) !important;
 }
-:where(.css-dev-only-do-not-override-1okl62o).ant-picker-outlined {
-    border-color: var(--border-color);
-}
-/* //ầ */
 
 .detail-item-university :where(.css-dev-only-do-not-override-1okl62o).ant-select .ant-select-selection-placeholder {
-    color: var(--body_color);
+    color: var(--body_color) !important;
 }

@@ -14,6 +14,7 @@ const initState = {
     id: '',
     dateObirth: '0/0/0',
     darkMode: false,
+    AverageScore: 0,
 };
 
 const reducer = (state = initState, action) => {

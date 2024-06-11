@@ -10,6 +10,8 @@ html,
     font-family: 'Source Sans Pro', sans-serif;
 }
 :root {
+    --ant-picker: #1677ff;
+
     --ok-color: rgba(0, 0, 0, 0.25);
     --background-para: #f8efba;
     --chart-color: white;
@@ -39,6 +41,7 @@ html,
     --menu-color: black;
 }
 [data-theme='dark'] {
+    --ant-picker: #1c6fe1;
     --ok-color: #fff;
     --background-para: #485460;
     --chart-color: #141414;

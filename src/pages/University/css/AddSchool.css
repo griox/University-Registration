@@ -63,7 +63,6 @@
     border-color: #000;
 }
 
-:where(.css-dev-only-do-not-override-1okl62o).ant-input-textarea-affix-wrapper.ant-input-affix-wrapper
-    > textarea.ant-input {
+.ant-input-textarea-affix-wrapper.ant-input-affix-wrapper > textarea.ant-input {
     border-radius: 10px;
 }

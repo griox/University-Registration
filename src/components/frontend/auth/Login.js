@@ -12,23 +12,17 @@ import { useTranslation } from 'react-i18next';
 import { locales } from '../../../translation/i18n';
 import { DownOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Button, Dropdown, Form, Input, Space, Spin, Typography } from 'antd';
-import { GoogleAuthProvider, getAuth, signInWithPopup } from 'firebase/auth';
 import CryptoJS from 'crypto-js';
-import { useSelector } from 'react-redux';
 export const Login = () => {
     const { t, i18n } = useTranslation('login');
     const currentLanguage = locales[i18n.language === 'vi' ? 'vi' : 'en'];
     const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage === 'Tiếng anh' ? 'Tiếng anh' : 'English');
-    const detail = useSelector((state) => state);
-    const x = detail.userToken;
-    const y = detail.password;
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [rememberMe, setRememberMe] = useState(false);
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const auth = getAuth();
     const [loadingLogin, setLoadingLogin] = useState(false);
     const [errorEmail, setErrorEmail] = useState(false);
     const secretKey = 'Tvx1234@';
@@ -39,13 +33,13 @@ export const Login = () => {
             setLoginSpin(true);
             const tempEmail = localStorage.getItem('userToken');
             if (tempEmail !== null) {
-                setEmail(tempEmail);
-                localStorage.removeItem('userToken');
+                setRememberMe(true);
                 get(child(ref(db), `Account/` + encodePath(tempEmail))).then((snapshot) => {
                     if (snapshot.exists()) {
                         const x = snapshot.val();
                         var temp = CryptoJS.AES.decrypt(x.password, secretKey);
                         temp = temp.toString(CryptoJS.enc.Utf8);
+                        setEmail(tempEmail);
                         setPassword(temp);
                         setLoginSpin(false);
                     } else {
@@ -141,6 +135,10 @@ export const Login = () => {
 
                                     if (rememberMe === true) {
                                         localStorage.setItem('userToken', x.email);
+                                    } else {
+                                        if (localStorage.getItem('userToken') === email) {
+                                            localStorage.removeItem('userToken');
+                                        }
                                     }
 
                                     saveOnLocal(x.Role);

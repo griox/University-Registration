@@ -1,11 +1,12 @@
 import { get, ref, child } from 'firebase/database';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
-import { Descriptions, Table, Form, Spin } from 'antd';
-import {WarningFilled} from '@ant-design/icons'
+import { Descriptions, Table, Form, Spin, Input, Space, Button } from 'antd';
+import { SearchOutlined, WarningFilled } from '@ant-design/icons';
 import { database } from '../firebaseConfig.js';
 import './css/Modal_detail.css';
 import { useTranslation } from 'react-i18next';
+import Highlighter from 'react-highlight-words';
 
 export const Form_Detail = ({ university, isRegistered }) => {
     const [student, setStudents] = useState([]);
@@ -13,10 +14,99 @@ export const Form_Detail = ({ university, isRegistered }) => {
     const [form] = Form.useForm();
     const student_regist = university.registeration;
     const { t } = useTranslation('detailuniversity');
-
-    const cancel = () => {
+    const searchInput = useRef(null);
+    const [searchText, setSearchText] = useState('');
+    const [searchedColumn, setSearchedColumn] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const cancel = (page) => {
+        setCurrentPage(page);
         form.resetFields();
     };
+    const handleSearch = (selectedKeys, confirm, dataIndex) => {
+        confirm();
+        setSearchText(selectedKeys[0]);
+        setSearchedColumn(dataIndex);
+    };
+    const handleReset = (clearFilters) => {
+        clearFilters();
+        setSearchText('');
+    };
+
+    const getColumnSearchProps = (dataIndex) => ({
+        filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+            <div className="search-column" onKeyDown={(e) => e.stopPropagation()}>
+                <Input
+                    ref={searchInput}
+                    placeholder={`Search ${dataIndex}`}
+                    value={selectedKeys[0]}
+                    onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+                    onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                />
+                <Space>
+                    <Button
+                        type="primary"
+                        onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+                        icon={<SearchOutlined />}
+                        size="small"
+                    >
+                        {t('button.search')}
+                    </Button>
+                    <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small">
+                        {t('button.reset')}
+                    </Button>
+                    <Button
+                        type="link"
+                        size="small"
+                        onClick={() => {
+                            confirm({
+                                closeDropdown: false,
+                            });
+                            setSearchText(selectedKeys[0]);
+                            setSearchedColumn(dataIndex);
+                        }}
+                    >
+                        {t('button.filter')}
+                    </Button>
+                    <Button type="link" size="small" onClick={() => close()}>
+                        {t('button.close')}
+                    </Button>
+                </Space>
+            </div>
+        ),
+        filterIcon: (filtered) => (
+            <SearchOutlined
+                style={{
+                    color: filtered ? '#1677ff' : undefined,
+                }}
+            />
+        ),
+        onFilter: (value, record) => {
+            const dataIndexValue = record[dataIndex];
+            if (dataIndexValue) {
+                return dataIndexValue.toString().toLowerCase().includes(value.toLowerCase());
+            }
+            return false;
+        },
+        onFilterDropdownOpenChange: (visible) => {
+            if (visible) {
+                setTimeout(() => searchInput.current?.select(), 100);
+            }
+        },
+        render: (text) =>
+            searchedColumn === dataIndex ? (
+                <Highlighter
+                    highlightStyle={{
+                        backgroundColor: '#ffc069',
+                        padding: 0,
+                    }}
+                    searchWords={[searchText]}
+                    autoEscape
+                    textToHighlight={text ? text.toString() : ''}
+                />
+            ) : (
+                text
+            ),
+    });
     const items = [
         {
             key: '1',
@@ -54,6 +144,7 @@ export const Form_Detail = ({ university, isRegistered }) => {
             title: t('title.id'),
             dataIndex: 'id',
             width: '10%',
+            ...getColumnSearchProps('id'),
             fixed: 'left',
         },
 
@@ -62,12 +153,15 @@ export const Form_Detail = ({ university, isRegistered }) => {
             dataIndex: 'name',
             width: '19%',
             editable: true,
+            ...getColumnSearchProps('name'),
             fixed: 'left',
             key: 'name',
         },
         {
             title: t('title.email'),
             dataIndex: 'email',
+            key: 'email',
+            ...getColumnSearchProps('email'),
             width: '15%',
         },
         {
@@ -104,6 +198,7 @@ export const Form_Detail = ({ university, isRegistered }) => {
 
     useEffect(() => {
         const fetchData = async () => {
+            setCurrentPage(1);
             if (student_regist && typeof student_regist === 'object') {
                 setLoading(true);
                 const studentList = Object.values(student_regist).map((student) => student.id);
@@ -155,6 +250,7 @@ export const Form_Detail = ({ university, isRegistered }) => {
                                 target: 'sorter-icon',
                             }}
                             pagination={{
+                                current: currentPage,
                                 onChange: cancel,
                                 showSizeChanger: true,
                                 showQuickJumper: true,
@@ -162,8 +258,10 @@ export const Form_Detail = ({ university, isRegistered }) => {
                         />
                     </>
                 ) : (
-                    <h4 className="description">{t('title.notRegist')}<WarningFilled /></h4>
-                   
+                    <h4 className="description">
+                        {t('title.notRegist')}
+                        <WarningFilled />
+                    </h4>
                 )}
             </Spin>
         </>

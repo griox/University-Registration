@@ -42,8 +42,8 @@ function Pr() {
     const size = 'middle';
     const [image, setImage] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [date, setDate] = useState(detail.dateObirth);
     const [errorCCCD, setErrorCCCD] = useState(false);
+    const [errorCCCDExist, setErrorCCCDExist] = useState(false);
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
@@ -212,7 +212,13 @@ function Pr() {
 
     const handleChange = (e, propertyName) => {
         const newValue = e.target.value;
+
         if (propertyName === 'idenNum') {
+            console.log(newValue);
+            if (newValue === '') {
+                dispatch({ type: 'update', payload: { propertyName, newValue } });
+                return;
+            }
             if (newValue.length < 12) {
                 setErrorCCCD(true);
                 return;
@@ -229,9 +235,43 @@ function Pr() {
             if (newValue.match(/[$@#&!.]+/) !== null) {
                 setErrorCCCD(true);
                 return;
-            } else {
-                setErrorCCCD(false);
             }
+            get(child(ref(db), `Detail/`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const x = snapshot.val();
+                    for (let i in x) {
+                        if (x[i].idenNum === detail.idenNum) {
+                            setErrorCCCDExist(true);
+                            return;
+                        }
+                    }
+                }
+            });
+            get(child(ref(db), `Admin/`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const x = snapshot.val();
+                    for (let i in x) {
+                        if (x[i].idenNum === detail.idenNum) {
+                            setErrorCCCDExist(true);
+                            return;
+                        }
+                    }
+                }
+            });
+            get(child(ref(db), `Super_Admin/`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const x = snapshot.val();
+                    for (let i in x) {
+                        if (x[i].idenNum === detail.idenNum) {
+                            setErrorCCCDExist(true);
+                            return;
+                        }
+                    }
+                }
+            });
+            setErrorCCCDExist(false);
+
+            setErrorCCCD(false);
         }
         dispatch({ type: 'update', payload: { propertyName, newValue } });
     };
@@ -460,12 +500,6 @@ function Pr() {
     const handleCancel = () => {
         setIsModalOpen(false);
     };
-    const handleDate = (e) => {
-        const newValue = e.format('DD-MM-YYYY');
-        setDate(newValue);
-        const propertyName = 'dateObirth';
-        dispatch({ type: 'update', payload: { propertyName, newValue } });
-    };
 
     return (
         <div className="pr-container">
@@ -537,121 +571,24 @@ function Pr() {
                                         <h1>{t('title.ID')}: </h1>
                                         <Space.Compact size="large">
                                             <Input
+                                                className="admin-g-s"
                                                 placeholder="ID"
                                                 disabled
-                                                className="admin-g-s "
                                                 value={detail.id}
                                                 onChange={(e) => handleChange(e, 'id')}
-                                                // style={{backgroundColor:''}}
                                             />
                                         </Space.Compact>
                                     </div>
                                     <div className="detail-item-admin">
                                         <h1>{t('title.name')}: </h1>
                                         <Space.Compact size="large">
-                                            <Input
-                                                placeholder={t('title.phName')}
-                                                className="admin-g-s "
-                                                value={detail.name}
-                                                onChange={(e) => handleChange(e, 'name')}
-                                            />
-                                        </Space.Compact>
-                                    </div>
-                                    <div className="detail-item-admin">
-                                        <h1>{t('title.DateOfBirth')}:</h1>
-                                        <DatePicker
-                                            placeholder={t('title.phDateOfBirth')}
-                                            className="admin-g-s "
-                                            defaultValue={dayjs(detail.dateObirth, 'DD/MM/YYYY')}
-                                            onChange={(e) => handleSelect(e, 'dateObirth')}
-                                            format="DD-MM-YYYY"
-                                        />
-                                        {/* <DatePicker
-                                            className="admin-g-s pr-date-picker"
-                                            selected={dayjs(detail.dateObirth, 'DD-MM-YYYY')}
-                                            onChange={handleDate}
-                                            format="DD-MM-YYYY"
-                                        /> */}
-                                    </div>
-                                    <div className="detail-item-admin">
-                                        <h1>{t('title.Gender')}: </h1>
-                                        <Space.Compact size="large">
-                                            <Space.Compact>
-                                                <Select
-                                                    showSearch
-                                                    placeholder={t('title.phGender')}
-                                                    options={gender}
-                                                    className="admin-g-s "
-                                                    value={detail.gender}
-                                                    onChange={(e) => handleSelect(e, 'gender')}
-                                                />
-                                            </Space.Compact>
-                                        </Space.Compact>
-                                    </div>
-
-                                    <div className="detail-item-admin">
-                                        <h1>{t('title.Place of birth')}: </h1>
-
-                                        <Space.Compact size="large">
-                                            <Select
-                                                placeholder={t('title.phPlaceOfBirth')}
-                                                size={size}
-                                                showSearch
-                                                options={provinces}
-                                                className="admin-g-s"
-                                                value={detail.placeOBirth}
-                                                onChange={(e) => handleSelect(e, 'placeOBirth')}
-                                            />
-                                        </Space.Compact>
-                                    </div>
-                                    <div className="detail-item-admin">
-                                        <h1>{t('title.Email')}: </h1>
-                                        <Space.Compact size="large">
-                                            <Input
-                                                placeholder={t('title.phEmail')}
-                                                className="admin-g-s "
-                                                value={detail.email}
-                                                onChange={(e) => handleChange(e, 'email')}
-                                                suffix={
-                                                    <Tooltip title="Private Email">
-                                                        <InfoCircleOutlined className="InfoCircleOutlined" />
-                                                    </Tooltip>
-                                                }
-                                            />
-                                        </Space.Compact>
-                                    </div>
-                                    <div className="detail-item-admin">
-                                        <h1>{t('title.Ethnicity')}: </h1>
-                                        <Select
-                                            placeholder={t('titile.phEthnicity')}
-                                            options={ethnicities}
-                                            onChange={(e) => handleSelect(e, 'enthicity')}
-                                            showSearch
-                                            className="admin-g-s "
-                                            value={detail.enthicity}
-                                        />
-                                    </div>
-                                    <div className="detail-item-admin">
-                                        <h1>CCCD: </h1>
-
-                                        <Space.Compact size="large">
                                             <Form.Item
                                                 name="email"
-                                                validateStatus={errorCCCD ? 'error' : ''}
+                                                validateStatus={detail.name === '' ? 'error' : ''}
                                                 help={
-                                                    errorCCCD ? (
-                                                        <div>
-                                                            <span>Invalid template </span>
-                                                            <Tooltip
-                                                                title={'Please enter only and must 12 number '}
-                                                                color={'red'}
-                                                                key={'red'}
-                                                                placement="bottom"
-                                                            >
-                                                                <ExclamationCircleOutlined
-                                                                    style={{ marginLeft: '5px' }}
-                                                                />
-                                                            </Tooltip>
+                                                    detail.name === '' ? (
+                                                        <div style={{ margin: '0' }}>
+                                                            <span>Please enter full name </span>
                                                         </div>
                                                     ) : (
                                                         ''
@@ -665,8 +602,238 @@ function Pr() {
                                                 ]}
                                             >
                                                 <Input
-                                                    placeholder={t('title.phCCCD')}
                                                     className="admin-g-s"
+                                                    placeholder={t('title.phName')}
+                                                    value={detail.name}
+                                                    defaultValue={detail.name}
+                                                    onChange={(e) => handleChange(e, 'name')}
+                                                />
+                                            </Form.Item>
+                                        </Space.Compact>
+                                    </div>
+                                    <div className="detail-item-admin">
+                                        <h1>{t('title.DateOfBirth')}:</h1>
+                                        <Form.Item
+                                            name="email"
+                                            validateStatus={detail.dateObirth === '' ? 'error' : ''}
+                                            help={
+                                                detail.dateObirth === '' ? (
+                                                    <div style={{ margin: '0' }}>
+                                                        <span>Please enter date of birth </span>
+                                                    </div>
+                                                ) : (
+                                                    ''
+                                                )
+                                            }
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Please input!',
+                                                },
+                                            ]}
+                                        >
+                                            <DatePicker
+                                                className="admin-g-s"
+                                                placeholder={t('title.phDateOfBirth')}
+                                                defaultValue={dayjs(detail.dateObirth, 'DD/MM/YYYY')}
+                                                onChange={(e) => handleSelect(e, 'dateObirth')}
+                                                format="DD-MM-YYYY"
+                                            />
+                                        </Form.Item>
+                                        {/* <DatePicker
+                                            pr-date-picker"
+                                            selected={dayjs(detail.dateObirth, 'DD-MM-YYYY')}
+                                            onChange={handleDate}
+                                            format="DD-MM-YYYY"
+                                        /> */}
+                                    </div>
+                                    <div className="detail-item-admin">
+                                        <h1>{t('title.Gender')}: </h1>
+                                        <Space.Compact size="large">
+                                            <Space.Compact>
+                                                <Form.Item
+                                                    name="email"
+                                                    validateStatus={detail.gender === '' ? 'error' : ''}
+                                                    help={
+                                                        detail.gender === '' ? (
+                                                            <div style={{ margin: '0' }}>
+                                                                <span>Please enter gender </span>
+                                                            </div>
+                                                        ) : (
+                                                            ''
+                                                        )
+                                                    }
+                                                    rules={[
+                                                        {
+                                                            required: true,
+                                                            message: 'Please input!',
+                                                        },
+                                                    ]}
+                                                >
+                                                    <div className="admin-g-s">
+                                                        <Select
+                                                            showSearch
+                                                            placeholder={t('title.phGender')}
+                                                            options={gender}
+                                                            value={detail.gender}
+                                                            onChange={(e) => handleSelect(e, 'gender')}
+                                                        />
+                                                    </div>
+                                                </Form.Item>
+                                            </Space.Compact>
+                                        </Space.Compact>
+                                    </div>
+
+                                    <div className="detail-item-admin">
+                                        <h1>{t('title.Place of birth')}: </h1>
+
+                                        <Space.Compact size="large">
+                                            <Form.Item
+                                                name="email"
+                                                validateStatus={detail.placeOBirth === '' ? 'error' : ''}
+                                                help={
+                                                    detail.placeOBirth === '' ? (
+                                                        <div style={{ margin: '0' }}>
+                                                            <span>Please enter place of birth </span>
+                                                        </div>
+                                                    ) : (
+                                                        ''
+                                                    )
+                                                }
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                        message: 'Please input!',
+                                                    },
+                                                ]}
+                                            >
+                                                <div className="admin-g-s">
+                                                    <Select
+                                                        placeholder={t('title.phPlaceOfBirth')}
+                                                        size={size}
+                                                        showSearch
+                                                        options={provinces}
+                                                        value={detail.placeOBirth}
+                                                        onChange={(e) => handleSelect(e, 'placeOBirth')}
+                                                    />
+                                                </div>
+                                            </Form.Item>
+                                        </Space.Compact>
+                                    </div>
+                                    <div className="detail-item-admin">
+                                        <h1>{t('title.Email')}: </h1>
+                                        <Space.Compact size="large">
+                                            <Form.Item
+                                                name="email"
+                                                validateStatus={detail.email === '' ? 'error' : ''}
+                                                help={
+                                                    detail.email === '' ? (
+                                                        <div style={{ margin: '0' }}>
+                                                            <span>Please enter email </span>
+                                                        </div>
+                                                    ) : (
+                                                        ''
+                                                    )
+                                                }
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                        message: 'Please input!',
+                                                    },
+                                                ]}
+                                            >
+                                                <Input
+                                                    className="admin-g-s"
+                                                    placeholder={t('title.phEmail')}
+                                                    defaultValue={detail.email}
+                                                    value={detail.email}
+                                                    onChange={(e) => handleChange(e, 'email')}
+                                                    suffix={
+                                                        <Tooltip title="Private Email">
+                                                            <InfoCircleOutlined className="InfoCircleOutlined" />
+                                                        </Tooltip>
+                                                    }
+                                                />
+                                            </Form.Item>
+                                        </Space.Compact>
+                                    </div>
+                                    <div className="detail-item-admin">
+                                        <h1>{t('title.Ethnicity')}: </h1>
+                                        <Form.Item
+                                            name="email"
+                                            validateStatus={detail.enthicity === '' ? 'error' : ''}
+                                            help={
+                                                detail.enthicity === '' ? (
+                                                    <div style={{ margin: '0' }}>
+                                                        <span>Please enter ethnicity </span>
+                                                    </div>
+                                                ) : (
+                                                    ''
+                                                )
+                                            }
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Please input!',
+                                                },
+                                            ]}
+                                        >
+                                            <div className="admin-g-s">
+                                                <Select
+                                                    placeholder={t('titile.phEthnicity')}
+                                                    options={ethnicities}
+                                                    onChange={(e) => handleSelect(e, 'enthicity')}
+                                                    showSearch
+                                                    value={detail.enthicity}
+                                                />
+                                            </div>
+                                        </Form.Item>
+                                    </div>
+                                    <div className="detail-item-admin">
+                                        <h1>CCCD: </h1>
+
+                                        <Space.Compact size="large">
+                                            <Form.Item
+                                                name="email"
+                                                validateStatus={detail.idenNum === '' || errorCCCD ? 'error' : ''}
+                                                help={
+                                                    detail.idenNum === '' ? (
+                                                        <div style={{ margin: '0' }}>
+                                                            {console.log('rong')}
+                                                            <span>Please enter inden number </span>
+                                                        </div>
+                                                    ) : errorCCCD ? (
+                                                        <div>
+                                                            <span>Invalid template </span>
+                                                            <Tooltip
+                                                                title={'Please enter only and must 12 number '}
+                                                                color={'red'}
+                                                                key={'red'}
+                                                                placement="bottom"
+                                                            >
+                                                                <ExclamationCircleOutlined
+                                                                    style={{ marginLeft: '5px' }}
+                                                                />
+                                                            </Tooltip>
+                                                        </div>
+                                                    ) : errorCCCDExist === true ? (
+                                                        <div>
+                                                            <span>Inden number has existed</span>
+                                                        </div>
+                                                    ) : (
+                                                        ''
+                                                    )
+                                                }
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                        message: 'Please input!',
+                                                    },
+                                                ]}
+                                            >
+                                                <Input
+                                                    className="admin-g-s"
+                                                    placeholder={t('title.phCCCD')}
                                                     defaultValue={detail.idenNum}
                                                     value={detail.idenNum}
                                                     onChange={(e) => handleChange(e, 'idenNum')}
@@ -677,17 +844,38 @@ function Pr() {
                                         </Space.Compact>
                                     </div>
                                 </div>
-                                <div className="detail-item-admin-address ">
+                                <div className="detail-item-admin-address">
                                     <h1>{t('title.Address')}: </h1>
 
                                     <Space.Compact size="large">
-                                        <TextArea
-                                            rows={4}
-                                            placeholder={t('title.phAddress')}
-                                            className=" pr-admin-address"
-                                            value={detail.Address}
-                                            onChange={(e) => handleChange(e, 'Address')}
-                                        />
+                                        <Form.Item
+                                            name="email"
+                                            validateStatus={detail.Address === '' ? 'error' : ''}
+                                            help={
+                                                detail.Address === '' ? (
+                                                    <div style={{ margin: '0' }}>
+                                                        <span>Please enter address </span>
+                                                    </div>
+                                                ) : (
+                                                    ''
+                                                )
+                                            }
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Please input!',
+                                                },
+                                            ]}
+                                        >
+                                            <TextArea
+                                                rows={4}
+                                                placeholder={t('title.phAddress')}
+                                                className=" pr-admin-address"
+                                                defaultValue={detail.Address}
+                                                value={detail.Address}
+                                                onChange={(e) => handleChange(e, 'Address')}
+                                            />
+                                        </Form.Item>
                                     </Space.Compact>
                                 </div>
                             </div>
@@ -733,114 +921,13 @@ function Pr() {
                                 <div className="detail-item">
                                     <h1>{t('title.name')}: </h1>
                                     <Space.Compact size="large">
-                                        <Input
-                                            placeholder={t('title.phName')}
-                                            className="g-s pr-st-name"
-                                            value={detail.name}
-                                            onChange={(e) => handleChange(e, 'name')}
-                                        />
-                                    </Space.Compact>
-                                </div>
-                                <div className="detail-item">
-                                    <h1>{t('title.DateOfBirth')}: abcd </h1>
-                                    <Space.Compact size="mid">
-                                        <Space.Compact size="mid">
-                                            {console.log('log here', detail.dateObirth)}
-                                            <DatePicker
-                                                placeholder={t('title.phDateOfBirth')}
-                                                className="g-s pr-date-picker"
-                                                defaultValue={dayjs(detail.dateObirth, 'DD/MM/YYYY')}
-                                                // onChange={handleDate}
-                                                onChange={(e) => handleSelect(e, 'dateObirth')}
-                                                format="DD-MM-YYYY"
-                                            />
-                                            {/* <DatePicker
-                                            className="g-s pr-date-picker"
-                                            selected={dayjs(detail.dateObirth, 'DD-MM-YYYY')}
-                                            onChange={handleDate}
-                                            format="DD-MM-YYYY"
-                                        /> */}
-                                        </Space.Compact>
-                                    </Space.Compact>
-                                </div>
-                                <div className="detail-item">
-                                    <h1>{t('title.Gender')}: </h1>
-                                    <Space.Compact size="large">
-                                        <Space.Compact>
-                                            <Select
-                                                placeholder={t('title.phGender')}
-                                                showSearch
-                                                options={gender}
-                                                className="g-s pr-gender"
-                                                value={detail.gender}
-                                                onChange={(e) => handleSelect(e, 'gender')}
-                                            />
-                                        </Space.Compact>
-                                    </Space.Compact>
-                                </div>
-
-                                <div className="detail-item">
-                                    <h1>{t('title.Place of birth')}: </h1>
-
-                                    <Space.Compact size="large">
-                                        <Select
-                                            placeholder={t('title.phPlaceOfBirth')}
-                                            size={size}
-                                            showSearch
-                                            options={provinces}
-                                            className="g-s pr-place-birth"
-                                            value={detail.placeOBirth}
-                                            onChange={(e) => handleSelect(e, 'placeOBirth')}
-                                        />
-                                    </Space.Compact>
-                                </div>
-                                <div className="detail-item">
-                                    <h1>{t('title.Email')}: </h1>
-                                    <Space.Compact size="large">
-                                        <Input
-                                            placeholder={t('title.phEmail')}
-                                            className="g-s pr-email"
-                                            value={detail.email}
-                                            onChange={(e) => handleChange(e, 'email')}
-                                            suffix={
-                                                <Tooltip title="Private Email">
-                                                    <InfoCircleOutlined className="InfoCircleOutlined" />
-                                                </Tooltip>
-                                            }
-                                        />
-                                    </Space.Compact>
-                                </div>
-                                <div className="detail-item">
-                                    <h1>{t('title.Ethnicity')}: </h1>
-                                    <Select
-                                        placeholder={t('title.phEthnicity')}
-                                        options={ethnicities}
-                                        onChange={(e) => handleSelect(e, 'enthicity')}
-                                        showSearch
-                                        className="g-s pr-ethnicity"
-                                        value={detail.enthicity}
-                                    />
-                                </div>
-                                <div className="detail-item">
-                                    <h1>CCCD: </h1>
-
-                                    <Space.Compact size="large">
                                         <Form.Item
                                             name="email"
-                                            validateStatus={errorCCCD ? 'error' : ''}
+                                            validateStatus={detail.name === '' ? 'error' : ''}
                                             help={
-                                                errorCCCD ? (
-                                                    <div>
-                                                        <span>Invalid template </span>
-                                                        <Tooltip
-                                                            title={'Please enter only and must 12 number'}
-                                                            color={'red'}
-                                                            key={'red'}
-                                                            placement="bottom"
-                                                            style={{ color: 'red' }}
-                                                        >
-                                                            <ExclamationCircleOutlined style={{ marginLeft: '5px' }} />
-                                                        </Tooltip>
+                                                detail.name === '' ? (
+                                                    <div style={{ margin: '0' }}>
+                                                        <span>Please enter full name </span>
                                                     </div>
                                                 ) : (
                                                     ''
@@ -854,8 +941,224 @@ function Pr() {
                                             ]}
                                         >
                                             <Input
+                                                defaultValue={detail.name}
+                                                placeholder={t('title.phName')}
+                                                className="g-s pr-st-name"
+                                                value={detail.name}
+                                                onChange={(e) => handleChange(e, 'name')}
+                                            />
+                                        </Form.Item>
+                                    </Space.Compact>
+                                </div>
+                                <div className="detail-item">
+                                    <h1>{t('title.DateOfBirth')}: </h1>
+                                    {console.log('log here', detail.dateObirth)}
+                                    <DatePicker
+                                        placeholder={t('title.phDateOfBirth')}
+                                        className="g-s pr-date-picker"
+                                        defaultValue={dayjs(detail.dateObirth, 'DD/MM/YYYY')}
+                                        value={dayjs(detail.dateObirth, 'DD/MM/YYYY')}
+                                        onChange={(e) => handleSelect(e, 'dateObirth')}
+                                        format="DD-MM-YYYY"
+                                    />
+                                    {/* <DatePicker
+                                            className="g-s pr-date-picker"
+                                            selected={dayjs(detail.dateObirth, 'DD-MM-YYYY')}
+                                            onChange={handleDate}
+                                            format="DD-MM-YYYY"
+                                        /> */}
+                                </div>
+                                <div className="detail-item">
+                                    <h1>{t('title.Gender')}: </h1>
+                                    <Space.Compact size="large">
+                                        <Space.Compact>
+                                            <Form.Item
+                                                name="email"
+                                                validateStatus={detail.gender === '' ? 'error' : ''}
+                                                help={
+                                                    detail.gender === '' ? (
+                                                        <div style={{ margin: '0' }}>
+                                                            <span>Please enter gender </span>
+                                                        </div>
+                                                    ) : (
+                                                        ''
+                                                    )
+                                                }
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                        message: 'Please input!',
+                                                    },
+                                                ]}
+                                            >
+                                                <div className="g-s pr-gender">
+                                                    <Select
+                                                        placeholder={t('title.phGender')}
+                                                        showSearch
+                                                        options={gender}
+                                                        className="g-s pr-gender"
+                                                        value={detail.gender}
+                                                        onChange={(e) => handleSelect(e, 'gender')}
+                                                    />
+                                                </div>
+                                            </Form.Item>
+                                        </Space.Compact>
+                                    </Space.Compact>
+                                </div>
+
+                                <div className="detail-item">
+                                    <h1>{t('title.Place of birth')}: </h1>
+
+                                    <Space.Compact size="large">
+                                        <Form.Item
+                                            name="email"
+                                            validateStatus={detail.placeOBirth === '' ? 'error' : ''}
+                                            help={
+                                                detail.placeOBirth === '' ? (
+                                                    <div style={{ margin: '0' }}>
+                                                        <span>Please enter place of birth </span>
+                                                    </div>
+                                                ) : (
+                                                    ''
+                                                )
+                                            }
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Please input!',
+                                                },
+                                            ]}
+                                        >
+                                            <div className="g-s pr-gender">
+                                                <Select
+                                                    placeholder={t('title.phPlaceOfBirth')}
+                                                    size={size}
+                                                    showSearch
+                                                    options={provinces}
+                                                    className="g-s pr-place-birth"
+                                                    defaultValue={detail.placeOBirth}
+                                                    value={detail.placeOBirth}
+                                                    onChange={(e) => handleSelect(e, 'placeOBirth')}
+                                                />
+                                            </div>
+                                        </Form.Item>
+                                    </Space.Compact>
+                                </div>
+                                <div className="detail-item">
+                                    <h1>{t('title.Email')}: </h1>
+                                    <Space.Compact size="large">
+                                        <Form.Item
+                                            name="email"
+                                            validateStatus={detail.email === '' ? 'error' : ''}
+                                            help={
+                                                detail.email === '' ? (
+                                                    <div style={{ margin: '0' }}>
+                                                        <span>Please enter email</span>
+                                                    </div>
+                                                ) : (
+                                                    ''
+                                                )
+                                            }
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Please input!',
+                                                },
+                                            ]}
+                                        >
+                                            <Input
+                                                placeholder={t('title.phEmail')}
+                                                className="g-s pr-email"
+                                                value={detail.email}
+                                                defaultValue={detail.email}
+                                                onChange={(e) => handleChange(e, 'email')}
+                                                suffix={
+                                                    <Tooltip title="Private Email">
+                                                        <InfoCircleOutlined className="InfoCircleOutlined" />
+                                                    </Tooltip>
+                                                }
+                                            />
+                                        </Form.Item>
+                                    </Space.Compact>
+                                </div>
+                                <div className="detail-item">
+                                    <h1>{t('title.Ethnicity')}: </h1>
+                                    <Form.Item
+                                        name="email"
+                                        validateStatus={detail.enthicity === '' ? 'error' : ''}
+                                        help={
+                                            detail.enthicity === '' ? (
+                                                <div style={{ margin: '0' }}>
+                                                    <span>Please enter ethnicity </span>
+                                                </div>
+                                            ) : (
+                                                ''
+                                            )
+                                        }
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Please input!',
+                                            },
+                                        ]}
+                                    >
+                                        <div className="g-s pr-gender">
+                                            <Select
+                                                placeholder={t('title.phEthnicity')}
+                                                options={ethnicities}
+                                                onChange={(e) => handleSelect(e, 'enthicity')}
+                                                showSearch
+                                                className="g-s pr-ethnicity"
+                                                value={detail.enthicity}
+                                            />
+                                        </div>
+                                    </Form.Item>
+                                </div>
+                                <div className="detail-item">
+                                    <h1>CCCD: </h1>
+
+                                    <Space.Compact size="large">
+                                        <Form.Item
+                                            name="email"
+                                            validateStatus={detail.idenNum === '' || errorCCCD ? 'error' : ''}
+                                            help={
+                                                detail.idenNum === '' ? (
+                                                    <div style={{ margin: '0' }}>
+                                                        {console.log('rong')}
+                                                        <span>Please enter ethnicity </span>
+                                                    </div>
+                                                ) : errorCCCD ? (
+                                                    <div>
+                                                        {console.log(detail.idenNum)}
+
+                                                        <span>Invalid template </span>
+                                                        <Tooltip
+                                                            title={'Please enter only and must 12 number '}
+                                                            color={'red'}
+                                                            key={'red'}
+                                                            placement="bottom"
+                                                        >
+                                                            <ExclamationCircleOutlined style={{ marginLeft: '5px' }} />
+                                                        </Tooltip>
+                                                    </div>
+                                                ) : errorCCCDExist === true ? (
+                                                    <div>
+                                                        <span>Inden number has existed</span>
+                                                    </div>
+                                                ) : (
+                                                    ''
+                                                )
+                                            }
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Please input!',
+                                                },
+                                            ]}
+                                        >
+                                            <Input
+                                                className="g-s"
                                                 placeholder={t('title.phCCCD')}
-                                                className="g-s pr-CCCD"
                                                 defaultValue={detail.idenNum}
                                                 value={detail.idenNum}
                                                 onChange={(e) => handleChange(e, 'idenNum')}
@@ -868,15 +1171,36 @@ function Pr() {
 
                                 <div className="detail-item">
                                     <h1>{t('title.Address')}: </h1>
-
+                                    {console.log(detail.Address)}
                                     <Space.Compact size="large">
-                                        <TextArea
-                                            placeholder={t('title.phAddress')}
-                                            rows={2}
-                                            className="g-s pr-address"
-                                            value={detail.Address}
-                                            onChange={(e) => handleChange(e, 'Address')}
-                                        />
+                                        <Form.Item
+                                            name="email"
+                                            validateStatus={detail.Address === '' ? 'error' : ''}
+                                            help={
+                                                detail.Address === '' ? (
+                                                    <div style={{ margin: '0' }}>
+                                                        <span>Please enter address </span>
+                                                    </div>
+                                                ) : (
+                                                    ''
+                                                )
+                                            }
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Please input!',
+                                                },
+                                            ]}
+                                        >
+                                            <TextArea
+                                                placeholder={t('title.phAddress')}
+                                                rows={2}
+                                                className="g-s pr-address"
+                                                value={detail.Address}
+                                                defaultValue={detail.Address}
+                                                onChange={(e) => handleChange(e, 'Address')}
+                                            />
+                                        </Form.Item>
                                     </Space.Compact>
                                 </div>
                             </div>
@@ -909,6 +1233,15 @@ function Pr() {
                                             disabled={true}
                                         />
                                     </div>
+                                    <div className="detail-item-input disabled">
+                                        <h1>{t('title.AverageScore')}: </h1>
+                                        <Input
+                                            className=" pr-score"
+                                            value={detail.AverageScore}
+                                            onChange={(e) => handleChange(e, 'email')}
+                                            disabled={true}
+                                        />
+                                    </div>
                                 </div>
                                 <div className="detail-item-university">
                                     <h1>{t('title.University')}: </h1>
@@ -919,10 +1252,12 @@ function Pr() {
                                         options={arr}
                                         onChange={(e) => handleSelect(e, 'uniCode')}
                                         suffixIcon={suffix}
-                                        placeholder={t('title.phUniversities')}
+                                        placeholder={<span>{t('title.phUniversities')}</span>}
                                         showSearch
                                         className="g-s university"
-                                        style={{ width: '80%' }}
+                                        style={{
+                                            width: '80%',
+                                        }}
                                         value={detail.uniCode}
                                     />
 

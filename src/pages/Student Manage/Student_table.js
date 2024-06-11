@@ -30,19 +30,19 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
     const isMath = dataIndex === 'MathScore';
     const isLiterature = dataIndex === 'LiteratureScore';
     const isEnglish = dataIndex === 'EnglishScore';
-
+    
     const rules = [
         {
             validator: (_, value) => {
                 if (dataIndex) {
-                    if (value === '' || value === null) {
+                    if (value === '') {
                         return Promise.reject(`Please input`);
                     }
                 }
                 if (isMath || isEnglish || isLiterature) {
-                    if (!(value >= 0 && value <= 10 && value === ' ')) {
-                        setError('Score must >= 0 and <= 10, just number');
-                        return <HandleErrorEdit />;
+                    if (!(value >=0 && value <= 10 )) {
+                        setError('Score must >= 0 and <= 10 and just number');
+                        return Promise.reject('Invalid value');
                     }
                 }
                 setError(null);
@@ -61,10 +61,18 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
         <td {...restProps}>
             {editing ? (
                 <>
-                    <Form.Item className="edit-cell" name={dataIndex} open={!!error} rules={rules}>
-                        {inputNode}
-                    </Form.Item>
-                    {error && <HandleErrorEdit errorMessage={error} />}
+                <Form.Item
+                    className="edit-cell"
+                    name={dataIndex}
+                    open={!!error}
+                    rules={rules}
+                >
+                    {inputNode}
+
+                </Form.Item>
+                {error && (
+                        <HandleErrorEdit errorMessage={error} />
+                )}
                 </>
             ) : (
                 children
@@ -232,7 +240,7 @@ const StudentList = () => {
                 text
             ),
     });
-
+    
     function encodeEmails(email) {
         return email.replace('.', ',');
     }
@@ -301,31 +309,30 @@ const StudentList = () => {
     function validateEmailFormat(email) {
         return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(email);
     }
-    const updateUniCode = async (record, averagescore, id) => {
+    const updateUniCode = async (record, averagescore) => {
         try {
             if (record.uniCode !== undefined) {
                 for (const uniCode in record.uniCode) {
-                    const uniRef = ref(database, `University/${record.uniCode[uniCode]}`);
-                    const studentRef = ref(database, `Detail/${id}`);
-                    const snapshot1 = await get(studentRef);
+                    const uniRef = ref(database, `University/${record.uniCode[uniCode]}/registeration/`);
                     const snapshot = await get(uniRef);
-
-                    if (snapshot.exists() && snapshot1.exists()) {
-                        const uniData = snapshot.val();
-                        const studentData = snapshot1.val();
-
+                    
+                    if (snapshot.exists()) {
+                        let uniData = snapshot.val();
                         if (averagescore < uniData.averageS) {
-                            const updatedRegisteration = { ...uniData.registeration }; // Tạo một bản sao của đối tượng registeration
-                            delete updatedRegisteration[id]; // Xóa đối tượng với id tương ứng
-                            console.log('du lieu da duoc xoa');
-                            const updatedIsRegistered = Math.max(0, uniData.isRegistered - 1);
-                            await update(uniRef, {
-                                isRegistered: updatedIsRegistered,
-                                registeration: updatedRegisteration, // Ghi đè dữ liệu mới lên registeration
+                            await update(ref(database, `University/${record.uniCode[uniCode]}`), {
+                                isRegistered: uniData.isRegistered - 1
                             });
-
-                            const newUniCode = studentData.uniCode.filter((item) => item !== uniCode);
-                            await update(studentRef, { uniCode: newUniCode });
+    
+                            for (let i in uniData) {
+                                const temp = uniData[i].id;
+                                const detailRef = ref(database, `Detail/${temp}/`);
+                                const detailSnapshot = await get(detailRef);
+                                if (detailSnapshot.exists()) {
+                                    let z = x[i].uniCode === undefined ? [] : x[i].uniCode;
+                                   const studentData = detailSnapshot.val();
+                                   
+                                }
+                            }
                         }
                     }
                 }
@@ -334,7 +341,8 @@ const StudentList = () => {
             console.log(error);
         }
     };
-
+    
+    
     const checkEmailExistence = async (newEmail) => {
         try {
             const snapshot = await get(child(ref(database), 'Detail'));
@@ -394,7 +402,7 @@ const StudentList = () => {
                     row.EnglishScore < item.EnglishScore ||
                     row.LiteratureScore < item.LiteratureScore
                 ) {
-                    updateUniCode(record, averageScore, record.key);
+                    updateUniCode(record, averageScore);
                 }
                 updatedRow['AverageScore'] = Math.round(averageScore * 10) / 10;
 
@@ -461,7 +469,7 @@ const StudentList = () => {
             title: t('table.ID'),
             dataIndex: 'id',
 
-            width: '20%',
+            width: '14%',
             fixed: 'left',
             ...getColumnSearchProps('id'),
             render: (_, record) => (
@@ -475,7 +483,7 @@ const StudentList = () => {
         {
             title: t('table.Name'),
             dataIndex: 'name',
-            width: '37%',
+            width: '27%',
             editable: true,
             fixed: 'left',
             key: 'name',
@@ -509,7 +517,7 @@ const StudentList = () => {
         {
             title: t('table.Math'),
             dataIndex: 'MathScore',
-            width: '17%',
+            width: '14%',
             editable: true,
             sorter: (a, b) => a.MathScore - b.MathScore,
             key: 'MathScore',
@@ -517,7 +525,7 @@ const StudentList = () => {
         {
             title: t('table.Literature'),
             dataIndex: 'LiteratureScore',
-            width: '25%',
+            width: '17%',
             editable: true,
             key: 'LiteratureScore',
 
@@ -528,7 +536,7 @@ const StudentList = () => {
         {
             title: t('table.English'),
             dataIndex: 'EnglishScore',
-            width: '20%',
+            width: '17%',
             editable: true,
             key: 'EnglishScore',
             sorter: (a, b) => a.EnglishScore - b.EnglishScore,
@@ -536,7 +544,7 @@ const StudentList = () => {
         {
             title: t('table.Total Score'),
             dataIndex: 'AverageScore',
-            width: '20%',
+            width: '17%',
             key: 'AverageScore',
             sorter: (a, b) => a.AverageScore - b.AverageScore,
             responsive: ['sm'],
@@ -544,7 +552,7 @@ const StudentList = () => {
         {
             title: t('table.UniCode'),
             dataIndex: 'uniCode',
-            width: '40%',
+            width: '30%',
             render: (text) => {
                 if (typeof text === 'string') {
                     return text?.split(', ').join(', ');
@@ -560,7 +568,7 @@ const StudentList = () => {
         {
             title: t('table.Action'),
             dataIndex: 'operation',
-            width: '30%',
+            width: '21%',
             fixed: 'right',
             responsive: ['sm'],
             render: (_, record) => {
@@ -690,7 +698,7 @@ const StudentList = () => {
                     <Button type="primary" onClick={showModal}>
                         {t('button.sendnoti')}
                     </Button>
-
+                    
                     <ModalDetail
                         visible={isModalVisible}
                         onClose={() => {

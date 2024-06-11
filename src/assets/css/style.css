@@ -114,11 +114,12 @@ html,
 .css-48zvm2-MuiTypography-root {
     color: var(--body_color) !important;
 }
-:where(.css-dev-only-do-not-override-j9bb5n).ant-table-wrapper .ant-table-filter-trigger {
+.ant-table-wrapper .ant-table-filter-trigger {
     color: var(--body-color);
 }
 
 .username {
+    color: 'var(--body_color) !important';
     overflow: hidden;
     text-overflow: ellipsis;
     width: 100%;
@@ -129,4 +130,7 @@ html,
 }
 .css-hxopmt {
     padding: 18px !important;
+}
+.css-l1anz8 {
+    color: var(--body_color);
 }

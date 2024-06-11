@@ -1,4 +1,4 @@
-.logout{
+.logout {
     color: #ff4d4f;
 }
 .icon-menu {
@@ -7,7 +7,7 @@
 }
 .logout-item {
     position: absolute;
-    bottom: 0px;    
+    bottom: 0px;
     left: 0px;
     width: 100%;
     border-top: 1px solid #ccc;

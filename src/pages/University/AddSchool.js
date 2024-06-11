@@ -267,35 +267,7 @@ const AddSchool = () => {
                         return;
                     }
                 }
-                if (row.averageS > item.averageS) {
-                    await get(child(ref(database), `University/${key}/registeration/`)).then((snapshot) => {
-                        if (snapshot.exists()) {
-                            let x = snapshot.val();
 
-                            for (let i in x) {
-                                const temp = x[i].id;
-                                get(child(ref(database), `Detail/${temp}/`)).then((snapshot) => {
-                                    if (snapshot.exists()) {
-                                        let z = x[i].uniCode === undefined ? [] : x[i].uniCode;
-
-                                        const y = snapshot.val();
-                                        if (y.AverageScore < row.averageS) {
-                                            console.log(y);
-                                            const m = y.uniCode === undefined ? [] : y.uniCode;
-                                            z = m.filter((item) => item !== key);
-                                            update(ref(database, `Detail/${temp}/`), {
-                                                uniCode: z,
-                                            });
-                                            delete x[i];
-                                        }
-                                    }
-                                });
-                            }
-                            const listItem = Object.values(x).map((user) => user);
-                            sum = listItem.length;
-                        }
-                    });
-                }
                 newData.splice(index, 1, {
                     ...item,
                     ...row,

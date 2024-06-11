@@ -202,16 +202,17 @@ const Sidebar = () => {
                             </Box>
                             <Box textAlign="center">
                                 <div>
-                                    <Typography
-                                        variant="h2"
-                                        color={colors.grey[100]}
-                                        fontWeight="bold"
-                                        sx={{ m: '10px 0 0 0' }}
+                                    <h2
                                         className="username"
                                         title={localStorage.getItem('Name') || ''}
+                                        style={{
+                                            fontWeight: 'bold',
+                                            color: 'var(--body_color)',
+                                            fontSize: '25px',
+                                        }}
                                     >
                                         {localStorage.getItem('Name') || ''}
-                                    </Typography>
+                                    </h2>
                                 </div>
                                 <Typography variant="h5" color={colors.greenAccent[500]}>
                                     {localStorage.getItem('Role')}

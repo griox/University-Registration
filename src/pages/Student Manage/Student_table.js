@@ -22,7 +22,7 @@ import { database } from '../firebaseConfig.js';
 import { addDoc, collection, getFirestore } from 'firebase/firestore';
 import { firebaseConfig } from '../../constants/constants.js';
 import { initializeApp } from 'firebase/app';
-import { HandleErrorEdit } from '../../commonFunctions.js';
+import { HandleErrorEdit, encodePath } from '../../commonFunctions.js';
 
 const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
     const [error, setError] = useState(null);
@@ -30,7 +30,7 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
     const isMath = dataIndex === 'MathScore';
     const isLiterature = dataIndex === 'LiteratureScore';
     const isEnglish = dataIndex === 'EnglishScore';
-    
+
     const rules = [
         {
             validator: (_, value) => {
@@ -40,7 +40,7 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
                     }
                 }
                 if (isMath || isEnglish || isLiterature) {
-                    if (!(value >=0 && value <= 10 )) {
+                    if (!(value >= 0 && value <= 10)) {
                         setError('Score must >= 0 and <= 10 and just number');
                         return Promise.reject('Invalid value');
                     }
@@ -61,18 +61,10 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
         <td {...restProps}>
             {editing ? (
                 <>
-                <Form.Item
-                    className="edit-cell"
-                    name={dataIndex}
-                    open={!!error}
-                    rules={rules}
-                >
-                    {inputNode}
-
-                </Form.Item>
-                {error && (
-                        <HandleErrorEdit errorMessage={error} />
-                )}
+                    <Form.Item className="edit-cell" name={dataIndex} open={!!error} rules={rules}>
+                        {inputNode}
+                    </Form.Item>
+                    {error && <HandleErrorEdit errorMessage={error} />}
                 </>
             ) : (
                 children
@@ -240,7 +232,7 @@ const StudentList = () => {
                 text
             ),
     });
-    
+
     function encodeEmails(email) {
         return email.replace('.', ',');
     }
@@ -310,39 +302,37 @@ const StudentList = () => {
         return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(email);
     }
     const updateUniCode = async (record, averagescore) => {
+        console.log(record);
         try {
             if (record.uniCode !== undefined) {
-                for (const uniCode in record.uniCode) {
-                    const uniRef = ref(database, `University/${record.uniCode[uniCode]}/registeration/`);
+                record.uniCode.forEach(async (uniCode) => {
+                    const temp = encodePath(record.email);
+                    const uniRef = ref(database, `University/${uniCode}/`);
                     const snapshot = await get(uniRef);
-                    
                     if (snapshot.exists()) {
                         let uniData = snapshot.val();
                         if (averagescore < uniData.averageS) {
-                            await update(ref(database, `University/${record.uniCode[uniCode]}`), {
-                                isRegistered: uniData.isRegistered - 1
+                            const list = uniData.registeration;
+                            delete list[temp];
+                            console.log(list);
+                            await update(ref(database, `University/${uniCode}`), {
+                                isRegistered: uniData.isRegistered - 1,
+                                registeration: list,
                             });
-    
-                            for (let i in uniData) {
-                                const temp = uniData[i].id;
-                                const detailRef = ref(database, `Detail/${temp}/`);
-                                const detailSnapshot = await get(detailRef);
-                                if (detailSnapshot.exists()) {
-                                    let z = x[i].uniCode === undefined ? [] : x[i].uniCode;
-                                   const studentData = detailSnapshot.val();
-                                   
-                                }
-                            }
+                            const tempList = record.uniCode.filter((item) => item !== uniCode);
+                            console.log(tempList);
+                            await update(ref(database, `Detail/${record.id}`), {
+                                uniCode: tempList,
+                            });
                         }
                     }
-                }
+                });
             }
         } catch (error) {
             console.log(error);
         }
     };
-    
-    
+
     const checkEmailExistence = async (newEmail) => {
         try {
             const snapshot = await get(child(ref(database), 'Detail'));
@@ -396,7 +386,7 @@ const StudentList = () => {
                 const mathScore = updatedRow['MathScore'] || 0;
                 const literatureScore = updatedRow['LiteratureScore'] || 0;
                 const englishScore = updatedRow['EnglishScore'] || 0;
-                const averageScore = (mathScore + literatureScore + englishScore) / 3;
+                const averageScore = parseFloat(((mathScore + literatureScore + englishScore) / 3).toFixed(1));
                 if (
                     row.MathScore < item.MathScore ||
                     row.EnglishScore < item.EnglishScore ||
@@ -404,7 +394,7 @@ const StudentList = () => {
                 ) {
                     updateUniCode(record, averageScore);
                 }
-                updatedRow['AverageScore'] = Math.round(averageScore * 10) / 10;
+                updatedRow['AverageScore'] = averageScore;
 
                 newData[index] = updatedRow;
                 setStudentData(newData);
@@ -417,7 +407,7 @@ const StudentList = () => {
                 setStudentData(newData);
                 setEditingKey('');
                 handleFieldChange(record.key, Object.keys(row)[0], row[Object.keys(row)[0]]);
-                await set(ref(database, `Detail/${record.key}`), row);
+                // await set(ref(database, `Detail/${record.key}`), row);
                 toast.success('Data added to Firebase successfully');
             }
         } catch (errInfo) {
@@ -698,7 +688,7 @@ const StudentList = () => {
                     <Button type="primary" onClick={showModal}>
                         {t('button.sendnoti')}
                     </Button>
-                    
+
                     <ModalDetail
                         visible={isModalVisible}
                         onClose={() => {

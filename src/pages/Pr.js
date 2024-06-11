@@ -34,7 +34,6 @@ function Pr() {
     const db = getDatabase(app);
     const [arr, setArr] = useState([]);
     const detail = useSelector((state) => state);
-    console.log('detail', detail);
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(true);
     const [loadingSave, setLoadingSave] = useState(false);

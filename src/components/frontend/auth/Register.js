@@ -31,16 +31,21 @@ const Register = () => {
     const db = getDatabase(app);
     const history = useHistory();
     const { t, i18n } = useTranslation('register');
-    const currentLanguage = locales[i18n.language === 'vi' ? 'vi' : 'en'];
-    const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage === 'Tiếng anh' ? 'Tiếng anh' : 'English');
+    const storedLanguage = localStorage.getItem('language') || 'en';
+    const currentLanguage = locales[storedLanguage === 'vi' ? 'vi' : 'en'];
+    const [selectedLanguage, setSelectedLanguage] = useState(storedLanguage === 'vi' ? 'Tiếng Việt' : 'English');
     const [loadingRegist, setLoadingRegist] = useState(false);
     const secretKey = 'Tvx1234@';
 
     const [value1, setValue1] = useState('User');
 
+    useEffect(() => {
+        i18n.changeLanguage(storedLanguage);
+    }, [i18n, storedLanguage]);
     const handleLanguage = (lng, label) => {
         i18n.changeLanguage(lng);
         setSelectedLanguage(label);
+        localStorage.setItem('language', lng);
     };
     const items = [
         {

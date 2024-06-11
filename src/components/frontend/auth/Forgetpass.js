@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css';
 import 'firebase/auth';
 import { Link } from 'react-router-dom';
@@ -22,8 +22,9 @@ import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 
 export const Forgetpass = () => {
     const { t, i18n } = useTranslation('fogetpassword');
-    const currentLanguage = locales[i18n.language === 'vi' ? 'vi' : 'en'];
-    const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage === 'Tiếng anh' ? 'Tiếng anh' : 'English');
+    const storedLanguage = localStorage.getItem('language') || 'en';
+    const currentLanguage = locales[storedLanguage === 'vi' ? 'vi' : 'en'];
+    const [selectedLanguage, setSelectedLanguage] = useState(storedLanguage === 'vi' ? 'Tiếng Việt' : 'English');
     const app = initializeApp(firebaseConfig);
     const database = getAuth(app);
     const db = getDatabase(app);
@@ -93,9 +94,13 @@ export const Forgetpass = () => {
                 });
         }
     };
+    useEffect(() => {
+        i18n.changeLanguage(storedLanguage);
+    }, [i18n, storedLanguage]);
     const handleLanguage = (lng, label) => {
         i18n.changeLanguage(lng);
         setSelectedLanguage(label);
+        localStorage.setItem('language', lng);
     };
     const items = [
         {

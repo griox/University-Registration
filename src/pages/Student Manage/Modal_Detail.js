@@ -143,13 +143,14 @@ const ModalDetail = ({ visible, onClose, student, studentUnicode }) => {
                         <Table
                             columns={columns}
                             dataSource={university}
-                            pagination={{
-                                defaultPageSize: '10',
-                                pageSizeOptions: ['10', '20', '40', '100'],
-                                showSizeChanger: true,
-                                showQuickJumper: true,
-                                showTotal: (total) => `Total ${total} items`,
-                            }}
+                            // pagination={{
+                            //     defaultPageSize: '10',
+                            //     pageSizeOptions: ['10', '20', '40', '100'],
+                            //     showSizeChanger: true,
+                            //     showQuickJumper: true,
+                            //     showTotal: (total) => `Total ${total} items`,
+                            // }}
+                            pagination={false}
                             scroll={{ x: false, y: 'calc(100vh - 480px)' }}
                             rowHoverable={false}
                         />

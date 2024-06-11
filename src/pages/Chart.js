@@ -318,7 +318,7 @@ const Chart = () => {
                                 </div>
                             </div>
 
-                            <div className="carder" style={{ gridColumn: 'span 2' }}>
+                            <div className="carder" style={{ gridColumn: 'span 1' }}>
                                 <div className="card-name">{t('title.gender')} </div>
                                 <Pie {...gen} />
                             </div>

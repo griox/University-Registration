@@ -92,19 +92,19 @@
 .detail-item-admin-address {
     width: 100%;
     display: grid;
-    grid-template-columns: 12.5% 76.5%;
+    grid-template-columns: 12.5% 75%;
     align-items: center;
     column-gap: 30px;
 }
 .detail-item-admin {
     width: 100%;
-    margin-bottom: 10%;
     display: grid;
     grid-template-columns: 25% 75%;
     align-items: center;
     justify-content: space-between;
     align-items: center;
     column-gap: 30px;
+    margin-bottom: 15px;
 }
 .detail-item-input {
     width: 30%;
@@ -143,6 +143,9 @@ h1 {
     height: 30px;
     width: 200px;
     font-size: 14px;
+}
+.ant-form-item .admin-g-s .ant-form-item-with-help {
+    width: 300px;
 }
 .g-s {
     height: 30px;
@@ -296,12 +299,13 @@ input[type='button'] {
     margin: 0;
 }
 .pr-admin-address {
+    width: 550px;
     margin-top: 5px;
 
     margin-bottom: 0;
 }
 
-.detail-item-admin :where(.css-dev-only-do-not-override-1okl62o).ant-form-item {
+.detail-item-admin.admin-avatar {
     margin: 0;
 }
 
@@ -312,7 +316,6 @@ input[type='button'] {
 .detail-item-admin
     .ant-input-affix-wrapper
     .ant-input-affix-wrapper-lg
-    .css-dev-only-do-not-override-1okl62o
     .ant-input-outlined
     .admin-g-s
     .ant-input-compact-item
@@ -321,50 +324,50 @@ input[type='button'] {
     color: white;
 }
 
-.table :where(.css-dev-only-do-not-override-1okl62o).ant-btn-default:disabled,
-:where(.css-dev-only-do-not-override-1okl62o).ant-btn-default.ant-btn-disabled {
+.table .ant-btn-default:disabled,
+.ant-btn-default.ant-btn-disabled {
     color: var(--body_color_disabled) !important;
     background-color: var(--input-color-disabled) !important;
 }
-.detail-item-university
-    :where(.css-dev-only-do-not-override-1okl62o).ant-select-multiple
-    .ant-select-selection-overflow
-    .ant-select-selection-item-remove {
+.detail-item-university .ant-select-multiple .ant-select-selection-overflow .ant-select-selection-item-remove {
     color: var(--body_color);
 }
 
-.detail-item-university :where(.css-dev-only-do-not-override-1okl62o).ant-btn-primary:disabled,
-:where(.css-dev-only-do-not-override-1okl62o).ant-btn-primary.ant-btn-disabled {
+.detail-item-university .ant-btn-primary:disabled,
+.ant-btn-primary.ant-btn-disabled {
     color: var(--body_color);
 }
 
 .detail-item-admin .ant-picker-outlined:hover {
     background-color: var(--input-color);
-    border-color: #ff8c00;
+    border-color: var(--hover-btn);
 }
 
 .detail-item .ant-picker-outlined:hover {
     background-color: var(--input-color);
-    border-color: #ff8c00;
+    border-color: var(--hover-btn);
 }
 
-.detail-item :where(.css-dev-only-do-not-override-1okl62o).ant-form-item {
+.detail-item .ant-form-item {
     margin-bottom: 0;
 }
 
-.admin-avatar :where(.css-dev-only-do-not-override-1okl62o).ant-btn-primary:disabled,
-:where(.css-dev-only-do-not-override-1okl62o).ant-btn-primary.ant-btn-disabled {
+.detail-item-admin .ant-form-item {
+    margin-bottom: 0;
+}
+.admin-avatar .ant-btn-primary:disabled,
+.ant-btn-primary.ant-btn-disabled {
     color: var(--body_color);
 }
 
-.detail-item :where(.css-dev-only-do-not-override-1okl62o).ant-picker-outlined {
+.detail-item .ant-picker-outlined {
     background-color: var(--input-color);
 }
-.detail-item :where(.css-dev-only-do-not-override-1okl62o).ant-picker-outlined:hover {
+.detail-item .ant-picker-outlined:hover {
     border: 1px solid #0dcaf0;
 }
 
-.detail-item-admin :where(.css-dev-only-do-not-override-1okl62o).ant-picker-outlined {
+.detail-item-admin .ant-picker-outlined {
     border: 1px solid var(--border-color);
     background-color: var(--input-color);
 }
@@ -381,13 +384,13 @@ input[type='button'] {
     color: var(--body_color_disabled) !important;
 }
 
-:where(.css-dev-only-do-not-override-1okl62o).ant-picker-dropdown .ant-picker-header button {
+.ant-picker-dropdown .ant-picker-header button {
     color: var(--body_color) !important;
 }
 .ant-picker-clear > * {
     color: var(--placeholder-color) !important;
 }
 
-.detail-item-university :where(.css-dev-only-do-not-override-1okl62o).ant-select .ant-select-selection-placeholder {
+.detail-item-university .ant-select .ant-select-selection-placeholder {
     color: var(--body_color) !important;
 }

@@ -48,16 +48,16 @@ const AddSchool = () => {
 
     const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
         const [error, setError] = useState(null);
-        const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
+        const inputNode = <Input />;
         const isTarget = dataIndex === 'target';
-        const isUniCode = dataIndex === 'uniCode';
         const isEntrance = dataIndex === 'averageS';
         const rules = [
             {
                 validator: (_, value) => {
                     if (dataIndex) {
                         if (value === '' || value === null) {
-                            return Promise.reject(t('warning.input'));
+                            setError('Please enter input');
+                            return;
                         }
                     }
                     if (value !== '' && value !== null) {
@@ -75,13 +75,20 @@ const AddSchool = () => {
                                 return <HandleErrorEdit />;
                             }
                         }
-                        if (isUniCode && !/^[a-zA-Z]+$/.test(value)) {
-                            setError('UniCode must contain letters only');
-                            return <HandleErrorEdit />;
-                        }
+
                         if (isEntrance) {
-                            if (!(value > 0 && value <= 10)) {
+                            if (/^[0-9]*\.?[0-9]+$/.test(value) === false) {
+                                setError('Entrance score only contain number');
+                                return <HandleErrorEdit />;
+                            }
+                            if (!(value >= 0 && value <= 10)) {
+                                console.log('11');
                                 setError('Entrance Score must be > 0 and <= 10');
+                                return <HandleErrorEdit />;
+                            }
+
+                            if (value > record.averageS) {
+                                setError('New Entrance score cannot be greater than current Entrance score');
                                 return <HandleErrorEdit />;
                             }
                         }
@@ -107,18 +114,22 @@ const AddSchool = () => {
                         </Form.Item>
                         {error && (
                             <div>
-                                <Tooltip
-                                    title={error}
-                                    color={'red'}
-                                    key={'red'}
-                                    placement="bottom"
-                                    style={{ display: 'flex' }}
-                                >
-                                    <span style={{ color: 'red', fontSize: '13px' }}>{t('warning.title')}</span>
-                                    <ExclamationCircleOutlined
-                                        style={{ marginLeft: '5px', color: '#f5554a', fontWeight: 'bold' }}
-                                    />
-                                </Tooltip>
+                                {error === 'Please enter input' ? (
+                                    <span style={{ color: 'red' }}>Please enter input</span>
+                                ) : (
+                                    <Tooltip
+                                        title={error}
+                                        color={'red'}
+                                        key={'red'}
+                                        placement="bottom"
+                                        style={{ display: 'flex' }}
+                                    >
+                                        <span style={{ color: 'red' }}>{t('warning.title')}</span>
+                                        <ExclamationCircleOutlined
+                                            style={{ marginLeft: '5px', color: '#f5554a', fontWeight: 'bold' }}
+                                        />
+                                    </Tooltip>
+                                )}
                             </div>
                         )}
                     </div>
@@ -248,7 +259,6 @@ const AddSchool = () => {
             const newData = [...UniData];
             const index = newData.findIndex((item) => key === item.key);
             console.log(index, key);
-            let sum = null;
             if (index > -1) {
                 const item = newData[index];
                 if (row.target < item.isRegistered) {
@@ -267,35 +277,35 @@ const AddSchool = () => {
                         return;
                     }
                 }
-                if (row.averageS > item.averageS) {
-                    await get(child(ref(database), `University/${key}/registeration/`)).then((snapshot) => {
-                        if (snapshot.exists()) {
-                            let x = snapshot.val();
+                // if (row.averageS > item.averageS) {
+                //     await get(child(ref(database), `University/${key}/registeration/`)).then((snapshot) => {
+                //         if (snapshot.exists()) {
+                //             let x = snapshot.val();
 
-                            for (let i in x) {
-                                const temp = x[i].id;
-                                get(child(ref(database), `Detail/${temp}/`)).then((snapshot) => {
-                                    if (snapshot.exists()) {
-                                        let z = x[i].uniCode === undefined ? [] : x[i].uniCode;
+                //             for (let i in x) {
+                //                 const temp = x[i].id;
+                //                 get(child(ref(database), `Detail/${temp}/`)).then((snapshot) => {
+                //                     if (snapshot.exists()) {
+                //                         let z = x[i].uniCode === undefined ? [] : x[i].uniCode;
 
-                                        const y = snapshot.val();
-                                        if (y.AverageScore < row.averageS) {
-                                            console.log(y);
-                                            const m = y.uniCode === undefined ? [] : y.uniCode;
-                                            z = m.filter((item) => item !== key);
-                                            update(ref(database, `Detail/${temp}/`), {
-                                                uniCode: z,
-                                            });
-                                            delete x[i];
-                                        }
-                                    }
-                                });
-                            }
-                            const listItem = Object.values(x).map((user) => user);
-                            sum = listItem.length;
-                        }
-                    });
-                }
+                //                         const y = snapshot.val();
+                //                         if (y.AverageScore < row.averageS) {
+                //                             console.log(y);
+                //                             const m = y.uniCode === undefined ? [] : y.uniCode;
+                //                             z = m.filter((item) => item !== key);
+                //                             update(ref(database, `Detail/${temp}/`), {
+                //                                 uniCode: z,
+                //                             });
+                //                             delete x[i];
+                //                         }
+                //                     }
+                //                 });
+                //             }
+                //             const listItem = Object.values(x).map((user) => user);
+                //             sum = listItem.length;
+                //         }
+                //     });
+                // }
                 newData.splice(index, 1, {
                     ...item,
                     ...row,
@@ -306,8 +316,7 @@ const AddSchool = () => {
                     target: parseInt(newData[index].target),
                     nameU: row.nameU,
                     address: row.address,
-                    averageS: row.averageS,
-                    isRegistered: sum,
+                    averageS: parseFloat(newData[index].averageS),
                 };
                 console.log(updatedRow);
                 newData[index] = updatedRow;

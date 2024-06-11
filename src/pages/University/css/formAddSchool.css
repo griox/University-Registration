@@ -52,11 +52,11 @@
     font-weight: 500;
     color: var(--name-colorN);
 }
-.ant-modal-footer :where(.css-dev-only-do-not-override-1okl62o).ant-btn-default {
+.ant-modal-footer .ant-btn-default {
     border: none;
 }
 
-:where(.css-dev-only-do-not-override-1okl62o).ant-input-affix-wrapper .ant-input-clear-icon {
+.ant-input-affix-wrapper .ant-input-clear-icon {
     color: var(--placeholder-color) !important;
 }
 .custom-ok-button.ant-btn[disabled] {

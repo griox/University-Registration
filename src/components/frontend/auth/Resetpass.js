@@ -15,17 +15,15 @@ import {
 } from '../../../commonFunctions';
 import { toast } from 'react-toastify';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom';
-import bcrypt from 'bcryptjs';
-import { Button, Dropdown, Form, Input, Space, Tooltip, Typography } from 'antd';
+import { Button, Dropdown, Form, Input, Space, Typography } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { locales } from '../../../translation/i18n';
-import { DownOutlined, ExclamationCircleOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import { DownOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import CryptoJS from 'crypto-js';
 
 export const Forgetpass = () => {
     const app = initializeApp(firebaseConfig);
-    const currentLanguage = locales[i18n.language === 'vi' ? 'vi' : 'en'];
-    const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage === 'Tiếng anh' ? 'Tiếng anh' : 'English');
+
     const db = getDatabase(app);
     const history = useHistory();
     const [newPass, setNewPass] = useState('');
@@ -33,15 +31,20 @@ export const Forgetpass = () => {
     const [errorReNewPass, setErrorReNewPass] = useState(false);
     const [errorNewPass, setErrorNewPass] = useState(false);
     const secretKey = 'Tvx1234@';
-    const theme = useState(localStorage.getItem('selectedTheme') || 'light');
 
     const [loadingResetPass, setLoadingResetPass] = useState(false);
     const { t, i18n } = useTranslation('resetpassword');
     const [link, setLink] = useState(null);
-
+    const storedLanguage = localStorage.getItem('language') || 'en';
+    const currentLanguage = locales[storedLanguage === 'vi' ? 'vi' : 'en'];
+    const [selectedLanguage, setSelectedLanguage] = useState(storedLanguage === 'vi' ? 'Tiếng Việt' : 'English');
+    useEffect(() => {
+        i18n.changeLanguage(storedLanguage);
+    }, [i18n, storedLanguage]);
     const handleLanguage = (lng, label) => {
         i18n.changeLanguage(lng);
         setSelectedLanguage(label);
+        localStorage.setItem('language', lng);
     };
     const items = [
         {

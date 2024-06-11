@@ -17,26 +17,32 @@ import { Chat } from '../../pages/ChatRoom/Chat';
 const Navbar = () => {
     const [iconLoading, setIconLoading] = useState(false);
     const { t, i18n } = useTranslation('navbar');
-    const currentLanguage = locales[i18n.language === 'vi' ? 'vi' : 'en'];
-    const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage === 'Tiếng anh' ? 'Tiếng anh' : 'English');
+    const storedLanguage = localStorage.getItem('language') || 'en';
+    const currentLanguage = locales[storedLanguage === 'vi' ? 'vi' : 'en'];
+    const [selectedLanguage, setSelectedLanguage] = useState(storedLanguage === 'vi' ? 'Tiếng Việt' : 'English');
     const history = useHistory();
     const userRole = localStorage.getItem('Role');
+    useEffect(() => {
+        i18n.changeLanguage(storedLanguage);
+    }, [i18n, storedLanguage]);
     const handleLanguage = (lng, label) => {
         i18n.changeLanguage(lng);
         setSelectedLanguage(label);
+        localStorage.setItem('language', lng);
     };
+
     const items_lng = [
         {
             key: '1',
-            label: currentLanguage === 'Tiếng việt' ? 'Tiếng anh' : 'English',
+            label: currentLanguage === 'Tiếng việt' ? 'Tiếng Anh' : 'English',
             icon: <img width="20" height="20" src="https://img.icons8.com/color/48/usa.png" alt="usa" />,
-            onClick: () => handleLanguage('en', currentLanguage === 'VietNam' ? 'English' : 'English'),
+            onClick: () => handleLanguage('en', currentLanguage === 'VietNam' ? 'VietNam' : 'English'),
         },
         {
             key: '2',
-            label: currentLanguage === 'Tiếng việt' ? 'Tiếng việt' : 'Vietnam',
+            label: currentLanguage === 'Tiếng việt' ? 'Tiếng Việt' : 'Vietnam',
             icon: <img width="20" height="20" src="https://img.icons8.com/color/48/vietnam.png" alt="vietnam" />,
-            onClick: () => handleLanguage('vi', currentLanguage === 'Tiếng việt' ? 'Tiếng việt' : 'Vietnam'),
+            onClick: () => handleLanguage('vi', currentLanguage === 'Tiếng việt' ? 'Tiếng việt' : 'Tiếng Anh'),
         },
     ];
     const items = [

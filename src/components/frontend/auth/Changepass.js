@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'firebase/auth';
 import { child, get, getDatabase, ref, update } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
@@ -13,7 +13,6 @@ import {
     disableButton,
     encodePath,
     getback,
-    language,
     onchangeInput,
     validatePasswordFormat,
 } from '../../../commonFunctions';
@@ -21,13 +20,13 @@ import { useTranslation } from 'react-i18next';
 import { locales } from '../../../translation/i18n';
 import { DownOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Dropdown, Space, Typography } from 'antd';
-import bcrypt from 'bcryptjs';
 import CryptoJS from 'crypto-js';
 
 const Changepass = () => {
     const { t, i18n } = useTranslation('changePassword');
-    const currentLanguage = locales[i18n.language === 'vi' ? 'vi' : 'en'];
-    const [selectedLanguage, setSelectedLanguage] = useState(currentLanguage === 'Tiếng anh' ? 'Tiếng anh' : 'English');
+    const storedLanguage = localStorage.getItem('language') || 'en';
+    const currentLanguage = locales[storedLanguage === 'vi' ? 'vi' : 'en'];
+    const [selectedLanguage, setSelectedLanguage] = useState(storedLanguage === 'vi' ? 'Tiếng Việt' : 'English');
     const history = useHistory();
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
@@ -35,7 +34,6 @@ const Changepass = () => {
     const [newPass, setNewPass] = useState('');
     const [reNewPass, setReNewPass] = useState('');
     const dispatch = useDispatch();
-    const salt = bcrypt.genSaltSync(10);
     const [loadingChangePass, setLoadingChangePass] = useState(false);
     const [errorOldPass, setErrorOldPass] = useState(false);
     const [errorNewPass, setErrorNewPass] = useState(false);
@@ -53,9 +51,13 @@ const Changepass = () => {
         dispatch({ type: 'logout' });
         history.push('/Login');
     };
+    useEffect(() => {
+        i18n.changeLanguage(storedLanguage);
+    }, [i18n, storedLanguage]);
     const handleLanguage = (lng, label) => {
         i18n.changeLanguage(lng);
         setSelectedLanguage(label);
+        localStorage.setItem('language', lng);
     };
     const items = [
         {

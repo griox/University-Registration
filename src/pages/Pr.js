@@ -42,8 +42,8 @@ function Pr() {
     const size = 'middle';
     const [image, setImage] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [date, setDate] = useState(detail.dateObirth);
     const [errorCCCD, setErrorCCCD] = useState(false);
+    const [errorCCCDExist, setErrorCCCDExist] = useState(false);
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
@@ -235,9 +235,43 @@ function Pr() {
             if (newValue.match(/[$@#&!.]+/) !== null) {
                 setErrorCCCD(true);
                 return;
-            } else {
-                setErrorCCCD(false);
             }
+            get(child(ref(db), `Detail/`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const x = snapshot.val();
+                    for (let i in x) {
+                        if (x[i].idenNum === detail.idenNum) {
+                            setErrorCCCDExist(true);
+                            return;
+                        }
+                    }
+                }
+            });
+            get(child(ref(db), `Admin/`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const x = snapshot.val();
+                    for (let i in x) {
+                        if (x[i].idenNum === detail.idenNum) {
+                            setErrorCCCDExist(true);
+                            return;
+                        }
+                    }
+                }
+            });
+            get(child(ref(db), `Super_Admin/`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const x = snapshot.val();
+                    for (let i in x) {
+                        if (x[i].idenNum === detail.idenNum) {
+                            setErrorCCCDExist(true);
+                            return;
+                        }
+                    }
+                }
+            });
+            setErrorCCCDExist(false);
+
+            setErrorCCCD(false);
         }
         dispatch({ type: 'update', payload: { propertyName, newValue } });
     };
@@ -770,8 +804,6 @@ function Pr() {
                                                         </div>
                                                     ) : errorCCCD ? (
                                                         <div>
-                                                            {console.log(detail.idenNum)}
-
                                                             <span>Invalid template </span>
                                                             <Tooltip
                                                                 title={'Please enter only and must 12 number '}
@@ -783,6 +815,10 @@ function Pr() {
                                                                     style={{ marginLeft: '5px' }}
                                                                 />
                                                             </Tooltip>
+                                                        </div>
+                                                    ) : errorCCCDExist === true ? (
+                                                        <div>
+                                                            <span>Inden number has existed</span>
                                                         </div>
                                                     ) : (
                                                         ''
@@ -1104,6 +1140,10 @@ function Pr() {
                                                         >
                                                             <ExclamationCircleOutlined style={{ marginLeft: '5px' }} />
                                                         </Tooltip>
+                                                    </div>
+                                                ) : errorCCCDExist === true ? (
+                                                    <div>
+                                                        <span>Inden number has existed</span>
                                                     </div>
                                                 ) : (
                                                     ''

@@ -372,11 +372,6 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                         message: t('warning.input'),
                                     },
                                 ]}
-                                validateStatus={!validateFullname(Fullname) && Fullname ? 'error' : ''}
-                                help= {!validateFullname(Fullname) && Fullname
-                                    ? t('warning.name')
-                                    : ''
-                                }
                             >
                                 <Input
                                     placeholder={t('placeholder.name')}

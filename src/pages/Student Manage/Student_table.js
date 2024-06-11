@@ -22,7 +22,7 @@ import { database } from '../firebaseConfig.js';
 import { addDoc, collection, getFirestore } from 'firebase/firestore';
 import { firebaseConfig } from '../../constants/constants.js';
 import { initializeApp } from 'firebase/app';
-import { HandleErrorEdit } from '../../commonFunctions.js';
+import { HandleErrorEdit, encodePath } from '../../commonFunctions.js';
 
 const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
     const [error, setError] = useState(null);
@@ -35,14 +35,14 @@ const EditableCell = ({ editing, dataIndex, title, inputType, record, index, chi
         {
             validator: (_, value) => {
                 if (dataIndex) {
-                    if (value === '' || value === null) {
+                    if (value === '') {
                         return Promise.reject(`Please input`);
                     }
                 }
                 if (isMath || isEnglish || isLiterature) {
-                    if (!(value >= 0 && value <= 10 && value === ' ')) {
-                        setError('Score must >= 0 and <= 10, just number');
-                        return <HandleErrorEdit />;
+                    if (!(value >= 0 && value <= 10)) {
+                        setError('Score must >= 0 and <= 10 and just number');
+                        return Promise.reject('Invalid value');
                     }
                 }
                 setError(null);
@@ -301,34 +301,32 @@ const StudentList = () => {
     function validateEmailFormat(email) {
         return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(email);
     }
-    const updateUniCode = async (record, averagescore, id) => {
+    const updateUniCode = async (record, averagescore) => {
+        console.log(record);
         try {
             if (record.uniCode !== undefined) {
-                for (const uniCode in record.uniCode) {
-                    const uniRef = ref(database, `University/${record.uniCode[uniCode]}`);
-                    const studentRef = ref(database, `Detail/${id}`);
-                    const snapshot1 = await get(studentRef);
+                record.uniCode.forEach(async (uniCode) => {
+                    const temp = encodePath(record.email);
+                    const uniRef = ref(database, `University/${uniCode}/`);
                     const snapshot = await get(uniRef);
-
-                    if (snapshot.exists() && snapshot1.exists()) {
-                        const uniData = snapshot.val();
-                        const studentData = snapshot1.val();
-
+                    if (snapshot.exists()) {
+                        let uniData = snapshot.val();
                         if (averagescore < uniData.averageS) {
-                            const updatedRegisteration = { ...uniData.registeration }; // Tạo một bản sao của đối tượng registeration
-                            delete updatedRegisteration[id]; // Xóa đối tượng với id tương ứng
-                            console.log('du lieu da duoc xoa');
-                            const updatedIsRegistered = Math.max(0, uniData.isRegistered - 1);
-                            await update(uniRef, {
-                                isRegistered: updatedIsRegistered,
-                                registeration: updatedRegisteration, // Ghi đè dữ liệu mới lên registeration
+                            const list = uniData.registeration;
+                            delete list[temp];
+                            console.log(list);
+                            await update(ref(database, `University/${uniCode}`), {
+                                isRegistered: uniData.isRegistered - 1,
+                                registeration: list,
                             });
-
-                            const newUniCode = studentData.uniCode.filter((item) => item !== uniCode);
-                            await update(studentRef, { uniCode: newUniCode });
+                            const tempList = record.uniCode.filter((item) => item !== uniCode);
+                            console.log(tempList);
+                            await update(ref(database, `Detail/${record.id}`), {
+                                uniCode: tempList,
+                            });
                         }
                     }
-                }
+                });
             }
         } catch (error) {
             console.log(error);
@@ -388,15 +386,15 @@ const StudentList = () => {
                 const mathScore = updatedRow['MathScore'] || 0;
                 const literatureScore = updatedRow['LiteratureScore'] || 0;
                 const englishScore = updatedRow['EnglishScore'] || 0;
-                const averageScore = (mathScore + literatureScore + englishScore) / 3;
+                const averageScore = parseFloat(((mathScore + literatureScore + englishScore) / 3).toFixed(1));
                 if (
                     row.MathScore < item.MathScore ||
                     row.EnglishScore < item.EnglishScore ||
                     row.LiteratureScore < item.LiteratureScore
                 ) {
-                    updateUniCode(record, averageScore, record.key);
+                    updateUniCode(record, averageScore);
                 }
-                updatedRow['AverageScore'] = Math.round(averageScore * 10) / 10;
+                updatedRow['AverageScore'] = averageScore;
 
                 newData[index] = updatedRow;
                 setStudentData(newData);
@@ -409,7 +407,7 @@ const StudentList = () => {
                 setStudentData(newData);
                 setEditingKey('');
                 handleFieldChange(record.key, Object.keys(row)[0], row[Object.keys(row)[0]]);
-                await set(ref(database, `Detail/${record.key}`), row);
+                // await set(ref(database, `Detail/${record.key}`), row);
                 toast.success('Data added to Firebase successfully');
             }
         } catch (errInfo) {
@@ -461,7 +459,7 @@ const StudentList = () => {
             title: t('table.ID'),
             dataIndex: 'id',
 
-            width: '20%',
+            width: '14%',
             fixed: 'left',
             ...getColumnSearchProps('id'),
             render: (_, record) => (
@@ -475,7 +473,7 @@ const StudentList = () => {
         {
             title: t('table.Name'),
             dataIndex: 'name',
-            width: '37%',
+            width: '27%',
             editable: true,
             fixed: 'left',
             key: 'name',
@@ -509,7 +507,7 @@ const StudentList = () => {
         {
             title: t('table.Math'),
             dataIndex: 'MathScore',
-            width: '17%',
+            width: '14%',
             editable: true,
             sorter: (a, b) => a.MathScore - b.MathScore,
             key: 'MathScore',
@@ -517,7 +515,7 @@ const StudentList = () => {
         {
             title: t('table.Literature'),
             dataIndex: 'LiteratureScore',
-            width: '25%',
+            width: '17%',
             editable: true,
             key: 'LiteratureScore',
 
@@ -528,7 +526,7 @@ const StudentList = () => {
         {
             title: t('table.English'),
             dataIndex: 'EnglishScore',
-            width: '20%',
+            width: '17%',
             editable: true,
             key: 'EnglishScore',
             sorter: (a, b) => a.EnglishScore - b.EnglishScore,
@@ -536,7 +534,7 @@ const StudentList = () => {
         {
             title: t('table.Total Score'),
             dataIndex: 'AverageScore',
-            width: '20%',
+            width: '17%',
             key: 'AverageScore',
             sorter: (a, b) => a.AverageScore - b.AverageScore,
             responsive: ['sm'],
@@ -544,7 +542,7 @@ const StudentList = () => {
         {
             title: t('table.UniCode'),
             dataIndex: 'uniCode',
-            width: '40%',
+            width: '30%',
             render: (text) => {
                 if (typeof text === 'string') {
                     return text?.split(', ').join(', ');
@@ -560,7 +558,7 @@ const StudentList = () => {
         {
             title: t('table.Action'),
             dataIndex: 'operation',
-            width: '30%',
+            width: '21%',
             fixed: 'right',
             responsive: ['sm'],
             render: (_, record) => {

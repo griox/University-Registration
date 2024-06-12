@@ -11,8 +11,11 @@ import { useTranslation } from 'react-i18next';
 import { database } from '../firebaseConfig.js';
 import { HandleErrorEdit } from '../../commonFunctions.js';
 import { Add } from '@mui/icons-material';
+import CryptoJS from 'crypto-js';
 
 const ModalAdd = ({ studentData, setStudentData }) => {
+    const secretKey = 'Tvx1234@';
+
     const [Fullname, setFullname] = useState('');
     const [Gender, setGender] = useState('Female');
     const [Email, setEmail] = useState('');
@@ -140,9 +143,12 @@ const ModalAdd = ({ studentData, setStudentData }) => {
             });
             const encodeEmail = encodeEmails(Email);
             const accountRef = ref(database, `Account/${encodeEmail}`);
+            const p = `Tvx1234@`;
+
+            var hash = CryptoJS.AES.encrypt(p, secretKey).toString();
             await set(accountRef, {
                 email: Email,
-                password: 'Tvx1234@',
+                password: hash,
                 name: Fullname,
                 Role: 'user',
             });

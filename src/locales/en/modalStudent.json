@@ -37,7 +37,8 @@
         "input": "Please input !",
         "identify": "Identify number must be 12 digits and contain only number ",
         "email": "Invalid email",
-        "emailExists":"This Email has already Exist"
+        "emailExists":"This Email has been used",
+        "idenexist":"This identify numbers has been used"
     },
     "tooltip": {
         "name": "Name must contain letters and no space",

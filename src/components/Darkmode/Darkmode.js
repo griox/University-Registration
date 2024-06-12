@@ -1,8 +1,7 @@
 import React from 'react';
 import { Switch } from 'antd';
 import { SunOutlined, MoonOutlined } from '@ant-design/icons';
-import { useDispatch, useSelector } from 'react-redux';
-import { loadBundle } from 'firebase/firestore';
+import { useDispatch } from 'react-redux';
 const DarkMode = () => {
     const dispatch = useDispatch();
     const setDarkMode = () => {
@@ -12,6 +11,7 @@ const DarkMode = () => {
     const setLightMode = () => {
         document.querySelector('body').setAttribute('data-theme', 'light');
         localStorage.setItem('selectedTheme', 'light');
+        localStorage.setItem('mode',true)
     
     };
     const selectedTheme = localStorage.getItem('selectedTheme');

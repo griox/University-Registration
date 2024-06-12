@@ -195,14 +195,14 @@ const AddSchool = () => {
     const handleDelete = async (record) => {
         try {
             if (record.registeration !== undefined) {
-                get(child(ref(database), `University/${record.uniCode}/registeration`)).then((snapshot) => {
-                    if (snapshot.exists()) {
+                await get(child(ref(database), `University/${record.uniCode}/registeration`)).then((snapshot) => {
+                    if (snapshot.exists()){
                         const x = snapshot.val();
 
                         for (let i in x) {
                             const temp = x[i].id;
                             let z = null;
-                            get(child(ref(database), `Detail/${temp}/uniCode`)).then((snapshot) => {
+                             get(child(ref(database), `Detail/${temp}/uniCode`)).then((snapshot) => {
                                 if (snapshot.exists()) {
                                     const y = snapshot.val();
                                     const listItem = Object.values(y).map((user) => user);
@@ -215,15 +215,6 @@ const AddSchool = () => {
                         }
                     }
                 });
-                // for (const student in record.registeration) {
-                //     const studentRef = ref(database, `Detail/${record.registeration[student].id}`);
-                //     const snapshot = await get(studentRef);
-                //     if (snapshot.exists()) {
-                //         const studentData = snapshot.val();
-                //         const newArray = studentData.uniCode.filter((item) => item !== record.uniCode);
-                //         await update(studentRef, { uniCode: newArray });
-                //     }
-                // }
             }
             await remove(child(ref(database), `University/${record.uniCode}`));
             const newUni = UniData.filter((item) => item.uniCode !== record.uniCode);
@@ -311,7 +302,6 @@ const AddSchool = () => {
                     address: row.address,
                     averageS: parseFloat(newData[index].averageS),
                 };
-                console.log(updatedRow);
                 newData[index] = updatedRow;
                 setUniData(newData);
                 setEditingKey('');
@@ -435,11 +425,14 @@ const AddSchool = () => {
             width: '20%',
             fixed: 'left',
             ...getColumnSearchProps('uniCode'),
-            render: (text, record) => (
-                <Tooltip title={record.isRegistered === record.target ? t('tooltip.full') : t('tooltip.notfull')}>
-                    <span className={record.isRegistered === record.target ? 'uniYes' : 'uniNo'}>{text}</span>
-                </Tooltip>
-            ),
+            render: (text, record) => {
+                return (
+                    <Typography.Link className="idOnclick" onClick={() => handleSchoolDetail(record)}>
+                        {text}
+                    </Typography.Link>
+                );
+            },
+
             responsive: ['sm'],
         },
         {
@@ -448,13 +441,11 @@ const AddSchool = () => {
             width: '26%',
             editable: true,
             ...getColumnSearchProps('nameU'),
-            render: (text, record) => {
-                return (
-                    <Typography.Link className="idOnclick" onClick={() => handleSchoolDetail(record)}>
-                        {text}
-                    </Typography.Link>
-                );
-            },
+            render: (text, record) => (
+                <Tooltip title={record.isRegistered === record.target ? t('tooltip.full') : t('tooltip.notfull')}>
+                    <span className={record.isRegistered === record.target ? 'uniYes' : 'uniNo'}>{text}</span>
+                </Tooltip>
+            ),
             key: 'nameU',
             responsive: ['sm'],
         },
@@ -491,6 +482,7 @@ const AddSchool = () => {
             dataIndex: 'target',
             width: '20%',
             editable: true,
+            sorter: (a, b) => a.target - b.target,
             key: 'target',
             responsive: ['sm'],
             sorter: (a, b) => a.target - b.target,
@@ -576,7 +568,7 @@ const AddSchool = () => {
                                     marginTop: 20,
                                     showTotal: (total) => `${t('title.total')} ${total}`,
                                 }}
-                                scroll={{ x: 'calc(100vw - 290px)', y: 'calc(100vh - 300px)' }}
+                                scroll={{ x: 'calc(100vw - 290px)', y: 'calc(100vh - 260px)' }}
                                 components={{
                                     body: {
                                         cell: EditableCell,

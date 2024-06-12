@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ArrowDownOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import { Column, Pie } from '@ant-design/plots';
-import { Skeleton } from 'antd';
+import { Layout, Skeleton } from 'antd';
 import '../assets/admin/css/chart.css';
 import { child, get, getDatabase, ref } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
@@ -31,15 +31,11 @@ const Chart = () => {
     const [listUniLessRegister, setListUniLessRegister] = useState(0);
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-
+    const darkMode = useSelector((state) => state.darkMode);
+    localStorage.setItem('mode',darkMode);
+    const theme = localStorage.getItem('mode');
     const config = {
-        theme:
-            localStorage.getItem('selectedTheme') === null
-                ? 'academy'
-                : localStorage.getItem('selectedTheme') === 'dark'
-                ? 'classicDark'
-                : 'academy',
-
+        theme: !darkMode ? 'classic' : 'classicDark',
         data: [
             { subject: t('subj.Math'), score: mathAS },
             { subject: t('subj.English'), score: englishAS },
@@ -62,30 +58,18 @@ const Chart = () => {
             text: (d) => `${d.score.toFixed(2)}`,
             textBaseline: 'bottom',
         },
-
         axis: {
-            y: {
-                labelFormatter: '~s',
-            },
+            fill: 'pink',
+            labelFill: 'red',
         },
         style: {
             width: 45,
-            fill:
-                localStorage.getItem('selectedTheme') === null
-                    ? 'rgb(7, 153, 244)'
-                    : localStorage.getItem('selectedTheme') !== 'dark'
-                    ? 'rgb(7, 153, 244)'
-                    : '#FF8C00',
+            fill: darkMode ? '#FF8C00' : 'rgb(7, 153, 244)',
         },
     };
 
     const con = {
-        theme:
-            localStorage.getItem('selectedTheme') === null
-                ? 'academy'
-                : localStorage.getItem('selectedTheme') === 'dark'
-                ? 'classicDark'
-                : 'academy',
+        theme: !darkMode ? 'academy' : 'classicDark',
         data: [
             { type: t('data.One'), value: registOne },
             { type: t('data.Two'), value: registTwo },
@@ -104,15 +88,14 @@ const Chart = () => {
 
         label: {
             text: (d) => `${d.value}`,
-            position: 'outside',
+            position: 'right',
         },
         legend: {
             color: {
-                // itemLabelFill: 'red',
-
                 title: false,
                 position: 'right',
                 rowPadding: 6,
+                itemLabelFill: !darkMode ? 'black':'white',
             },
         },
         style: {
@@ -122,13 +105,7 @@ const Chart = () => {
     };
 
     const gen = {
-        theme:
-            localStorage.getItem('selectedTheme') === null
-                ? 'academy'
-                : localStorage.getItem('selectedTheme') === 'dark'
-                ? 'classicDark'
-                : 'academy',
-
+        theme: darkMode ? 'classicDark' : 'academy',
         data: [
             { gender: t('gen.Male'), value: male },
             { gender: t('gen.Female'), value: female },
@@ -142,20 +119,15 @@ const Chart = () => {
         label: {
             text: (d) => `${d.value}`,
             style: {
-                fill:
-                    localStorage.getItem('selectedTheme') === null
-                        ? '#000'
-                        : localStorage.getItem('selectedTheme') === 'dark'
-                        ? '#fff'
-                        : '#000',
                 fontWeight: 'bold',
                 fontSize: '50px',
+                titleStroke: 'red',
+                fill: '#fff',
             },
         },
         legend: {
             color: {
-                // itemLabelFill: 'red',
-
+                title: false,
                 position: 'right',
                 rowPadding: 5,
             },
@@ -372,3 +344,4 @@ const Chart = () => {
 };
 
 export default Chart;
+

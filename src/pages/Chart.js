@@ -31,9 +31,15 @@ const Chart = () => {
     const [listUniLessRegister, setListUniLessRegister] = useState(0);
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    const darkMode = useSelector((state) => state.darkMode);
+
     const config = {
-        theme: !darkMode ? 'classic' : 'classicDark',
+        theme:
+            localStorage.getItem('selectedTheme') === null
+                ? 'academy'
+                : localStorage.getItem('selectedTheme') === 'dark'
+                ? 'classicDark'
+                : 'academy',
+
         data: [
             { subject: t('subj.Math'), score: mathAS },
             { subject: t('subj.English'), score: englishAS },
@@ -56,20 +62,30 @@ const Chart = () => {
             text: (d) => `${d.score.toFixed(2)}`,
             textBaseline: 'bottom',
         },
-        axis: {
 
-            labelFill: 'red',
-            lineStroke:'red',
+        axis: {
+            y: {
+                labelFormatter: '~s',
+            },
         },
         style: {
             width: 45,
-            fill: darkMode ? '#FF8C00' : 'rgb(7, 153, 244)',
-            
+            fill:
+                localStorage.getItem('selectedTheme') === null
+                    ? 'rgb(7, 153, 244)'
+                    : localStorage.getItem('selectedTheme') !== 'dark'
+                    ? 'rgb(7, 153, 244)'
+                    : '#FF8C00',
         },
     };
 
     const con = {
-        theme: !darkMode ? 'academy' : 'classicDark',
+        theme:
+            localStorage.getItem('selectedTheme') === null
+                ? 'academy'
+                : localStorage.getItem('selectedTheme') === 'dark'
+                ? 'classicDark'
+                : 'academy',
         data: [
             { type: t('data.One'), value: registOne },
             { type: t('data.Two'), value: registTwo },
@@ -88,10 +104,12 @@ const Chart = () => {
 
         label: {
             text: (d) => `${d.value}`,
-            position: 'right',
+            position: 'outside',
         },
         legend: {
             color: {
+                // itemLabelFill: 'red',
+
                 title: false,
                 position: 'right',
                 rowPadding: 6,
@@ -104,7 +122,13 @@ const Chart = () => {
     };
 
     const gen = {
-        theme: darkMode ? 'classicDark' : 'academy',
+        theme:
+            localStorage.getItem('selectedTheme') === null
+                ? 'academy'
+                : localStorage.getItem('selectedTheme') === 'dark'
+                ? 'classicDark'
+                : 'academy',
+
         data: [
             { gender: t('gen.Male'), value: male },
             { gender: t('gen.Female'), value: female },
@@ -118,15 +142,20 @@ const Chart = () => {
         label: {
             text: (d) => `${d.value}`,
             style: {
+                fill:
+                    localStorage.getItem('selectedTheme') === null
+                        ? '#000'
+                        : localStorage.getItem('selectedTheme') === 'dark'
+                        ? '#fff'
+                        : '#000',
                 fontWeight: 'bold',
                 fontSize: '50px',
-                titleStroke: 'red',
-                fill: '#fff',
             },
         },
         legend: {
             color: {
-                title: false,
+                // itemLabelFill: 'red',
+
                 position: 'right',
                 rowPadding: 5,
             },

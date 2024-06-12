@@ -9,6 +9,7 @@ import {
     PlusCircleOutlined,
     MinusCircleOutlined,
     ManOutlined,
+    ExclamationCircleOutlined,
 } from '@ant-design/icons';
 import { toast } from 'react-toastify';
 import { Button, Space } from 'antd';
@@ -23,55 +24,7 @@ import { addDoc, collection, getFirestore } from 'firebase/firestore';
 import { firebaseConfig } from '../../constants/constants.js';
 import { initializeApp } from 'firebase/app';
 import { HandleErrorEdit, encodePath } from '../../commonFunctions.js';
-
-const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
-    const [error, setError] = useState(null);
-    const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
-    const isMath = dataIndex === 'MathScore';
-    const isLiterature = dataIndex === 'LiteratureScore';
-    const isEnglish = dataIndex === 'EnglishScore';
-
-    const rules = [
-        {
-            validator: (_, value) => {
-                if (dataIndex) {
-                    if (value === '') {
-                        return Promise.reject(`Please input`);
-                    }
-                }
-                if (isMath || isEnglish || isLiterature) {
-                    if (!(value >= 0 && value <= 10)) {
-                        setError('Score must >= 0 and <= 10 and just number');
-                        return Promise.reject('Invalid value');
-                    }
-                }
-                setError(null);
-                return Promise.resolve();
-            },
-        },
-    ];
-
-    useEffect(() => {
-        if (!editing) {
-            setError(null);
-        }
-    }, [editing]);
-
-    return (
-        <td {...restProps}>
-            {editing ? (
-                <>
-                    <Form.Item className="edit-cell" name={dataIndex} open={!!error} rules={rules}>
-                        {inputNode}
-                    </Form.Item>
-                    {error && <HandleErrorEdit errorMessage={error} />}
-                </>
-            ) : (
-                children
-            )}
-        </td>
-    );
-};
+import CryptoJS from 'crypto-js';
 
 const StudentList = () => {
     const { t } = useTranslation('student');
@@ -90,7 +43,127 @@ const StudentList = () => {
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const [bell, setBell] = useState(false);
+    const secretKey = 'Tvx1234@';
 
+    const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
+        const [error, setError] = useState(null);
+        const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
+        // const inputNode = <Input />;
+
+        const isName = dataIndex === 'name';
+        const isMath = dataIndex === 'MathScore';
+        const isLiterature = dataIndex === 'LiteratureScore';
+        const isEnglish = dataIndex === 'EnglishScore';
+        const isEmail = dataIndex === 'email';
+
+        const rules = [
+            {
+                validator: (_, value) => {
+                    if (dataIndex) {
+                        value = value.toString();
+                        if (value.trim().replace(/\s{2,}/g, ' ') === '') {
+                            setError('Please input');
+                            return <HandleErrorEdit />;
+                        }
+                    }
+                    if (isMath || isEnglish || isLiterature) {
+                        if (/^[-+]?(?:\d*\.?\d+|\d+\.)$/.test(value) === false) {
+                            setError('Score only contain number');
+                            return <HandleErrorEdit />;
+                        }
+                        if (!(value >= 0 && value <= 10)) {
+                            setError('Score must >= 0 and <= 10 ');
+                            return <HandleErrorEdit />;
+                        }
+                        if (value.length > 4) {
+                            setError('Grade contain 2 decimal number');
+                            return <HandleErrorEdit />;
+                        }
+                    }
+                    if (isName) {
+                        if (
+                            /^[A-Za-zđĐÁÀẢÃẠÂẮẰẲẴẶẤẦẨẪẬÉÈẺẼẸẾỀỂÊỄỆÍÌỈĨỊÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÚÙỦŨỤỨƯỪỬỮỰÝỲỶỸỴáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọốôồổỗộớờởơỡợúùủũụứưừửữựýỳỷỹỵ\s]+$/.test(
+                                value,
+                            ) === false
+                        ) {
+                            setError('Name only contain letter A-Z and a-z');
+                            return <HandleErrorEdit />;
+                        }
+                    }
+                    if (isEmail) {
+                        if (
+                            (/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(value) ||
+                                /w+([-+.]w+)*@w+([-.]w+)*.w+([-.]w+)*/.test(value)) === false
+                        ) {
+                            setError('Format is not correct');
+                            return <HandleErrorEdit />;
+                        }
+                        // if (checkEmailExist(value) === true) {
+                        //     setError('Email has existed');
+                        //     return;
+                        // }
+                        studentData.map((item) => {
+                            if (item.email === value) {
+                                setError('Email has existed');
+                                return <HandleErrorEdit />;
+                            }
+                            return 0;
+                        });
+                        for (let i = 0; i < studentData.length; i++) {
+                            if (studentData[i].email === value) {
+                                setError('Email has existed');
+                                break;
+                            }
+                        }
+                        if (error !== '') {
+                            return;
+                        }
+                        setError('');
+                    }
+
+                    setError(null);
+                    return Promise.resolve();
+                },
+            },
+        ];
+
+        useEffect(() => {
+            if (!editing) {
+                setError(null);
+            }
+        }, [editing]);
+
+        return (
+            <td {...restProps}>
+                {editing ? (
+                    <>
+                        <Form.Item className="edit-cell" name={dataIndex} open={!!error} rules={rules}>
+                            {inputNode}
+                        </Form.Item>
+                        {error &&
+                            (error === 'Please enter input' ? (
+                                <span style={{ color: 'red' }}>Please enter input</span>
+                            ) : (
+                                <Tooltip
+                                    title={error}
+                                    color={'red'}
+                                    key={'red'}
+                                    placement="bottom"
+                                    style={{ display: 'flex' }}
+                                >
+                                    <span style={{ color: 'red' }}>In valid</span>
+                                    <ExclamationCircleOutlined
+                                        style={{ marginLeft: '5px', color: '#f5554a', fontWeight: 'bold' }}
+                                    />
+                                </Tooltip>
+                            ))}
+                    </>
+                ) : (
+                    children
+                )}
+            </td>
+        );
+    };
     useEffect(() => {
         const fetchData = async () => {
             const studentRef = child(ref(database), 'Detail');
@@ -126,9 +199,10 @@ const StudentList = () => {
             });
 
             const accountRef = ref(database, `Account/${encodeEmail}`);
+            var hash = CryptoJS.AES.encrypt('Tvx1234@', secretKey).toString();
             await set(accountRef, {
                 email: record.email,
-                password: 'Tvx1234@',
+                password: hash,
                 name: record.name,
                 Role: 'user',
             });
@@ -139,6 +213,7 @@ const StudentList = () => {
             toast.error('Error provide account student');
         }
     };
+
     const handleDeleteAccount = async (record) => {
         try {
             const encodeEmail = encodeEmails(record.email);
@@ -302,7 +377,6 @@ const StudentList = () => {
         return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(email);
     }
     const updateUniCode = async (record, averagescore) => {
-        console.log(record);
         try {
             if (record.uniCode !== undefined) {
                 record.uniCode.forEach(async (uniCode) => {
@@ -333,20 +407,6 @@ const StudentList = () => {
         }
     };
 
-    const checkEmailExistence = async (newEmail) => {
-        try {
-            const snapshot = await get(child(ref(database), 'Detail'));
-            if (snapshot.exists()) {
-                const emails = snapshot.val();
-                const emailsExists = Object.values(emails).some((student) => student.email === newEmail);
-                return emailsExists;
-            }
-            return false;
-        } catch (error) {
-            toast.error('Error checking email existence');
-            return false;
-        }
-    };
     const save = async (record) => {
         try {
             const row = await form.validateFields();
@@ -355,22 +415,7 @@ const StudentList = () => {
 
             if (index > -1) {
                 const item = newData[index];
-                if (row.MathScore > 10 || row.EnglishScore > 10 || row.LiteratureScore > 10) {
-                    toast.error('Score must not be less or equal to 10');
-                    return;
-                }
 
-                if (!validateEmailFormat(row.email)) {
-                    toast.error('Invalid Email Format');
-                    return;
-                }
-                if (row.email !== item.email) {
-                    const emailsExists = await checkEmailExistence(row.email);
-                    if (emailsExists) {
-                        toast.error('This email has already exists');
-                        return;
-                    }
-                }
                 newData.splice(index, 1, {
                     ...item,
                     ...row,
@@ -382,11 +427,10 @@ const StudentList = () => {
                     LiteratureScore: parseFloat(newData[index].LiteratureScore),
                     EnglishScore: parseFloat(newData[index].EnglishScore),
                 };
-
                 const mathScore = updatedRow['MathScore'] || 0;
                 const literatureScore = updatedRow['LiteratureScore'] || 0;
                 const englishScore = updatedRow['EnglishScore'] || 0;
-                const averageScore = parseFloat(((mathScore + literatureScore + englishScore) / 3).toFixed(1));
+                const averageScore = parseFloat(((mathScore + literatureScore + englishScore) / 3).toFixed(2));
                 if (
                     row.MathScore < item.MathScore ||
                     row.EnglishScore < item.EnglishScore ||
@@ -578,16 +622,16 @@ const StudentList = () => {
                             disabled={editingKey !== ''}
                             onClick={() => edit(record)}
                             className="Typo_link"
+                            title="Edit"
                         >
                             <EditOutlined />
                         </Typography.Link>
                         <Popconfirm
-                            title={t('title.delete')}
                             onConfirm={() => handleDelete(record)}
                             okText={t('confirm.ok1')}
                             cancelText={t('confirm.cancel')}
                         >
-                            <Typography.Link>
+                            <Typography.Link title="Delete">
                                 <DeleteOutlined />
                             </Typography.Link>
                         </Popconfirm>
@@ -598,7 +642,7 @@ const StudentList = () => {
                                 okText={t('confirm.ok2')}
                                 cancelText={t('confirm.cancel')}
                             >
-                                <Typography.Link>
+                                <Typography.Link title="Add account">
                                     <PlusCircleOutlined />
                                 </Typography.Link>
                             </Popconfirm>
@@ -609,7 +653,7 @@ const StudentList = () => {
                                 okText={t('confirm.ok1')}
                                 cancelText={t('confirm.cancel')}
                             >
-                                <Typography.Link>
+                                <Typography.Link title="Delete account">
                                     <MinusCircleOutlined />
                                 </Typography.Link>
                             </Popconfirm>

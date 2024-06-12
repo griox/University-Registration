@@ -8,7 +8,7 @@ import './css/Modal_detail.css';
 import { useTranslation } from 'react-i18next';
 import Highlighter from 'react-highlight-words';
 
-export const Form_Detail = ({ university, isRegistered }) => {
+export const Form_Detail = ({ university, isRegistered, pageCurrent }) => {
     const [student, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [form] = Form.useForm();
@@ -17,7 +17,7 @@ export const Form_Detail = ({ university, isRegistered }) => {
     const searchInput = useRef(null);
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(pageCurrent);
     const cancel = (page) => {
         setCurrentPage(page);
         form.resetFields();

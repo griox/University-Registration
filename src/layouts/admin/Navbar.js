@@ -42,7 +42,7 @@ const Navbar = () => {
             key: '2',
             label: currentLanguage === 'Tiếng việt' ? 'Tiếng Việt' : 'Vietnam',
             icon: <img width="20" height="20" src="https://img.icons8.com/color/48/vietnam.png" alt="vietnam" />,
-            onClick: () => handleLanguage('vi', currentLanguage === 'Tiếng việt' ? 'Tiếng việt' : 'Tiếng Anh'),
+            onClick: () => handleLanguage('vi', currentLanguage === 'Tiếng việt' ? 'Tiếng việt' : 'Tiếng Việt'),
         },
     ];
     const items = [

@@ -43,6 +43,10 @@ function Pr() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [errorCCCD, setErrorCCCD] = useState(false);
     const [errorCCCDExist, setErrorCCCDExist] = useState(false);
+    const [errorDateOBirth, setErrorDateOBirth] = useState(false);
+    const [errorName, setErrorName] = useState(false);
+    const [errorEmail, setErrorEmail] = useState(false);
+
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
@@ -210,10 +214,21 @@ function Pr() {
     );
 
     const handleChange = (e, propertyName) => {
-        const newValue = e.target.value;
-
+        let newValue = e.target.value;
+        if (propertyName === 'email') {
+            if (newValue === '') {
+                dispatch({ type: 'update', payload: { propertyName, newValue } });
+                return;
+            }
+            if (
+                (/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(newValue) ||
+                    /w+([-+.]w+)*@w+([-.]w+)*.w+([-.]w+)*/.test(newValue)) === false
+            ) {
+                setErrorEmail(true);
+            }
+            setErrorEmail(false);
+        }
         if (propertyName === 'idenNum') {
-            console.log(newValue);
             if (newValue === '') {
                 dispatch({ type: 'update', payload: { propertyName, newValue } });
                 return;
@@ -222,19 +237,11 @@ function Pr() {
                 setErrorCCCD(true);
                 return;
             }
-            if (newValue.match(/[a-z]+/) !== null) {
-                setErrorCCCD(true);
-                return;
-            }
-            if (newValue.match(/[A-Z]+/) !== null) {
+            if (/^\d+$/.test(newValue) === false) {
                 setErrorCCCD(true);
                 return;
             }
 
-            if (newValue.match(/[$@#&!.]+/) !== null) {
-                setErrorCCCD(true);
-                return;
-            }
             get(child(ref(db), `Detail/`)).then((snapshot) => {
                 if (snapshot.exists()) {
                     const x = snapshot.val();
@@ -272,10 +279,34 @@ function Pr() {
 
             setErrorCCCD(false);
         }
+
+        if (propertyName === 'name') {
+            if (/^[a-zA-Z\u00C0-\u017F\s]*$/.test(newValue) === false) {
+                setErrorName(true);
+                return;
+            }
+            newValue = newValue.trim().replace(/\s{2,}/g, ' ');
+            setErrorName(false);
+        }
         dispatch({ type: 'update', payload: { propertyName, newValue } });
     };
     const handleSelect = (e, propertyName) => {
         const newValue = e;
+        if (propertyName === 'dateObirth') {
+            var today = new Date();
+            var birthDate = new Date(e);
+            var age = today.getFullYear() - birthDate.getFullYear();
+            var m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            if (age < 18) {
+                setErrorDateOBirth(true);
+                return;
+            } else {
+                setErrorDateOBirth(false);
+            }
+        }
         dispatch({ type: 'update', payload: { propertyName, newValue } });
     };
 
@@ -589,6 +620,20 @@ function Pr() {
                                                         <div style={{ margin: '0' }}>
                                                             <span>Please enter full name </span>
                                                         </div>
+                                                    ) : errorName === true ? (
+                                                        <div>
+                                                            <span>Invalid template </span>
+                                                            <Tooltip
+                                                                title={'Name must contain A-Z and a-z'}
+                                                                color={'red'}
+                                                                key={'red'}
+                                                                placement="bottom"
+                                                            >
+                                                                <ExclamationCircleOutlined
+                                                                    style={{ marginLeft: '5px' }}
+                                                                />
+                                                            </Tooltip>
+                                                        </div>
                                                     ) : (
                                                         ''
                                                     )
@@ -619,6 +664,10 @@ function Pr() {
                                                 detail.dateObirth === '' ? (
                                                     <div style={{ margin: '0' }}>
                                                         <span>Please enter date of birth </span>
+                                                    </div>
+                                                ) : errorDateOBirth === true ? (
+                                                    <div style={{ margin: '0' }}>
+                                                        <span>You are not enough 18 </span>
                                                     </div>
                                                 ) : (
                                                     ''
@@ -729,6 +778,22 @@ function Pr() {
                                                     detail.email === '' ? (
                                                         <div style={{ margin: '0' }}>
                                                             <span>Please enter email </span>
+                                                        </div>
+                                                    ) : errorEmail === true ? (
+                                                        <div>
+                                                            {console.log(detail.idenNum)}
+
+                                                            <span>Invalid template </span>
+                                                            <Tooltip
+                                                                title={'Format is not correct '}
+                                                                color={'red'}
+                                                                key={'red'}
+                                                                placement="bottom"
+                                                            >
+                                                                <ExclamationCircleOutlined
+                                                                    style={{ marginLeft: '5px' }}
+                                                                />
+                                                            </Tooltip>
                                                         </div>
                                                     ) : (
                                                         ''
@@ -928,6 +993,18 @@ function Pr() {
                                                     <div style={{ margin: '0' }}>
                                                         <span>Please enter full name </span>
                                                     </div>
+                                                ) : errorName === true ? (
+                                                    <div>
+                                                        <span>Invalid template </span>
+                                                        <Tooltip
+                                                            title={'Name must contain A-Z and a-z'}
+                                                            color={'red'}
+                                                            key={'red'}
+                                                            placement="bottom"
+                                                        >
+                                                            <ExclamationCircleOutlined style={{ marginLeft: '5px' }} />
+                                                        </Tooltip>
+                                                    </div>
                                                 ) : (
                                                     ''
                                                 )
@@ -951,21 +1028,38 @@ function Pr() {
                                 </div>
                                 <div className="detail-item">
                                     <h1>{t('title.DateOfBirth')}: </h1>
-                                    {console.log('log here', detail.dateObirth)}
-                                    <DatePicker
-                                        placeholder={t('title.phDateOfBirth')}
-                                        className="g-s pr-date-picker"
-                                        defaultValue={dayjs(detail.dateObirth, 'DD/MM/YYYY')}
-                                        value={dayjs(detail.dateObirth, 'DD/MM/YYYY')}
-                                        onChange={(e) => handleSelect(e, 'dateObirth')}
-                                        format="DD-MM-YYYY"
-                                    />
-                                    {/* <DatePicker
+                                    <Form.Item
+                                        name="email"
+                                        validateStatus={detail.dateObirth === '' ? 'error' : ''}
+                                        help={
+                                            detail.dateObirth === '' ? (
+                                                <div style={{ margin: '0' }}>
+                                                    <span>Please enter date of birth </span>
+                                                </div>
+                                            ) : errorDateOBirth === true ? (
+                                                <div style={{ margin: '0' }}>
+                                                    <span>You are not enough 18 </span>
+                                                </div>
+                                            ) : (
+                                                ''
+                                            )
+                                        }
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Please input!',
+                                            },
+                                        ]}
+                                    >
+                                        <DatePicker
+                                            placeholder={t('title.phDateOfBirth')}
                                             className="g-s pr-date-picker"
-                                            selected={dayjs(detail.dateObirth, 'DD-MM-YYYY')}
-                                            onChange={handleDate}
+                                            defaultValue={dayjs(detail.dateObirth, 'DD/MM/YYYY')}
+                                            value={dayjs(detail.dateObirth, 'DD/MM/YYYY')}
+                                            onChange={(e) => handleSelect(e, 'dateObirth')}
                                             format="DD-MM-YYYY"
-                                        /> */}
+                                        />
+                                    </Form.Item>
                                 </div>
                                 <div className="detail-item">
                                     <h1>{t('title.Gender')}: </h1>
@@ -1053,6 +1147,20 @@ function Pr() {
                                                 detail.email === '' ? (
                                                     <div style={{ margin: '0' }}>
                                                         <span>Please enter email</span>
+                                                    </div>
+                                                ) : errorEmail === true ? (
+                                                    <div>
+                                                        {console.log(detail.idenNum)}
+
+                                                        <span>Invalid template </span>
+                                                        <Tooltip
+                                                            title={'Format is not correct '}
+                                                            color={'red'}
+                                                            key={'red'}
+                                                            placement="bottom"
+                                                        >
+                                                            <ExclamationCircleOutlined style={{ marginLeft: '5px' }} />
+                                                        </Tooltip>
                                                     </div>
                                                 ) : (
                                                     ''

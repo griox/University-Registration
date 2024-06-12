@@ -9,12 +9,12 @@ import '../Student Manage/css/modal_add.css';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { database } from '../firebaseConfig.js';
+import CryptoJS from 'crypto-js';
 import { HandleErrorEdit } from '../../commonFunctions.js';
-import { Add } from '@mui/icons-material';
 
 const ModalAdd = ({ studentData, setStudentData }) => {
     const [Fullname, setFullname] = useState('');
-    const [Gender, setGender] = useState('Female');
+    const [Gender, setGender] = useState('');
     const [Email, setEmail] = useState('');
     const [Identify, setIdentify] = useState('');
     const [Address, setAddress] = useState('');
@@ -22,25 +22,24 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [placeOfBirth, setPlaceOfBirth] = useState('Khánh Hòa');
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [Mathscore, setMathscore] = useState('');
-    const [Englishscore, setEnglishscore] = useState('');
-    const [Literaturescore, setLiteraturescore] = useState('');
-    const [averageS, setAverageS] = useState('');
+    const [Mathscore, setMathscore] = useState(null);
+    const [Englishscore, setEnglishscore] = useState(null);
+    const [Literaturescore, setLiteraturescore] = useState(null);
+    const [averageS, setAverageS] = useState(null);
     const [isFormValid, setIsFormValid] = useState(false);
     const [emailExist, setEmailExists] = useState(false);
     const [IdenExists, setIdenExists] = useState(false);
     const [errorMath, setErrorMath] = useState('');
     const [errorEnglish, setErrorEnglish] = useState('');
     const [errorLiterature, setErrorLiterature] = useState('');
-    const [errorEmail, setErrorEmail] = useState(false);
-    const [errorIden, setErrorIden] = useState(false);
 
     const { t } = useTranslation('modalStudent');
+
+    const secretKey = 'Tvx1234@';
 
     useEffect(() => {
         // Hàm kiểm tra tính hợp lệ của form
         const checkFormValidity = () => {
-            console.log(errorEmail, errorIden);
             return (
                 Email !== '' &&
                 Fullname !== '' &&
@@ -49,21 +48,19 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 dateOfBirth !== '' &&
                 placeOfBirth !== '' &&
                 Identify !== '' &&
-                errorEnglish === '' &&
-                errorLiterature === '' &&
-                errorMath === '' &&
-                Mathscore !== '' &&
-                Englishscore !== '' &&
-                Literaturescore !== '' &&
+                Mathscore !== undefined &&
+                Mathscore !== null &&
+                Englishscore !== undefined &&
+                Englishscore !== null &&
+                Literaturescore !== undefined &&
+                Literaturescore !== null &&
                 validateEmailFormat(Email) &&
                 validateFullname(Fullname) &&
                 validateIdenNumber(Identify) &&
-                errorEmail === false &&
-                errorIden === false &&
-                Address !== ''
+                !emailExist &&
+                !IdenExists
             );
         };
-        setIsFormValid(checkFormValidity());
         setIsFormValid(checkFormValidity());
     }, [
         Email,
@@ -77,11 +74,11 @@ const ModalAdd = ({ studentData, setStudentData }) => {
         Mathscore,
         Englishscore,
         Literaturescore,
+        emailExist,
+        IdenExists,
         errorEnglish,
         errorLiterature,
         errorMath,
-        errorEmail,
-        errorIden,
     ]);
 
     const showModal = () => {
@@ -90,7 +87,10 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     function encodeEmails(email) {
         return email.replace('.', ',');
     }
-
+    function round(number, precision) {
+        let factor = Math.pow(10, precision);
+        return Math.round((number || 0) * factor) / factor;
+    }
     const generateID = async () => {
         const snapshot = await get(child(ref(database), 'Detail'));
         if (snapshot.exists()) {
@@ -140,6 +140,8 @@ const ModalAdd = ({ studentData, setStudentData }) => {
             });
             const encodeEmail = encodeEmails(Email);
             const accountRef = ref(database, `Account/${encodeEmail}`);
+            const p = `Tvx1234@`;
+            var hash = CryptoJS.AES.encrypt(p, secretKey).toString();
             await set(accountRef, {
                 email: Email,
                 password: 'Tvx1234@',
@@ -155,10 +157,10 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 dateObirth: formattedDateOfBirth,
                 placeOBirth: placeOfBirth,
                 idenNum: Identify,
-                MathScore: Mathscore,
-                EnglishScore: Englishscore,
-                LiteratureScore: Literaturescore,
-                AverageScore: averageS,
+                MathScore: parseFloat(Mathscore),
+                EnglishScore: parseFloat(Englishscore),
+                LiteratureScore: parseFloat(Literaturescore),
+                AverageScore: parseFloat(averageS),
                 Address: Address,
                 uniCode: [],
                 isRegister: 'true',
@@ -175,34 +177,19 @@ const ModalAdd = ({ studentData, setStudentData }) => {
         if (snapshot.exists()) {
             const students = snapshot.val();
             const emailExists = Object.values(students).some((user) => user.email === Email);
-            if (emailExists === null) {
-                setErrorEmail(true);
-            } else {
-                setErrorEmail(false);
-            }
             setEmailExists(emailExists);
-            return true;
         }
-
-        return false; // Nếu không có email tồn tại, trả về false
+        setEmailExists(false); // Nếu không có email tồn tại, trả về false
     };
     const checkIden = async (Identify) => {
         const snapshot = await get(child(ref(database), `Detail/`));
         if (snapshot.exists()) {
             const students = snapshot.val();
             const idenExists = Object.values(students).some((user) => user.idenNum === Identify);
-            if (idenExists === null) {
-                setErrorIden(true);
-            } else {
-                setErrorIden(false);
-            }
             setIdenExists(idenExists);
-            return true;
         }
-
-        return false; // Nếu không có email tồn tại, trả về false
+        setIdenExists(false); // Nếu không có email tồn tại, trả về false
     };
-
     const handleEmail = (e) => {
         const { value } = e.target;
         setEmail(value);
@@ -227,10 +214,18 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     };
 
     const handleCancel = () => {
+        setAddress('');
         setIsModalOpen(false);
-        setErrorEnglish('');
-        setErrorLiterature('');
-        setErrorMath('');
+        setFullname('');
+        setEmail('');
+        setDateOfBirth('');
+        setAddress('');
+        setPlaceOfBirth('');
+        setIdentify('');
+        setMathscore(null);
+        setEnglishscore(null);
+        setLiteraturescore(null);
+        setAverageS(null);
     };
     function validateEmailFormat(email) {
         return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(email);
@@ -305,56 +300,57 @@ const ModalAdd = ({ studentData, setStudentData }) => {
         setLiteraturescore(value);
         setErrorLiterature('');
     };
+
     const genders = [
         { value: 'Female', label: 'Female' },
         { value: 'Male', label: 'Male' },
     ];
 
-        const enthicities = [
-            { value: 'kinh', label: 'Kinh' },
-            { value: 'tay', label: 'Tay' },
-            { value: 'thai', label: 'Thai' },
-            { value: 'muong', label: 'Muong' },
-            { value: 'khmu', label: 'Khmu' },
-            { value: 'dao', label: 'Dao' },
-            { value: 'cham', label: 'Cham' },
-            { value: 'hoa', label: 'Hoa' },
-            { value: 'nung', label: 'Nung' },
-            { value: 'giay', label: 'Giay' },
-            { value: 'mong', label: 'Mong' },
-            { value: 'pupeo', label: 'Pupeo' },
-            { value: 'raglai', label: 'Raglai' },
-            { value: 'bana', label: 'Bana' },
-            { value: 'xodang', label: 'Xodang' },
-            { value: 'coho', label: 'Coho' },
-            { value: 'santieng', label: 'Santieng' },
-            { value: 'ede', label: 'Ede' },
-            { value: 'giarai', label: 'Gia Rai' },
-            { value: 'bruvankieu', label: 'Bru Van Kieu' },
-            { value: 'tao', label: 'Tao' },
-            { value: 'co', label: 'Co' },
-            { value: 'hre', label: 'Hre' },
-            { value: 'mnon', label: 'Mnong' },
-            { value: 'chut', label: 'Chut' },
-            { value: 'khmerkrom', label: 'Khmer Krom' },
-            { value: 'lach', label: 'Lach' },
-            { value: 'phula', label: 'Phula' },
-            { value: 'pathe', label: 'Pathe' },
-            { value: 'sila', label: 'Sila' },
-            { value: 'chau', label: 'Chau' },
-            { value: 'ma', label: 'Ma' },
-            { value: 'colao', label: 'Co Lao' },
-            { value: 'khmerlo', label: 'Khmer Lo' },
-            { value: 'khmum', label: 'Khmu' },
-            { value: 'laha', label: 'Laha' },
-            { value: 'lolo', label: 'Lolo' },
-            { value: 'chero', label: 'Chero' },
-            { value: 'khmerdam', label: 'Khmer Dam' },
-            { value: 'khmersrei', label: 'Khmer Srei' },
-            { value: 'xtieng', label: 'Xtieng' },
-            { value: 'muong2', label: 'Muong' },
-            { value: 'khmer', label: 'Khmer' },
-        ];
+    const enthicities = [
+        { value: 'kinh', label: 'Kinh' },
+        { value: 'tay', label: 'Tay' },
+        { value: 'thai', label: 'Thai' },
+        { value: 'muong', label: 'Muong' },
+        { value: 'khmu', label: 'Khmu' },
+        { value: 'dao', label: 'Dao' },
+        { value: 'cham', label: 'Cham' },
+        { value: 'hoa', label: 'Hoa' },
+        { value: 'nung', label: 'Nung' },
+        { value: 'giay', label: 'Giay' },
+        { value: 'mong', label: 'Mong' },
+        { value: 'pupeo', label: 'Pupeo' },
+        { value: 'raglai', label: 'Raglai' },
+        { value: 'bana', label: 'Bana' },
+        { value: 'xodang', label: 'Xodang' },
+        { value: 'coho', label: 'Coho' },
+        { value: 'santieng', label: 'Santieng' },
+        { value: 'ede', label: 'Ede' },
+        { value: 'giarai', label: 'Gia Rai' },
+        { value: 'bruvankieu', label: 'Bru Van Kieu' },
+        { value: 'tao', label: 'Tao' },
+        { value: 'co', label: 'Co' },
+        { value: 'hre', label: 'Hre' },
+        { value: 'mnon', label: 'Mnong' },
+        { value: 'chut', label: 'Chut' },
+        { value: 'khmerkrom', label: 'Khmer Krom' },
+        { value: 'lach', label: 'Lach' },
+        { value: 'phula', label: 'Phula' },
+        { value: 'pathe', label: 'Pathe' },
+        { value: 'sila', label: 'Sila' },
+        { value: 'chau', label: 'Chau' },
+        { value: 'ma', label: 'Ma' },
+        { value: 'colao', label: 'Co Lao' },
+        { value: 'khmerlo', label: 'Khmer Lo' },
+        { value: 'khmum', label: 'Khmu' },
+        { value: 'laha', label: 'Laha' },
+        { value: 'lolo', label: 'Lolo' },
+        { value: 'chero', label: 'Chero' },
+        { value: 'khmerdam', label: 'Khmer Dam' },
+        { value: 'khmersrei', label: 'Khmer Srei' },
+        { value: 'xtieng', label: 'Xtieng' },
+        { value: 'muong2', label: 'Muong' },
+        { value: 'khmer', label: 'Khmer' },
+    ];
 
     const cities = [
         { value: 'An Giang', label: 'An Giang' },
@@ -456,6 +452,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 <Input
                                     placeholder={t('placeholder.name')}
                                     prefix={<UserOutlined className="icon" />}
+                                    value={Fullname}
                                     onChange={(e) => setFullname(e.target.value)}
                                     suffix={
                                         <Tooltip title={t('tooltip.name')}>
@@ -479,11 +476,9 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 ]}
                             >
                                 <Select
-                                    defaultValue={'Female'}
-                                    initialvalues="Female"
+                                    defaultValue={'Male'}
                                     options={genders}
                                     onChange={(value) => setGender(value)}
-                                    showSearch
                                 />
                             </Form.Item>
                         </Col>
@@ -678,7 +673,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                             placement="bottom"
                                             style={{ display: 'flex' }}
                                         >
-                                            <span style={{ color: 'red' }}>In valid</span>
+                                            <span style={{ color: 'red' }}>Invalid</span>
                                             <ExclamationCircleOutlined
                                                 style={{ marginLeft: '5px', color: '#f5554a', fontWeight: 'bold' }}
                                             />
@@ -716,7 +711,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                             placement="bottom"
                                             style={{ display: 'flex' }}
                                         >
-                                            <span style={{ color: 'red' }}>In valid</span>
+                                            <span style={{ color: 'red' }}>Invalid</span>
                                             <ExclamationCircleOutlined
                                                 style={{ marginLeft: '5px', color: '#f5554a', fontWeight: 'bold' }}
                                             />
@@ -751,4 +746,4 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     );
 };
 
-    export default ModalAdd;
+export default ModalAdd;

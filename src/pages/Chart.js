@@ -57,12 +57,14 @@ const Chart = () => {
             textBaseline: 'bottom',
         },
         axis: {
-            fill: 'pink',
+
             labelFill: 'red',
+            lineStroke:'red',
         },
         style: {
             width: 45,
             fill: darkMode ? '#FF8C00' : 'rgb(7, 153, 244)',
+            
         },
     };
 

@@ -305,3 +305,6 @@
 .ant-btn-primary:disabled{
     color: var(--body_color)
 }
+.ant-pagination-jump-prev .ant-pagination-item-container .ant-pagination-item-ellipsis{
+    color: var(--body_color) !important
+}

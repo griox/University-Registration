@@ -51,17 +51,22 @@ const AddSchool = () => {
         const inputNode = <Input />;
         const isTarget = dataIndex === 'target';
         const isEntrance = dataIndex === 'averageS';
+        const isName = dataIndex === 'nameU';
         const rules = [
             {
                 validator: (_, value) => {
                     if (dataIndex) {
-                        if (value === '' || value === null) {
+                        if (value === '' || value === null || value.trim().replace(/\s{2,}/g, ' ') === '') {
                             setError('Please enter input');
                             return;
                         }
                     }
                     if (value !== '' && value !== null) {
                         if (isTarget) {
+                            if (!(value <= 10000 && value >= 0)) {
+                                setError('Target must be <= 10000 and >=0');
+                                return <HandleErrorEdit />;
+                            }
                             if (value < record.isRegistered) {
                                 setError('Target must be greater than or equal to Num of registered');
                                 return <HandleErrorEdit />;
@@ -70,25 +75,33 @@ const AddSchool = () => {
                                 setError('Target must contain only numbers');
                                 return <HandleErrorEdit />;
                             }
-                            if (!(value <= 1000)) {
-                                setError('Target must be <= 1000');
+                        }
+                        if (isName) {
+                            if (
+                                /^[A-Za-zđĐÁÀẢÃẠÂẮẰẲẴẶẤẦẨẪẬÉÈẺẼẸẾỀỂÊỄỆÍÌỈĨỊÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÚÙỦŨỤỨƯỪỬỮỰÝỲỶỸỴáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọốôồổỗộớờởơỡợúùủũụứưừửữựýỳỷỹỵ\s]+$/.test(
+                                    value,
+                                ) === false
+                            ) {
+                                setError('Name only contain letter A-Z and a-z');
                                 return <HandleErrorEdit />;
                             }
                         }
-
                         if (isEntrance) {
-                            if (/^[0-9]*\.?[0-9]+$/.test(value) === false) {
-                                setError('Entrance score only contain number');
+                            if (/^[-+]?(?:\d*\.?\d+|\d+\.)$/.test(value) === false) {
+                                setError('Score only contain number');
                                 return <HandleErrorEdit />;
                             }
                             if (!(value >= 0 && value <= 10)) {
-                                console.log('11');
-                                setError('Entrance Score must be > 0 and <= 10');
+                                setError('Score must >= 0 and <= 10 ');
                                 return <HandleErrorEdit />;
                             }
 
                             if (value > record.averageS) {
                                 setError('New Entrance score cannot be greater than current Entrance score');
+                                return <HandleErrorEdit />;
+                            }
+                            if (value.length > 4) {
+                                setError('Grade contain 2 decimal number');
                                 return <HandleErrorEdit />;
                             }
                         }
@@ -261,6 +274,7 @@ const AddSchool = () => {
             console.log(index, key);
             if (index > -1) {
                 const item = newData[index];
+
                 if (row.target < item.isRegistered) {
                     toast.error('Targets must not be less than Number of registration');
                     return;
@@ -469,7 +483,6 @@ const AddSchool = () => {
             dataIndex: 'target',
             width: '20%',
             editable: true,
-            sorter: (a, b) => a.targets - b.targets,
             key: 'target',
             responsive: ['sm'],
         },
@@ -569,7 +582,12 @@ const AddSchool = () => {
                 style={{ marginLeft: '20%' }}
                 footer={null}
             >
-                <FormDetail university={selectedUniverse} open={isModalDetailVisible} isRegistered={isRegistered} />
+                <FormDetail
+                    university={selectedUniverse}
+                    open={isModalDetailVisible}
+                    isRegistered={isRegistered}
+                    pageCurrent={1}
+                />
             </Modal>
         </div>
     );

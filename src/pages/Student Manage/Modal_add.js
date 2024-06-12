@@ -3,16 +3,18 @@ import 'firebase/auth';
 import { ref, child, get, set } from 'firebase/database';
 import { toast } from 'react-toastify';
 import { Button, Modal, Select, InputNumber, DatePicker, Form } from 'antd';
-import { InfoCircleOutlined, UserOutlined, MailOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined, UserOutlined, MailOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { Input, Tooltip, Row, Col } from 'antd';
 import '../Student Manage/css/modal_add.css';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { database } from '../firebaseConfig.js';
+import { HandleErrorEdit } from '../../commonFunctions.js';
+import { Add } from '@mui/icons-material';
 
 const ModalAdd = ({ studentData, setStudentData }) => {
     const [Fullname, setFullname] = useState('');
-    const [Gender, setGender] = useState('');
+    const [Gender, setGender] = useState('Female');
     const [Email, setEmail] = useState('');
     const [Identify, setIdentify] = useState('');
     const [Address, setAddress] = useState('');
@@ -20,20 +22,25 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [placeOfBirth, setPlaceOfBirth] = useState('Khánh Hòa');
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [Mathscore, setMathscore] = useState(null);
-    const [Englishscore, setEnglishscore] = useState(null);
-    const [Literaturescore, setLiteraturescore] = useState(null);
-    const [averageS, setAverageS] = useState(null);
+    const [Mathscore, setMathscore] = useState('');
+    const [Englishscore, setEnglishscore] = useState('');
+    const [Literaturescore, setLiteraturescore] = useState('');
+    const [averageS, setAverageS] = useState('');
     const [isFormValid, setIsFormValid] = useState(false);
-    const [emailExist,setEmailExists] =useState(false);
-    const [IdenExists,setIdenExists] = useState(false);
+    const [emailExist, setEmailExists] = useState(false);
+    const [IdenExists, setIdenExists] = useState(false);
+    const [errorMath, setErrorMath] = useState('');
+    const [errorEnglish, setErrorEnglish] = useState('');
+    const [errorLiterature, setErrorLiterature] = useState('');
+    const [errorEmail, setErrorEmail] = useState(false);
+    const [errorIden, setErrorIden] = useState(false);
+
     const { t } = useTranslation('modalStudent');
 
-    const secretKey = 'Tvx1234@';
-    
     useEffect(() => {
         // Hàm kiểm tra tính hợp lệ của form
         const checkFormValidity = () => {
+            console.log(errorEmail, errorIden);
             return (
                 Email !== '' &&
                 Fullname !== '' &&
@@ -42,17 +49,18 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 dateOfBirth !== '' &&
                 placeOfBirth !== '' &&
                 Identify !== '' &&
-                Mathscore !== undefined &&
-                Mathscore !== null &&
-                Englishscore !== undefined &&
-                Englishscore !== null &&
-                Literaturescore !== undefined &&
-                Literaturescore !== null &&
+                errorEnglish === '' &&
+                errorLiterature === '' &&
+                errorMath === '' &&
+                Mathscore !== '' &&
+                Englishscore !== '' &&
+                Literaturescore !== '' &&
                 validateEmailFormat(Email) &&
                 validateFullname(Fullname) &&
-                validateIdenNumber(Identify)&&
-                !checkEmail(Email) && 
-                !checkIden(Identify)
+                validateIdenNumber(Identify) &&
+                errorEmail === false &&
+                errorIden === false &&
+                Address !== ''
             );
         };
         setIsFormValid(checkFormValidity());
@@ -69,6 +77,11 @@ const ModalAdd = ({ studentData, setStudentData }) => {
         Mathscore,
         Englishscore,
         Literaturescore,
+        errorEnglish,
+        errorLiterature,
+        errorMath,
+        errorEmail,
+        errorIden,
     ]);
 
     const showModal = () => {
@@ -77,10 +90,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     function encodeEmails(email) {
         return email.replace('.', ',');
     }
-    function round(number, precision) {
-        let factor = Math.pow(10, precision);
-        return Math.round((number || 0) * factor) / factor;
-    }
+
     const generateID = async () => {
         const snapshot = await get(child(ref(database), 'Detail'));
         if (snapshot.exists()) {
@@ -98,13 +108,13 @@ const ModalAdd = ({ studentData, setStudentData }) => {
 
     useEffect(() => {
         const calculateAverage = () => {
-            if (Mathscore !== null && Englishscore !== null && Literaturescore !== null) {
-                const totalScore = round(Mathscore + Englishscore + Literaturescore, 1) / 3;
-                setAverageS(totalScore.toFixed(1));
+            if (errorEnglish === '' && errorLiterature === '' && errorMath === '') {
+                const totalScore = (parseFloat(Mathscore) + parseFloat(Englishscore) + parseFloat(Literaturescore)) / 3;
+                setAverageS(totalScore.toFixed(2));
             }
         };
         calculateAverage();
-    }, [Mathscore, Englishscore, Literaturescore]);
+    }, [Mathscore, Englishscore, Literaturescore, errorEnglish, errorLiterature, errorMath, averageS]);
 
     const addStudent = async () => {
         try {
@@ -120,10 +130,10 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 dateObirth: formattedDateOfBirth,
                 placeOBirth: placeOfBirth,
                 idenNum: Identify,
-                MathScore: Mathscore,
-                EnglishScore: Englishscore,
-                LiteratureScore: Literaturescore,
-                AverageScore: averageS,
+                MathScore: parseFloat(Mathscore),
+                EnglishScore: parseFloat(Englishscore),
+                LiteratureScore: parseFloat(Literaturescore),
+                AverageScore: parseFloat(averageS),
                 Address: Address,
                 uniCode: [],
                 isRegister: 'true',
@@ -165,29 +175,44 @@ const ModalAdd = ({ studentData, setStudentData }) => {
         if (snapshot.exists()) {
             const students = snapshot.val();
             const emailExists = Object.values(students).some((user) => user.email === Email);
+            if (emailExists === null) {
+                setErrorEmail(true);
+            } else {
+                setErrorEmail(false);
+            }
             setEmailExists(emailExists);
+            return true;
         }
+
         return false; // Nếu không có email tồn tại, trả về false
     };
-    const checkIden = async(Identify)=>{
+    const checkIden = async (Identify) => {
         const snapshot = await get(child(ref(database), `Detail/`));
         if (snapshot.exists()) {
             const students = snapshot.val();
             const idenExists = Object.values(students).some((user) => user.idenNum === Identify);
+            if (idenExists === null) {
+                setErrorIden(true);
+            } else {
+                setErrorIden(false);
+            }
             setIdenExists(idenExists);
+            return true;
         }
+
         return false; // Nếu không có email tồn tại, trả về false
-    }
-    const handleEmail =(e)=>{
-        const {value}=e.target;
+    };
+
+    const handleEmail = (e) => {
+        const { value } = e.target;
         setEmail(value);
         checkEmail(value);
-    }
-    const handleIden =(e)=>{
-        const {value} = e.target;
+    };
+    const handleIden = (e) => {
+        const { value } = e.target;
         setIdentify(value);
         checkIden(value);
-    }
+    };
     const handleOk = async () => {
         addStudent();
         setFullname('');
@@ -202,30 +227,84 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     };
 
     const handleCancel = () => {
-        setAddress('');
         setIsModalOpen(false);
-        setFullname('');
-        setEmail('');
-        setDateOfBirth('');
-        setAddress('');
-        setPlaceOfBirth('');
-        setIdentify('');
-        setMathscore(null);
-        setEnglishscore(null);
-        setLiteraturescore(null);
-        setAverageS(null);
+        setErrorEnglish('');
+        setErrorLiterature('');
+        setErrorMath('');
     };
     function validateEmailFormat(email) {
         return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(email);
     }
 
     function validateFullname(name) {
-        return /^[A-Za-z]+$/.test(name);
+        return /^[A-Za-zđĐÁÀẢÃẠÂẮẰẲẴẶẤẦẨẪẬÉÈẺẼẸẾỀỂÊỄỆÍÌỈĨỊÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÚÙỦŨỤỨƯỪỬỮỰÝỲỶỸỴáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọốôồổỗộớờởơỡợúùủũụứưừửữựýỳỷỹỵ\s]+$/.test(
+            name,
+        );
     }
     function validateIdenNumber(idenNum) {
         return idenNum.length === 12 && /^[0-9]+$/.test(idenNum);
     }
+    const checkMath = (value) => {
+        if (value === '' || value.trim().replace(/\s{2,}/g, ' ') === '') {
+            setErrorMath('Please input!');
+            return;
+        }
 
+        if (/^[-+]?(?:\d*\.?\d+|\d+\.)$/.test(value) === false) {
+            setErrorMath('Score only contain number');
+            return;
+        }
+        if (!(parseFloat(value) >= 0 && parseFloat(value) <= 10)) {
+            setErrorMath('Score must >= 0 and <= 10 ');
+            return;
+        }
+        if (value.length > 4) {
+            setErrorMath('Grade contain 2 decimal number');
+            return;
+        }
+        setErrorMath('');
+        setMathscore(value);
+    };
+    const checkEnglish = (value) => {
+        if (value === '' || value.trim().replace(/\s{2,}/g, ' ') === '') {
+            setErrorEnglish('Please input!');
+            return;
+        }
+        if (/^[-+]?(?:\d*\.?\d+|\d+\.)$/.test(value) === false) {
+            setErrorEnglish('Score only contain number');
+            return;
+        }
+        if (!(parseFloat(value) >= 0 && parseFloat(value) <= 10)) {
+            setErrorEnglish('Score must >= 0 and <= 10 ');
+            return;
+        }
+        if (value.length > 4) {
+            setErrorEnglish('Grade contain 2 decimal number');
+            return;
+        }
+        setEnglishscore(value);
+        setErrorEnglish('');
+    };
+    const checkLiterature = (value) => {
+        if (value === '' || value.trim().replace(/\s{2,}/g, ' ') === '') {
+            setErrorLiterature('Please input!');
+            return;
+        }
+        if (/^[-+]?(?:\d*\.?\d+|\d+\.)$/.test(value) === false) {
+            setErrorLiterature('Score only contain number');
+            return;
+        }
+        if (!(parseFloat(value) >= 0 && parseFloat(value) <= 10)) {
+            setErrorLiterature('Score must >= 0 and <= 10 ');
+            return;
+        }
+        if (value.length > 4) {
+            setErrorLiterature('Grade contain 2 decimal number');
+            return;
+        }
+        setLiteraturescore(value);
+        setErrorLiterature('');
+    };
     const genders = [
         { value: 'Female', label: 'Female' },
         { value: 'Male', label: 'Male' },
@@ -356,6 +435,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 onCancel={handleCancel}
                 width={700}
                 okButtonProps={{ disabled: !isFormValid }}
+                destroyOnClose
             >
                 <Form layout="vertical">
                     <Row gutter={16}>
@@ -399,9 +479,11 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 ]}
                             >
                                 <Select
+                                    defaultValue={'Female'}
                                     initialvalues="Female"
                                     options={genders}
                                     onChange={(value) => setGender(value)}
+                                    showSearch
                                 />
                             </Form.Item>
                         </Col>
@@ -479,7 +561,13 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 name="identify"
                                 className="form-item1"
                                 validateStatus={!validateIdenNumber(Identify) && Identify ? 'error' : ''}
-                                help={!validateIdenNumber(Identify) && Identify ? t('warning.identify') : (IdenExists ? t('warning.idenexist'):'')}
+                                help={
+                                    !validateIdenNumber(Identify) && Identify
+                                        ? t('warning.identify')
+                                        : IdenExists
+                                        ? t('warning.idenexist')
+                                        : ''
+                                }
                                 rules={[
                                     {
                                         required: true,
@@ -487,12 +575,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     },
                                 ]}
                             >
-                                <Input
-                                    onChange={handleIden}
-                                    showCount
-                                    maxLength={12}
-                                    value={Identify}
-                                />
+                                <Input onChange={handleIden} showCount maxLength={12} value={Identify} />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
@@ -547,6 +630,25 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 label={t('label.math')}
                                 className="form-item1"
                                 name="math"
+                                validateStatus={errorMath !== '' ? 'error' : ''}
+                                help={
+                                    errorMath !== '' ? (
+                                        <Tooltip
+                                            title={errorMath}
+                                            color={'red'}
+                                            key={'red'}
+                                            placement="bottom"
+                                            style={{ display: 'flex' }}
+                                        >
+                                            <span style={{ color: 'red' }}>In valid</span>
+                                            <ExclamationCircleOutlined
+                                                style={{ marginLeft: '5px', color: '#f5554a', fontWeight: 'bold' }}
+                                            />
+                                        </Tooltip>
+                                    ) : (
+                                        ''
+                                    )
+                                }
                                 rules={[
                                     {
                                         required: true,
@@ -554,13 +656,10 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     },
                                 ]}
                             >
-                                <InputNumber
+                                <Input
                                     className="input-num"
-                                    min={0}
-                                    max={10}
-                                    maxLength={4}
-                                    step={0.2}
-                                    onChange={(value) => setMathscore(value)}
+                                    value={Mathscore}
+                                    onChange={(e) => checkMath(e.target.value)}
                                 />
                             </Form.Item>
                         </Col>
@@ -569,6 +668,25 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 label={t('label.english')}
                                 name="english"
                                 className="form-item1"
+                                validateStatus={errorEnglish !== '' ? 'error' : ''}
+                                help={
+                                    errorEnglish !== '' ? (
+                                        <Tooltip
+                                            title={errorEnglish}
+                                            color={'red'}
+                                            key={'red'}
+                                            placement="bottom"
+                                            style={{ display: 'flex' }}
+                                        >
+                                            <span style={{ color: 'red' }}>In valid</span>
+                                            <ExclamationCircleOutlined
+                                                style={{ marginLeft: '5px', color: '#f5554a', fontWeight: 'bold' }}
+                                            />
+                                        </Tooltip>
+                                    ) : (
+                                        ''
+                                    )
+                                }
                                 rules={[
                                     {
                                         required: true,
@@ -576,13 +694,10 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     },
                                 ]}
                             >
-                                <InputNumber
-                                    min={0}
-                                    maxLength={4}
-                                    max={10}
-                                    step={0.2}
-                                    className="input-num-eng"
-                                    onChange={(value) => setEnglishscore(value)}
+                                <Input
+                                    className="input-num"
+                                    value={Englishscore}
+                                    onChange={(e) => checkEnglish(e.target.value)}
                                 />
                             </Form.Item>
                         </Col>
@@ -591,6 +706,25 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 label={t('label.literature')}
                                 name="literature"
                                 className="form-item1"
+                                validateStatus={errorLiterature !== '' ? 'error' : ''}
+                                help={
+                                    errorLiterature !== '' ? (
+                                        <Tooltip
+                                            title={errorLiterature}
+                                            color={'red'}
+                                            key={'red'}
+                                            placement="bottom"
+                                            style={{ display: 'flex' }}
+                                        >
+                                            <span style={{ color: 'red' }}>In valid</span>
+                                            <ExclamationCircleOutlined
+                                                style={{ marginLeft: '5px', color: '#f5554a', fontWeight: 'bold' }}
+                                            />
+                                        </Tooltip>
+                                    ) : (
+                                        ''
+                                    )
+                                }
                                 rules={[
                                     {
                                         required: true,
@@ -598,19 +732,16 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     },
                                 ]}
                             >
-                                <InputNumber
-                                    min={0}
-                                    max={10}
-                                    maxLength={4}
-                                    step={0.2}
-                                    className="input-num-liter"
-                                    onChange={(value) => setLiteraturescore(value)}
+                                <Input
+                                    className="input-num"
+                                    value={Literaturescore}
+                                    onChange={(e) => checkLiterature(e.target.value)}
                                 />
                             </Form.Item>
                         </Col>
                         <Col span={6}>
                             <Form.Item label={t('label.entrance')} className="form-item1">
-                                <Input readOnly className="input-num-en" value={averageS} />
+                                <Input disabled className="input-num-en" value={averageS} />
                             </Form.Item>
                         </Col>
                     </Row>

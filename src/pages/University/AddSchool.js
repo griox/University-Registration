@@ -56,7 +56,14 @@ const AddSchool = () => {
             {
                 validator: (_, value) => {
                     if (dataIndex) {
-                        if (value === '' || value === null || value.trim().replace(/\s{2,}/g, ' ') === '') {
+                        if (
+                            value === '' ||
+                            value === null ||
+                            value
+                                .toString()
+                                .trim()
+                                .replace(/\s{2,}/g, ' ') === ''
+                        ) {
                             setError('Please enter input');
                             return;
                         }
@@ -265,13 +272,14 @@ const AddSchool = () => {
         }
     };
 
-    const save = async (key) => {
+    const save = async (key, record) => {
+        console.log(record);
         try {
             const row = await form.validateFields();
+
             console.log(row);
             const newData = [...UniData];
             const index = newData.findIndex((item) => key === item.key);
-            console.log(index, key);
             if (index > -1) {
                 const item = newData[index];
 
@@ -485,6 +493,7 @@ const AddSchool = () => {
             editable: true,
             key: 'target',
             responsive: ['sm'],
+            sorter: (a, b) => a.target - b.target,
         },
         {
             title: t('table.Action'),
@@ -496,14 +505,21 @@ const AddSchool = () => {
                 const editable = isEditing(record);
                 return editable ? (
                     <span>
-                        <Typography.Link className="typolink" onClick={() => save(record.key)}>
+                        <Typography.Link className="typolink" onClick={() => save(record.key, record)} title="Save">
                             {t('title.edit')}
                         </Typography.Link>
-                        <Typography.Link onClick={cancel}>{t('title.cancel')}</Typography.Link>
+                        <Typography.Link onClick={cancel} title="Cancel">
+                            {t('title.cancel')}
+                        </Typography.Link>
                     </span>
                 ) : (
                     <Space size={'middle'}>
-                        <Typography.Link className="typolink" disabled={editingKey !== ''} onClick={() => edit(record)}>
+                        <Typography.Link
+                            className="typolink"
+                            disabled={editingKey !== ''}
+                            onClick={() => edit(record)}
+                            title="Edit"
+                        >
                             <EditOutlined />
                         </Typography.Link>
                         <Popconfirm
@@ -512,7 +528,7 @@ const AddSchool = () => {
                             okText={t('confirm.ok')}
                             cancelText={t('confirm.cancel')}
                         >
-                            <Typography.Link>
+                            <Typography.Link title="Delete">
                                 <DeleteOutlined />
                             </Typography.Link>
                         </Popconfirm>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ProSidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import { Box, IconButton, Typography, useTheme, Tooltip, Avatar } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import 'react-pro-sidebar/dist/css/styles.css';
 import { tokens } from '../../theme';
 import ContactsOutlinedIcon from '@mui/icons-material/ContactsOutlined';
@@ -53,6 +53,7 @@ const Sidebar = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const { t } = useTranslation('sidebar');
+    const location = useLocation();
     const [isCollapsed, setIsCollapsed] = useState(() => JSON.parse(localStorage.getItem('sidebarCollapsed')) || false);
     const [selected, setSelected] = useState(() => localStorage.getItem('selectedMenuItem') || 'Dashboard');
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -75,6 +76,22 @@ const Sidebar = () => {
             localStorage.setItem('selectedMenuItem', selected);
         }
     }, [selected]);
+
+    useEffect(() => {
+        // Automatically set the selected state based on the current path
+        const pathToTitleMap = {
+            '/admin/dashboard': t('title.dashboard'),
+            '/admin/ChatRoom': t('title.chat'),
+            '/admin/university': t('title.university'),
+            '/admin/student': t('title.student'),
+            '/register': t('title.register'),
+            '/admin/profile': t('title.profile'),
+        };
+        const currentTitle = pathToTitleMap[location.pathname];
+        if (currentTitle) {
+            setSelected(currentTitle);
+        }
+    }, [location.pathname, t]);
 
     function stringToColor(string) {
         let hash = 0;
@@ -175,14 +192,16 @@ const Sidebar = () => {
                     >
                         {!isCollapsed && (
                             <Box display="flex" justifyContent="space-between" alignItems="center" ml="15px">
-                                <Typography variant="h3" color={colors.grey[100]}>
-                                    <img
-                                        alt="profile-user"
-                                        width="100px"
-                                        height="auto"
-                                        src={`../../assets/fptnew.png`}
-                                    />
-                                </Typography>
+                                <Link to="/admin/dashboard">
+                                    <Typography variant="h3" color={colors.grey[100]}>
+                                        <img
+                                            alt="profile-user"
+                                            width="100px"
+                                            height="auto"
+                                            src={`../../assets/fptnew.png`}
+                                        />
+                                    </Typography>
+                                </Link>
                                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                                     <MenuOutlinedIcon style={{ color: 'var(--menu-color)' }} />
                                 </IconButton>

@@ -13,6 +13,7 @@ import CryptoJS from 'crypto-js';
 import { HandleErrorEdit } from '../../commonFunctions.js';
 
 const ModalAdd = ({ studentData, setStudentData }) => {
+
     const [Fullname, setFullname] = useState('');
     const [Gender, setGender] = useState('');
     const [Email, setEmail] = useState('');
@@ -144,7 +145,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
             var hash = CryptoJS.AES.encrypt(p, secretKey).toString();
             await set(accountRef, {
                 email: Email,
-                password: 'Tvx1234@',
+                password: hash,
                 name: Fullname,
                 Role: 'user',
             });

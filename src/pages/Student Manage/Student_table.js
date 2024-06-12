@@ -49,7 +49,7 @@ const StudentList = () => {
         const [error, setError] = useState(null);
         const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
         // const inputNode = <Input />;
-
+        const isID = dataIndex === 'id';
         const isName = dataIndex === 'name';
         const isMath = dataIndex === 'MathScore';
         const isLiterature = dataIndex === 'LiteratureScore';
@@ -63,20 +63,24 @@ const StudentList = () => {
                         value = value.toString();
                         if (value.trim().replace(/\s{2,}/g, ' ') === '') {
                             setError('Please input');
+
                             return <HandleErrorEdit />;
                         }
                     }
                     if (isMath || isEnglish || isLiterature) {
                         if (/^[-+]?(?:\d*\.?\d+|\d+\.)$/.test(value) === false) {
                             setError('Score only contain number');
+
                             return <HandleErrorEdit />;
                         }
                         if (!(value >= 0 && value <= 10)) {
                             setError('Score must >= 0 and <= 10 ');
+
                             return <HandleErrorEdit />;
                         }
                         if (value.length > 4) {
                             setError('Grade contain 2 decimal number');
+
                             return <HandleErrorEdit />;
                         }
                     }
@@ -98,27 +102,17 @@ const StudentList = () => {
                             setError('Format is not correct');
                             return <HandleErrorEdit />;
                         }
+
                         // if (checkEmailExist(value) === true) {
                         //     setError('Email has existed');
                         //     return;
                         // }
-                        studentData.map((item) => {
-                            if (item.email === value) {
-                                setError('Email has existed');
-                                return <HandleErrorEdit />;
-                            }
-                            return 0;
-                        });
-                        for (let i = 0; i < studentData.length; i++) {
-                            if (studentData[i].email === value) {
-                                setError('Email has existed');
-                                break;
-                            }
-                        }
-                        if (error !== '') {
+                        const y = studentData.filter((item) => item === value);
+
+                        if (y.length >= 2) {
+                            setError('Email has existed');
                             return;
                         }
-                        setError('');
                     }
 
                     setError(null);
@@ -199,7 +193,9 @@ const StudentList = () => {
             });
 
             const accountRef = ref(database, `Account/${encodeEmail}`);
-            var hash = CryptoJS.AES.encrypt('Tvx1234@', secretKey).toString();
+            const p = `Tvx1234@`;
+
+            var hash = CryptoJS.AES.encrypt(p, secretKey).toString();
             await set(accountRef, {
                 email: record.email,
                 password: hash,

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin, Modal } from 'antd';
+import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Spin, Modal, ConfigProvider } from 'antd';
 import './css/table.css';
 import 'antd/dist/reset.css';
 import {
@@ -25,8 +25,23 @@ import { firebaseConfig } from '../../constants/constants.js';
 import { initializeApp } from 'firebase/app';
 import { HandleErrorEdit, encodePath } from '../../commonFunctions.js';
 import CryptoJS from 'crypto-js';
+import vi_VN from 'antd/es/locale/vi_VN';
+import en_US from 'antd/es/locale/en_US';
+import es_ES from 'antd/es/locale/es_ES';
 
 const StudentList = () => {
+    const paginationLocale = {
+        items_per_page: '/ page',
+        jump_to: 'Đến',
+        jump_to_confirm: 'xác nhận',
+        page: '',
+        prev_page: 'Trang trước',
+        next_page: 'Trang sau',
+        prev_5: 'Trước 5 trang',
+        next_5: 'Tiếp 5 trang',
+        prev_3: 'Trước 3 trang',
+        next_3: 'Tiếp 3 trang',
+    };
     const { t } = useTranslation('student');
     const [form] = Form.useForm();
     const [editingKey, setEditingKey] = useState('');
@@ -44,7 +59,7 @@ const StudentList = () => {
     const db = getFirestore(app);
     const [bell, setBell] = useState(false);
     const secretKey = 'Tvx1234@';
-
+    const language = localStorage.getItem('language') || 'en';
     const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
         const [error, setError] = useState(null);
         const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
@@ -704,69 +719,143 @@ const StudentList = () => {
     };
 
     return (
-        <div className="Layout">
-            <Space direction="vertical" size={'small'}>
-                <div className="table">
-                    <ModalAdd studentData={studentData} setStudentData={setStudentData} />
-                    <Modal
-                        title={t('title.modalsend')}
-                        open={isModalOpen}
-                        onCancel={handleCancel}
-                        confirmLoading={true}
-                        destroyOnClose
-                        footer={[
-                            <Button onClick={handleOk} loading={bell}>
-                                {t('button.send')}
-                            </Button>,
-                            <Button onClick={handleCancel}>{t('button.cancel')}</Button>,
-                        ]}
-                    >
-                        <Input onChange={(e) => setMess(e.target.value)} />
-                    </Modal>
-                    <Button type="primary" onClick={showModal}>
-                        {t('button.sendnoti')}
-                    </Button>
+        <>
+            {localStorage.getItem('language') === 'vi' ? (
+                <ConfigProvider locale={vi_VN}>
+                    <div className="Layout">
+                        <Space direction="vertical" size={'small'}>
+                            <div className="table">
+                                <ModalAdd studentData={studentData} setStudentData={setStudentData} />
+                                <Modal
+                                    title={t('title.modalsend')}
+                                    open={isModalOpen}
+                                    onCancel={handleCancel}
+                                    confirmLoading={true}
+                                    destroyOnClose
+                                    footer={[
+                                        <Button onClick={handleOk} loading={bell}>
+                                            {t('button.send')}
+                                        </Button>,
+                                        <Button onClick={handleCancel}>{t('button.cancel')}</Button>,
+                                    ]}
+                                >
+                                    <Input onChange={(e) => setMess(e.target.value)} />
+                                </Modal>
+                                <Button type="primary" onClick={showModal}>
+                                    {t('button.sendnoti')}
+                                </Button>
 
-                    <ModalDetail
-                        visible={isModalVisible}
-                        onClose={() => {
-                            setIsModalVisible(false);
-                        }}
-                        student={selectedStudent}
-                        studentUnicode={studentUnicode}
-                    />
-                    <Form form={form} component={false}>
-                        <Spin spinning={Loading}>
-                            <Table
-                                components={{
-                                    body: {
-                                        cell: EditableCell,
-                                    },
-                                }}
-                                dataSource={studentData}
-                                columns={mergedColumns}
-                                scroll={{
-                                    x: 'calc(100vw - 270px)',
-                                    y: 'calc(100vh - 280px)',
-                                }}
-                                rowClassName="editable-row"
-                                showSorterTooltip={{
-                                    target: 'sorter-icon',
-                                }}
-                                pagination={{
-                                    onChange: cancel,
-                                    showSizeChanger: true,
-                                    showQuickJumper: true,
-                                    showTotal: (total) => `${t('title.total')} ${total}`,
-                                }}
-                                rowHoverable={false}
-                                ref={tableRef}
-                            />
-                        </Spin>
-                    </Form>
-                </div>
-            </Space>
-        </div>
+                                <ModalDetail
+                                    visible={isModalVisible}
+                                    onClose={() => {
+                                        setIsModalVisible(false);
+                                    }}
+                                    student={selectedStudent}
+                                    studentUnicode={studentUnicode}
+                                />
+                                <Form form={form} component={false}>
+                                    <Spin spinning={Loading}>
+                                        <Table
+                                            components={{
+                                                body: {
+                                                    cell: EditableCell,
+                                                },
+                                            }}
+                                            dataSource={studentData}
+                                            columns={mergedColumns}
+                                            scroll={{
+                                                x: 'calc(100vw - 290px)',
+                                                y: 'calc(100vh - 280px)',
+                                            }}
+                                            rowClassName="editable-row"
+                                            showSorterTooltip={{
+                                                target: 'sorter-icon',
+                                            }}
+                                            pagination={{
+                                                locale: { paginationLocale },
+                                                onChange: cancel,
+                                                showSizeChanger: true,
+                                                showQuickJumper: true,
+                                                showTotal: (total) => `${t('title.total')} ${total}`,
+                                            }}
+                                            rowHoverable={false}
+                                            ref={tableRef}
+                                        />
+                                    </Spin>
+                                </Form>
+                            </div>
+                        </Space>
+                    </div>
+                </ConfigProvider>
+            ) : (
+                <ConfigProvider locale={en_US}>
+                    <div className="Layout">
+                        <Space direction="vertical" size={'small'}>
+                            <div className="table">
+                                <ModalAdd studentData={studentData} setStudentData={setStudentData} />
+                                <Modal
+                                    title={t('title.modalsend')}
+                                    open={isModalOpen}
+                                    onCancel={handleCancel}
+                                    confirmLoading={true}
+                                    destroyOnClose
+                                    footer={[
+                                        <Button onClick={handleOk} loading={bell}>
+                                            {t('button.send')}
+                                        </Button>,
+                                        <Button onClick={handleCancel}>{t('button.cancel')}</Button>,
+                                    ]}
+                                >
+                                    <Input onChange={(e) => setMess(e.target.value)} />
+                                </Modal>
+                                <Button type="primary" onClick={showModal}>
+                                    {t('button.sendnoti')}
+                                </Button>
+
+                                <ModalDetail
+                                    visible={isModalVisible}
+                                    onClose={() => {
+                                        setIsModalVisible(false);
+                                    }}
+                                    student={selectedStudent}
+                                    studentUnicode={studentUnicode}
+                                />
+                                <Form form={form} component={false}>
+                                    <Spin spinning={Loading}>
+                                        <Table
+                                            components={{
+                                                body: {
+                                                    cell: EditableCell,
+                                                },
+                                            }}
+                                            dataSource={studentData}
+                                            columns={mergedColumns}
+                                            scroll={{
+                                                x: 'calc(100vw - 270px)',
+                                                y: 'calc(100vh - 280px)',
+                                            }}
+                                            rowClassName="editable-row"
+                                            showSorterTooltip={{
+                                                target: 'sorter-icon',
+                                            }}
+                                            pagination={{
+                                                locale: { paginationLocale },
+                                                onChange: cancel,
+                                                showSizeChanger: true,
+                                                showQuickJumper: true,
+                                                showTotal: (total) => `${t('title.total')} ${total}`,
+                                            }}
+                                            rowHoverable={false}
+                                            ref={tableRef}
+                                        />
+                                    </Spin>
+                                </Form>
+                            </div>
+                        </Space>
+                    </div>
+                </ConfigProvider>
+            )}
+        </>
     );
 };
 

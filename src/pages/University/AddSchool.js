@@ -1,5 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Form, Input, InputNumber, Popconfirm, Table, Tooltip, Typography, Button, Space, Modal, Spin } from 'antd';
+import {
+    Form,
+    Input,
+    InputNumber,
+    Popconfirm,
+    Table,
+    Tooltip,
+    Typography,
+    Button,
+    Space,
+    Modal,
+    Spin,
+    ConfigProvider,
+} from 'antd';
 import { SearchOutlined, EditOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import { toast } from 'react-toastify';
 import Highlighter from 'react-highlight-words';
@@ -10,8 +23,19 @@ import { database } from '../firebaseConfig.js';
 import './css/AddSchool.css';
 import { useTranslation } from 'react-i18next';
 import { HandleErrorEdit } from '../../commonFunctions.js';
-
+import vi_VN from 'antd/locale/vi_VN';
+import en_US from 'antd/locale/en_US';
+import { useDispatch, useSelector } from 'react-redux';
+import frFR from 'antd/locale/fr_FR';
 const AddSchool = () => {
+    const dispatch = useDispatch();
+    const [lng, setLng] = useState('vi');
+    const detail = useSelector((state) => state);
+    useEffect(() => {
+        const personal = localStorage.getItem('language');
+        dispatch({ type: 'user', payload: personal });
+        setLng(detail.language);
+    }, [detail.language, dispatch]);
     useEffect(() => {
         const fetchData = async () => {
             const uniRef = child(ref(database), 'University');
@@ -43,7 +67,7 @@ const AddSchool = () => {
     const tableRef = useRef(null);
     const searchInput = useRef(null);
     const [isRegistered, setIsRegistered] = useState(false);
-
+    const [page, setPage] = useState(1);
     const isEditing = (record) => record.key === editingKey;
 
     const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
@@ -84,14 +108,6 @@ const AddSchool = () => {
                             }
                         }
                         if (isName) {
-                            if (
-                                /^[A-Za-zđĐÁÀẢÃẠÂẮẰẲẴẶẤẦẨẪẬÉÈẺẼẸẾỀỂÊỄỆÍÌỈĨỊÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÚÙỦŨỤỨƯỪỬỮỰÝỲỶỸỴáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọốôồổỗộớờởơỡợúùủũụứưừửữựýỳỷỹỵ\s]+$/.test(
-                                    value,
-                                ) === false
-                            ) {
-                                setError('Name only contain letter A-Z and a-z');
-                                return <HandleErrorEdit />;
-                            }
                         }
                         if (isEntrance) {
                             if (/^[-+]?(?:\d*\.?\d+|\d+\.)$/.test(value) === false) {
@@ -196,13 +212,13 @@ const AddSchool = () => {
         try {
             if (record.registeration !== undefined) {
                 await get(child(ref(database), `University/${record.uniCode}/registeration`)).then((snapshot) => {
-                    if (snapshot.exists()){
+                    if (snapshot.exists()) {
                         const x = snapshot.val();
 
                         for (let i in x) {
                             const temp = x[i].id;
                             let z = null;
-                             get(child(ref(database), `Detail/${temp}/uniCode`)).then((snapshot) => {
+                            get(child(ref(database), `Detail/${temp}/uniCode`)).then((snapshot) => {
                                 if (snapshot.exists()) {
                                     const y = snapshot.val();
                                     const listItem = Object.values(y).map((user) => user);
@@ -226,6 +242,7 @@ const AddSchool = () => {
     };
 
     const handleCancel = () => {
+        setPage(1);
         setDetailVisible(false);
         setLoading(false);
     };
@@ -264,32 +281,14 @@ const AddSchool = () => {
     };
 
     const save = async (key, record) => {
-        console.log(record);
         try {
             const row = await form.validateFields();
 
-            console.log(row);
             const newData = [...UniData];
             const index = newData.findIndex((item) => key === item.key);
             if (index > -1) {
                 const item = newData[index];
 
-                if (row.target < item.isRegistered) {
-                    toast.error('Targets must not be less than Number of registration');
-                    return;
-                }
-                if (row.averageS > 10 || row.averageS < 0) {
-                    toast.error('Invalid Entrance Score Format');
-                    return;
-                }
-
-                if (row.nameU !== item.nameU) {
-                    const uniNameExists = await checkNameExistence(row.nameU);
-                    if (uniNameExists) {
-                        toast.error('This Name already exists');
-                        return;
-                    }
-                }
                 newData.splice(index, 1, {
                     ...item,
                     ...row,
@@ -482,10 +481,8 @@ const AddSchool = () => {
             dataIndex: 'target',
             width: '20%',
             editable: true,
-            sorter: (a, b) => a.target - b.target,
             key: 'target',
             responsive: ['sm'],
-            sorter: (a, b) => a.target - b.target,
         },
         {
             title: t('table.Action'),
@@ -548,56 +545,118 @@ const AddSchool = () => {
             }),
         };
     });
+    ////quangn
 
     return (
-        <div className="LayoutUni">
-            <Form form={form} component={false}>
-                <Space direction="vertical" size={'small'}>
-                    <div className="table">
-                        <FormAdd UniData={UniData} setUniData={setUniData} />
-                        <Spin spinning={loading}>
-                            <Table
-                                columns={mergedColumns}
-                                dataSource={UniData}
-                                onChange={onChange}
-                                pagination={{
-                                    defaultPageSize: 10,
-                                    pageSizeOptions: ['10', '20', '40', '100'],
-                                    showSizeChanger: true,
-                                    showQuickJumper: true,
-                                    marginTop: 20,
-                                    showTotal: (total) => `${t('title.total')} ${total}`,
-                                }}
-                                scroll={{ x: 'calc(100vw - 290px)', y: 'calc(100vh - 260px)' }}
-                                components={{
-                                    body: {
-                                        cell: EditableCell,
-                                    },
-                                }}
-                                rowHoverable={false}
-                                rowClassName="rowUni"
-                                ref={tableRef}
+        <>
+            {localStorage.getItem('language') === 'en' ? (
+                <ConfigProvider locale={en_US}>
+                    <div className="LayoutUni">
+                        <Form form={form} component={false}>
+                            <Space direction="vertical" size={'small'}>
+                                <div className="table">
+                                    <FormAdd UniData={UniData} setUniData={setUniData} />
+                                    <Spin spinning={loading}>
+                                        <Table
+                                            columns={mergedColumns}
+                                            dataSource={UniData}
+                                            onChange={onChange}
+                                            pagination={{
+                                                locale: { frFR },
+                                                defaultPageSize: 10,
+                                                pageSizeOptions: ['10', '20', '40', '100'],
+                                                showSizeChanger: true,
+                                                showQuickJumper: true,
+                                                marginTop: 20,
+                                                showTotal: (total) => `${t('title.total')} ${total}`,
+                                            }}
+                                            scroll={{ x: 'calc(100vw - 290px)', y: 'calc(100vh - 300px)' }}
+                                            components={{
+                                                body: {
+                                                    cell: EditableCell,
+                                                },
+                                            }}
+                                            rowHoverable={false}
+                                            rowClassName="rowUni"
+                                            ref={tableRef}
+                                        />
+                                    </Spin>
+                                </div>
+                            </Space>
+                        </Form>
+                        <Modal
+                            open={isModalDetailVisible}
+                            onCancel={handleCancel}
+                            width={1000}
+                            height={500}
+                            style={{ marginLeft: '20%' }}
+                            footer={null}
+                        >
+                            <FormDetail
+                                university={selectedUniverse}
+                                open={isModalDetailVisible}
+                                isRegistered={isRegistered}
+                                page={page}
+                                setPage={setPage}
                             />
-                        </Spin>
+                        </Modal>
                     </div>
-                </Space>
-            </Form>
-            <Modal
-                open={isModalDetailVisible}
-                onCancel={handleCancel}
-                width={1000}
-                height={500}
-                style={{ marginLeft: '20%' }}
-                footer={null}
-            >
-                <FormDetail
-                    university={selectedUniverse}
-                    open={isModalDetailVisible}
-                    isRegistered={isRegistered}
-                    pageCurrent={1}
-                />
-            </Modal>
-        </div>
+                </ConfigProvider>
+            ) : (
+                <ConfigProvider locale={vi_VN}>
+                    <div className="LayoutUni">
+                        <Form form={form} component={false}>
+                            <Space direction="vertical" size={'small'}>
+                                <div className="table">
+                                    <FormAdd UniData={UniData} setUniData={setUniData} />
+                                    <Spin spinning={loading}>
+                                        <Table
+                                            columns={mergedColumns}
+                                            dataSource={UniData}
+                                            onChange={onChange}
+                                            pagination={{
+                                                locale: { frFR },
+                                                defaultPageSize: 10,
+                                                pageSizeOptions: ['10', '20', '40', '100'],
+                                                showSizeChanger: true,
+                                                showQuickJumper: true,
+                                                marginTop: 20,
+                                                showTotal: (total) => `${t('title.total')} ${total}`,
+                                            }}
+                                            scroll={{ x: 'calc(100vw - 290px)', y: 'calc(100vh - 300px)' }}
+                                            components={{
+                                                body: {
+                                                    cell: EditableCell,
+                                                },
+                                            }}
+                                            rowHoverable={false}
+                                            rowClassName="rowUni"
+                                            ref={tableRef}
+                                        />
+                                    </Spin>
+                                </div>
+                            </Space>
+                        </Form>
+                        <Modal
+                            open={isModalDetailVisible}
+                            onCancel={handleCancel}
+                            width={1000}
+                            height={500}
+                            style={{ marginLeft: '20%' }}
+                            footer={null}
+                        >
+                            <FormDetail
+                                university={selectedUniverse}
+                                open={isModalDetailVisible}
+                                isRegistered={isRegistered}
+                                page={page}
+                                setPage={setPage}
+                            />
+                        </Modal>
+                    </div>
+                </ConfigProvider>
+            )}
+        </>
     );
 };
 

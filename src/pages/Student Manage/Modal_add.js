@@ -13,7 +13,6 @@ import CryptoJS from 'crypto-js';
 import { HandleErrorEdit } from '../../commonFunctions.js';
 
 const ModalAdd = ({ studentData, setStudentData }) => {
-
     const [Fullname, setFullname] = useState('');
     const [Gender, setGender] = useState('Male');
     const [Email, setEmail] = useState('');
@@ -210,6 +209,9 @@ const ModalAdd = ({ studentData, setStudentData }) => {
         checkIden(value);
     };
     const handleOk = async () => {
+        setErrorEnglish('');
+        setErrorLiterature('');
+        setErrorMath('');
         addStudent();
         setFullname('');
         setEmail('');
@@ -223,6 +225,9 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     };
 
     const handleCancel = () => {
+        setErrorEnglish('');
+        setErrorLiterature('');
+        setErrorMath('');
         setAddress('');
         setIsModalOpen(false);
         setFullname('');

@@ -126,9 +126,9 @@ const Sidebar = () => {
             children: `${firstChar}${lastChar}`,
         };
     }
-
+    const accountExist = JSON.parse(localStorage.getItem('Infor'));
     const isAdminOrSuperAdmin =
-        localStorage.getItem('Role') === 'admin' || localStorage.getItem('Role') === 'super_admin';
+        localStorage.getItem('Role') === 'Admin' || localStorage.getItem('Role') === 'super_admin';
 
     const dispatch = useDispatch();
     const history = useHistory();
@@ -278,15 +278,30 @@ const Sidebar = () => {
                                 />
                             </>
                         )}
-                        <Item
-                            title={t('title.profile')}
-                            to="/admin/profile"
-                            iconFilled={<ContactsIcon />}
-                            iconOutline={<ContactsOutlinedIcon />}
-                            selected={selected}
-                            setSelected={setSelected}
-                            tooltip={t('tooltip.profile')}
-                        />
+
+                        {isAdminOrSuperAdmin ? (
+                            <Item
+                                title={t('title.profile')}
+                                to="/admin/profile"
+                                iconFilled={<ContactsIcon />}
+                                iconOutline={<ContactsOutlinedIcon />}
+                                selected={selected}
+                                setSelected={setSelected}
+                                tooltip={t('tooltip.profile')}
+                            />
+                        ) : (
+                            accountExist !== '' && (
+                                <Item
+                                    title={t('title.profile')}
+                                    to="/admin/profile"
+                                    iconFilled={<ContactsIcon />}
+                                    iconOutline={<ContactsOutlinedIcon />}
+                                    selected={selected}
+                                    setSelected={setSelected}
+                                    tooltip={t('tooltip.profile')}
+                                />
+                            )
+                        )}
                     </Box>
                     <Modal
                         title={t('title.modal')}

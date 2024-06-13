@@ -219,6 +219,26 @@ const Register = () => {
                                 <div className="form-inputs">
                                     <Form.Item
                                         name="email"
+                                        validateStatus={
+                                            fullName === '' ||
+                                            fullName.trim().replace(/\s{2,}/g, ' ') === '' ||
+                                            /^[A-Za-zđĐÁÀẢÃẠÂẮẰẲẴẶẤẦẨẪẬÉÈẺẼẸẾỀỂÊỄỆÍÌỈĨỊÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÚÙỦŨỤỨƯỪỬỮỰÝỲỶỸỴáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọốôồổỗộớờởơỡợúùủũụứưừửữựýỳỷỹỵ\s]+$/.test(
+                                                fullName,
+                                            ) === false
+                                                ? 'error'
+                                                : ''
+                                        }
+                                        help={
+                                            fullName === '' || fullName.trim().replace(/\s{2,}/g, ' ') === '' ? (
+                                                <span style={{ color: 'red' }}>Please input</span>
+                                            ) : /^[A-Za-zđĐÁÀẢÃẠÂẮẰẲẴẶẤẦẨẪẬÉÈẺẼẸẾỀỂÊỄỆÍÌỈĨỊÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÚÙỦŨỤỨƯỪỬỮỰÝỲỶỸỴáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọốôồổỗộớờởơỡợúùủũụứưừửữựýỳỷỹỵ\s]+$/.test(
+                                                  fullName,
+                                              ) === false ? (
+                                                <span style={{ color: 'red' }}>Only cotain A-Z a-z and space</span>
+                                            ) : (
+                                                ''
+                                            )
+                                        }
                                         rules={[
                                             {
                                                 required: true,
@@ -240,8 +260,20 @@ const Register = () => {
                                     </Form.Item>
                                     <Form.Item
                                         name="email"
-                                        validateStatus={errorEmail ? 'error' : ''}
-                                        help={errorEmail ? <HandleError string="email" /> : ''}
+                                        validateStatus={
+                                            errorEmail || email === '' || email.trim().replace(/\s{2,}/g, ' ') === ''
+                                                ? 'error'
+                                                : ''
+                                        }
+                                        help={
+                                            errorEmail ? (
+                                                <HandleError string="Email format is not correct" />
+                                            ) : email === '' || email.trim().replace(/\s{2,}/g, ' ') === '' ? (
+                                                <span style={{ color: 'red' }}>Please input</span>
+                                            ) : (
+                                                ''
+                                            )
+                                        }
                                         rules={[
                                             {
                                                 required: true,
@@ -264,8 +296,22 @@ const Register = () => {
 
                                     <Form.Item
                                         name="email"
-                                        validateStatus={errorPassword ? 'error' : ''}
-                                        help={errorPassword ? <HandleError string="password" /> : ''}
+                                        validateStatus={
+                                            errorPassword ||
+                                            password === '' ||
+                                            password.trim().replace(/\s{2,}/g, ' ') === ''
+                                                ? 'error'
+                                                : ''
+                                        }
+                                        help={
+                                            errorPassword ? (
+                                                <HandleError string="'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 special character, 1 number, and be a minimum of 8 characters long.'" />
+                                            ) : password === '' || password.trim().replace(/\s{2,}/g, ' ') === '' ? (
+                                                <span style={{ color: 'red' }}>Please input</span>
+                                            ) : (
+                                                ''
+                                            )
+                                        }
                                         rules={[
                                             {
                                                 required: true,
@@ -296,8 +342,23 @@ const Register = () => {
                                     </Form.Item>
                                     <Form.Item
                                         name="email"
-                                        validateStatus={errorAgainPassword ? 'error' : ''}
-                                        help={errorAgainPassword ? <HandleError string="password" /> : ''}
+                                        validateStatus={
+                                            errorAgainPassword ||
+                                            againPassword === '' ||
+                                            againPassword.trim().replace(/\s{2,}/g, ' ') === ''
+                                                ? 'error'
+                                                : ''
+                                        }
+                                        help={
+                                            errorAgainPassword ? (
+                                                <HandleError string="'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 special character, 1 number, and be a minimum of 8 characters long.'" />
+                                            ) : againPassword === '' ||
+                                              againPassword.trim().replace(/\s{2,}/g, ' ') === '' ? (
+                                                <span style={{ color: 'red' }}>Please input</span>
+                                            ) : (
+                                                ''
+                                            )
+                                        }
                                         rules={[
                                             {
                                                 required: true,
@@ -363,6 +424,7 @@ const Register = () => {
                                                         email: email,
                                                         password: password,
                                                         againPassword: againPassword,
+                                                        setFullName: setFullName,
                                                     })
                                                 }
                                                 onKeyDown={handleEnterKey}
@@ -411,11 +473,6 @@ const Register = () => {
                                             </>
                                         )}
                                     </div>
-
-                                    <Button className=" input-submit">
-                                        <span className="clear">{t('button.clear')}</span>
-                                        <i className="bx bx-right-arrow-alt"></i>
-                                    </Button>
 
                                     <div>
                                         <Dropdown

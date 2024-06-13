@@ -8,7 +8,7 @@ import './css/Modal_detail.css';
 import { useTranslation } from 'react-i18next';
 import Highlighter from 'react-highlight-words';
 
-export const Form_Detail = ({ university, isRegistered, pageCurrent }) => {
+export const Form_Detail = ({ university, isRegistered, page, setPage }) => {
     const [student, setStudents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [form] = Form.useForm();
@@ -17,9 +17,9 @@ export const Form_Detail = ({ university, isRegistered, pageCurrent }) => {
     const searchInput = useRef(null);
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
-    const [currentPage, setCurrentPage] = useState(pageCurrent);
+    // const [currentPage, setCurrentPage] = useState(pageCurrent);
     const cancel = (page) => {
-        setCurrentPage(page);
+        setPage(page);
         form.resetFields();
     };
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -198,7 +198,6 @@ export const Form_Detail = ({ university, isRegistered, pageCurrent }) => {
 
     useEffect(() => {
         const fetchData = async () => {
-            setCurrentPage(1);
             if (student_regist && typeof student_regist === 'object') {
                 setLoading(true);
                 const studentList = Object.values(student_regist).map((student) => student.id);
@@ -250,7 +249,7 @@ export const Form_Detail = ({ university, isRegistered, pageCurrent }) => {
                                 target: 'sorter-icon',
                             }}
                             pagination={{
-                                current: currentPage,
+                                current: page,
                                 onChange: cancel,
                                 showSizeChanger: true,
                                 showQuickJumper: true,

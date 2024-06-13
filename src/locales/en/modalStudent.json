@@ -23,7 +23,8 @@
         "ok": "Add",
         "cancel": "Cancel",
         "success": "Successfully Added a Student",
-        "reload": "Reload"
+        "reload": "Reload",
+         "delete":"Confirm delete?"
     },
     "placeholder": {
         "name": "Enter Student's name",
@@ -38,10 +39,14 @@
         "identify": "Identify number must be 12 digits and contain only number ",
         "email": "Invalid email",
         "emailExists":"This Email has been used",
-        "idenexist":"This identify numbers has been used"
+        "idenexist":"This identify numbers has been used",
+        "numberVali":"Score must be number",
+        "numberVali1":"Score must be between 0 and 10",
+        "numberVali2":"Score must contain 2 digits"
     },
     "tooltip": {
         "name": "Name must contain letters and no space",
-        "email": "Email must contain @example"
+        "email": "Email must contain @example",
+         "tooltip":"Invalid"
     }
 }

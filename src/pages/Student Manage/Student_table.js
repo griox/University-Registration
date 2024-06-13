@@ -384,9 +384,6 @@ const StudentList = () => {
             }
         }
     };
-    function validateEmailFormat(email) {
-        return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(email);
-    }
     const updateUniCode = async (record, averagescore) => {
         try {
             if (record.uniCode !== undefined) {
@@ -562,7 +559,7 @@ const StudentList = () => {
         {
             title: t('table.Math'),
             dataIndex: 'MathScore',
-            width: '14%',
+            width: '17%',
             editable: true,
             sorter: (a, b) => a.MathScore - b.MathScore,
             key: 'MathScore',
@@ -570,7 +567,7 @@ const StudentList = () => {
         {
             title: t('table.Literature'),
             dataIndex: 'LiteratureScore',
-            width: '17%',
+            width: '19%',
             editable: true,
             key: 'LiteratureScore',
 
@@ -638,6 +635,7 @@ const StudentList = () => {
                             <EditOutlined />
                         </Typography.Link>
                         <Popconfirm
+                        title={t('title.delete')}
                             onConfirm={() => handleDelete(record)}
                             okText={t('confirm.ok1')}
                             cancelText={t('confirm.cancel')}
@@ -833,7 +831,7 @@ const StudentList = () => {
                                             dataSource={studentData}
                                             columns={mergedColumns}
                                             scroll={{
-                                                x: 'calc(100vw - 290px)',
+                                                x: 'calc(100vw - 270px)',
                                                 y: 'calc(100vh - 280px)',
                                             }}
                                             rowClassName="editable-row"

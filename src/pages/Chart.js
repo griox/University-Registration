@@ -32,8 +32,6 @@ const Chart = () => {
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     const darkMode = useSelector((state) => state.darkMode);
-    localStorage.setItem('mode',darkMode);
-    const theme = localStorage.getItem('mode');
     const config = {
         theme: !darkMode ? 'classic' : 'classicDark',
         data: [

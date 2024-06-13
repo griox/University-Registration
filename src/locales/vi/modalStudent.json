@@ -23,7 +23,8 @@
         "ok": "Thêm",
         "cancel": "Hủy",
         "success": "Thêm sinh viên thành công",
-        "reload": "Làm mới"
+        "reload": "Làm mới",
+        "delete":"Xác nhận xóa ?"
     },
     "placeholder": {
         "name": "Nhập tên sinh viên",
@@ -34,10 +35,18 @@
     "warning": {
         "name": "Tên sinh viên chỉ được chứa các chữ cái và không có khoảng trắng",
         "input": "Vui lòng nhập !",
-        "identify": "Mã chỉ chứa kí tự chữ số và phải đủ 12 kí tự "
+        "identify": "Mã chỉ chứa kí tự chữ số và phải đủ 12 kí tự ",
+        "email": "Sai định dạng email",
+        "emailExists":"Email đã được sử dụng",
+        "idenexist":"Mã định danh đã được sử dụng",
+        "numberVali":"Điểm chỉ chứa các chữ số",
+        "numberVali1":"Điểm phải >=0 hoặc <=10 ",
+        "numberVali2":"Điểm chứa tối đa 2 chữ số thập phân"
     },
     "tooltip": {
         "name": "Tên phải chứa các chữ cái và không có khoảng trắng",
-        "email": "Email phải chứa @example"
+        "email": "Email phải chứa @example",
+        "tooltip":"Sai định dạng"
+
     }
 }

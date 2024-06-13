@@ -41,11 +41,10 @@ function Pr() {
     const size = 'middle';
     const [image, setImage] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [errorCCCD, setErrorCCCD] = useState(false);
-    const [errorCCCDExist, setErrorCCCDExist] = useState(false);
-    const [errorDateOBirth, setErrorDateOBirth] = useState(false);
-    const [errorName, setErrorName] = useState(false);
-    const [errorEmail, setErrorEmail] = useState(false);
+    const [errorCCCD, setErrorCCCD] = useState('');
+    const [errorDateOBirth, setErrorDateOBirth] = useState('');
+    const [errorName, setErrorName] = useState('');
+    const [errorEmail, setErrorEmail] = useState('');
 
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
@@ -216,29 +215,35 @@ function Pr() {
     const handleChange = (e, propertyName) => {
         let newValue = e.target.value;
         if (propertyName === 'email') {
-            if (newValue === '') {
-                dispatch({ type: 'update', payload: { propertyName, newValue } });
+            if (newValue === '' || newValue === null || newValue.trim().replace(/\s{2,}/g, ' ') === '') {
+                setErrorEmail('Please input');
                 return;
             }
             if (
                 (/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(newValue) ||
                     /w+([-+.]w+)*@w+([-.]w+)*.w+([-.]w+)*/.test(newValue)) === false
             ) {
-                setErrorEmail(true);
-            }
-            setErrorEmail(false);
-        }
-        if (propertyName === 'idenNum') {
-            if (newValue === '') {
+                console.log('sai');
+                setErrorEmail('Format is not correct');
+                return;
+            } else {
+                setErrorEmail('');
                 dispatch({ type: 'update', payload: { propertyName, newValue } });
                 return;
             }
-            if (newValue.length < 12) {
-                setErrorCCCD(true);
+        }
+        if (propertyName === 'idenNum') {
+            if (newValue === '' || newValue === null || newValue.trim().replace(/\s{2,}/g, ' ') === '') {
+                setErrorCCCD('Please input');
                 return;
             }
+
             if (/^\d+$/.test(newValue) === false) {
-                setErrorCCCD(true);
+                setErrorCCCD('Only input number');
+                return;
+            }
+            if (newValue.length < 12) {
+                setErrorCCCD('Iden number must contain 12');
                 return;
             }
 
@@ -246,8 +251,8 @@ function Pr() {
                 if (snapshot.exists()) {
                     const x = snapshot.val();
                     for (let i in x) {
-                        if (x[i].idenNum === detail.idenNum) {
-                            setErrorCCCDExist(true);
+                        if (x[i].idenNum === detail.idenNum && x[i].id !== detail.id) {
+                            setErrorCCCD('IdenNum has existed');
                             return;
                         }
                     }
@@ -257,8 +262,9 @@ function Pr() {
                 if (snapshot.exists()) {
                     const x = snapshot.val();
                     for (let i in x) {
-                        if (x[i].idenNum === detail.idenNum) {
-                            setErrorCCCDExist(true);
+                        if (x[i].idenNum === detail.idenNum && x[i].id !== detail.id) {
+                            setErrorCCCD('IdenNum has existed');
+
                             return;
                         }
                     }
@@ -268,25 +274,29 @@ function Pr() {
                 if (snapshot.exists()) {
                     const x = snapshot.val();
                     for (let i in x) {
-                        if (x[i].idenNum === detail.idenNum) {
-                            setErrorCCCDExist(true);
+                        if (x[i].idenNum === detail.idenNum && x[i].id !== detail.id) {
+                            setErrorCCCD('IdenNum has existed');
+
                             return;
                         }
                     }
                 }
             });
-            setErrorCCCDExist(false);
 
-            setErrorCCCD(false);
+            setErrorCCCD('');
         }
 
         if (propertyName === 'name') {
+            if (newValue === '' || newValue === null || newValue.trim().replace(/\s{2,}/g, ' ') === '') {
+                setErrorName('Please input');
+                return;
+            }
             if (/^[a-zA-Z\u00C0-\u017F\s]*$/.test(newValue) === false) {
-                setErrorName(true);
+                setErrorName('Name only contain A-Z a-z and space');
                 return;
             }
             newValue = newValue.trim().replace(/\s{2,}/g, ' ');
-            setErrorName(false);
+            setErrorName('');
         }
         dispatch({ type: 'update', payload: { propertyName, newValue } });
     };
@@ -301,10 +311,10 @@ function Pr() {
                 age--;
             }
             if (age < 18) {
-                setErrorDateOBirth(true);
+                setErrorDateOBirth('You are not enough 18');
                 return;
             } else {
-                setErrorDateOBirth(false);
+                setErrorDateOBirth('');
             }
         }
         dispatch({ type: 'update', payload: { propertyName, newValue } });
@@ -530,7 +540,81 @@ function Pr() {
     const handleCancel = () => {
         setIsModalOpen(false);
     };
-
+    const checkValue = () => {
+        if (
+            detail.name !== '' &&
+            detail.gender !== '' &&
+            detail.placeOBirth !== '' &&
+            detail.Address !== '' &&
+            detail.enthicity &&
+            errorCCCD !== true &&
+            detail.idenNum !== '' &&
+            detail.email !== ''
+        ) {
+            return false;
+        } else {
+            return true;
+        }
+    };
+    const commonHelp = (error, value) => {
+        if (value === '') {
+            return (
+                <div>
+                    <span>Please input </span>
+                </div>
+            );
+        }
+        return error !== '' ? (
+            <div>
+                <span>Invalid template </span>
+                <Tooltip title={error} color={'red'} key={'red'} placement="bottom">
+                    <ExclamationCircleOutlined style={{ marginLeft: '5px' }} />
+                </Tooltip>
+            </div>
+        ) : (
+            ''
+        );
+    };
+    const commonHelpNotError = (inp) => {
+        return inp === '' ? (
+            <div style={{ margin: '0' }}>
+                <span> Please input</span>
+            </div>
+        ) : (
+            ''
+        );
+    };
+    const but = (
+        <>
+            <Modal
+                title={t('title.modalsave')}
+                open={isModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}
+                okText={t('button.ok')}
+                cancelText={t('button.cancel')}
+            >
+                <p style={{ color: 'var(--name-colorN)' }}>{t('title.saveedit')}</p>
+            </Modal>
+            <Button
+                type="primary"
+                onClick={showModal}
+                className="btn-save"
+                loading={loadingSave}
+                disabled={checkValue() === false ? false : true}
+            >
+                <span style={{ display: loadingSave === true ? 'none' : '' }}>{t('button.Save')}</span>
+            </Button>
+        </>
+    );
+    const score = (title, value) => {
+        return (
+            <div className="detail-item-input disabled">
+                <h1>{title}: </h1>
+                <Input className=" pr-score" value={value} disabled={true} />
+            </div>
+        );
+    };
     return (
         <div className="pr-container">
             {loading ? (
@@ -562,38 +646,7 @@ function Pr() {
                                         className="avatar-input"
                                     />
                                 </div>
-                                <Modal
-                                    title={t('title.modalsave')}
-                                    open={isModalOpen}
-                                    onOk={handleOk}
-                                    onCancel={handleCancel}
-                                    okText={t('button.ok')}
-                                    cancelText={t('button.cancel')}
-                                >
-                                    <p style={{ color: 'var(--name-colorN)' }}>{t('title.saveedit')}</p>
-                                </Modal>
-                                <Button
-                                    type="primary"
-                                    onClick={showModal}
-                                    className="btn-save"
-                                    loading={loadingSave}
-                                    disabled={
-                                        (detail.name !== '' &&
-                                            detail.gender !== '' &&
-                                            detail.placeOBirth !== '' &&
-                                            detail.Address !== '' &&
-                                            detail.enthicity &&
-                                            errorCCCD !== true &&
-                                            detail.idenNum !== '' &&
-                                            detail.email !== '') === true
-                                            ? false
-                                            : true
-                                    }
-                                >
-                                    <span style={{ display: loadingSave === true ? 'none' : '' }}>
-                                        {t('button.Save')}
-                                    </span>
-                                </Button>
+                                {but}
                             </div>
                             <div className="pr-admin-frame">
                                 <div className="pr-admin-input">
@@ -614,30 +667,8 @@ function Pr() {
                                         <Space.Compact size="large">
                                             <Form.Item
                                                 name="email"
-                                                validateStatus={detail.name === '' ? 'error' : ''}
-                                                help={
-                                                    detail.name === '' ? (
-                                                        <div style={{ margin: '0' }}>
-                                                            <span>Please enter full name </span>
-                                                        </div>
-                                                    ) : errorName === true ? (
-                                                        <div>
-                                                            <span>Invalid template </span>
-                                                            <Tooltip
-                                                                title={'Name must contain A-Z and a-z'}
-                                                                color={'red'}
-                                                                key={'red'}
-                                                                placement="bottom"
-                                                            >
-                                                                <ExclamationCircleOutlined
-                                                                    style={{ marginLeft: '5px' }}
-                                                                />
-                                                            </Tooltip>
-                                                        </div>
-                                                    ) : (
-                                                        ''
-                                                    )
-                                                }
+                                                validateStatus={errorName !== '' ? 'error' : ''}
+                                                help={commonHelp(errorName, detail.name)}
                                                 rules={[
                                                     {
                                                         required: true,
@@ -649,7 +680,6 @@ function Pr() {
                                                     className="admin-g-s"
                                                     placeholder={t('title.phName')}
                                                     value={detail.name}
-                                                    defaultValue={detail.name}
                                                     onChange={(e) => handleChange(e, 'name')}
                                                 />
                                             </Form.Item>
@@ -660,19 +690,7 @@ function Pr() {
                                         <Form.Item
                                             name="email"
                                             validateStatus={detail.dateObirth === '' ? 'error' : ''}
-                                            help={
-                                                detail.dateObirth === '' ? (
-                                                    <div style={{ margin: '0' }}>
-                                                        <span>Please enter date of birth </span>
-                                                    </div>
-                                                ) : errorDateOBirth === true ? (
-                                                    <div style={{ margin: '0' }}>
-                                                        <span>You are not enough 18 </span>
-                                                    </div>
-                                                ) : (
-                                                    ''
-                                                )
-                                            }
+                                            help={commonHelp(errorDateOBirth, detail.dateObirth)}
                                             rules={[
                                                 {
                                                     required: true,
@@ -680,20 +698,15 @@ function Pr() {
                                                 },
                                             ]}
                                         >
+                                            {console.log(dayjs(detail.dateObirth, 'DD/MM/YYYY'))}
                                             <DatePicker
                                                 className="admin-g-s"
                                                 placeholder={t('title.phDateOfBirth')}
                                                 defaultValue={dayjs(detail.dateObirth, 'DD/MM/YYYY')}
                                                 onChange={(e) => handleSelect(e, 'dateObirth')}
-                                                format="DD-MM-YYYY"
+                                                format="DD/MM/YYYY"
                                             />
                                         </Form.Item>
-                                        {/* <DatePicker
-                                            pr-date-picker"
-                                            selected={dayjs(detail.dateObirth, 'DD-MM-YYYY')}
-                                            onChange={handleDate}
-                                            format="DD-MM-YYYY"
-                                        /> */}
                                     </div>
                                     <div className="detail-item-admin">
                                         <h1>{t('title.Gender')}: </h1>
@@ -702,15 +715,7 @@ function Pr() {
                                                 <Form.Item
                                                     name="email"
                                                     validateStatus={detail.gender === '' ? 'error' : ''}
-                                                    help={
-                                                        detail.gender === '' ? (
-                                                            <div style={{ margin: '0' }}>
-                                                                <span>Please enter gender </span>
-                                                            </div>
-                                                        ) : (
-                                                            ''
-                                                        )
-                                                    }
+                                                    help={commonHelpNotError(detail.gender)}
                                                     rules={[
                                                         {
                                                             required: true,
@@ -739,15 +744,7 @@ function Pr() {
                                             <Form.Item
                                                 name="email"
                                                 validateStatus={detail.placeOBirth === '' ? 'error' : ''}
-                                                help={
-                                                    detail.placeOBirth === '' ? (
-                                                        <div style={{ margin: '0' }}>
-                                                            <span>Please enter place of birth </span>
-                                                        </div>
-                                                    ) : (
-                                                        ''
-                                                    )
-                                                }
+                                                help={commonHelpNotError(detail.placeOBirth)}
                                                 rules={[
                                                     {
                                                         required: true,
@@ -773,32 +770,8 @@ function Pr() {
                                         <Space.Compact size="large">
                                             <Form.Item
                                                 name="email"
-                                                validateStatus={detail.email === '' ? 'error' : ''}
-                                                help={
-                                                    detail.email === '' ? (
-                                                        <div style={{ margin: '0' }}>
-                                                            <span>Please enter email </span>
-                                                        </div>
-                                                    ) : errorEmail === true ? (
-                                                        <div>
-                                                            {console.log(detail.idenNum)}
-
-                                                            <span>Invalid template </span>
-                                                            <Tooltip
-                                                                title={'Format is not correct '}
-                                                                color={'red'}
-                                                                key={'red'}
-                                                                placement="bottom"
-                                                            >
-                                                                <ExclamationCircleOutlined
-                                                                    style={{ marginLeft: '5px' }}
-                                                                />
-                                                            </Tooltip>
-                                                        </div>
-                                                    ) : (
-                                                        ''
-                                                    )
-                                                }
+                                                validateStatus={errorEmail !== '' ? 'error' : ''}
+                                                help={commonHelp(errorEmail, detail.email)}
                                                 rules={[
                                                     {
                                                         required: true,
@@ -812,11 +785,6 @@ function Pr() {
                                                     defaultValue={detail.email}
                                                     value={detail.email}
                                                     onChange={(e) => handleChange(e, 'email')}
-                                                    suffix={
-                                                        <Tooltip title="Private Email">
-                                                            <InfoCircleOutlined className="InfoCircleOutlined" />
-                                                        </Tooltip>
-                                                    }
                                                 />
                                             </Form.Item>
                                         </Space.Compact>
@@ -826,15 +794,7 @@ function Pr() {
                                         <Form.Item
                                             name="email"
                                             validateStatus={detail.enthicity === '' ? 'error' : ''}
-                                            help={
-                                                detail.enthicity === '' ? (
-                                                    <div style={{ margin: '0' }}>
-                                                        <span>Please enter ethnicity </span>
-                                                    </div>
-                                                ) : (
-                                                    ''
-                                                )
-                                            }
+                                            help={commonHelpNotError(detail.enthicity)}
                                             rules={[
                                                 {
                                                     required: true,
@@ -859,35 +819,8 @@ function Pr() {
                                         <Space.Compact size="large">
                                             <Form.Item
                                                 name="email"
-                                                validateStatus={detail.idenNum === '' || errorCCCD ? 'error' : ''}
-                                                help={
-                                                    detail.idenNum === '' ? (
-                                                        <div style={{ margin: '0' }}>
-                                                            {console.log('rong')}
-                                                            <span>Please enter inden number </span>
-                                                        </div>
-                                                    ) : errorCCCD ? (
-                                                        <div>
-                                                            <span>Invalid template </span>
-                                                            <Tooltip
-                                                                title={'Please enter only and must 12 number '}
-                                                                color={'red'}
-                                                                key={'red'}
-                                                                placement="bottom"
-                                                            >
-                                                                <ExclamationCircleOutlined
-                                                                    style={{ marginLeft: '5px' }}
-                                                                />
-                                                            </Tooltip>
-                                                        </div>
-                                                    ) : errorCCCDExist === true ? (
-                                                        <div>
-                                                            <span>Inden number has existed</span>
-                                                        </div>
-                                                    ) : (
-                                                        ''
-                                                    )
-                                                }
+                                                validateStatus={errorCCCD !== '' ? 'error' : ''}
+                                                help={commonHelp(errorCCCD, detail.idenNum)}
                                                 rules={[
                                                     {
                                                         required: true,
@@ -915,15 +848,7 @@ function Pr() {
                                         <Form.Item
                                             name="email"
                                             validateStatus={detail.Address === '' ? 'error' : ''}
-                                            help={
-                                                detail.Address === '' ? (
-                                                    <div style={{ margin: '0' }}>
-                                                        <span>Please enter address </span>
-                                                    </div>
-                                                ) : (
-                                                    ''
-                                                )
-                                            }
+                                            help={commonHelpNotError(detail.Address)}
                                             rules={[
                                                 {
                                                     required: true,
@@ -987,28 +912,8 @@ function Pr() {
                                     <Space.Compact size="large">
                                         <Form.Item
                                             name="email"
-                                            validateStatus={detail.name === '' ? 'error' : ''}
-                                            help={
-                                                detail.name === '' ? (
-                                                    <div style={{ margin: '0' }}>
-                                                        <span>Please enter full name </span>
-                                                    </div>
-                                                ) : errorName === true ? (
-                                                    <div>
-                                                        <span>Invalid template </span>
-                                                        <Tooltip
-                                                            title={'Name must contain A-Z and a-z'}
-                                                            color={'red'}
-                                                            key={'red'}
-                                                            placement="bottom"
-                                                        >
-                                                            <ExclamationCircleOutlined style={{ marginLeft: '5px' }} />
-                                                        </Tooltip>
-                                                    </div>
-                                                ) : (
-                                                    ''
-                                                )
-                                            }
+                                            validateStatus={errorName !== '' || detail.name === '' ? 'error' : ''}
+                                            help={commonHelp(errorName, detail.name)}
                                             rules={[
                                                 {
                                                     required: true,
@@ -1031,19 +936,7 @@ function Pr() {
                                     <Form.Item
                                         name="email"
                                         validateStatus={detail.dateObirth === '' ? 'error' : ''}
-                                        help={
-                                            detail.dateObirth === '' ? (
-                                                <div style={{ margin: '0' }}>
-                                                    <span>Please enter date of birth </span>
-                                                </div>
-                                            ) : errorDateOBirth === true ? (
-                                                <div style={{ margin: '0' }}>
-                                                    <span>You are not enough 18 </span>
-                                                </div>
-                                            ) : (
-                                                ''
-                                            )
-                                        }
+                                        help={commonHelp(errorDateOBirth, detail.errorDateOBirth)}
                                         rules={[
                                             {
                                                 required: true,
@@ -1068,15 +961,7 @@ function Pr() {
                                             <Form.Item
                                                 name="email"
                                                 validateStatus={detail.gender === '' ? 'error' : ''}
-                                                help={
-                                                    detail.gender === '' ? (
-                                                        <div style={{ margin: '0' }}>
-                                                            <span>Please enter gender </span>
-                                                        </div>
-                                                    ) : (
-                                                        ''
-                                                    )
-                                                }
+                                                help={commonHelpNotError(detail.gender)}
                                                 rules={[
                                                     {
                                                         required: true,
@@ -1106,15 +991,7 @@ function Pr() {
                                         <Form.Item
                                             name="email"
                                             validateStatus={detail.placeOBirth === '' ? 'error' : ''}
-                                            help={
-                                                detail.placeOBirth === '' ? (
-                                                    <div style={{ margin: '0' }}>
-                                                        <span>Please enter place of birth </span>
-                                                    </div>
-                                                ) : (
-                                                    ''
-                                                )
-                                            }
+                                            help={commonHelpNotError(detail.placeOBirth)}
                                             rules={[
                                                 {
                                                     required: true,
@@ -1142,30 +1019,8 @@ function Pr() {
                                     <Space.Compact size="large">
                                         <Form.Item
                                             name="email"
-                                            validateStatus={detail.email === '' ? 'error' : ''}
-                                            help={
-                                                detail.email === '' ? (
-                                                    <div style={{ margin: '0' }}>
-                                                        <span>Please enter email</span>
-                                                    </div>
-                                                ) : errorEmail === true ? (
-                                                    <div>
-                                                        {console.log(detail.idenNum)}
-
-                                                        <span>Invalid template </span>
-                                                        <Tooltip
-                                                            title={'Format is not correct '}
-                                                            color={'red'}
-                                                            key={'red'}
-                                                            placement="bottom"
-                                                        >
-                                                            <ExclamationCircleOutlined style={{ marginLeft: '5px' }} />
-                                                        </Tooltip>
-                                                    </div>
-                                                ) : (
-                                                    ''
-                                                )
-                                            }
+                                            validateStatus={errorEmail !== '' ? 'error' : ''}
+                                            help={commonHelp(errorEmail, detail.email)}
                                             rules={[
                                                 {
                                                     required: true,
@@ -1193,15 +1048,7 @@ function Pr() {
                                     <Form.Item
                                         name="email"
                                         validateStatus={detail.enthicity === '' ? 'error' : ''}
-                                        help={
-                                            detail.enthicity === '' ? (
-                                                <div style={{ margin: '0' }}>
-                                                    <span>Please enter ethnicity </span>
-                                                </div>
-                                            ) : (
-                                                ''
-                                            )
-                                        }
+                                        help={commonHelpNotError(detail.enthicity)}
                                         rules={[
                                             {
                                                 required: true,
@@ -1227,35 +1074,8 @@ function Pr() {
                                     <Space.Compact size="large">
                                         <Form.Item
                                             name="email"
-                                            validateStatus={detail.idenNum === '' || errorCCCD ? 'error' : ''}
-                                            help={
-                                                detail.idenNum === '' ? (
-                                                    <div style={{ margin: '0' }}>
-                                                        {console.log('rong')}
-                                                        <span>Please enter ethnicity </span>
-                                                    </div>
-                                                ) : errorCCCD ? (
-                                                    <div>
-                                                        {console.log(detail.idenNum)}
-
-                                                        <span>Invalid template </span>
-                                                        <Tooltip
-                                                            title={'Please enter only and must 12 number '}
-                                                            color={'red'}
-                                                            key={'red'}
-                                                            placement="bottom"
-                                                        >
-                                                            <ExclamationCircleOutlined style={{ marginLeft: '5px' }} />
-                                                        </Tooltip>
-                                                    </div>
-                                                ) : errorCCCDExist === true ? (
-                                                    <div>
-                                                        <span>Inden number has existed</span>
-                                                    </div>
-                                                ) : (
-                                                    ''
-                                                )
-                                            }
+                                            validateStatus={errorCCCD !== '' ? 'error' : ''}
+                                            help={commonHelp(errorCCCD, detail.idenNum)}
                                             rules={[
                                                 {
                                                     required: true,
@@ -1283,15 +1103,7 @@ function Pr() {
                                         <Form.Item
                                             name="email"
                                             validateStatus={detail.Address === '' ? 'error' : ''}
-                                            help={
-                                                detail.Address === '' ? (
-                                                    <div style={{ margin: '0' }}>
-                                                        <span>Please enter address </span>
-                                                    </div>
-                                                ) : (
-                                                    ''
-                                                )
-                                            }
+                                            help={commonHelpNotError(detail.Address)}
                                             rules={[
                                                 {
                                                     required: true,
@@ -1313,42 +1125,10 @@ function Pr() {
                             </div>
                             <div className="col2">
                                 <div className="pr-input">
-                                    <div className="detail-item-input disabled">
-                                        <h1>{t('title.MathScore')}: </h1>
-                                        <Input
-                                            className=" pr-score"
-                                            value={detail.MathScore}
-                                            onChange={(e) => handleChange(e, 'email')}
-                                            disabled={true}
-                                        />
-                                    </div>
-                                    <div className="detail-item-input disabled">
-                                        <h1>{t('title.EnglishScore')}: </h1>
-                                        <Input
-                                            className="pr-score"
-                                            value={detail.EnglishScore}
-                                            onChange={(e) => handleChange(e, 'email')}
-                                            disabled={true}
-                                        />
-                                    </div>
-                                    <div className="detail-item-input disabled">
-                                        <h1>{t('title.LiteratureScore')}: </h1>
-                                        <Input
-                                            className=" pr-score"
-                                            value={detail.LiteratureScore}
-                                            onChange={(e) => handleChange(e, 'email')}
-                                            disabled={true}
-                                        />
-                                    </div>
-                                    <div className="detail-item-input disabled">
-                                        <h1>{t('title.AverageScore')}: </h1>
-                                        <Input
-                                            className=" pr-score"
-                                            value={detail.AverageScore}
-                                            onChange={(e) => handleChange(e, 'email')}
-                                            disabled={true}
-                                        />
-                                    </div>
+                                    {score(t('title.MathScore'), detail.MathScore)}
+                                    {score(t('title.EnglishScore'), detail.EnglishScore)}
+                                    {score(t('title.LiteratureScore'), detail.LiteratureScore)}
+                                    {score(t('title.AverageScore'), detail.AverageScore)}
                                 </div>
                                 <div className="detail-item-university">
                                     <h1>{t('title.University')}: </h1>
@@ -1368,38 +1148,7 @@ function Pr() {
                                         value={detail.uniCode}
                                     />
 
-                                    <Modal
-                                        title={t('title.modalsave')}
-                                        open={isModalOpen}
-                                        onOk={handleOk}
-                                        onCancel={handleCancel}
-                                        okText={t('button.ok')}
-                                        cancelText={t('button.cancel')}
-                                    >
-                                        <p style={{ color: 'var(--name-colorN)' }}>{t('title.saveedit')}</p>
-                                    </Modal>
-                                    <Button
-                                        type="primary"
-                                        onClick={showModal}
-                                        className="btn-save"
-                                        loading={loadingSave}
-                                        disabled={
-                                            (detail.name !== '' &&
-                                                detail.gender !== '' &&
-                                                detail.placeOBirth !== '' &&
-                                                detail.Address !== '' &&
-                                                detail.enthicity &&
-                                                errorCCCD !== true &&
-                                                detail.idenNum !== '' &&
-                                                detail.email !== '') === true
-                                                ? false
-                                                : true
-                                        }
-                                    >
-                                        <span style={{ display: loadingSave === true ? 'none' : '' }}>
-                                            {t('button.Save')}
-                                        </span>
-                                    </Button>
+                                    {but}
                                 </div>
                                 <div className="table">
                                     <Spin spinning={loadingTable} style={{ margin: '0', padding: '0' }}>

@@ -188,7 +188,7 @@ const FormAdd = ({ UniData, setUniData }) => {
     };
 
     const checkExist = (value) => {
-        if (value === '') {
+        if (value.trim().replace(/\s{2,}/g, ' ') === '') {
             setErrorUnicode('Please input');
             return;
         }
@@ -196,7 +196,10 @@ const FormAdd = ({ UniData, setUniData }) => {
             setErrorUnicode('Unicode only contain A-Z a-z and no space');
             return;
         }
-
+        if (value.length > 10) {
+            setErrorUnicode('Length must not > 10 ');
+            return;
+        }
         const exists = UniData.some((element) => element.uniCode === value);
         if (exists) {
             setErrorUnicode('Unicode has existed');

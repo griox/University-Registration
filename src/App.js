@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Masterlayout from './layouts/admin/Masterlayout';
 import Home from './components/frontend/Home';
@@ -8,7 +8,7 @@ import forgetpass from './components/frontend/auth/Forgetpass';
 import changepass from './components/frontend/auth/Changepass';
 import resetpass from './components/frontend/auth/Resetpass';
 
-import { Provider } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import store from './pages/store';
 import { ToastContainer } from 'react-toastify';
 import PrivateRoute from './PrivateRoute';
@@ -17,6 +17,8 @@ import PrivateRoute from './PrivateRoute';
 // import { useCreateAccountRecordsOnMount } from './database/Account';
 import './translation/i18n';
 import 'react-toastify/dist/ReactToastify.css';
+import { ConfigProvider } from 'antd';
+import vi_VN from 'antd/locale/vi_VN';
 
 function App() {
     const userToken = localStorage.getItem('userToken');

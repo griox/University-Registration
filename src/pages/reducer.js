@@ -1,3 +1,5 @@
+import { language } from '../commonFunctions';
+
 const initState = {
     name: '',
     gender: '',
@@ -12,9 +14,10 @@ const initState = {
     uniCode: [],
     img: '',
     id: '',
-    dateObirth: '0/0/0',
+    dateObirth: '01/01/2024',
     darkMode: false,
     AverageScore: 0,
+    language: 'en',
 };
 
 const reducer = (state = initState, action) => {

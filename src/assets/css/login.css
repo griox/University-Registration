@@ -350,6 +350,9 @@
     cursor: pointer;
     transition: 0.3s;
 }
+.ant-dropdown-menu .ant-dropdown-menu-item-selected:hover {
+    background-color: #fff;
+}
 
 .disable {
     background-color: grey;
@@ -376,7 +379,7 @@
     color: white;
 }
 /* regist css */
-.drop-menu1 .title-drop{
+.drop-menu1 .title-drop {
     color: white;
 }
 @media (max-width: 892px) {

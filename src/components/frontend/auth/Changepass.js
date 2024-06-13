@@ -3,22 +3,15 @@ import 'firebase/auth';
 import { child, get, getDatabase, ref, update } from 'firebase/database';
 import { initializeApp } from 'firebase/app';
 import { toast } from 'react-toastify';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, Tooltip } from 'antd';
 import { useHistory } from 'react-router-dom';
 import '../../../assets/css/register.css';
 import { useDispatch } from 'react-redux';
 import { firebaseConfig } from '../../../constants/constants';
-import {
-    HandleError,
-    disableButton,
-    encodePath,
-    getback,
-    onchangeInput,
-    validatePasswordFormat,
-} from '../../../commonFunctions';
+import { disableButton, encodePath, getback } from '../../../commonFunctions';
 import { useTranslation } from 'react-i18next';
 import { locales } from '../../../translation/i18n';
-import { DownOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import { DownOutlined, ExclamationCircleOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { Dropdown, Space, Typography } from 'antd';
 import CryptoJS from 'crypto-js';
 
@@ -35,9 +28,9 @@ const Changepass = () => {
     const [reNewPass, setReNewPass] = useState('');
     const dispatch = useDispatch();
     const [loadingChangePass, setLoadingChangePass] = useState(false);
-    const [errorOldPass, setErrorOldPass] = useState(false);
-    const [errorNewPass, setErrorNewPass] = useState(false);
-    const [errorReNewPass, setErrorReNewPass] = useState(false);
+    const [errorOldPass, setErrorOldPass] = useState('');
+    const [errorNewPass, setErrorNewPass] = useState('');
+    const [errorReNewPass, setErrorReNewPass] = useState('');
 
     const secretKey = 'Tvx1234@';
 
@@ -51,6 +44,7 @@ const Changepass = () => {
         dispatch({ type: 'logout' });
         history.push('/Login');
     };
+
     useEffect(() => {
         i18n.changeLanguage(storedLanguage);
     }, [i18n, storedLanguage]);
@@ -77,35 +71,7 @@ const Changepass = () => {
     const changePassWord = () => {
         setLoadingChangePass(true);
         let temp = localStorage.getItem('Email');
-        if (oldPass === '') {
-            toast.error('Please enter your old password');
-            setLoadingChangePass(false);
 
-            return;
-        }
-        if (newPass === '') {
-            toast.error('Please enter your new password');
-            setLoadingChangePass(false);
-
-            return;
-        }
-        if (reNewPass === '') {
-            toast.error('Please confirm your password again');
-            setLoadingChangePass(false);
-
-            return;
-        }
-        if (newPass !== reNewPass) {
-            toast.error('You confirm your password is incorrect');
-            setLoadingChangePass(false);
-
-            return;
-        }
-        if (validatePasswordFormat(newPass) === false) {
-            toast.error(
-                'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 special character, 1 number, and be a minimum of 8 characters long.',
-            );
-        }
         temp = encodePath(temp);
 
         get(child(ref(db), `Account/` + temp)).then((snapshot) => {
@@ -148,14 +114,114 @@ const Changepass = () => {
             changePassWord();
         }
     };
+    const checkValue = (name, value) => {
+        setOldPass(value);
 
-    const handleItem = (error, value, set, setError, string, placeholder) => {
+        if (name === 'pass') {
+            if (value === '' || value === null) {
+                setErrorOldPass('Please input');
+                return;
+            }
+            if (value.includes(' ')) {
+                setErrorOldPass('Must not have space');
+                return;
+            }
+            setErrorOldPass('');
+        }
+        if (name === 'newpass') {
+            setNewPass(value);
+
+            if (value === '' || value === null) {
+                setErrorNewPass('Please input');
+                return;
+            }
+            if (value.includes(' ')) {
+                setErrorNewPass('Must not have space');
+                return;
+            }
+            if (checkPasswordStrength(value) === false) {
+                setErrorNewPass(
+                    'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 special character, 1 number, and be a minimum of 8 characters long.',
+                );
+                return;
+            }
+            if (value === oldPass) {
+                setErrorNewPass('New pass must be different from old pass');
+                return;
+            }
+
+            setErrorNewPass('');
+        }
+        if (name === 'renewpass') {
+            setReNewPass(value);
+
+            if (value === '' || value === null) {
+                setErrorReNewPass('Please input');
+                return;
+            }
+            if (value.includes(' ')) {
+                setErrorReNewPass('Must not have space');
+                return;
+            }
+            if (checkPasswordStrength(value) === false) {
+                setErrorReNewPass(
+                    'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 special character, 1 number, and be a minimum of 8 characters long.',
+                );
+                return;
+            }
+            if (value !== newPass) {
+                setErrorReNewPass("Two password don't match together");
+                return;
+            }
+
+            setErrorReNewPass('');
+        }
+    };
+    const checkPasswordStrength = (password) => {
+        // Kiểm tra độ dài của mật khẩu
+        if (password.length < 8) {
+            return false;
+        }
+
+        // Kiểm tra xem mật khẩu có chứa ít nhất một ký tự in hoa, một ký tự thường, một ký tự đặc biệt và một số hay không
+        const uppercaseRegex = /[A-Z]/; // Ký tự in hoa
+        const lowercaseRegex = /[a-z]/; // Ký tự thường
+        const specialCharRegex = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/; // Ký tự đặc biệt
+        const numberRegex = /[0-9]/; // Số
+
+        if (
+            !uppercaseRegex.test(password) ||
+            !lowercaseRegex.test(password) ||
+            !specialCharRegex.test(password) ||
+            !numberRegex.test(password)
+        ) {
+            return false;
+        }
+
+        // Nếu mật khẩu vượt qua tất cả các điều kiện kiểm tra, trả về true
+        return true;
+    };
+    const handleItem = (error, value, name, placeholder) => {
+        console.log(value);
         return (
             <>
                 <Form.Item
                     name="email"
                     validateStatus={error ? 'error' : ''}
-                    help={error ? <HandleError string={string} /> : ''}
+                    help={
+                        error !== '' ? (
+                            <div>
+                                <Tooltip title={error} color={'red'} key={'red'} placement="bottom">
+                                    <span style={{ color: 'red', fontSize: '13px' }}>{t('warning.title')}</span>
+                                    <ExclamationCircleOutlined
+                                        style={{ marginLeft: '5px', color: '#f5554a', fontWeight: 'bold' }}
+                                    />
+                                </Tooltip>
+                            </div>
+                        ) : (
+                            ''
+                        )
+                    }
                     rules={[
                         {
                             required: true,
@@ -165,7 +231,7 @@ const Changepass = () => {
                 >
                     <Input.Password
                         placeholder={placeholder}
-                        onChange={(e) => onchangeInput(e.target.value, set, setError)}
+                        onChange={(e) => checkValue(name, e.target.value)}
                         onKeyDown={handleEnterKey}
                         allowClear
                         style={{
@@ -187,6 +253,7 @@ const Changepass = () => {
             </>
         );
     };
+
     const clear = () => {
         setOldPass('');
         setNewPass('');
@@ -198,7 +265,7 @@ const Changepass = () => {
                 <div className="input-box">
                     <br />
 
-                    <Button loading={loading} className="input-submit" onClick={action} style={{}}>
+                    <Button loading={loading} className="input-submit" onClick={action}>
                         <span>{string}</span>
                         <i className="bx bx-right-arrow-alt"></i>
                     </Button>
@@ -222,30 +289,175 @@ const Changepass = () => {
                                 </div>
 
                                 <div className="form-inputs">
-                                    {handleItem(
-                                        errorOldPass,
-                                        oldPass,
-                                        setOldPass,
-                                        setErrorOldPass,
-                                        t('placeholder.pass'),
-                                        t('placeholder.oldpass'),
-                                    )}
-                                    {handleItem(
-                                        errorNewPass,
-                                        newPass,
-                                        setNewPass,
-                                        setErrorNewPass,
-                                        t('placeholder.pass'),
-                                        t('placeholder.newpass'),
-                                    )}
-                                    {handleItem(
-                                        errorReNewPass,
-                                        reNewPass,
-                                        setReNewPass,
-                                        setErrorReNewPass,
-                                        t('placeholder.pass'),
-                                        t('placeholder.renewpass'),
-                                    )}
+                                    <Form.Item
+                                        name="email"
+                                        validateStatus={errorOldPass ? 'error' : ''}
+                                        help={
+                                            errorOldPass !== '' ? (
+                                                <div>
+                                                    <Tooltip
+                                                        title={errorOldPass}
+                                                        color={'red'}
+                                                        key={'red'}
+                                                        placement="bottom"
+                                                    >
+                                                        <span style={{ color: 'red', fontSize: '13px' }}>
+                                                            {t('warning.title')}
+                                                        </span>
+                                                        <ExclamationCircleOutlined
+                                                            style={{
+                                                                marginLeft: '5px',
+                                                                color: '#f5554a',
+                                                                fontWeight: 'bold',
+                                                            }}
+                                                        />
+                                                    </Tooltip>
+                                                </div>
+                                            ) : (
+                                                ''
+                                            )
+                                        }
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Please input!',
+                                            },
+                                        ]}
+                                    >
+                                        <Input.Password
+                                            placeholder={t('placeholder.oldpass')}
+                                            onChange={(e) => checkValue('pass', e.target.value)}
+                                            onKeyDown={handleEnterKey}
+                                            allowClear
+                                            style={{
+                                                border: 'none',
+                                                padding: '15px',
+
+                                                backgroundColor: 'blue',
+                                            }}
+                                            value={oldPass}
+                                            iconRender={(visible) =>
+                                                visible ? (
+                                                    <EyeTwoTone style={{ fontSize: '20px' }} />
+                                                ) : (
+                                                    <EyeInvisibleOutlined style={{ fontSize: '20px' }} />
+                                                )
+                                            }
+                                        />
+                                    </Form.Item>
+
+                                    <Form.Item
+                                        name="email"
+                                        validateStatus={errorNewPass ? 'error' : ''}
+                                        help={
+                                            errorNewPass !== '' ? (
+                                                <div>
+                                                    <Tooltip
+                                                        title={errorNewPass}
+                                                        color={'red'}
+                                                        key={'red'}
+                                                        placement="bottom"
+                                                    >
+                                                        <span style={{ color: 'red', fontSize: '13px' }}>
+                                                            {t('warning.title')}
+                                                        </span>
+                                                        <ExclamationCircleOutlined
+                                                            style={{
+                                                                marginLeft: '5px',
+                                                                color: '#f5554a',
+                                                                fontWeight: 'bold',
+                                                            }}
+                                                        />
+                                                    </Tooltip>
+                                                </div>
+                                            ) : (
+                                                ''
+                                            )
+                                        }
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Please input!',
+                                            },
+                                        ]}
+                                    >
+                                        <Input.Password
+                                            placeholder={t('placeholder.newpass')}
+                                            onChange={(e) => checkValue('newpass', e.target.value)}
+                                            onKeyDown={handleEnterKey}
+                                            allowClear
+                                            style={{
+                                                border: 'none',
+                                                padding: '15px',
+
+                                                backgroundColor: 'blue',
+                                            }}
+                                            value={newPass}
+                                            iconRender={(visible) =>
+                                                visible ? (
+                                                    <EyeTwoTone style={{ fontSize: '20px' }} />
+                                                ) : (
+                                                    <EyeInvisibleOutlined style={{ fontSize: '20px' }} />
+                                                )
+                                            }
+                                        />
+                                    </Form.Item>
+                                    <Form.Item
+                                        name="email"
+                                        validateStatus={errorReNewPass ? 'error' : ''}
+                                        help={
+                                            errorReNewPass !== '' ? (
+                                                <div>
+                                                    <Tooltip
+                                                        title={errorReNewPass}
+                                                        color={'red'}
+                                                        key={'red'}
+                                                        placement="bottom"
+                                                    >
+                                                        <span style={{ color: 'red', fontSize: '13px' }}>
+                                                            {t('warning.title')}
+                                                        </span>
+                                                        <ExclamationCircleOutlined
+                                                            style={{
+                                                                marginLeft: '5px',
+                                                                color: '#f5554a',
+                                                                fontWeight: 'bold',
+                                                            }}
+                                                        />
+                                                    </Tooltip>
+                                                </div>
+                                            ) : (
+                                                ''
+                                            )
+                                        }
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Please input!',
+                                            },
+                                        ]}
+                                    >
+                                        <Input.Password
+                                            placeholder={t('placeholder.renewpass')}
+                                            onChange={(e) => checkValue('renewpass', e.target.value)}
+                                            onKeyDown={handleEnterKey}
+                                            allowClear
+                                            style={{
+                                                border: 'none',
+                                                padding: '15px',
+
+                                                backgroundColor: 'blue',
+                                            }}
+                                            value={reNewPass}
+                                            iconRender={(visible) =>
+                                                visible ? (
+                                                    <EyeTwoTone style={{ fontSize: '20px' }} />
+                                                ) : (
+                                                    <EyeInvisibleOutlined style={{ fontSize: '20px' }} />
+                                                )
+                                            }
+                                        />
+                                    </Form.Item>
 
                                     <div className="input-box">
                                         <br />
@@ -264,9 +476,9 @@ const Changepass = () => {
                                             style={{
                                                 color: '#fff',
                                                 backgroundColor:
-                                                    errorOldPass === false &&
-                                                    errorNewPass === false &&
-                                                    errorReNewPass === false &&
+                                                    errorOldPass === '' &&
+                                                    errorNewPass === '' &&
+                                                    errorReNewPass === '' &&
                                                     oldPass !== '' &&
                                                     newPass !== '' &&
                                                     reNewPass !== ''

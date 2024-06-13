@@ -134,16 +134,7 @@ export const HandleError = (props) => {
     return (
         <div>
             <span>Invalid template </span>
-            <Tooltip
-                title={
-                    props.string === 'password'
-                        ? ' Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 special character, 1 number, and be a minimum of 8characters long.'
-                        : 'Your email format is not correct'
-                }
-                color={'red'}
-                key={'red'}
-                placement="bottom"
-            >
+            <Tooltip title={props.string} color={'red'} key={'red'} placement="bottom">
                 <ExclamationCircleOutlined style={{ marginLeft: '5px' }} />
             </Tooltip>
         </div>
@@ -163,15 +154,23 @@ export const HandleErrorEdit = ({ errorMessage }) => {
 };
 
 export const onchangeInput = (e, sNP, sENP) => {
-    if (e === '') {
+    if (
+        e
+            .toString()
+            .trim()
+            .replace(/\s{2,}/g, ' ') === '' ||
+        e === null
+    ) {
         sNP(e);
-        sENP(false);
+        sENP('Please input');
     } else if (validatePasswordFormat(e) === false) {
         sNP(e);
-        sENP(true);
+        sENP(
+            'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 special character, 1 number, and be a minimum of 8 characters long.',
+        );
     } else {
         sNP(e);
-        sENP(false);
+        sENP('');
     }
 };
 export const language = (items, tLanguage) => {
@@ -221,7 +220,7 @@ export const getback = (history, inform, or, btnGetback) => {
 };
 
 export const disableButton = (error, value) => {
-    if (error === false && value !== '') {
+    if (error === '' && value !== '') {
         return false;
     } else {
         return true;

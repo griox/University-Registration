@@ -149,7 +149,13 @@ function Pr() {
             key: 'action',
             render: (text, record) => (
                 <Button
-                    title="Add university"
+                    title={
+                        detail.uniCode.includes(record.code) ||
+                        detail.uniCode.length === 5 ||
+                        record.capacity === record.isRegistered
+                            ? 'Ready to add'
+                            : 'Your grade is enough to add'
+                    }
                     onClick={() => addUniversity(record.code, record)}
                     disabled={
                         detail.uniCode.includes(record.code) ||
@@ -546,7 +552,21 @@ function Pr() {
         setIsModalOpen(false);
     };
     const checkValue = () => {
+        let temp = null;
+        var today = new Date();
+        var birthDate = new Date(detail.dateObirth);
+        var age = today.getFullYear() - birthDate.getFullYear();
+        var m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        if (age < 18) {
+            temp = false;
+        } else {
+            temp = true;
+        }
         if (
+            temp === true &&
             detail.name !== '' &&
             detail.gender !== '' &&
             detail.placeOBirth !== '' &&
@@ -554,7 +574,11 @@ function Pr() {
             detail.enthicity &&
             errorCCCD !== true &&
             detail.idenNum !== '' &&
-            detail.email !== ''
+            detail.email !== '' &&
+            errorCCCD === '' &&
+            errorDateOBirth === '' &&
+            errorEmail === '' &&
+            errorName === ''
         ) {
             return false;
         } else {
@@ -620,6 +644,21 @@ function Pr() {
             </div>
         );
     };
+    const checkYear = () => {
+        var today = new Date();
+        var birthDate = new Date(detail.dateObirth);
+        var age = today.getFullYear() - birthDate.getFullYear();
+        var m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        if (age < 18) {
+            setErrorDateOBirth('You are not enough 18');
+        } else {
+            setErrorDateOBirth('');
+        }
+        return detail.dateObirth;
+    };
     return (
         <div className="pr-container">
             {loading ? (
@@ -672,7 +711,7 @@ function Pr() {
                                         <Space.Compact size="large">
                                             <Form.Item
                                                 name="email"
-                                                validateStatus={errorName !== '' || detail.name === '' ? 'error' : ''}
+                                                validateStatus={errorName !== '' ? 'error' : ''}
                                                 help={commonHelp(errorName, detail.name)}
                                                 rules={[
                                                     {
@@ -682,6 +721,7 @@ function Pr() {
                                                 ]}
                                             >
                                                 <Input
+                                                    defaultValue={detail.name}
                                                     className="admin-g-s"
                                                     placeholder={t('title.phName')}
                                                     value={detail.name}
@@ -703,7 +743,6 @@ function Pr() {
                                                 },
                                             ]}
                                         >
-                                            {console.log(dayjs(detail.dateObirth, 'DD/MM/YYYY'))}
                                             <DatePicker
                                                 className="admin-g-s"
                                                 placeholder={t('title.phDateOfBirth')}
@@ -778,22 +817,26 @@ function Pr() {
                                                 name="email"
                                                 validateStatus={errorEmail !== '' ? 'error' : ''}
                                                 help={
-                                                    errorEmail === 'Please input' ? (
-                                                        <span>Please input</span>
+                                                    errorEmail !== '' ? (
+                                                        errorEmail === 'Please input' ? (
+                                                            <span>Please input</span>
+                                                        ) : (
+                                                            <div>
+                                                                <span>Invalid template </span>
+                                                                <Tooltip
+                                                                    title={errorEmail}
+                                                                    color={'red'}
+                                                                    key={'red'}
+                                                                    placement="bottom"
+                                                                >
+                                                                    <ExclamationCircleOutlined
+                                                                        style={{ marginLeft: '5px' }}
+                                                                    />
+                                                                </Tooltip>
+                                                            </div>
+                                                        )
                                                     ) : (
-                                                        <div>
-                                                            <span>Invalid template </span>
-                                                            <Tooltip
-                                                                title={errorEmail}
-                                                                color={'red'}
-                                                                key={'red'}
-                                                                placement="bottom"
-                                                            >
-                                                                <ExclamationCircleOutlined
-                                                                    style={{ marginLeft: '5px' }}
-                                                                />
-                                                            </Tooltip>
-                                                        </div>
+                                                        ''
                                                     )
                                                 }
                                                 rules={[
@@ -804,6 +847,7 @@ function Pr() {
                                                 ]}
                                             >
                                                 <Input
+                                                    defaultValue={detail.email}
                                                     className="admin-g-s"
                                                     placeholder={t('title.phEmail')}
                                                     value={detail.email}
@@ -935,7 +979,7 @@ function Pr() {
                                     <Space.Compact size="large">
                                         <Form.Item
                                             name="email"
-                                            validateStatus={errorName !== '' || detail.name === '' ? 'error' : ''}
+                                            validateStatus={errorName !== '' ? 'error' : ''}
                                             help={commonHelp(errorName, detail.name)}
                                             rules={[
                                                 {
@@ -1043,7 +1087,29 @@ function Pr() {
                                         <Form.Item
                                             name="email"
                                             validateStatus={errorEmail !== '' ? 'error' : ''}
-                                            help={commonHelp(errorEmail, detail.email)}
+                                            help={
+                                                errorEmail !== '' ? (
+                                                    errorEmail === 'Please input' ? (
+                                                        <span>Please input</span>
+                                                    ) : (
+                                                        <div>
+                                                            <span>Invalid template </span>
+                                                            <Tooltip
+                                                                title={errorEmail}
+                                                                color={'red'}
+                                                                key={'red'}
+                                                                placement="bottom"
+                                                            >
+                                                                <ExclamationCircleOutlined
+                                                                    style={{ marginLeft: '5px' }}
+                                                                />
+                                                            </Tooltip>
+                                                        </div>
+                                                    )
+                                                ) : (
+                                                    ''
+                                                )
+                                            }
                                             rules={[
                                                 {
                                                     required: true,
@@ -1121,7 +1187,6 @@ function Pr() {
 
                                 <div className="detail-item">
                                     <h1>{t('title.Address')}: </h1>
-                                    {console.log(detail.Address)}
                                     <Space.Compact size="large">
                                         <Form.Item
                                             name="email"

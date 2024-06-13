@@ -246,6 +246,9 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     }
 
     function validateFullname(name) {
+        if (name.trim().replace(/\s{2,}/g, ' ') === '') {
+            return false;
+        }
         return /^[A-Za-zđĐÁÀẢÃẠÂẮẰẲẴẶẤẦẨẪẬÉÈẺẼẸẾỀỂÊỄỆÍÌỈĨỊÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÚÙỦŨỤỨƯỪỬỮỰÝỲỶỸỴáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọốôồổỗộớờởơỡợúùủũụứưừửữựýỳỷỹỵ\s]+$/.test(
             name,
         );

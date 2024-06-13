@@ -68,38 +68,23 @@ const FormAdd = ({ UniData, setUniData }) => {
     };
 
     const validateUniName = (uniName) => {
-        return /^[\p{L}\s]+$/u.test(uniName);
+        if (
+            /^[A-Za-zđĐÁÀẢÃẠÂẮẰẲẴẶẤẦẨẪẬÉÈẺẼẸẾỀỂÊỄỆÍÌỈĨỊÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÚÙỦŨỤỨƯỪỬỮỰÝỲỶỸỴáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọốôồổỗộớờởơỡợúùủũụứưừửữựýỳỷỹỵ\s]+$/.test(
+                uniName,
+            ) === false
+        ) {
+            return false;
+        } else {
+            return true;
+        }
     };
 
     const handleOk = async () => {
-        if (!uniName || !uniCode || !address || tempAverageScore === '' || tempTarget === '') {
-            toast.error('Please fill in all information');
-            return;
-        }
-
-        if (!validateUniName(uniName)) {
-            toast.error('Invalid name');
-            return;
-        }
-
-        if (!validateUniCode(uniCode)) {
-            toast.error('Invalid uniCode format');
-            return;
-        }
-
         const snapshot = await get(ref(database, `University/`));
         if (snapshot.exists()) {
             const universities = snapshot.val();
             const uniCodeExists = Object.values(universities).some((uni) => uni.uniCode === uniCode);
             const uniNameExists = Object.values(universities).some((uni) => uni.nameU === uniName);
-            if (uniCodeExists) {
-                toast.error('This uniCode already exists');
-                return;
-            }
-            if (uniNameExists) {
-                toast.error('This university name already exists');
-                return;
-            }
         }
 
         try {
@@ -180,11 +165,16 @@ const FormAdd = ({ UniData, setUniData }) => {
             return;
         }
 
-        if (/^[a-zA-Z\u00C0-\u017F\s]*$/.test(value) === false) {
+        if (
+            /^[A-Za-zđĐÁÀẢÃẠÂẮẰẲẴẶẤẦẨẪẬÉÈẺẼẸẾỀỂÊỄỆÍÌỈĨỊÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÚÙỦŨỤỨƯỪỬỮỰÝỲỶỸỴáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọốôồổỗộớờởơỡợúùủũụứưừửữựýỳỷỹỵ\s]+$/.test(
+                value,
+            ) === false
+        ) {
             setErrorName('Name only contain A-Z a-z and space');
             return;
         }
         setErrorName('');
+        setUniName(value);
     };
 
     const checkExist = (value) => {
@@ -228,7 +218,21 @@ const FormAdd = ({ UniData, setUniData }) => {
                 onCancel={handleCancel}
                 width={700}
                 destroyOnClose
-                okButtonProps={{ disabled: !isFormValid, className: 'custom-ok-button' }}
+                okButtonProps={{
+                    disabled: !(
+                        uniName !== '' &&
+                        address !== '' &&
+                        averageScore !== null &&
+                        uniCode !== '' &&
+                        targetScore !== null &&
+                        errorAddress === '' &&
+                        errorAverageScore === '' &&
+                        errorName === '' &&
+                        errorUnicode === '' &&
+                        errorTarget === ''
+                    ),
+                    className: 'custom-ok-button',
+                }}
             >
                 <Space direction="vertical">
                     <Form layout="horizontal">

@@ -149,6 +149,7 @@ function Pr() {
             key: 'action',
             render: (text, record) => (
                 <Button
+                    title="Add university"
                     onClick={() => addUniversity(record.code, record)}
                     disabled={
                         detail.uniCode.includes(record.code) ||
@@ -223,12 +224,10 @@ function Pr() {
                 (/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(newValue) ||
                     /w+([-+.]w+)*@w+([-.]w+)*.w+([-.]w+)*/.test(newValue)) === false
             ) {
-                console.log('sai');
                 setErrorEmail('Format is not correct');
                 return;
             } else {
                 setErrorEmail('');
-                dispatch({ type: 'update', payload: { propertyName, newValue } });
                 return;
             }
         }
@@ -414,6 +413,8 @@ function Pr() {
         setLoadingSave(true);
         const per = JSON.parse(localStorage.getItem('Infor'));
         if (localStorage.getItem('Role') === 'super_admin') {
+            handleSubmit(per.id);
+
             await update(ref(db, 'Super_Admin/' + per.id), {
                 name: detail.name,
                 gender: detail.gender,
@@ -423,7 +424,7 @@ function Pr() {
                 idenNum: detail.idenNum,
                 email: detail.email,
                 dateObirth: detail.dateObirth,
-            }).then(() => handleSubmit(per.id));
+            }).then();
             await get(child(ref(db), `Super_Admin/${per.id}/`))
                 .then((snapshot) => {
                     if (snapshot.exists()) {
@@ -438,6 +439,8 @@ function Pr() {
                 .then(() => setLoadingSave(false))
                 .then(() => toast.success('Updated sucessfully'));
         } else if (localStorage.getItem('Role') === 'admin') {
+            handleSubmit(per.id);
+
             await update(ref(db, 'Admin/' + per.id), {
                 name: detail.name,
                 gender: detail.gender,
@@ -447,7 +450,8 @@ function Pr() {
                 idenNum: detail.idenNum,
                 email: detail.email,
                 dateObirth: detail.dateObirth,
-            }).then(() => handleSubmit(per.id));
+            }).then();
+
             await get(child(ref(db), `Admin/${per.id}/`))
                 .then((snapshot) => {
                     if (snapshot.exists()) {
@@ -462,6 +466,7 @@ function Pr() {
                 .then(() => setLoadingSave(false))
                 .then(() => toast.success('Updated sucessfully'));
         } else {
+            handleSubmit(per.id);
             await update(ref(db, 'Detail/' + per.id), {
                 name: detail.name,
                 gender: detail.gender,
@@ -667,7 +672,7 @@ function Pr() {
                                         <Space.Compact size="large">
                                             <Form.Item
                                                 name="email"
-                                                validateStatus={errorName !== '' ? 'error' : ''}
+                                                validateStatus={errorName !== '' || detail.name === '' ? 'error' : ''}
                                                 help={commonHelp(errorName, detail.name)}
                                                 rules={[
                                                     {
@@ -690,7 +695,7 @@ function Pr() {
                                         <Form.Item
                                             name="email"
                                             validateStatus={detail.dateObirth === '' ? 'error' : ''}
-                                            help={commonHelp(errorDateOBirth, detail.dateObirth)}
+                                            help={commonHelp(errorDateOBirth, detail.errorDateOBirth)}
                                             rules={[
                                                 {
                                                     required: true,
@@ -765,13 +770,32 @@ function Pr() {
                                             </Form.Item>
                                         </Space.Compact>
                                     </div>
+
                                     <div className="detail-item-admin">
                                         <h1>{t('title.Email')}: </h1>
                                         <Space.Compact size="large">
                                             <Form.Item
                                                 name="email"
                                                 validateStatus={errorEmail !== '' ? 'error' : ''}
-                                                help={commonHelp(errorEmail, detail.email)}
+                                                help={
+                                                    errorEmail === 'Please input' ? (
+                                                        <span>Please input</span>
+                                                    ) : (
+                                                        <div>
+                                                            <span>Invalid template </span>
+                                                            <Tooltip
+                                                                title={errorEmail}
+                                                                color={'red'}
+                                                                key={'red'}
+                                                                placement="bottom"
+                                                            >
+                                                                <ExclamationCircleOutlined
+                                                                    style={{ marginLeft: '5px' }}
+                                                                />
+                                                            </Tooltip>
+                                                        </div>
+                                                    )
+                                                }
                                                 rules={[
                                                     {
                                                         required: true,
@@ -782,7 +806,6 @@ function Pr() {
                                                 <Input
                                                     className="admin-g-s"
                                                     placeholder={t('title.phEmail')}
-                                                    defaultValue={detail.email}
                                                     value={detail.email}
                                                     onChange={(e) => handleChange(e, 'email')}
                                                 />

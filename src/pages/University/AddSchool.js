@@ -108,14 +108,6 @@ const AddSchool = () => {
                             }
                         }
                         if (isName) {
-                            if (
-                                /^[A-Za-zđĐÁÀẢÃẠÂẮẰẲẴẶẤẦẨẪẬÉÈẺẼẸẾỀỂÊỄỆÍÌỈĨỊÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÚÙỦŨỤỨƯỪỬỮỰÝỲỶỸỴáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọốôồổỗộớờởơỡợúùủũụứưừửữựýỳỷỹỵ\s]+$/.test(
-                                    value,
-                                ) === false
-                            ) {
-                                setError('Name only contain letter A-Z and a-z');
-                                return <HandleErrorEdit />;
-                            }
                         }
                         if (isEntrance) {
                             if (/^[-+]?(?:\d*\.?\d+|\d+\.)$/.test(value) === false) {
@@ -289,32 +281,14 @@ const AddSchool = () => {
     };
 
     const save = async (key, record) => {
-        console.log(record);
         try {
             const row = await form.validateFields();
 
-            console.log(row);
             const newData = [...UniData];
             const index = newData.findIndex((item) => key === item.key);
             if (index > -1) {
                 const item = newData[index];
 
-                if (row.target < item.isRegistered) {
-                    toast.error('Targets must not be less than Number of registration');
-                    return;
-                }
-                if (row.averageS > 10 || row.averageS < 0) {
-                    toast.error('Invalid Entrance Score Format');
-                    return;
-                }
-
-                if (row.nameU !== item.nameU) {
-                    const uniNameExists = await checkNameExistence(row.nameU);
-                    if (uniNameExists) {
-                        toast.error('This Name already exists');
-                        return;
-                    }
-                }
                 newData.splice(index, 1, {
                     ...item,
                     ...row,
@@ -507,10 +481,8 @@ const AddSchool = () => {
             dataIndex: 'target',
             width: '20%',
             editable: true,
-            sorter: (a, b) => a.target - b.target,
             key: 'target',
             responsive: ['sm'],
-            sorter: (a, b) => a.target - b.target,
         },
         {
             title: t('table.Action'),

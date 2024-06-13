@@ -220,7 +220,7 @@ export const getback = (history, inform, or, btnGetback) => {
 };
 
 export const disableButton = (error, value) => {
-    if (error === '' && value !== '') {
+    if (error === false && value !== '') {
         return false;
     } else {
         return true;

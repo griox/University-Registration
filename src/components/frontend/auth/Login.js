@@ -66,7 +66,7 @@ export const Login = () => {
                     }
                 }
             });
-        } else if (role === 'admin') {
+        } else if (role === 'Admin') {
             get(child(ref(db), 'Admin/')).then((snapshot) => {
                 if (snapshot.exists()) {
                     const x = snapshot.val();

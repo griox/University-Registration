@@ -528,7 +528,7 @@ const StudentList = () => {
         {
             title: t('table.Name'),
             dataIndex: 'name',
-            width: '27%',
+            width: '37%',
             editable: true,
             fixed: 'left',
             key: 'name',

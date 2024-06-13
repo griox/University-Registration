@@ -9,15 +9,13 @@ import '../Student Manage/css/modal_add.css';
 import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { database } from '../firebaseConfig.js';
-import { HandleErrorEdit } from '../../commonFunctions.js';
-import { Add } from '@mui/icons-material';
 import CryptoJS from 'crypto-js';
+import { HandleErrorEdit } from '../../commonFunctions.js';
 
 const ModalAdd = ({ studentData, setStudentData }) => {
-    const secretKey = 'Tvx1234@';
 
     const [Fullname, setFullname] = useState('');
-    const [Gender, setGender] = useState('Female');
+    const [Gender, setGender] = useState('');
     const [Email, setEmail] = useState('');
     const [Identify, setIdentify] = useState('');
     const [Address, setAddress] = useState('');
@@ -25,25 +23,24 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [placeOfBirth, setPlaceOfBirth] = useState('Khánh Hòa');
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [Mathscore, setMathscore] = useState('');
-    const [Englishscore, setEnglishscore] = useState('');
-    const [Literaturescore, setLiteraturescore] = useState('');
-    const [averageS, setAverageS] = useState('');
+    const [Mathscore, setMathscore] = useState(null);
+    const [Englishscore, setEnglishscore] = useState(null);
+    const [Literaturescore, setLiteraturescore] = useState(null);
+    const [averageS, setAverageS] = useState(null);
     const [isFormValid, setIsFormValid] = useState(false);
     const [emailExist, setEmailExists] = useState(false);
     const [IdenExists, setIdenExists] = useState(false);
     const [errorMath, setErrorMath] = useState('');
     const [errorEnglish, setErrorEnglish] = useState('');
     const [errorLiterature, setErrorLiterature] = useState('');
-    const [errorEmail, setErrorEmail] = useState(false);
-    const [errorIden, setErrorIden] = useState(false);
 
     const { t } = useTranslation('modalStudent');
+
+    const secretKey = 'Tvx1234@';
 
     useEffect(() => {
         // Hàm kiểm tra tính hợp lệ của form
         const checkFormValidity = () => {
-            console.log(errorEmail, errorIden);
             return (
                 Email !== '' &&
                 Fullname !== '' &&
@@ -52,21 +49,19 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 dateOfBirth !== '' &&
                 placeOfBirth !== '' &&
                 Identify !== '' &&
-                errorEnglish === '' &&
-                errorLiterature === '' &&
-                errorMath === '' &&
-                Mathscore !== '' &&
-                Englishscore !== '' &&
-                Literaturescore !== '' &&
+                Mathscore !== undefined &&
+                Mathscore !== null &&
+                Englishscore !== undefined &&
+                Englishscore !== null &&
+                Literaturescore !== undefined &&
+                Literaturescore !== null &&
                 validateEmailFormat(Email) &&
                 validateFullname(Fullname) &&
                 validateIdenNumber(Identify) &&
-                errorEmail === false &&
-                errorIden === false &&
-                Address !== ''
+                !emailExist &&
+                !IdenExists
             );
         };
-        setIsFormValid(checkFormValidity());
         setIsFormValid(checkFormValidity());
     }, [
         Email,
@@ -80,11 +75,11 @@ const ModalAdd = ({ studentData, setStudentData }) => {
         Mathscore,
         Englishscore,
         Literaturescore,
+        emailExist,
+        IdenExists,
         errorEnglish,
         errorLiterature,
         errorMath,
-        errorEmail,
-        errorIden,
     ]);
 
     const showModal = () => {
@@ -93,7 +88,10 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     function encodeEmails(email) {
         return email.replace('.', ',');
     }
-
+    function round(number, precision) {
+        let factor = Math.pow(10, precision);
+        return Math.round((number || 0) * factor) / factor;
+    }
     const generateID = async () => {
         const snapshot = await get(child(ref(database), 'Detail'));
         if (snapshot.exists()) {
@@ -144,7 +142,6 @@ const ModalAdd = ({ studentData, setStudentData }) => {
             const encodeEmail = encodeEmails(Email);
             const accountRef = ref(database, `Account/${encodeEmail}`);
             const p = `Tvx1234@`;
-
             var hash = CryptoJS.AES.encrypt(p, secretKey).toString();
             await set(accountRef, {
                 email: Email,
@@ -161,10 +158,10 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 dateObirth: formattedDateOfBirth,
                 placeOBirth: placeOfBirth,
                 idenNum: Identify,
-                MathScore: Mathscore,
-                EnglishScore: Englishscore,
-                LiteratureScore: Literaturescore,
-                AverageScore: averageS,
+                MathScore: parseFloat(Mathscore),
+                EnglishScore: parseFloat(Englishscore),
+                LiteratureScore: parseFloat(Literaturescore),
+                AverageScore: parseFloat(averageS),
                 Address: Address,
                 uniCode: [],
                 isRegister: 'true',
@@ -181,34 +178,19 @@ const ModalAdd = ({ studentData, setStudentData }) => {
         if (snapshot.exists()) {
             const students = snapshot.val();
             const emailExists = Object.values(students).some((user) => user.email === Email);
-            if (emailExists === null) {
-                setErrorEmail(true);
-            } else {
-                setErrorEmail(false);
-            }
             setEmailExists(emailExists);
-            return true;
         }
-
-        return false; // Nếu không có email tồn tại, trả về false
+        setEmailExists(false); // Nếu không có email tồn tại, trả về false
     };
     const checkIden = async (Identify) => {
         const snapshot = await get(child(ref(database), `Detail/`));
         if (snapshot.exists()) {
             const students = snapshot.val();
             const idenExists = Object.values(students).some((user) => user.idenNum === Identify);
-            if (idenExists === null) {
-                setErrorIden(true);
-            } else {
-                setErrorIden(false);
-            }
             setIdenExists(idenExists);
-            return true;
         }
-
-        return false; // Nếu không có email tồn tại, trả về false
+        setIdenExists(false); // Nếu không có email tồn tại, trả về false
     };
-
     const handleEmail = (e) => {
         const { value } = e.target;
         setEmail(value);
@@ -233,10 +215,18 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     };
 
     const handleCancel = () => {
+        setAddress('');
         setIsModalOpen(false);
-        setErrorEnglish('');
-        setErrorLiterature('');
-        setErrorMath('');
+        setFullname('');
+        setEmail('');
+        setDateOfBirth('');
+        setAddress('');
+        setPlaceOfBirth('');
+        setIdentify('');
+        setMathscore(null);
+        setEnglishscore(null);
+        setLiteraturescore(null);
+        setAverageS(null);
     };
     function validateEmailFormat(email) {
         return /^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/.test(email);
@@ -311,6 +301,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
         setLiteraturescore(value);
         setErrorLiterature('');
     };
+
     const genders = [
         { value: 'Female', label: 'Female' },
         { value: 'Male', label: 'Male' },
@@ -462,6 +453,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 <Input
                                     placeholder={t('placeholder.name')}
                                     prefix={<UserOutlined className="icon" />}
+                                    value={Fullname}
                                     onChange={(e) => setFullname(e.target.value)}
                                     suffix={
                                         <Tooltip title={t('tooltip.name')}>
@@ -485,11 +477,9 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                 ]}
                             >
                                 <Select
-                                    defaultValue={'Female'}
-                                    initialvalues="Female"
+                                    defaultValue={'Male'}
                                     options={genders}
                                     onChange={(value) => setGender(value)}
-                                    showSearch
                                 />
                             </Form.Item>
                         </Col>
@@ -684,7 +674,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                             placement="bottom"
                                             style={{ display: 'flex' }}
                                         >
-                                            <span style={{ color: 'red' }}>In valid</span>
+                                            <span style={{ color: 'red' }}>Invalid</span>
                                             <ExclamationCircleOutlined
                                                 style={{ marginLeft: '5px', color: '#f5554a', fontWeight: 'bold' }}
                                             />
@@ -722,7 +712,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                             placement="bottom"
                                             style={{ display: 'flex' }}
                                         >
-                                            <span style={{ color: 'red' }}>In valid</span>
+                                            <span style={{ color: 'red' }}>Invalid</span>
                                             <ExclamationCircleOutlined
                                                 style={{ marginLeft: '5px', color: '#f5554a', fontWeight: 'bold' }}
                                             />

@@ -11,8 +11,6 @@ import SchoolIcon from '@mui/icons-material/School';
 import SchoolOutlinedIcon from '@mui/icons-material/SchoolOutlined';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import AssignmentIndOutlinedIcon from '@mui/icons-material/AssignmentIndOutlined';
-import ChatIcon from '@mui/icons-material/Chat';
-import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
 import InsertChartIcon from '@mui/icons-material/InsertChart';
 import InsertChartOutlinedIcon from '@mui/icons-material/InsertChartOutlined';
@@ -248,15 +246,6 @@ const Sidebar = () => {
                             selected={selected}
                             setSelected={setSelected}
                             tooltip={t('tooltip.dashboard')}
-                        />
-                        <Item
-                            title={t('title.chat')}
-                            to="/admin/ChatRoom"
-                            iconFilled={<ChatIcon />}
-                            iconOutline={<ChatOutlinedIcon />}
-                            selected={selected}
-                            setSelected={setSelected}
-                            tooltip={t('tooltip.chatroom')}
                         />
                         {isAdminOrSuperAdmin && (
                             <>

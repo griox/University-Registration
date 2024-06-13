@@ -1,6 +1,6 @@
 {
     "button": {
-        "Add": "Add Student",
+        "Add": "Register new student",
         "ok": "Add",
         "cancel": "Cancel"
     },
@@ -23,14 +23,16 @@
         "ok": "Add",
         "cancel": "Cancel",
         "success": "Successfully Added a Student",
-        "reload": "Reload"
+        "reload": "Reload",
+        "delete": "Confirm delete?"
     },
     "placeholder": {
         "name": "Enter Student's name",
         "email": "Enter Student's email",
         "address": "Student's Address",
         "date": "Select date",
-        "identify": "Enter Identify number"
+        "identify": "Enter Identify number",
+        "iden": "Enter Iden numbers"
     },
     "warning": {
         "name": "Student Name must contain only letters and have content",
@@ -38,10 +40,14 @@
         "identify": "Identify number must be 12 digits and contain only number ",
         "email": "Invalid email",
         "emailExists": "This Email has been used",
-        "idenexist": "This identify numbers has been used"
+        "idenexist": "This identify numbers has been used",
+        "numberVali": "Score must be number",
+        "numberVali1": "Score must be between 0 and 10",
+        "numberVali2": "Score must contain 2 digits"
     },
     "tooltip": {
         "name": "Name must contain letters and no space",
-        "email": "Email must contain @example"
+        "email": "Email must contain @example",
+        "tooltip": "Invalid"
     }
 }

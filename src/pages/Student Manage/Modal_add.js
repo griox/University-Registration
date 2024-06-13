@@ -14,7 +14,7 @@ import { HandleErrorEdit } from '../../commonFunctions.js';
 
 const ModalAdd = ({ studentData, setStudentData }) => {
     const [Fullname, setFullname] = useState('');
-    const [Gender, setGender] = useState('');
+    const [Gender, setGender] = useState('Male');
     const [Email, setEmail] = useState('');
     const [Identify, setIdentify] = useState('');
     const [Address, setAddress] = useState('');
@@ -27,7 +27,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     const [Literaturescore, setLiteraturescore] = useState(null);
     const [averageS, setAverageS] = useState(null);
     const [isFormValid, setIsFormValid] = useState(false);
-    const [emailExist, setEmailExists] = useState(false);
+    const [emailExist, setEmailExists] = useState(null);
     const [IdenExists, setIdenExists] = useState(false);
     const [errorMath, setErrorMath] = useState('');
     const [errorEnglish, setErrorEnglish] = useState('');
@@ -57,11 +57,13 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                 validateEmailFormat(Email) &&
                 validateFullname(Fullname) &&
                 validateIdenNumber(Identify) &&
-                !emailExist &&
-                !IdenExists
+                emailExist === false &&
+                IdenExists === false
             );
         };
+        console.log(checkFormValidity());
         setIsFormValid(checkFormValidity());
+        
     }, [
         Email,
         Fullname,
@@ -176,10 +178,13 @@ const ModalAdd = ({ studentData, setStudentData }) => {
         const snapshot = await get(child(ref(database), `Detail/`));
         if (snapshot.exists()) {
             const students = snapshot.val();
-            const emailExists = Object.values(students).some((user) => user.email === Email);
+            const emailExists = Object.values(students).some((user) => user.email === Email);   
             setEmailExists(emailExists);
         }
-        setEmailExists(false); // Nếu không có email tồn tại, trả về false
+        else{
+            setEmailExists(false);
+        }
+
     };
     const checkIden = async (Identify) => {
         const snapshot = await get(child(ref(database), `Detail/`));
@@ -188,7 +193,10 @@ const ModalAdd = ({ studentData, setStudentData }) => {
             const idenExists = Object.values(students).some((user) => user.idenNum === Identify);
             setIdenExists(idenExists);
         }
-        setIdenExists(false); // Nếu không có email tồn tại, trả về false
+        else{
+            setIdenExists(false);
+        }
+   
     };
     const handleEmail = (e) => {
         const { value } = e.target;
@@ -250,20 +258,20 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     }
     const checkMath = (value) => {
         if (value === '' || value.trim().replace(/\s{2,}/g, ' ') === '') {
-            setErrorMath('Please input!');
+            setErrorMath(t('warning.input'));
             return;
         }
 
         if (/^[-+]?(?:\d*\.?\d+|\d+\.)$/.test(value) === false) {
-            setErrorMath('Score only contain number');
+            setErrorMath(t('warning.numberVali'));
             return;
         }
         if (!(parseFloat(value) >= 0 && parseFloat(value) <= 10)) {
-            setErrorMath('Score must >= 0 and <= 10 ');
+            setErrorMath(t('warning.numberVali1'));
             return;
         }
         if (value.length > 4) {
-            setErrorMath('Grade contain 2 decimal number');
+            setErrorMath(t('warning.numberVali2'));
             return;
         }
         setErrorMath('');
@@ -271,19 +279,19 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     };
     const checkEnglish = (value) => {
         if (value === '' || value.trim().replace(/\s{2,}/g, ' ') === '') {
-            setErrorEnglish('Please input!');
+            setErrorEnglish(t('warning.input'));
             return;
         }
         if (/^[-+]?(?:\d*\.?\d+|\d+\.)$/.test(value) === false) {
-            setErrorEnglish('Score only contain number');
+            setErrorEnglish(t('warning.numberVali'));
             return;
         }
         if (!(parseFloat(value) >= 0 && parseFloat(value) <= 10)) {
-            setErrorEnglish('Score must >= 0 and <= 10 ');
+            setErrorEnglish(t('warning.numberVali1'));
             return;
         }
         if (value.length > 4) {
-            setErrorEnglish('Grade contain 2 decimal number');
+            setErrorEnglish(t('warning.numberVali2'));
             return;
         }
         setEnglishscore(value);
@@ -291,19 +299,19 @@ const ModalAdd = ({ studentData, setStudentData }) => {
     };
     const checkLiterature = (value) => {
         if (value === '' || value.trim().replace(/\s{2,}/g, ' ') === '') {
-            setErrorLiterature('Please input!');
+            setErrorLiterature(t('warning.input'));
             return;
         }
         if (/^[-+]?(?:\d*\.?\d+|\d+\.)$/.test(value) === false) {
-            setErrorLiterature('Score only contain number');
+            setErrorLiterature(t('warning.numberVali'));
             return;
         }
         if (!(parseFloat(value) >= 0 && parseFloat(value) <= 10)) {
-            setErrorLiterature('Score must >= 0 and <= 10 ');
+            setErrorLiterature(t('warning.numberVali1'));
             return;
         }
         if (value.length > 4) {
-            setErrorLiterature('Grade contain 2 decimal number');
+            setErrorLiterature(t('warning.numberVali2'));
             return;
         }
         setLiteraturescore(value);
@@ -511,7 +519,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     maxDate={dayjs('31/12/2004', dateFormat)}
                                     format="DD/MM/YYYY"
                                     onChange={(value) => setDateOfBirth(value)}
-                                    placeholder=""
+                                    placeholder={t('placeholder.date')}
                                 />
                             </Form.Item>
                         </Col>
@@ -579,7 +587,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     },
                                 ]}
                             >
-                                <Input onChange={handleIden} showCount maxLength={12} value={Identify} />
+                                <Input placeholder={t('placeholder.iden')} onChange={handleIden} showCount maxLength={12} value={Identify} />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
@@ -644,7 +652,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                             placement="bottom"
                                             style={{ display: 'flex' }}
                                         >
-                                            <span style={{ color: 'red' }}>In valid</span>
+                                            <span style={{ color: 'red' }}>{t('tooltip.tooltip')}</span>
                                             <ExclamationCircleOutlined
                                                 style={{ marginLeft: '5px', color: '#f5554a', fontWeight: 'bold' }}
                                             />
@@ -682,7 +690,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                             placement="bottom"
                                             style={{ display: 'flex' }}
                                         >
-                                            <span style={{ color: 'red' }}>Invalid</span>
+                                            <span style={{ color: 'red' }}>{t('tooltip.tooltip')}</span>
                                             <ExclamationCircleOutlined
                                                 style={{ marginLeft: '5px', color: '#f5554a', fontWeight: 'bold' }}
                                             />
@@ -720,7 +728,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                             placement="bottom"
                                             style={{ display: 'flex' }}
                                         >
-                                            <span style={{ color: 'red' }}>Invalid</span>
+                                            <span style={{ color: 'red' }}>{t('tooltip.tooltip')}</span>
                                             <ExclamationCircleOutlined
                                                 style={{ marginLeft: '5px', color: '#f5554a', fontWeight: 'bold' }}
                                             />

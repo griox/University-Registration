@@ -308,3 +308,6 @@
 .ant-pagination-jump-prev .ant-pagination-item-container .ant-pagination-item-ellipsis{
     color: var(--body_color) !important
 }
+.ant-picker .ant-picker-input >input:placeholder-shown{
+    color:var(--placeholder-color) !important
+}

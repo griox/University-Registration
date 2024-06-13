@@ -516,7 +516,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     maxDate={dayjs('31/12/2004', dateFormat)}
                                     format="DD/MM/YYYY"
                                     onChange={(value) => setDateOfBirth(value)}
-                                    placeholder=""
+                                    placeholder={t('placeholder.date')}
                                 />
                             </Form.Item>
                         </Col>
@@ -584,7 +584,7 @@ const ModalAdd = ({ studentData, setStudentData }) => {
                                     },
                                 ]}
                             >
-                                <Input onChange={handleIden} showCount maxLength={12} value={Identify} />
+                                <Input placeholder={t('placeholder.iden')} onChange={handleIden} showCount maxLength={12} value={Identify} />
                             </Form.Item>
                         </Col>
                         <Col span={12}>

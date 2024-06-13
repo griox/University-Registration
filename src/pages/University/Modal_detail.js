@@ -13,7 +13,7 @@ export const Form_Detail = ({ university, isRegistered, page, setPage }) => {
     const [loading, setLoading] = useState(true);
     const [form] = Form.useForm();
     const student_regist = university.registeration;
-    const { t } = useTranslation('detailuniversity');
+    const { t } = useTranslation('student');
     const searchInput = useRef(null);
     const [searchText, setSearchText] = useState('');
     const [searchedColumn, setSearchedColumn] = useState('');
@@ -141,7 +141,7 @@ export const Form_Detail = ({ university, isRegistered, page, setPage }) => {
     ];
     const colums = [
         {
-            title: t('title.id'),
+            title: t('table.ID'),
             dataIndex: 'id',
             width: '10%',
             ...getColumnSearchProps('id'),
@@ -149,7 +149,7 @@ export const Form_Detail = ({ university, isRegistered, page, setPage }) => {
         },
 
         {
-            title: t('title.name'),
+            title: t('table.Name'),
             dataIndex: 'name',
             width: '19%',
             editable: true,
@@ -158,14 +158,14 @@ export const Form_Detail = ({ university, isRegistered, page, setPage }) => {
             key: 'name',
         },
         {
-            title: t('title.email'),
+            title: t('table.Email'),
             dataIndex: 'email',
             key: 'email',
             ...getColumnSearchProps('email'),
             width: '15%',
         },
         {
-            title: t('title.math'),
+            title: t('table.Math'),
             dataIndex: 'MathScore',
             width: '10%',
             editable: true,
@@ -173,7 +173,7 @@ export const Form_Detail = ({ university, isRegistered, page, setPage }) => {
             sorter: (a, b) => a.MathScore - b.MathScore,
         },
         {
-            title: t('title.literature'),
+            title: t('table.Literature'),
             dataIndex: 'LiteratureScore',
             width: '11%',
             editable: true,
@@ -181,7 +181,7 @@ export const Form_Detail = ({ university, isRegistered, page, setPage }) => {
             sorter: (a, b) => a.LiteratureScore - b.LiteratureScore,
         },
         {
-            title: t('title.english'),
+            title: t('table.English'),
             dataIndex: 'EnglishScore',
             width: '10%',
             editable: true,
@@ -189,7 +189,7 @@ export const Form_Detail = ({ university, isRegistered, page, setPage }) => {
             sorter: (a, b) => a.EnglishScore - b.EnglishScore,
         },
         {
-            title: t('title.average'),
+            title: t('table.Total Score'),
             dataIndex: 'AverageScore',
             width: '10%',
             sorter: (a, b) => a.AverageScore - b.AverageScore,

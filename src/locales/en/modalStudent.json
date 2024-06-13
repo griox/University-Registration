@@ -1,6 +1,6 @@
 {
     "button": {
-        "Add": "Add Student",
+        "Add": "Register new student",
         "ok": "Add",
         "cancel": "Cancel"
     },
@@ -31,7 +31,9 @@
         "email": "Enter Student's email",
         "address": "Student's Address",
         "date": "Select date",
-        "identify": "Enter Identify number"
+        "identify": "Enter Identify number",
+        "date":"Enter date of birth",
+        "iden":"Enter Iden numbers"
     },
     "warning": {
         "name": "Student Name must contain only letters and no space",

@@ -33,12 +33,12 @@
         "identify": "Enter Identify number"
     },
     "warning": {
-        "name": "Student Name must contain only letters and no space",
+        "name": "Student Name must contain only letters and have content",
         "input": "Please input !",
         "identify": "Identify number must be 12 digits and contain only number ",
         "email": "Invalid email",
-        "emailExists":"This Email has been used",
-        "idenexist":"This identify numbers has been used"
+        "emailExists": "This Email has been used",
+        "idenexist": "This identify numbers has been used"
     },
     "tooltip": {
         "name": "Name must contain letters and no space",

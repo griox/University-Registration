@@ -29,10 +29,10 @@
         "name": "Nhập tên sinh viên",
         "email": "Nhập email",
         "address": "Nhập địa chỉ",
-         "identify": "Nhập mã định danh"
+        "identify": "Nhập mã định danh"
     },
     "warning": {
-        "name": "Tên sinh viên chỉ được chứa các chữ cái và không có khoảng trắng",
+        "name": "Tên sinh viên chỉ được chứa các chữ cái và phải có nội dung",
         "input": "Vui lòng nhập !",
         "identify": "Mã chỉ chứa kí tự chữ số và phải đủ 12 kí tự "
     },

@@ -279,29 +279,15 @@ const Sidebar = () => {
                             </>
                         )}
 
-                        {isAdminOrSuperAdmin ? (
-                            <Item
-                                title={t('title.profile')}
-                                to="/admin/profile"
-                                iconFilled={<ContactsIcon />}
-                                iconOutline={<ContactsOutlinedIcon />}
-                                selected={selected}
-                                setSelected={setSelected}
-                                tooltip={t('tooltip.profile')}
-                            />
-                        ) : (
-                            accountExist !== '' && (
-                                <Item
-                                    title={t('title.profile')}
-                                    to="/admin/profile"
-                                    iconFilled={<ContactsIcon />}
-                                    iconOutline={<ContactsOutlinedIcon />}
-                                    selected={selected}
-                                    setSelected={setSelected}
-                                    tooltip={t('tooltip.profile')}
-                                />
-                            )
-                        )}
+                        <Item
+                            title={t('title.profile')}
+                            to="/admin/profile"
+                            iconFilled={<ContactsIcon />}
+                            iconOutline={<ContactsOutlinedIcon />}
+                            selected={selected}
+                            setSelected={setSelected}
+                            tooltip={t('tooltip.profile')}
+                        />
                     </Box>
                     <Modal
                         title={t('title.modal')}

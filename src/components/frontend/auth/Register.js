@@ -387,34 +387,53 @@ const Register = () => {
                                             }
                                         />
                                     </Form.Item>
-                                    <div
-                                        className="register-checkbox"
-                                        style={{
-                                            display: 'flex',
-                                            justifyContent: 'center',
-                                            alignItems: 'center',
-                                            columnGap: '20px',
-                                        }}
-                                    >
-                                        <h1 style={{ fontSize: '14px', marginTop: '5px', color: '#fff' }}>
-                                            {t('title.role')}
-                                        </h1>
-                                        <Radio.Group
-                                            name="radiogroup"
-                                            defaultValue={value1}
-                                            onChange={(e) => setValue1(e.target.value)}
+                                    {localStorage.getItem('Role') !== 'Admin' ? (
+                                        <div
+                                            className="register-checkbox"
+                                            style={{
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                alignItems: 'center',
+                                                columnGap: '20px',
+                                            }}
                                         >
-                                            <Radio value={'Admin'} style={{ color: '#fff', fontSize: '14px' }}>
-                                                {t('title.admin')}
-                                            </Radio>
-                                            <Radio value={'User'} style={{ color: '#fff', fontSize: '14px' }}>
-                                                {t('title.user')}
-                                            </Radio>
-                                        </Radio.Group>
-                                    </div>
+                                            <h1 style={{ fontSize: '14px', marginTop: '5px', color: '#fff' }}>
+                                                {t('title.role')}
+                                            </h1>
+                                            <Radio.Group
+                                                name="radiogroup"
+                                                defaultValue={value1}
+                                                onChange={(e) => setValue1(e.target.value)}
+                                            >
+                                                <Radio value={'Admin'} style={{ color: '#fff', fontSize: '14px' }}>
+                                                    {t('title.admin')}
+                                                </Radio>
+                                                <Radio value={'User'} style={{ color: '#fff', fontSize: '14px' }}>
+                                                    {t('title.user')}
+                                                </Radio>
+                                            </Radio.Group>
+                                        </div>
+                                    ) : (
+                                        ''
+                                    )}
+
                                     <div className="input-box">
-                                        {localStorage.getItem('Role') === 'admin' ? (
+                                        {localStorage.getItem('Role') === 'Admin' ? (
                                             <Button
+                                                disabled={
+                                                    /^[A-Za-zđĐÁÀẢÃẠÂẮẰẲẴẶẤẦẨẪẬÉÈẺẼẸẾỀỂÊỄỆÍÌỈĨỊÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÚÙỦŨỤỨƯỪỬỮỰÝỲỶỸỴáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọốôồổỗộớờởơỡợúùủũụứưừửữựýỳỷỹỵ\s]+$/.test(
+                                                        fullName,
+                                                    ) === true &&
+                                                    fullName.trim().replace(/\s{2,}/g, ' ') !== '' &&
+                                                    disableButton(errorEmail, email) === false &&
+                                                    disableButton(errorPassword, password) === false &&
+                                                    disableButton(errorAgainPassword, againPassword) === false
+                                                        ? false
+                                                        : true
+                                                }
+                                                style={{
+                                                    color: '#fff',
+                                                }}
                                                 loading={loadingRegist}
                                                 className="input-submit"
                                                 onClick={() =>
@@ -447,7 +466,10 @@ const Register = () => {
                                                     }
                                                     onKeyDown={handleEnterKey}
                                                     disabled={
-                                                        fullName !== '' &&
+                                                        /^[A-Za-zđĐÁÀẢÃẠÂẮẰẲẴẶẤẦẨẪẬÉÈẺẼẸẾỀỂÊỄỆÍÌỈĨỊÓÒỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÚÙỦŨỤỨƯỪỬỮỰÝỲỶỸỴáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệíìỉĩịóòỏõọốôồổỗộớờởơỡợúùủũụứưừửữựýỳỷỹỵ\s]+$/.test(
+                                                            fullName,
+                                                        ) === true &&
+                                                        fullName.trim().replace(/\s{2,}/g, ' ') !== '' &&
                                                         disableButton(errorEmail, email) === false &&
                                                         disableButton(errorPassword, password) === false &&
                                                         disableButton(errorAgainPassword, againPassword) === false
@@ -456,16 +478,6 @@ const Register = () => {
                                                     }
                                                     style={{
                                                         color: '#fff',
-                                                        backgroundColor:
-                                                            fullName !== '' &&
-                                                            errorEmail === false &&
-                                                            email !== '' &&
-                                                            errorPassword === false &&
-                                                            password !== '' &&
-                                                            errorAgainPassword === false &&
-                                                            againPassword !== ''
-                                                                ? ''
-                                                                : 'rgba(255, 255, 255, 0.3)',
                                                     }}
                                                 >
                                                     <span>{t('button.regist')}</span>

@@ -62,7 +62,7 @@ const Register = () => {
         },
     ];
 
-    const regist = (props) => {
+    const regist = async (props) => {
         setLoadingRegist(true);
         if (props.name === '') {
             toast.error('Please enter your name');
@@ -103,7 +103,7 @@ const Register = () => {
             return;
         }
 
-        get(child(ref(db), `Account/`)).then((snapshot) => {
+        await get(child(ref(db), `Account/`)).then((snapshot) => {
             if (snapshot.exists()) {
                 const x = snapshot.val();
                 const listItem = Object.values(x).map((user) => user);
@@ -120,9 +120,50 @@ const Register = () => {
                         };
                         try {
                             set(ref(db, `Account/` + encodeEmail), ip).then(() => {
+                                if (props.role === 'Admin') {
+                                    get(child(ref(db), `Admin/`)).then((snapshot) => {
+                                        if (snapshot.exists()) {
+                                            const x = snapshot.val();
+                                            const listItem = Object.values(x).map((user) => user);
+                                            const last = listItem[listItem.length - 1].id;
+                                            const numberStr = last.substring(2);
+                                            const number = parseInt(numberStr, 10) + 1;
+                                            const string = 'AD' + number.toString();
+                                            set(ref(db, `Admin/` + string), {
+                                                id: string,
+                                                email: props.email,
+                                            });
+                                        }
+                                    });
+                                } else {
+                                    get(child(ref(db), `Detail/`)).then((snapshot) => {
+                                        if (snapshot.exists()) {
+                                            const x = snapshot.val();
+
+                                            const listItem = Object.values(x).map((user) => user);
+                                            const last = listItem[listItem.length - 1].id;
+
+                                            const numberStr = last.substring(2);
+                                            const number = parseInt(numberStr, 10) + 1;
+                                            const string = 'SV' + number.toString();
+                                            // Lấy phần từ ký tự thứ 2 trở đi
+                                            console.log(string);
+
+                                            set(ref(db, `Detail/` + string), {
+                                                id: string,
+                                                email: props.email,
+                                                EnglishScore: 0,
+                                                LiteratureScore: 0,
+                                                MathScore: 0,
+                                                AverageScore: 0,
+                                            });
+                                        }
+                                    });
+                                }
                                 setLoadingRegist(false);
                             }, toast.success('Sign up sucessfully'));
                         } catch (error) {
+                            console.log(error);
                             toast.error('Your request is failed');
                         }
                     } else {

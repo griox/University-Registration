@@ -45,7 +45,7 @@ function Pr() {
     const [errorDateOBirth, setErrorDateOBirth] = useState('');
     const [errorName, setErrorName] = useState('');
     const [errorEmail, setErrorEmail] = useState('');
-
+    const [reload, setReload] = useState(false);
     const handleSearch = (selectedKeys, confirm, dataIndex) => {
         confirm();
         setSearchText(selectedKeys[0]);
@@ -170,6 +170,14 @@ function Pr() {
             width: 90,
         },
     ];
+    useEffect(() => {
+        if (localStorage.getItem('reload') === 'notReload' || localStorage.getItem('reload') === null) {
+            window.location.reload();
+            localStorage.setItem('reload', 'reloaded');
+        } else {
+            localStorage.setItem('reload', 'notReload');
+        }
+    }, []);
     useEffect(() => {
         const role = localStorage.getItem('Role');
         const personal = JSON.parse(localStorage.getItem('Infor'));
@@ -418,11 +426,10 @@ function Pr() {
             });
     };
     const save = async () => {
-        console.log(detail.dateObirth);
         setLoadingSave(true);
+        console.log(detail.dateObirth);
         const date = dayjs(detail.dateObirth.$d);
         const formattedDate = date.format('DD/MM/YYYY');
-        console.log(formattedDate);
         const per = JSON.parse(localStorage.getItem('Infor'));
         await handleSubmit(per.id);
         if (localStorage.getItem('Role') === 'super_admin') {
@@ -449,7 +456,7 @@ function Pr() {
                 })
                 .then(() => setLoadingSave(false))
                 .then(() => toast.success('Updated sucessfully'));
-        } else if (localStorage.getItem('Role') === 'admin') {
+        } else if (localStorage.getItem('Role') === 'Admin') {
             await update(ref(db, 'Admin/' + per.id), {
                 name: detail.name,
                 gender: detail.gender,
@@ -458,7 +465,7 @@ function Pr() {
                 enthicity: detail.enthicity,
                 idenNum: detail.idenNum,
                 email: detail.email,
-                dateObirth: detail.dateObirth,
+                dateObirth: formattedDate,
             }).then();
 
             await get(child(ref(db), `Admin/${per.id}/`))
@@ -484,7 +491,7 @@ function Pr() {
                 idenNum: detail.idenNum,
                 email: detail.email,
                 uniCode: detail.uniCode,
-                dateObirth: detail.dateObirth,
+                dateObirth: formattedDate,
             }).then(() => {
                 detail.uniCode.forEach(async (item) => {
                     const l = per.uniCode === undefined ? [] : per.uniCode;
@@ -732,7 +739,16 @@ function Pr() {
                                             <DatePicker
                                                 className="admin-g-s"
                                                 placeholder={t('title.phDateOfBirth')}
-                                                defaultValue={dayjs(detail.dateObirth, 'DD/MM/YYYY')}
+                                                defaultValue={
+                                                    detail.dateObirth === ''
+                                                        ? ''
+                                                        : dayjs(detail.dateObirth, 'DD/MM/YYYY')
+                                                }
+                                                value={
+                                                    detail.dateObirth === ''
+                                                        ? ''
+                                                        : dayjs(detail.dateObirth, 'DD/MM/YYYY')
+                                                }
                                                 onChange={(e) => handleSelect(e, 'dateObirth')}
                                                 format="DD/MM/YYYY"
                                             />
@@ -804,7 +820,7 @@ function Pr() {
                                                 validateStatus={errorEmail !== '' ? 'error' : ''}
                                                 help={
                                                     errorEmail !== '' ? (
-                                                        errorEmail === 'Please input' ? (
+                                                        errorEmail === 'Please input' || detail.email === '' ? (
                                                             <span>Please input</span>
                                                         ) : (
                                                             <div>
@@ -1000,8 +1016,12 @@ function Pr() {
                                         <DatePicker
                                             placeholder={t('title.phDateOfBirth')}
                                             className="g-s pr-date-picker"
-                                            defaultValue={dayjs(detail.dateObirth, 'DD/MM/YYYY')}
-                                            value={dayjs(detail.dateObirth, 'DD/MM/YYYY')}
+                                            defaultValue={
+                                                detail.dateObirth === '' ? '' : dayjs(detail.dateObirth, 'DD/MM/YYYY')
+                                            }
+                                            value={
+                                                detail.dateObirth === '' ? '' : dayjs(detail.dateObirth, 'DD/MM/YYYY')
+                                            }
                                             onChange={(e) => handleSelect(e, 'dateObirth')}
                                             format="DD-MM-YYYY"
                                         />
@@ -1075,7 +1095,7 @@ function Pr() {
                                             validateStatus={errorEmail !== '' ? 'error' : ''}
                                             help={
                                                 errorEmail !== '' ? (
-                                                    errorEmail === 'Please input' ? (
+                                                    errorEmail === 'Please input' || detail.email === '' ? (
                                                         <span>Please input</span>
                                                     ) : (
                                                         <div>

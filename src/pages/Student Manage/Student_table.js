@@ -511,7 +511,7 @@ const StudentList = () => {
             title: t('table.ID'),
             dataIndex: 'id',
 
-            width: '14%',
+            width: '15%',
             fixed: 'left',
             ...getColumnSearchProps('id'),
             render: (_, record) => (

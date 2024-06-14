@@ -27,7 +27,6 @@ import { HandleErrorEdit, encodePath } from '../../commonFunctions.js';
 import CryptoJS from 'crypto-js';
 import vi_VN from 'antd/es/locale/vi_VN';
 import en_US from 'antd/es/locale/en_US';
-import es_ES from 'antd/es/locale/es_ES';
 
 const StudentList = () => {
     const paginationLocale = {
@@ -59,12 +58,10 @@ const StudentList = () => {
     const db = getFirestore(app);
     const [bell, setBell] = useState(false);
     const secretKey = 'Tvx1234@';
-    const language = localStorage.getItem('language') || 'en';
     const EditableCell = ({ editing, dataIndex, title, inputType, record, index, children, ...restProps }) => {
         const [error, setError] = useState(null);
         const inputNode = inputType === 'number' ? <InputNumber /> : <Input />;
         // const inputNode = <Input />;
-        const isID = dataIndex === 'id';
         const isName = dataIndex === 'name';
         const isMath = dataIndex === 'MathScore';
         const isLiterature = dataIndex === 'LiteratureScore';
@@ -635,7 +632,7 @@ const StudentList = () => {
                             <EditOutlined />
                         </Typography.Link>
                         <Popconfirm
-                        title={t('title.delete')}
+                            title={t('title.delete')}
                             onConfirm={() => handleDelete(record)}
                             okText={t('confirm.ok1')}
                             cancelText={t('confirm.cancel')}

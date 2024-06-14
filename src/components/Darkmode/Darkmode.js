@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch } from 'antd';
 import { SunOutlined, MoonOutlined } from '@ant-design/icons';
 import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
 const DarkMode = () => {
     const dispatch = useDispatch();
     const setDarkMode = () => {
@@ -11,13 +12,21 @@ const DarkMode = () => {
     const setLightMode = () => {
         document.querySelector('body').setAttribute('data-theme', 'light');
         localStorage.setItem('selectedTheme', 'light');
-        localStorage.setItem('mode',true)   
     
     };
     const selectedTheme = localStorage.getItem('selectedTheme');
     if (selectedTheme === 'dark') {
         setDarkMode();
     }
+    useEffect(() => {
+        const Theme = localStorage.getItem('selectedTheme');
+        if (Theme === 'dark') {
+            dispatch({ type: 'theme', payload: true });
+        }
+        else{
+            dispatch({ type: 'theme', payload: false });
+        }
+    }, [dispatch]);
     const toggleTheme = (checked) => {
         if (checked) {
             dispatch({ type: 'theme', payload: false });

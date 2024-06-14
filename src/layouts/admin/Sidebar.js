@@ -126,7 +126,6 @@ const Sidebar = () => {
             children: `${firstChar}${lastChar}`,
         };
     }
-    const accountExist = JSON.parse(localStorage.getItem('Infor'));
     const isAdminOrSuperAdmin =
         localStorage.getItem('Role') === 'Admin' || localStorage.getItem('Role') === 'super_admin';
 

@@ -610,7 +610,7 @@ const StudentList = () => {
         {
             title: t('table.Action'),
             dataIndex: 'operation',
-            width: '21%',
+            width: '22%',
             fixed: 'right',
             responsive: ['sm'],
             render: (_, record) => {

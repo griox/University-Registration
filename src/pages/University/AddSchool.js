@@ -487,7 +487,7 @@ const AddSchool = () => {
         {
             title: t('table.Action'),
             dataIndex: 'operation',
-            width: '18%',
+            width: '19%',
             fixed: 'right',
             responsive: ['sm'],
             render: (_, record) => {

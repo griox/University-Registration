@@ -28,7 +28,8 @@
         "total": "Tổng",
         "modalsend": "Gửi thông báo",
         "list":"Danh sách sinh viên",
-        "notRegist":"Chưa có sinh viên nào đăng kí"
+        "notRegist":"Chưa có sinh viên nào đăng kí",
+        "uniinf":"Thông tin trường đại học"
     },
     "placeholder": {
         "search": "Tìm kiếm"

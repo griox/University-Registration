@@ -28,7 +28,8 @@
         "total": "Total",
         "modalsend": "Send notification",
         "list":"Student List",
-        "notRegist":"This school hasn't been registered by any students"
+        "notRegist":"This school hasn't been registered by any students",
+        "uniinf":"University's Information"
     },
     "placeholder": {
         "search": "Search"

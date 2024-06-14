@@ -508,7 +508,7 @@ const StudentList = () => {
             title: t('table.ID'),
             dataIndex: 'id',
 
-            width: '14%',
+            width: '15%',
             fixed: 'left',
             ...getColumnSearchProps('id'),
             render: (_, record) => (
@@ -607,7 +607,7 @@ const StudentList = () => {
         {
             title: t('table.Action'),
             dataIndex: 'operation',
-            width: '21%',
+            width: '22%',
             fixed: 'right',
             responsive: ['sm'],
             render: (_, record) => {

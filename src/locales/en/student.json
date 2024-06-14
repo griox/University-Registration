@@ -26,7 +26,10 @@
         "provide": "Provide Account ?",
         "deleteacc": "Delete Account ?",
         "total": "Total",
-        "modalsend": "Send notification"
+        "modalsend": "Send notification",
+        "list":"Student List",
+        "notRegist":"This school hasn't been registered by any students",
+        "uniinf":"University's Information"
     },
     "placeholder": {
         "search": "Search"
@@ -39,5 +42,13 @@
         "ok1": "Delete",
         "cancel": "Cancel",
         "ok2": "Provide"
+    },
+    "label": {
+        "unicode": "University Code",
+        "entrance": "Entrance score",
+        "regis": "Number of Registration",
+        "target": "Target",
+        "address": "Address",
+        "uniname": "Name"
     }
 }

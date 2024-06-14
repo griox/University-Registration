@@ -487,7 +487,7 @@ const AddSchool = () => {
         {
             title: t('table.Action'),
             dataIndex: 'operation',
-            width: '18%',
+            width: '19%',
             fixed: 'right',
             responsive: ['sm'],
             render: (_, record) => {
@@ -570,7 +570,7 @@ const AddSchool = () => {
                                                 marginTop: 20,
                                                 showTotal: (total) => `${t('title.total')} ${total}`,
                                             }}
-                                            scroll={{ x: 'calc(100vw - 290px)', y: 'calc(100vh - 300px)' }}
+                                            scroll={{ x: 'calc(100vw - 290px)', y: 'calc(100vh - 270px)' }}
                                             components={{
                                                 body: {
                                                     cell: EditableCell,
@@ -623,7 +623,7 @@ const AddSchool = () => {
                                                 marginTop: 20,
                                                 showTotal: (total) => `${t('title.total')} ${total}`,
                                             }}
-                                            scroll={{ x: 'calc(100vw - 290px)', y: 'calc(100vh - 300px)' }}
+                                            scroll={{ x: 'calc(100vw - 290px)', y: 'calc(100vh - 270px)' }}
                                             components={{
                                                 body: {
                                                     cell: EditableCell,

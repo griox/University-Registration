@@ -308,6 +308,8 @@ function Pr() {
     const handleSelect = (e, propertyName) => {
         const newValue = e;
         if (propertyName === 'dateObirth') {
+            const date = dayjs(e.$d);
+            const formattedDate = date.format('DD/MM/YYYY');
             var today = new Date();
             var birthDate = new Date(e);
             var age = today.getFullYear() - birthDate.getFullYear();
@@ -319,6 +321,8 @@ function Pr() {
                 setErrorDateOBirth('You are not enough 18');
                 return;
             } else {
+                dispatch({ type: 'update', payload: { propertyName, formattedDate } });
+
                 setErrorDateOBirth('');
             }
         }
@@ -337,20 +341,18 @@ function Pr() {
         }
     };
 
-    const handleSubmit = (id) => {
+    const handleSubmit = async (id) => {
         if (!image) return;
         const imgRef = storageRef(storage, `images/${image.name}`);
-        uploadBytes(imgRef, image)
+        await uploadBytes(imgRef, image)
             .then(() => getDownloadURL(imgRef))
             .then((downLoadUrl) => {
                 if (localStorage.getItem('Role') === 'super_admin') {
                     update(ref(db, 'Super_Admin/' + id), {
                         img: downLoadUrl,
-                    })
-                        .then(() => {})
-                        .catch((error) => {
-                            alert('lỗi' + error);
-                        });
+                    }).catch((error) => {
+                        alert('lỗi' + error);
+                    });
                     get(child(ref(db), `Super_Admin/${id}/`)).then((snapshot) => {
                         if (snapshot.exists()) {
                             const x = snapshot.val();
@@ -416,11 +418,14 @@ function Pr() {
             });
     };
     const save = async () => {
+        console.log(detail.dateObirth);
         setLoadingSave(true);
+        const date = dayjs(detail.dateObirth.$d);
+        const formattedDate = date.format('DD/MM/YYYY');
+        console.log(formattedDate);
         const per = JSON.parse(localStorage.getItem('Infor'));
+        await handleSubmit(per.id);
         if (localStorage.getItem('Role') === 'super_admin') {
-            handleSubmit(per.id);
-
             await update(ref(db, 'Super_Admin/' + per.id), {
                 name: detail.name,
                 gender: detail.gender,
@@ -429,7 +434,7 @@ function Pr() {
                 enthicity: detail.enthicity,
                 idenNum: detail.idenNum,
                 email: detail.email,
-                dateObirth: detail.dateObirth,
+                dateObirth: formattedDate,
             }).then();
             await get(child(ref(db), `Super_Admin/${per.id}/`))
                 .then((snapshot) => {
@@ -445,12 +450,10 @@ function Pr() {
                 .then(() => setLoadingSave(false))
                 .then(() => toast.success('Updated sucessfully'));
         } else if (localStorage.getItem('Role') === 'admin') {
-            handleSubmit(per.id);
-
             await update(ref(db, 'Admin/' + per.id), {
                 name: detail.name,
                 gender: detail.gender,
-                placeOBirth: detail.placeOBirth,
+                placeOBirth: formattedDate,
                 Address: detail.Address,
                 enthicity: detail.enthicity,
                 idenNum: detail.idenNum,
@@ -472,60 +475,57 @@ function Pr() {
                 .then(() => setLoadingSave(false))
                 .then(() => toast.success('Updated sucessfully'));
         } else {
-            handleSubmit(per.id);
             await update(ref(db, 'Detail/' + per.id), {
                 name: detail.name,
                 gender: detail.gender,
-                placeOBirth: detail.placeOBirth,
+                placeOBirth: formattedDate,
                 Address: detail.Address,
                 enthicity: detail.enthicity,
                 idenNum: detail.idenNum,
                 email: detail.email,
                 uniCode: detail.uniCode,
                 dateObirth: detail.dateObirth,
-            })
-                .then(() => handleSubmit(per.id))
-                .then(() => {
-                    detail.uniCode.forEach(async (item) => {
-                        const l = per.uniCode === undefined ? [] : per.uniCode;
-                        if (l.includes(item) === false) {
-                            await get(child(ref(db), `University/` + item)).then(async (snapshot) => {
-                                if (snapshot.exists()) {
-                                    const x = snapshot.val();
+            }).then(() => {
+                detail.uniCode.forEach(async (item) => {
+                    const l = per.uniCode === undefined ? [] : per.uniCode;
+                    if (l.includes(item) === false) {
+                        await get(child(ref(db), `University/` + item)).then(async (snapshot) => {
+                            if (snapshot.exists()) {
+                                const x = snapshot.val();
 
-                                    const n = detail.email.replace(/\./g, ',');
-                                    await update(ref(db, 'University/' + item), {
-                                        isRegistered: x.isRegistered + 1,
-                                    });
-                                    update(ref(db, `University/${item}/registeration`), {
-                                        [n]: { email: detail.email, id: detail.id },
-                                    });
-                                }
-                            });
-                        }
-                    });
-
-                    (per.uniCode === undefined ? [] : per.uniCode).forEach(async (item) => {
-                        if (detail.uniCode.includes(item) === false) {
-                            await get(child(ref(db), `University/` + item)).then((snapshot) => {
-                                if (snapshot.exists()) {
-                                    const x = snapshot.val();
-
-                                    for (let k in x.registeration === undefined ? [] : x.registeration) {
-                                        if (x.registeration[k].email === detail.email) {
-                                            delete x.registeration[k];
-                                        }
-                                    }
-
-                                    update(ref(db, 'University/' + item), {
-                                        isRegistered: x.isRegistered - 1,
-                                        registeration: x.registeration,
-                                    });
-                                }
-                            });
-                        }
-                    });
+                                const n = detail.email.replace(/\./g, ',');
+                                await update(ref(db, 'University/' + item), {
+                                    isRegistered: x.isRegistered + 1,
+                                });
+                                update(ref(db, `University/${item}/registeration`), {
+                                    [n]: { email: detail.email, id: detail.id },
+                                });
+                            }
+                        });
+                    }
                 });
+
+                (per.uniCode === undefined ? [] : per.uniCode).forEach(async (item) => {
+                    if (detail.uniCode.includes(item) === false) {
+                        await get(child(ref(db), `University/` + item)).then((snapshot) => {
+                            if (snapshot.exists()) {
+                                const x = snapshot.val();
+
+                                for (let k in x.registeration === undefined ? [] : x.registeration) {
+                                    if (x.registeration[k].email === detail.email) {
+                                        delete x.registeration[k];
+                                    }
+                                }
+
+                                update(ref(db, 'University/' + item), {
+                                    isRegistered: x.isRegistered - 1,
+                                    registeration: x.registeration,
+                                });
+                            }
+                        });
+                    }
+                });
+            });
             await get(child(ref(db), `Detail/${per.id}/`))
                 .then((snapshot) => {
                     if (snapshot.exists()) {
@@ -644,21 +644,7 @@ function Pr() {
             </div>
         );
     };
-    const checkYear = () => {
-        var today = new Date();
-        var birthDate = new Date(detail.dateObirth);
-        var age = today.getFullYear() - birthDate.getFullYear();
-        var m = today.getMonth() - birthDate.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-            age--;
-        }
-        if (age < 18) {
-            setErrorDateOBirth('You are not enough 18');
-        } else {
-            setErrorDateOBirth('');
-        }
-        return detail.dateObirth;
-    };
+
     return (
         <div className="pr-container">
             {loading ? (

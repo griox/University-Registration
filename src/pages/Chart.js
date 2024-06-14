@@ -86,14 +86,14 @@ const Chart = () => {
 
         label: {
             text: (d) => `${d.value}`,
-            position: 'right',
+            position: 'outside',
         },
         legend: {
             color: {
                 title: false,
                 position: 'right',
                 rowPadding: 6,
-                itemLabelFill: !darkMode ? 'black':'white',
+                itemLabelFill: !darkMode ? 'black' : 'white',
             },
         },
         style: {
@@ -342,4 +342,3 @@ const Chart = () => {
 };
 
 export default Chart;
-

@@ -141,8 +141,10 @@ export const Login = () => {
                                     if (rememberMe === true) {
                                         localStorage.setItem('userToken', x.email);
                                     } else {
-                                        if (localStorage.getItem('userToken') === email) {
-                                            localStorage.removeItem('userToken');
+                                        if (localStorage.getItem('userToken') !== null) {
+                                            if (localStorage.getItem('userToken') === email) {
+                                                localStorage.removeItem('userToken');
+                                            }
                                         }
                                     }
 

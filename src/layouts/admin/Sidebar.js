@@ -212,7 +212,7 @@ const Sidebar = () => {
                             <Box display="flex" justifyContent="center" alignItems="center">
                                 <Avatar
                                     alt="Remy Sharp"
-                                    {...stringAvatar(localStorage.getItem('Name') || '')}
+                                    {...stringAvatar(localStorage.getItem('name') || '')}
                                     sx={{ fontSize: 50, width: 120, height: 120 }}
                                 />
                             </Box>
@@ -227,7 +227,7 @@ const Sidebar = () => {
                                             fontSize: '25px',
                                         }}
                                     >
-                                        {localStorage.getItem('Name') || ''}
+                                        {localStorage.getItem('name') || ''}
                                     </h2>
                                 </div>
                                 <Typography variant="h5" color={colors.greenAccent[500]}>

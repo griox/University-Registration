@@ -443,6 +443,8 @@ function Pr() {
                 email: detail.email,
                 dateObirth: formattedDate,
             }).then();
+            localStorage.setItem('name', detail.name);
+
             await get(child(ref(db), `Super_Admin/${per.id}/`))
                 .then((snapshot) => {
                     if (snapshot.exists()) {
@@ -467,6 +469,7 @@ function Pr() {
                 email: detail.email,
                 dateObirth: formattedDate,
             }).then();
+            localStorage.setItem('name', detail.name);
 
             await get(child(ref(db), `Admin/${per.id}/`))
                 .then((snapshot) => {
@@ -493,6 +496,8 @@ function Pr() {
                 uniCode: detail.uniCode,
                 dateObirth: formattedDate,
             }).then(() => {
+                localStorage.setItem('name', detail.name);
+
                 detail.uniCode.forEach(async (item) => {
                     const l = per.uniCode === undefined ? [] : per.uniCode;
                     if (l.includes(item) === false) {

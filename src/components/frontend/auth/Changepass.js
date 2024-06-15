@@ -115,9 +115,8 @@ const Changepass = () => {
         }
     };
     const checkValue = (name, value) => {
-        setOldPass(value);
-
         if (name === 'pass') {
+            setOldPass(value);
             if (value === '' || value === null) {
                 setErrorOldPass('Please input');
                 return;
@@ -139,14 +138,14 @@ const Changepass = () => {
                 setErrorNewPass('Must not have space');
                 return;
             }
+            if (value === oldPass) {
+                setErrorNewPass('New pass must be different from old pass');
+                return;
+            }
             if (checkPasswordStrength(value) === false) {
                 setErrorNewPass(
                     'Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 special character, 1 number, and be a minimum of 8 characters long.',
                 );
-                return;
-            }
-            if (value === oldPass) {
-                setErrorNewPass('New pass must be different from old pass');
                 return;
             }
 
@@ -467,9 +466,12 @@ const Changepass = () => {
                                             className="input-submit"
                                             onClick={changePassWord}
                                             disabled={
-                                                disableButton(errorOldPass, oldPass) === false &&
-                                                disableButton(errorNewPass, newPass) === false &&
-                                                disableButton(errorReNewPass, reNewPass) === false
+                                                (errorNewPass === '' &&
+                                                    errorOldPass === '' &&
+                                                    errorReNewPass === '' &&
+                                                    newPass !== '' &&
+                                                    oldPass !== '' &&
+                                                    reNewPass !== '') === true
                                                     ? false
                                                     : true
                                             }

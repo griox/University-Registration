@@ -62,6 +62,7 @@ export const Login = () => {
                     for (let item in x) {
                         if (x[item].email === email) {
                             localStorage.setItem('Infor', JSON.stringify(x[item]));
+                            localStorage.setItem('name', x[item].name);
                         }
                     }
                 }
@@ -73,6 +74,7 @@ export const Login = () => {
                     for (let item in x) {
                         if (x[item].email === email) {
                             localStorage.setItem('Infor', JSON.stringify(x[item]));
+                            localStorage.setItem('name', x[item].name);
                         }
                     }
                 }
@@ -84,6 +86,7 @@ export const Login = () => {
                     for (let item in x) {
                         if (x[item].email === email) {
                             localStorage.setItem('Infor', JSON.stringify(x[item]));
+                            localStorage.setItem('name', x[item].name);
                         }
                     }
                 }

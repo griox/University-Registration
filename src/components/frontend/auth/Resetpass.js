@@ -34,7 +34,7 @@ export const Forgetpass = () => {
 
     const [loadingResetPass, setLoadingResetPass] = useState(false);
     const { t, i18n } = useTranslation('resetpassword');
-    const [link, setLink] = useState(null);
+    const [link, setLink] = useState(false);
     const storedLanguage = localStorage.getItem('language') || 'en';
     const currentLanguage = locales[storedLanguage === 'vi' ? 'vi' : 'en'];
     const [selectedLanguage, setSelectedLanguage] = useState(storedLanguage === 'vi' ? 'Tiếng Việt' : 'English');
@@ -81,6 +81,7 @@ export const Forgetpass = () => {
                             }
                             console.log(link);
                         } else {
+                            setLink(false);
                         }
                     } else {
                         setLink(false);
@@ -89,9 +90,9 @@ export const Forgetpass = () => {
             });
         };
 
-        const timer = setTimeout(fetch, 10);
+        const timer = setTimeout(fetch, 100);
         return () => clearTimeout(timer);
-    }, [db]);
+    }, [db, link]);
 
     const handleLogout = () => {
         localStorage.setItem('Infor', JSON.stringify(''));
@@ -183,7 +184,19 @@ export const Forgetpass = () => {
             handlePassword();
         }
     };
-
+    const check = () => {
+        if (
+            errorNewPass === false &&
+            errorReNewPass === false &&
+            newPass !== '' &&
+            reNewPass !== '' &&
+            newPass === reNewPass
+        ) {
+            return false;
+        } else {
+            return true;
+        }
+    };
     return (
         <>
             {link === true ? (
@@ -291,12 +304,7 @@ export const Forgetpass = () => {
                                             className=" input-submit"
                                             onClick={() => handlePassword()}
                                             loading={loadingResetPass}
-                                            disabled={
-                                                disableButton(errorNewPass, newPass) === false &&
-                                                disableButton(errorReNewPass, reNewPass) === false
-                                                    ? false
-                                                    : true
-                                            }
+                                            disabled={check() === true ? false : true}
                                             style={{
                                                 color: '#fff',
                                                 backgroundColor:
